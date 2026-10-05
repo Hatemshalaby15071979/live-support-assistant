@@ -1,5 +1,5 @@
 {
-  "note": "Committed by `pnpm run audit:update`. See tooling/audit-gate.mjs.",
+  "note": "Committed by `pnpm run audit:update`. See tooling/audit-gate.mjs.\n\n`GHSA-vfj7-8cjw-p6xm` (CVE-2026-93687, braces <= 3.0.3, high) was baselined 2026-10-05 on purpose and cannot be upgraded away:\n\n- **No patched version exists.** The advisory lists patched versions: None, and the affected range is <= 3.0.3, which is the version already resolved here. There is no version to move to, so `pnpm update` cannot clear it and the gate would stay red indefinitely.\n- **Not runtime-reachable.** braces arrives only through build-time tooling: micromatch 4.0.8 -> jest-message-util, jscodeshift, metro-file-map, fast-glob. Nothing in a served request path imports it.\n- **Low practical risk.** The defect is stack exhaustion from a deeply-nested glob pattern supplied by an attacker (CWE-674, uncontrolled recursion). Exploiting it requires the attacker to control a glob pattern that this project does not accept from untrusted input. CVSS 8.7, EPSS 0.74%.\n\nBaselining keeps the advisory visible and tracked: it is counted, it is reported by `pnpm run audit`, and the gate still fails on anything new or anything escalated. Revisit when upstream publishes a fixed braces release -- at that point remove this note and the entry together, and the gate will hold the improvement without a code change. Suppressing it silently instead would have been the failure mode this file was written to avoid.",
   "advisories": {
     "GHSA-23hp-3jrh-7fpw": "critical",
     "GHSA-27p8-2357-5qqv": "high",
@@ -30,6 +30,7 @@
     "GHSA-r28c-9q8g-f849": "high",
     "GHSA-r292-9mhp-454m": "high",
     "GHSA-r6q2-hw4h-h46w": "high",
+    "GHSA-vfj7-8cjw-p6xm": "high",
     "GHSA-vmf3-w455-68vh": "moderate",
     "GHSA-w2rr-34g9-rvrj": "high",
     "GHSA-w3rx-r6r6-pgpr": "high",
