@@ -2,6 +2,18 @@ packages:
   - "apps/*"
   - "packages/*"
 
+# source-map-js 1.2.1 is vulnerable to an event-loop denial of service through
+# indexed source-map section offsets (GHSA-68fv-2mgg-jv7q, high, fixed in 1.2.2).
+# It arrives transitively in three places in the lockfile, so a direct dependency
+# bump is not possible; this override forces the whole tree to the patched
+# version.
+#
+# This lives here rather than in package.json because pnpm 11 no longer reads
+# `pnpm.overrides` from package.json -- it warns and ignores the key, which would
+# have made the override look applied while changing nothing.
+overrides:
+  source-map-js: 1.2.2
+
 # onnxruntime-node downloads its native binaries in a postinstall script;
 # protobufjs is pulled in by the ONNX toolchain. Both must be allowed to build.
 allowBuilds:

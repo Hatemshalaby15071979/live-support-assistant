@@ -106,8 +106,23 @@ for (const advisory of Object.values(report.advisories)) {
 const counts = report.metadata?.vulnerabilities ?? {};
 
 if (update) {
+  // Preserve the existing note. It is where the justification for tolerating a
+  // specific advisory lives, and overwriting it with a fixed string meant every
+  // `--update` silently destroyed the reasoning for whatever could not be
+  // upgraded. That was observed: baselining GHSA-hp3w-g68c-fv3c wiped the
+  // recorded reason GHSA-vfj7-8cjw-p6xm has no patch.
+  let existingNote = 'Committed by `pnpm run audit:update`. See tooling/audit-gate.mjs.';
+  try {
+    const prior = JSON.parse(readFileSync(baselinePath, 'utf8'));
+    if (typeof prior.note === 'string' && prior.note.trim()) {
+      existingNote = prior.note;
+    }
+  } catch {
+    // No readable baseline: fall back to the default note.
+  }
+
   const baseline = {
-    note: 'Committed by `pnpm run audit:update`. See tooling/audit-gate.mjs.',
+    note: existingNote,
     advisories: Object.fromEntries(
       [...current.entries()]
         .sort(([a], [b]) => a.localeCompare(b))
