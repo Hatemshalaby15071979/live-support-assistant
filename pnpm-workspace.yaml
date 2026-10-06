@@ -14,6 +14,35 @@ packages:
 overrides:
   source-map-js: 1.2.2
 
+  # Advisory-driven dependency floor, 2026-10-06.
+  #
+  # Every entry below was chosen from pnpm's own advisory output, not from the
+  # advisory prose: three of the 39 findings (braces, node-forge, sprintf-js)
+  # name a patched release that does not exist on npm, so they cannot be fixed
+  # by an override and stay in the baseline with their reasons recorded.
+  #
+  # Two shapes of fix are in here, and the difference matters:
+  #
+  #   * Deduplication (@xmldom/xmldom, postcss, send). These already carry a
+  #     patched copy in the lockfile -- 0.9.12, 8.5.28, 0.19.2 -- alongside a
+  #     stale vulnerable one (0.7.13, 8.4.49, 0.18.0). Forcing every copy to
+  #     the version already present clears the finding without introducing an
+  #     upgrade. Note that advisory floors name *lower* versions here
+  #     (postcss >=8.5.23, send >=0.19.0); overriding to the advisory's number
+  #     would have been a downgrade, so each entry is the installed version.
+  #
+  #   * Genuine major bumps (fast-xml-parser, image-size, tar, uuid). These
+  #     cross a major boundary and are the risk in this change. Each was
+  #     verified against the build, the eight verify suites and the dependency
+  #     gate before being kept.
+  '@xmldom/xmldom': 0.9.12
+  fast-xml-parser: 5.7.0
+  image-size: 2.0.3
+  postcss: 8.5.28
+  send: 0.19.2
+  tar: 7.5.21
+  uuid: 11.1.1
+
 # onnxruntime-node downloads its native binaries in a postinstall script;
 # protobufjs is pulled in by the ONNX toolchain. Both must be allowed to build.
 allowBuilds:
