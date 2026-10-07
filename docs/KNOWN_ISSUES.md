@@ -279,7 +279,7 @@ rows — **anecdote, not measurement** (marked \*).
 (OOS N=2). T05 **fails**. T01 and T04 are **not a measurable pass**: 0 of 2–3 with a 95% upper bound
 ≈ 100%. D1 is **NOT MET as a measured property** at this N; it is "unproven", not "proven safe".
 
-### Calibration operating points (data_mode=calibration — reference; same unverified labels)
+### Calibration operating points (data_mode=calibration — reference; **pre-expansion, OOS N=6/9/6, historical**)
 
 | Tenant | ans N | OOS N | @ | TP | FP | FN | unsafe | wrong-proc served | precision | recall\* | false-refusal | label_source | spot_check |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |
@@ -298,16 +298,45 @@ same 0.61. The operating point is read from `GATE_CONFIGS`, never re-tuned on he
 held-out failure, not a recalibration. It is driven by OOS N=2 on held-out; a single `out_of_scope`
 crossing the threshold flips the verdict.
 
+### Re-calibration on the expanded set (g14, post-`1d75c9d`)
+
+`GATE_SPLIT=calibration node tooling/corpus/calibrate-gate.mjs` on the expanded gold set
+(`data_mode: calibration`, 500-rung, MiniLM-L6-v2). Calibration `out_of_scope` N is now
+**T01 75, T04 75, T05 81** (vs 6/9/6 before). This is the proper tuning split, never the held-out.
+
+| Tenant | @ (current) | unsafe @ current | calibration zero-unsafe @ | false refusals at that point | note |
+| --- | ---: | ---: | ---: | ---: | --- |
+| T01 | 0.68 | **1** | 0.76 | 10/12 (83.3%) | current threshold NOT zero-unsafe on calibration |
+| T04 | 0.53 | **9** | 0.62 | 20/27 (74.1%) | current threshold NOT zero-unsafe on calibration |
+| T05 | 0.61→0.69 | **3** @0.61 | 0.69 | 9/14 (64.3%) | recalibrated to 0.69 (g14) |
+
+**The decisive finding.** The prior "zero-unsafe" claims for T01 (0.68) and T04 (0.53) were
+artifacts of OOS N = 6 and 9. On the expanded calibration set those thresholds serve **1 and 9**
+unsafe answers. Only T05's old *held-out* failure (1 unsafe) had been visible; the calibration set
+now shows all three serve unsafe at their shipped thresholds. The binding constraint is **retrieval
+quality** (MiniLM-L6-v2 dense retrieval at the 500-rung), not the gate rule — raising the threshold
+refuses most traffic rather than making served answers correct (cf. §12).
+
+**T05 recalibrated to 0.69** per g14 ("zero unsafe on the calibration split first"), the calibration
+zero-unsafe point. This is derived from calibration, not held-out (the owner's "do not raise to ~0.69
+on held-out" caveat does not apply). Held-out validation pending. The 64.3% false-refusal cost is a
+product decision, recorded as such.
+
+**T01 and T04 are flagged, not auto-recalibrated.** Their calibration zero-unsafe points (0.76, 0.62)
+refuse 83%/74% of answerable traffic — a product call the owner must make, as the T04 0.53 decision
+was. Until then they stay at their shipped thresholds with `calibration_status = fails-calibration`.
+
 ### calibration_status (PROVISIONAL — see DECISIONS.md)
 
 | Tenant | threshold | calibration_status |
 | --- | ---: | --- |
-| T01 | 0.68 | `unproven-heldout` (OOS N=2) |
-| T04 | 0.53 | `unproven-heldout` (OOS N=3) |
-| T05 | 0.61 | **`failed-heldout`** (1 unsafe on held-out) |
+| T01 | 0.68 | `fails-calibration` (1 unsafe @ 0.68, OOS N=75) |
+| T04 | 0.53 | `fails-calibration` (9 unsafe @ 0.53, OOS N=75) |
+| T05 | 0.69 | `calibration-zero-unsafe` (0 unsafe @ 0.69; held-out validation pending) |
 
-Thresholds chosen on the calibration split with unverified labels and tiny OOS N. **Not
-production-calibrated.** No production claim is made for any tenant.
+Thresholds chosen/updated on the calibration split with unverified labels. **Not
+production-calibrated.** No production claim is made for any tenant. D1 (0 unsafe on held-out)
+for T05 is **pending the new held-out run**; for T01/T04 it is **NOT MET** (serve unsafe on calibration).
 
 **T05 decision (owner, this review): option (c).** Do **not** raise T05 to ~0.69 (tuning on held-out
 destroys the split), do **not** accept 1 unsafe. Grow `out_of_scope` to ≥ 100 per tenant (fleet N ≥ 300)
