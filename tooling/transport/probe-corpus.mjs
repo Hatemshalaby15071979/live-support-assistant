@@ -350,6 +350,16 @@ check(
 
 // ------------------------------------------------------ what the device gets --
 
+// The model this probe's client loaded. The publish function defaults to this
+// model, and the install pipeline now refuses a bundle built for a different one,
+// so the probe has to name it rather than assume it.
+const MODEL = {
+  id: 'Xenova/all-MiniLM-L6-v2',
+  revision: '751bff37182d3f1213fa05d7196b954e230abad9',
+  quantization: 'q8',
+  dimensions: 384,
+};
+
 process.stdout.write('==> a device installs what the tenant authored\n');
 
 const { data: fetched } = await opsAuthorised.schema('app').rpc('bundle_for_device', {
@@ -361,13 +371,13 @@ if (fetched === null) {
 } else {
   check('the device can fetch the published bundle', true, `bundle ${fetched.manifest.bundleVersion}`);
 
-  const outcome = await sync.installBundle(fetched, minted.identity, new sync.MemoryBundleStore());
+  const outcome = await sync.installBundle(fetched, minted.identity, new sync.MemoryBundleStore(), MODEL);
   check('it installs', outcome.outcome === 'installed', JSON.stringify(outcome));
 
   const active = await new sync.MemoryBundleStore();
   // Re-install into a store we keep, so we can read what was stored.
   const store = new sync.MemoryBundleStore();
-  await sync.installBundle(fetched, minted.identity, store);
+  await sync.installBundle(fetched, minted.identity, store, MODEL);
   const installed = await store.active();
   const summaries = (installed?.sops ?? []).map((sop) => sop.summary);
   void active;

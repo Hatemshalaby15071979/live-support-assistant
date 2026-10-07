@@ -34,7 +34,7 @@ export { IdbIdentityStore, MemoryIdentityStore, newDeviceIdentity } from './iden
 export type { DeviceIdentity, IdentityStore } from './identity-store.js';
 
 export { manifestBytes } from './manifest.js';
-export type { BundleManifest, BundlePayload, SignedBundle } from './manifest.js';
+export type { BundleManifest, BundlePayload, ModelIdentity, SignedBundle } from './manifest.js';
 
 export { installBundle } from './install.js';
 export type {
@@ -54,9 +54,4 @@ export { rotateTenantKeys } from './rotation.js';
 export type { RotateParams, RotatedKeys } from './rotation.js';
 
 export { bundleForDevice, publishBundle } from './server.js';
-export type {
-  EnrolledDevice,
-  ModelIdentity,
-  PublishParams,
-  PublishedBundle,
-} from './server.js';
+export type { EnrolledDevice, PublishParams, PublishedBundle } from './server.js';

@@ -105,10 +105,10 @@ const v1 = await publishBundle({
 const storeA = new MemoryBundleStore();
 const storeB = new MemoryBundleStore();
 
-const installedA1 = await installBundle(bundleForDevice(v1, 'device-a'), identityFor(deviceA, serverOldWrappingPublicKey), storeA);
+const installedA1 = await installBundle(bundleForDevice(v1, 'device-a'), identityFor(deviceA, serverOldWrappingPublicKey), storeA, MODEL);
 expect('device A installs pre-rotation v1', 'installed', installedA1.outcome,
   installedA1.outcome === 'installed');
-const installedB1 = await installBundle(bundleForDevice(v1, 'device-b'), identityFor(deviceB, serverOldWrappingPublicKey), storeB);
+const installedB1 = await installBundle(bundleForDevice(v1, 'device-b'), identityFor(deviceB, serverOldWrappingPublicKey), storeB, MODEL);
 expect('device B installs pre-rotation v1', 'installed', installedB1.outcome,
   installedB1.outcome === 'installed');
 
@@ -147,7 +147,7 @@ const cachedSigned = {
   payloadCiphertext: v2.payloadCiphertext,
   wrappedContentKey: v1.wrappedKeys.get('device-b'),
 };
-const attack1 = await installBundle(cachedSigned, identityFor(deviceB, serverOldWrappingPublicKey), storeB);
+const attack1 = await installBundle(cachedSigned, identityFor(deviceB, serverOldWrappingPublicKey), storeB, MODEL);
 expect('cached v1 wrapped key fails against v2 payload (decrypt_failed)', 'rejected', attack1.outcome,
   attack1.outcome === 'rejected' && attack1.reason === 'decrypt_failed');
 
@@ -157,13 +157,14 @@ const attack2 = await installBundle(
   { ...cachedSigned, wrappedContentKey: v2.wrappedKeys.get('device-a') },
   identityFor(deviceB, serverNewWrappingPublicKey),
   storeB,
+  MODEL,
 );
 expect("another device's wrapped key fails under a foreign device key (key_unwrap_failed)", 'rejected',
   attack2.outcome,
   attack2.outcome === 'rejected' && attack2.reason === 'key_unwrap_failed');
 
 // ---- the active device upgrades under the new key ----
-const installedA2 = await installBundle(bundleForDevice(v2, 'device-a'), identityFor(deviceA, serverNewWrappingPublicKey), storeA);
+const installedA2 = await installBundle(bundleForDevice(v2, 'device-a'), identityFor(deviceA, serverNewWrappingPublicKey), storeA, MODEL);
 expect('active device installs rotated v2', 'installed', installedA2.outcome,
   installedA2.outcome === 'installed' && installedA2.bundleVersion === 2);
 
@@ -174,12 +175,13 @@ const missed = await installBundle(
   bundleForDevice(v2, 'device-a'),
   identityFor(deviceA, serverOldWrappingPublicKey),
   new MemoryBundleStore(),
+  MODEL,
 );
 expect('active device without the new public key cannot unwrap (key_unwrap_failed)', 'rejected', missed.outcome,
   missed.outcome === 'rejected' && missed.reason === 'key_unwrap_failed');
 
 // ---- replay of the pre-rotation bundle is refused after the upgrade ----
-const replay = await installBundle(bundleForDevice(v1, 'device-a'), identityFor(deviceA, serverNewWrappingPublicKey), storeA);
+const replay = await installBundle(bundleForDevice(v1, 'device-a'), identityFor(deviceA, serverNewWrappingPublicKey), storeA, MODEL);
 expect('v1 replay refused after v2 (not_monotonic)', 'rejected', replay.outcome,
   replay.outcome === 'rejected' && replay.reason === 'not_monotonic');
 

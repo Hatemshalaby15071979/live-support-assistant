@@ -26,7 +26,8 @@
 import type { SopDocument } from '@sop/core';
 
 import { exportPublicKey, generateWrappingKeyPair } from './crypto.js';
-import { publishBundle, type EnrolledDevice, type ModelIdentity, type PublishedBundle } from './server.js';
+import type { ModelIdentity } from './manifest.js';
+import { publishBundle, type EnrolledDevice, type PublishedBundle } from './server.js';
 
 export interface RotateParams {
   readonly tenantId: string;

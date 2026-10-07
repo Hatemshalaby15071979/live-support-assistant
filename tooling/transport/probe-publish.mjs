@@ -71,6 +71,16 @@ if (tenantSigningPublicKey === '' || serverWrappingPublicKey === '') {
 
 const ALPHA = '11111111-1111-1111-1111-111111111111';
 
+// The model this probe's client loaded. The publish function defaults to this
+// model, and the install pipeline refuses a bundle built for a different one, so
+// the probe names it rather than assuming the two agree.
+const MODEL = {
+  id: 'Xenova/all-MiniLM-L6-v2',
+  revision: '751bff37182d3f1213fa05d7196b954e230abad9',
+  quantization: 'q8',
+  dimensions: 384,
+};
+
 const checks = [];
 function check(name, ok, detail) {
   checks.push({ name, ok });
@@ -253,6 +263,7 @@ if (fetchError !== null || fetched === null) {
       serverWrappingPublicKey: restored.serverWrappingPublicKey,
     },
     new sync.MemoryBundleStore(),
+    MODEL,
   );
 
   check(

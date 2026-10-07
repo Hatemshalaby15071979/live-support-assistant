@@ -236,16 +236,21 @@ const { data: nextVersion, error: versionError } = await publisher.client
 
 if (versionError) throw new Error(`next_bundle_version failed: ${versionError.message}`);
 
+// The model this probe's client loaded. The install pipeline refuses a bundle
+// built for a different one, so the publisher and the client have to agree on it;
+// here they are the same value by construction.
+const MODEL = {
+  id: 'Xenova/all-MiniLM-L6-v2',
+  revision: '751bff37182d3f1213fa05d7196b954e230abad9',
+  quantization: 'q8',
+  dimensions: 384,
+};
+
 const published = await sync.publishBundle({
   tenantId: ALPHA,
   bundleVersion: Number(nextVersion),
   sops: CORPUS,
-  model: {
-    id: 'Xenova/all-MiniLM-L6-v2',
-    revision: '751bff37182d3f1213fa05d7196b954e230abad9',
-    quantization: 'q8',
-    dimensions: 384,
-  },
+  model: MODEL,
   signingPrivateKey: tenantSigning.privateKey,
   wrappingPrivateKey: serverWrapping.privateKey,
   kekSalt,
@@ -329,7 +334,7 @@ const identity = {
   kekSalt,
 };
 
-const result = await sync.installBundle(fetched, identity, store);
+const result = await sync.installBundle(fetched, identity, store, MODEL);
 check('the bundle installs', result.outcome === 'installed', JSON.stringify(result));
 
 const active = await store.active();
@@ -353,14 +358,14 @@ check(
 
 process.stdout.write('==> checking the refusals\n');
 
-const replay = await sync.installBundle(fetched, identity, store);
+const replay = await sync.installBundle(fetched, identity, store, MODEL);
 check('a replay of the same version is refused', replay.outcome === 'rejected' && replay.reason === 'not_monotonic', JSON.stringify(replay));
 
 const tampered = {
   ...fetched,
   manifest: { ...fetched.manifest, sopCount: 99 },
 };
-const tamperedResult = await sync.installBundle(tampered, identity, new sync.MemoryBundleStore());
+const tamperedResult = await sync.installBundle(tampered, identity, new sync.MemoryBundleStore(), MODEL);
 check(
   'a tampered manifest is refused',
   tamperedResult.outcome === 'rejected' && tamperedResult.reason === 'signature_invalid',
