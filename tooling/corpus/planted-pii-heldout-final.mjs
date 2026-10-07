@@ -99,3 +99,19 @@ export const HELDOUT_FINAL = [
   { id: 'f-bi-01', category: 'bank-identifier', language: 'en', value: 'BIC NWBKGB2L',
     carrier: 'Payments must quote BIC NWBKGB2L alongside the account number.' },
 ];
+
+/** Categories this set expects to be found. */
+export const HELDOUT_CATEGORIES = [
+  'email',
+  'phone-international',
+  'phone-national',
+  'postal-address',
+  'account-identifier',
+  'honorific-name',
+  'labelled-contact-name',
+  'national-id',
+  'bank-identifier',
+];
+
+/** Languages this set covers. */
+export const HELDOUT_LANGUAGES = ['en', 'es', 'pt-BR', 'fr'];
