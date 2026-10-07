@@ -92,7 +92,7 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
+      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). RELABEL DECISION (separate record): owner chose [A] — corpus answers via content/billing/how-tos/troubleshooting/declined-card.md; label=answerable, label_source=owner, evidence=full-text-keyword-search. The originally proposed manage-payment-info.md named a different page. The 7/14 tally is unchanged."
     },
     {
       "id": "OD-06",
@@ -251,6 +251,17 @@
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
       "note": "Owner chose [A]: the corpus DOES answer via manage-payment-info.md. Its core managing-payment content resolves via the reusable include {% data reusables.billing.manage-payment-info %} — the same Update payment method click-path declined-card.md spells out step by step. SEPARATE record from the OQ-002 spot-check; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
+    },
+    "OD-05": {
+      "choice": "A",
+      "label": "answerable",
+      "label_source": "owner",
+      "evidence": "full-text-keyword-search",
+      "recorded_at": "2026-10-07",
+      "acceptable_documents": [
+        "content/billing/how-tos/troubleshooting/declined-card.md"
+      ],
+      "note": "Owner chose [A]: the corpus DOES answer via declined-card.md — the only passage that addresses an expired card directly (check expiration, Update payment method, if saved card has expired click Edit, enter new card details). The originally proposed manage-payment-info.md named a different page; that page itself has 0 hits for delete/expired in full text. SEPARATE record from the OQ-002 spot-check; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
     }
   }
 }
