@@ -41,6 +41,7 @@ const ownerRows = read('slice-b-owner-rows.json');
 const ownerLabels = read('slice-b-owner-labels.json');
 const expansion = read('slice-b-expansion.json');
 const sliceA = read('slice-a.json');
+const sliceAT05 = read('slice-a-t05-expansion.json');
 
 /** Every document path per tenant, for verification. */
 const tenantDocuments = new Map();
@@ -143,7 +144,7 @@ for (const row of expansion.rows) {
   });
 }
 
-for (const row of sliceA.rows) {
+for (const row of [...sliceA.rows, ...sliceAT05.rows]) {
   verifyDocuments(row.tenant, row.documents);
   const reference = tenantText.get(row.tenant).get(row.documents[0]);
   const score = leakage(row.text, `${reference.title} ${reference.first}`);

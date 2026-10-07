@@ -1,0 +1,26 @@
+{
+  "note": "T05 clean expansion. T05's original Slice A rows were largely the document names themselves — 13 of 20 scored 1.000 on the leakage control, because a question that IS the title is a title. These 15 rows are corpus-voiced but written in DIFFERENT words from the document titles, so they exercise retrieval rather than echo.",
+  "slice": "A",
+  "origin": "derived-paraphrase",
+  "data_mode": "web-sourced",
+  "reason": "Brings T05's CLEAN Slice A sample from 7 to a stable size. The 13 title-echo rows stay in questions.json and stay excluded from headlines.",
+  "label_basis": "agent, single pass. Written against a named document; the document is the answer by construction.",
+  "rows": [
+    { "id": "SA-T05X-01", "tenant": "T05-policy-style", "text": "can someone else take a name i want to use", "documents": ["content/site-policy/other-site-policies/github-username-policy.md"] },
+    { "id": "SA-T05X-02", "tenant": "T05-policy-style", "text": "i lost access and my old email no longer works, can i get back in", "documents": ["content/site-policy/other-site-policies/github-account-recovery-policy.md"] },
+    { "id": "SA-T05X-03", "tenant": "T05-policy-style", "text": "how does a family member request access to someone who has died", "documents": ["content/site-policy/other-site-policies/github-deceased-user-policy.md"] },
+    { "id": "SA-T05X-04", "tenant": "T05-policy-style", "text": "what tracking does the site do and can i opt out of the non essential parts", "documents": ["content/site-policy/privacy-policies/github-cookies.md"] },
+    { "id": "SA-T05X-05", "tenant": "T05-policy-style", "text": "which third parties process my data", "documents": ["content/site-policy/privacy-policies/github-subprocessors.md"] },
+    { "id": "SA-T05X-06", "tenant": "T05-policy-style", "text": "someone filed a takedown against my repository and i disagree with it", "documents": ["content/site-policy/content-removal-policies/guide-to-submitting-a-dmca-counter-notice.md"] },
+    { "id": "SA-T05X-07", "tenant": "T05-policy-style", "text": "my home address is visible in a public repository and i want it gone", "documents": ["content/site-policy/content-removal-policies/github-private-information-removal-policy.md"] },
+    { "id": "SA-T05X-08", "tenant": "T05-policy-style", "text": "someone is using my company logo without permission", "documents": ["content/site-policy/content-removal-policies/github-trademark-policy.md"] },
+    { "id": "SA-T05X-09", "tenant": "T05-policy-style", "text": "how do i ask for something to be removed from the site", "documents": ["content/site-policy/content-removal-policies/submitting-content-removal-requests.md"] },
+    { "id": "SA-T05X-10", "tenant": "T05-policy-style", "text": "my account was disabled and i want it looked at again", "documents": ["content/site-policy/acceptable-use-policies/github-appeal-and-reinstatement.md"] },
+    { "id": "SA-T05X-11", "tenant": "T05-policy-style", "text": "what kinds of behaviour are not allowed here", "documents": ["content/site-policy/acceptable-use-policies/github-acceptable-use-policies.md"] },
+    { "id": "SA-T05X-12", "tenant": "T05-policy-style", "text": "where is the line on content that offends a group of people", "documents": ["content/site-policy/acceptable-use-policies/github-hate-speech-and-discrimination.md"] },
+    { "id": "SA-T05X-13", "tenant": "T05-policy-style", "text": "if i report a security flaw can i be sued for it", "documents": ["content/site-policy/security-policies/github-bug-bounty-program-legal-safe-harbor.md"] },
+    { "id": "SA-T05X-14", "tenant": "T05-policy-style", "text": "how does the whole takedown process work from start to finish", "documents": ["content/site-policy/content-removal-policies/dmca-takedown-policy.md"] },
+    { "id": "SA-T05X-15", "tenant": "T05-policy-style", "text": "what happens if law enforcement asks you for my data", "documents": ["content/site-policy/other-site-policies/guidelines-for-legal-requests-of-user-data.md"] }
+  ],
+  "summary": { "rows": 15 }
+}

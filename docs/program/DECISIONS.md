@@ -4,6 +4,61 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-07 — Headline standard, and the confidence gate has no safe threshold in the tested range
+
+**Zone.** Y.
+
+### The headline standard
+
+**All headline retrieval metrics are standardised on the 500-rung, using clean Slice A and answerable
+Slice B only.**
+
+| Included in a headline | Excluded from a headline |
+| --- | --- |
+| 500-rung | MVR — retained **only** as a scale-impact diagnostic |
+| Slice A rows with `title_echo: false` | Slice A rows with `title_echo: true` (17 of 75) |
+| Slice B rows with `label: answerable` | Slice B rows with `label: out_of_scope` — recall is undefined for them |
+
+**Why the MVR is not a headline rung.** T04's answerable R@1 is **70.0% at the MVR and 30.0% at the
+500-rung** — same questions, same model. A figure that does not name its rung is not a figure. The MVR
+is the *smallest corpus that can be measured at all*, not a target, and it exists so the gold set is
+never trimmed.
+
+**Why title-echo rows are excluded.** T05 scores **92.3%** R@1 on its title-echo rows against **42.9%**
+on its clean ones. Pooling them reports 75% for a set whose honest figure is 42.9%. They stay in
+`questions.json` — deleting them would hide the fact that they are easy — and they are excluded from
+every headline.
+
+### The calibration result
+
+`tooling/corpus/calibrate-gate.mjs`, calibration split only, 500-rung, thresholds 0.40→0.52 step 0.02.
+Model `Xenova/all-MiniLM-L6-v2`.
+
+| Tenant | answerable | out_of_scope | zero-unsafe in 0.40–0.52? | highest out_of_scope top-1 |
+| --- | ---: | ---: | --- | ---: |
+| T01 | 12 | 0 | n/a — no refusal surface | — |
+| T04 | 27 | 9 | **NO** | **0.5227** |
+| T05 | 14 | 0 | n/a — no refusal surface | — |
+
+**The range misses zero-unsafe by 0.007.** T04's most confidently-answered `out_of_scope` question
+scores **0.5227**, just above the range's ceiling of 0.52. At 0.52 the gate still serves **1 unsafe
+answer**; at 0.40 it serves **6**.
+
+**Zero-unsafe is reached at 0.53**, and it costs **7 false refusals of 27 answerable questions** —
+25.9% of answerable traffic refused. That is the trade V2 D1 implies and it is now priced.
+
+**T01 and T05 have no refusal surface in this set** — no `out_of_scope` rows, so their gate can only be
+assessed on false refusals. T01 is flat across the whole range (83.3% precision, 83.3% recall, 0%
+false refusal) because its scores are bimodal; the threshold does not move it.
+
+**T04's precision is poor throughout** — 37.5% at 0.40 rising only to 43.5% at 0.52. More than half of
+served answers are the wrong document. That is a retrieval-quality problem the gate cannot fix by
+threshold, and it is the largest single finding here.
+
+**Nothing is set.** No tenant threshold has been chosen; this records what the range does.
+
+---
+
 ## 2026-10-07 — G13 result: shape-first, three cycles, and the held-out number is NOT MET
 
 **Zone.** Y. Prereg: `docs/prereg/g13-shape-first.md`, committed at `43a4a00` **before** the change and

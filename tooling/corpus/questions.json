@@ -5,18 +5,18 @@
   "leakage_limit": 0.3,
   "owner_wording_note": "The OD- rows are owner-directed drafts: topics chosen by the owner, wording drafted by Claude. They are NOT real customer questions and must never be described as such.",
   "counts": {
-    "total": 95,
-    "slice_a": 60,
+    "total": 110,
+    "slice_a": 75,
     "slice_b": 35,
-    "answerable": 83,
+    "answerable": 98,
     "out_of_scope": 12,
-    "calibration": 62,
-    "held_out": 33,
+    "calibration": 70,
+    "held_out": 40,
     "title_echo": 17
   },
   "by_tenant": {
     "T04-customer-support-style": 52,
-    "T05-policy-style": 23,
+    "T05-policy-style": 38,
     "T01-platform-operations-style": 20
   },
   "questions": [
@@ -1736,6 +1736,291 @@
       "leakage_3gram": 1,
       "title_echo": true,
       "split": "held-out"
+    },
+    {
+      "id": "SA-T05X-01",
+      "text": "can someone else take a name i want to use",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/other-site-policies/github-username-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05X-02",
+      "text": "i lost access and my old email no longer works, can i get back in",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/other-site-policies/github-account-recovery-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05X-03",
+      "text": "how does a family member request access to someone who has died",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/other-site-policies/github-deceased-user-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05X-04",
+      "text": "what tracking does the site do and can i opt out of the non essential parts",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/privacy-policies/github-cookies.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05X-05",
+      "text": "which third parties process my data",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/privacy-policies/github-subprocessors.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05X-06",
+      "text": "someone filed a takedown against my repository and i disagree with it",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/content-removal-policies/guide-to-submitting-a-dmca-counter-notice.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05X-07",
+      "text": "my home address is visible in a public repository and i want it gone",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/content-removal-policies/github-private-information-removal-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05X-08",
+      "text": "someone is using my company logo without permission",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/content-removal-policies/github-trademark-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05X-09",
+      "text": "how do i ask for something to be removed from the site",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/content-removal-policies/submitting-content-removal-requests.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05X-10",
+      "text": "my account was disabled and i want it looked at again",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/acceptable-use-policies/github-appeal-and-reinstatement.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05X-11",
+      "text": "what kinds of behaviour are not allowed here",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/acceptable-use-policies/github-acceptable-use-policies.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05X-12",
+      "text": "where is the line on content that offends a group of people",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/acceptable-use-policies/github-hate-speech-and-discrimination.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.1,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05X-13",
+      "text": "if i report a security flaw can i be sued for it",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/security-policies/github-bug-bounty-program-legal-safe-harbor.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05X-14",
+      "text": "how does the whole takedown process work from start to finish",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/content-removal-policies/dmca-takedown-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05X-15",
+      "text": "what happens if law enforcement asks you for my data",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/other-site-policies/guidelines-for-legal-requests-of-user-data.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
     }
   ]
 }
