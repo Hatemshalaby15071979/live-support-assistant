@@ -191,11 +191,12 @@
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
       "label_source": "owner",
-      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label_basis": "Owner's separate relabel decision on 2026-10-07: chose [B], the corpus does NOT answer — out_of_scope CONFIRMED on full-text keyword-search evidence over the re-fetched T04 corpus. Separate from the OQ-002 7/14 spot-check verdict; does not change that tally.",
+      "label_evidence": "full-text-keyword-search",
       "label": "out_of_scope",
       "confidence": "high",
       "acceptable_documents": [],
-      "reasoning": "Same defect as OD-01. The question asks why and how to appeal; T04 has no appeal material (appeal 0, reinstate 0, banned 0) and locked-account.md covers a billing lock. The agent excluded this row from CLEAR_ROWS and the owner ruled it out of scope.",
+      "reasoning": "Owner confirmed on 2026-10-07 full-text evidence: across all 136 T04 documents the regex ban/banned/suspended/suspension/reinstate/appeal hits exactly one file (github-license-users.md), a billing fact about license consumption — not an appeal process. The answering document (github-appeal-and-reinstatement.md) is T05, a different tenant, so it cannot enter T04's acceptable set (owner OD-02 ruling). Mirrors the SB-20 tenant-scoping finding: same question out_of_scope in T04, answerable in T05.",
       "split": "calibration"
     },
     {
