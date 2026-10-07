@@ -129,6 +129,12 @@ const SUITES = [
     script: 'tooling/verify-pii-heldout.mjs',
     verdict: 'HELD-OUT RECALL OK',
   },
+  {
+    key: 'agent-skill',
+    name: 'Hatem_specific agent skill enforcement',
+    script: 'tooling/verify-agent-skill.mjs',
+    verdict: '[verify-agent-skill] OK',
+  },
 ];
 
 const requested = process.argv.slice(2);
