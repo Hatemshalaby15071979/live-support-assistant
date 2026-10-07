@@ -1,7 +1,7 @@
 {
   "model": "Xenova/all-MiniLM-L6-v2",
-  "commit": "f4745060e996b3e713be492b41c2251c82d0c908",
-  "generated_at": "2026-10-07T17:14:17.764Z",
+  "commit": "e10de07e1d2ec4bb93ecafb65fc5c8fba467092c",
+  "generated_at": "2026-10-07T17:17:52.153Z",
   "prereg": {
     "seeds": [
       20261007,
@@ -112,38 +112,18 @@
         "configs": [
           {
             "layerTop1": 0.66,
-            "marginFloor": 0.1,
-            "unsafe": 1,
-            "wrongProc": 0,
-            "recallHits": 8,
-            "recall": 0.6667,
-            "falseRefusal": 0.3333,
-            "servedAnswerable": 8,
-            "ansN": 12,
-            "oosN": 75,
-            "lossPP": 8.33,
-            "lostQuestions": 1
+            "marginFloor": 0.1
           },
           {
             "layerTop1": 0.66,
-            "marginFloor": 0.1,
-            "unsafe": 1,
-            "wrongProc": 0,
-            "recallHits": 8,
-            "recall": 0.6667,
-            "falseRefusal": 0.3333,
-            "servedAnswerable": 8,
-            "ansN": 12,
-            "oosN": 75,
-            "lossPP": 8.33,
-            "lostQuestions": 1
+            "marginFloor": 0.1
           }
         ],
         "unsafe": 1,
-        "wrongProc": 2,
-        "recall": 0.75,
-        "lossPP": 0,
-        "lostQuestions": 0
+        "wrongProc": 0,
+        "recall": 0.6667,
+        "lossPP": 8.33,
+        "lostQuestions": 1
       },
       "sweepTable": [
         {

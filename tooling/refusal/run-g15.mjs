@@ -178,14 +178,16 @@ for (const tenant of TENANTS) {
       const chosen = SEEDS.map((s) => perSeed[String(s)].selected).filter(Boolean);
       let pooled = null;
       if (chosen.length > 0) {
-        const ms = chosen.map((c) => withLoss(metrics(rows, c, thr), base));
+        // Selected rows already carry their own withLoss'd metrics — aggregate those directly.
+        // (Recomputing here would misread the sweep-row field names and silently no-op the layer.)
+        const mean = (xs) => Number((xs.reduce((s, x) => s + x, 0) / xs.length).toFixed(4));
         pooled = {
-          configs: chosen,
-          unsafe: Number((ms.reduce((s, x) => s + x.unsafe, 0) / ms.length).toFixed(2)),
-          wrongProc: Number((ms.reduce((s, x) => s + x.wrongProc, 0) / ms.length).toFixed(2)),
-          recall: Number((ms.reduce((s, x) => s + x.recall, 0) / ms.length).toFixed(4)),
-          lossPP: Number((ms.reduce((s, x) => s + x.lossPP, 0) / ms.length).toFixed(2)),
-          lostQuestions: Number((ms.reduce((s, x) => s + x.lostQuestions, 0) / ms.length).toFixed(2)),
+          configs: chosen.map((c) => ({ layerTop1: c.layerTop1, marginFloor: c.marginFloor })),
+          unsafe: mean(chosen.map((c) => c.unsafe)),
+          wrongProc: mean(chosen.map((c) => c.wrongProc)),
+          recall: mean(chosen.map((c) => c.recall)),
+          lossPP: Number(mean(chosen.map((c) => c.lossPP)).toFixed(2)),
+          lostQuestions: Number(mean(chosen.map((c) => c.lostQuestions)).toFixed(2)),
         };
       }
       tenantOut[split] = { ...baseOut, baseline: baseOut, perSeed, pooled, sweepTable: sweep };
