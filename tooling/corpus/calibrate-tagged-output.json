@@ -1,0 +1,152 @@
+{
+  "T01-platform-operations-style|calibration": {
+    "threshold": 0.68,
+    "oos_total": 75,
+    "unsafe_all": 1,
+    "byType": {
+      "construction": {
+        "n": 56,
+        "unsafe": 0
+      },
+      "near-domain": {
+        "n": 11,
+        "unsafe": 1
+      },
+      "od-batch": {
+        "n": 0,
+        "unsafe": 0
+      },
+      "other": {
+        "n": 8,
+        "unsafe": 0
+      }
+    },
+    "unsafe_construction_only": 0,
+    "unsafe_construction_plus_owner": 0
+  },
+  "T01-platform-operations-style|held-out": {
+    "threshold": 0.68,
+    "oos_total": 33,
+    "unsafe_all": 0,
+    "byType": {
+      "construction": {
+        "n": 22,
+        "unsafe": 0
+      },
+      "near-domain": {
+        "n": 11,
+        "unsafe": 0
+      },
+      "od-batch": {
+        "n": 0,
+        "unsafe": 0
+      },
+      "other": {
+        "n": 0,
+        "unsafe": 0
+      }
+    },
+    "unsafe_construction_only": 0,
+    "unsafe_construction_plus_owner": 0
+  },
+  "T04-customer-support-style|calibration": {
+    "threshold": 0.53,
+    "oos_total": 75,
+    "unsafe_all": 9,
+    "byType": {
+      "construction": {
+        "n": 39,
+        "unsafe": 3
+      },
+      "near-domain": {
+        "n": 24,
+        "unsafe": 6
+      },
+      "od-batch": {
+        "n": 12,
+        "unsafe": 0
+      },
+      "other": {
+        "n": 0,
+        "unsafe": 0
+      }
+    },
+    "unsafe_construction_only": 3,
+    "unsafe_construction_plus_owner": 3
+  },
+  "T04-customer-support-style|held-out": {
+    "threshold": 0.53,
+    "oos_total": 30,
+    "unsafe_all": 9,
+    "byType": {
+      "construction": {
+        "n": 19,
+        "unsafe": 3
+      },
+      "near-domain": {
+        "n": 11,
+        "unsafe": 6
+      },
+      "od-batch": {
+        "n": 0,
+        "unsafe": 0
+      },
+      "other": {
+        "n": 0,
+        "unsafe": 0
+      }
+    },
+    "unsafe_construction_only": 3,
+    "unsafe_construction_plus_owner": 3
+  },
+  "T05-policy-style|calibration": {
+    "threshold": 0.69,
+    "oos_total": 81,
+    "unsafe_all": 0,
+    "byType": {
+      "construction": {
+        "n": 46,
+        "unsafe": 0
+      },
+      "near-domain": {
+        "n": 27,
+        "unsafe": 0
+      },
+      "od-batch": {
+        "n": 0,
+        "unsafe": 0
+      },
+      "other": {
+        "n": 8,
+        "unsafe": 0
+      }
+    },
+    "unsafe_construction_only": 0,
+    "unsafe_construction_plus_owner": 0
+  },
+  "T05-policy-style|held-out": {
+    "threshold": 0.69,
+    "oos_total": 25,
+    "unsafe_all": 1,
+    "byType": {
+      "construction": {
+        "n": 14,
+        "unsafe": 0
+      },
+      "near-domain": {
+        "n": 11,
+        "unsafe": 1
+      },
+      "od-batch": {
+        "n": 0,
+        "unsafe": 0
+      },
+      "other": {
+        "n": 0,
+        "unsafe": 0
+      }
+    },
+    "unsafe_construction_only": 0,
+    "unsafe_construction_plus_owner": 0
+  }
+}

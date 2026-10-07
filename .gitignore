@@ -13,6 +13,7 @@ _tmp_*
 Thumbs.db
 .env
 .env.local
+tooling/corpus/cache/
 .vscode/
 .idea/
 

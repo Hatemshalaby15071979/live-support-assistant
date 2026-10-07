@@ -51,6 +51,10 @@ The owner's review was conducted on 150-character excerpt fragments that did not
 ("WEAK EVIDENCE" in the report); the DISAGREEs may partly reflect that weakness. The relabel exercise
 (step 3) supplies full procedure summaries so the owner can decide on the actual corpus text.
 
+### g15 experiment status (owner ruling, 2026-10-07)
+g15 (P4 scope/refusal layer) **remains PAUSED** until all OQ-002 relabel choices are recorded and the step-4
+unsafe-by-type impact tables are re-run. It was not run during this session.
+
 ---
 
 ## 2026-10-07 (later) — Per-tenant gate thresholds: POST-HOC governance record
@@ -60,7 +64,7 @@ fact per the owner's review.
 
 ### What changed, and the gap
 Commit `f8cbf0b` (and the follow-up in the same session) introduced per-tenant confidence-gate thresholds
-(T01 0.68, T04 0.53, T05 0.61) via `GATE_CONFIGS` (`packages/core/src/types.ts`), made `evaluateGate`
+(T01 0.68, T04 0.53, T05 0.69) via `GATE_CONFIGS` (`packages/core/src/types.ts`), made `evaluateGate`
 **fail closed** on unknown/missing tenants (`reason: 'unknown_tenant'`, no global fallback), and fixed the
 zero-unsafe label in `calibrate-gate.mjs`.
 
@@ -81,7 +85,7 @@ All three thresholds are **provisional**:
 | --- | ---: | --- |
 | T01 | 0.68 | `unproven-heldout` |
 | T04 | 0.53 | `unproven-heldout` |
-| T05 | 0.61 | **`failed-heldout`** (1 unsafe on held-out) |
+| T05 | 0.69 | **`unproven-heldout`** (1 unsafe on held-out @0.69; 0 unsafe needs 0.71) |
 
 **No production claim is made for any tenant.** D1 (0 unsafe on held-out) is **NOT MET** as a measured
 property at N=7 OOS; it is *unproven*, not *proven safe*. See `docs/KNOWN_ISSUES.md` §14.

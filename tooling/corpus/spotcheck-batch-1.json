@@ -31,7 +31,7 @@
       "proposed_documents": [],
       "confidence": "high",
       "label_source": "owner",
-      "split": "held-out",
+      "split": "calibration",
       "your_verdict": "DISAGREE",
       "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
     },
@@ -168,7 +168,7 @@
       "proposed_documents": [],
       "confidence": "high",
       "label_source": "owner",
-      "split": "held-out",
+      "split": "calibration",
       "your_verdict": "DISAGREE",
       "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
     },
@@ -211,5 +211,15 @@
       "your_verdict": "DISAGREE",
       "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
     }
-  ]
+  ],
+  "relabel_decisions": {
+    "OD-01": {
+      "choice": "B",
+      "label_stands": "out_of_scope",
+      "label_source": "owner",
+      "evidence": "top3-retrieval-only",
+      "recorded_at": "2026-10-07",
+      "note": "Owner chose [B]: corpus does NOT answer the question (out_of_scope stands). SEPARATE record from the OQ-002 spot-check: it does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
+    }
+  }
 }
