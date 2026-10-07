@@ -1,7 +1,8 @@
 # RX-03 — Retrieval quality (bi-encoder replacement) — DRAFT PREREG
 
 **Zone.** Y (governance). **Status.** Scope ratified as drafted by the owner (2026-10-07); **candidate
-FROZEN 2026-10-07** (see `Candidate freeze` below); **NOT RUN**. Any execution awaits the owner's go.
+FROZEN 2026-10-07** (see `Candidate freeze` below); **calibration run 2026-10-07: A1 MET — CLOSED —
+REJECTED on judgment, no held-out validation** (see `Result` at the end of this file).
 
 ## Purpose
 
@@ -119,3 +120,41 @@ CLOSED.
 - A result record appended to this file (calibration selection block, then the held-out validation
   block) with command, N, commit SHA, and data_mode.
 - Register update in `docs/prereg/rejected-experiments.md` (ACCEPTED / REJECTED) either way.
+
+---
+
+## Result — 2026-10-07: calibration run; **CLOSED — REJECTED on judgment (no held-out validation)**
+
+Command: `RX03_COMMIT=$(git rev-parse HEAD) node tooling/retrieval/run-rx03-calibration.mjs` at HEAD
+`63a1dce1ba6f78c5d6a03e83961eeb5f2c03b6ce`; harness `tooling/retrieval/run-rx03-calibration.mjs`;
+results `tooling/retrieval/rx03-calibration.json`; data_mode: calibration; **held-out never read**
+(0 held-out rows in the results; the only "held-out" string is the A1 verdict text).
+
+**A1 MET on calibration** (headline = clean Slice A + answerable Slice B):
+
+| Tenant | N | Incumbent R@1/R@3/R@5 | Candidate R@1/R@3/R@5 | R@1 Δ | wrongDoc@1 |
+| --- | --- | --- | --- | --- | --- |
+| T01 | 12 | 83.3% / 100.0% / 100.0% | 83.3% / 100.0% / 100.0% | 0 pp | 16.7% (both) |
+| T04 | 27 | 44.4% / 77.8% / 81.5% | 48.1% / 63.0% / 74.1% | +3.7 pp | 55.6→51.8% |
+| T05 | 14 | 50.0% / 71.4% / 85.7% | 57.1% / 64.3% / 71.4% | +7.1 pp | 50.0→42.9% |
+
+OOS top-1 distributions, **observed only** (N 75/75/81): max top-1 T01 0.756→0.886, T04 0.619→0.896,
+T05 0.686→0.887.
+
+**Disposition: REJECTED on judgment, despite A1 being met.** The owner's ruling:
+- **R@1-only gain**: T01 flat, T04 +3.7 pp, T05 +7.1 pp;
+- **depth regression**: R@3/R@5 down on T04 (77.8→63.0, −14.8 pp) and T05 (71.4→64.3, −7.1 pp /
+  85.7→71.4, −14.3 pp);
+- **refusal cost**: OOS top-1 max rose on every tenant — a future threshold recalibration would start
+  from a worse refusal surface;
+- **multilingual value unmeasurable**: the T01 per-language arm is NOT MEASURABLE — 0 `language`
+  fields in `questions.json`, and all 20 answerable T01 rows accept only `content/en/` documents.
+
+Held-out was never read (A2 not reached). **Discarded:** the candidate's in-memory embeddings were
+discarded with the process, and no candidate embedding or weight artifact persists on disk (verified
+by cache and temp searches — the q8 download left no locatable cache entry; the cache mechanism is
+recorded as UNKNOWN, not guessed). `EMBEDDING_MODEL` is unchanged (`Xenova/all-MiniLM-L6-v2` stays
+shipped); the frozen spec entry remains in the model registry as a record of the rejected candidate,
+marked not-for-shipped-use. All comparisons are agent-label-relative (0 `label_source=owner` rows); no
+owner-backed D3 claim. Any future retrieval experiment (new gold rows for the multilingual arm, or a
+different candidate) requires a new prereg and a register check.

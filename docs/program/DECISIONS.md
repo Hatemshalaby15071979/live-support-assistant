@@ -45,6 +45,18 @@ OOS observed-only (N: 75/75/81). Scoring mirrors `run-baseline.mjs` exactly (doc
 - All comparisons are agent-label-relative (0 `label_source=owner` rows); no owner-backed D3 claim.
 - Thresholds unchanged; D3 unchanged; g15 stays CLOSED; nothing pushed.
 
+### Closure (owner decision, 2026-10-07): **RX-03 REJECTED on judgment — no held-out validation**
+Despite A1 being met, the owner rejected the candidate on judgment: the gain was R@1-only (T04 +3.7 pp,
+T05 +7.1 pp, T01 flat), R@3/R@5 regressed (T04 −14.8 pp; T05 −7.1/−14.3 pp), and the OOS top-1 max rose
+on every tenant (T04 0.619→0.896, observed only) — a worse starting point for any future threshold
+recalibration. The T01 per-language arm was NOT MEASURABLE (0 language fields in the gold set; all 20
+answerable T01 rows accept only `content/en/` documents), so the multilingual premise went untested.
+Held-out was never read. Candidate embeddings/weights: nothing persists on disk (verified). The frozen
+spec entry stays in the registry as a record of the rejected candidate, marked not-for-shipped-use;
+`EMBEDDING_MODEL` unchanged. Recorded in the prereg's Result block and the rejected-experiments
+register (RX-03 → REJECTED on judgment). Any future retrieval experiment needs new gold rows for the
+multilingual arm and a new prereg.
+
 ---
 
 ## 2026-10-07 (latest) — g15 CLOSED as a negative experiment; NOT ADOPTED; RX-03 drafted
