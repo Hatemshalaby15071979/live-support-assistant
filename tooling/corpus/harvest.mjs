@@ -220,13 +220,28 @@ async function harvestSource(source, allowlist) {
   }
 
   const considered = items.length + quarantined.length;
-  const quarantineRate = considered === 0 ? 0 : quarantined.length / considered;
 
-  if (quarantineRate > SOURCE_QUARANTINE_LIMIT) {
+  // The source-drop rate counts HIGH-severity findings only, under prereg g10.
+  //
+  // The item rule is untouched: everything in `quarantined` is out of the corpus
+  // regardless of severity. This decides only whether the whole source is
+  // discarded, and it changed because 5% of an eight-document source is one
+  // document — a single deliberately published contact address was dropping the
+  // whole thing.
+  const quarantinedHigh = quarantined.filter((entry) =>
+    entry.findings.some((finding) => finding.severity === 'high'),
+  ).length;
+  const rateHigh = considered === 0 ? 0 : quarantinedHigh / considered;
+  const rateAny = considered === 0 ? 0 : quarantined.length / considered;
+
+  if (rateHigh > SOURCE_QUARANTINE_LIMIT) {
     return {
       source,
       status: 'dropped',
-      reason: `quarantine rate ${(quarantineRate * 100).toFixed(1)}% exceeds the ${(SOURCE_QUARANTINE_LIMIT * 100).toFixed(0)}% limit`,
+      reason:
+        `high-severity quarantine rate ${(rateHigh * 100).toFixed(1)}% exceeds the ` +
+        `${(SOURCE_QUARANTINE_LIMIT * 100).toFixed(0)}% limit ` +
+        `(any-severity rate ${(rateAny * 100).toFixed(1)}%)`,
       items: [],
       exclusions,
       quarantined,
@@ -240,7 +255,8 @@ async function harvestSource(source, allowlist) {
     items,
     exclusions,
     quarantined,
-    quarantineRate,
+    quarantineRate: rateHigh,
+    quarantineRateAny: rateAny,
   };
 }
 
@@ -309,7 +325,12 @@ for (const source of selected) {
     licence_read_at: source.licence_read_at,
     licence_evidence: source.licence_evidence,
     attribution: source.attribution,
-    harvested_at: new Date().toISOString(),
+    // No `harvested_at` here, deliberately. The file is named by the SHA-256 of
+    // its own contents, and a timestamp inside it changes the hash on every run —
+    // which makes the name meaningless and "re-running reproduces the file"
+    // false. When the fetch happened is a fact about the run, so it lives in the
+    // manifest; what the bytes are is a fact about the artifact, and it lives
+    // here.
     items: outcome.items,
   };
 
@@ -349,10 +370,14 @@ for (const source of selected) {
     redistribute_reason: outcome.redistribution.reason,
     snapshot: snapshotFile,
     snapshotSha256: snapshotSha,
+    // When the fetch happened. It belongs here rather than inside the snapshot,
+    // which is content-addressed and would otherwise change hash on every run.
+    harvested_at: new Date().toISOString(),
     items: outcome.items.length,
     excluded: outcome.exclusions.length,
     quarantined: outcome.quarantined.length,
     quarantine_rate: Number(outcome.quarantineRate.toFixed(4)),
+    quarantine_rate_any: Number(outcome.quarantineRateAny.toFixed(4)),
     exclusion_detail: outcome.exclusions,
     quarantine_detail: outcome.quarantined.map((entry) => ({
       path: entry.path,

@@ -1,0 +1,41 @@
+{
+  "note": "Which localised pages have an English counterpart in the corpus, by path with the language segment removed. A language comparison across pages that are not the same page measures the corpus, not the language.",
+  "generated_at": "2026-10-07T05:36:13.170Z",
+  "items_read": 350,
+  "english_items": 203,
+  "languages": {
+    "es": {
+      "items": 36,
+      "matched": 32,
+      "rate": 0.8889,
+      "verdict": "PARTIAL — label comparisons",
+      "unmatched_examples": [
+        "content/es/docs/tasks/debug/debug-cluster/logging-elasticsearch-kibana.md",
+        "content/es/docs/tasks/tools/included/install-kubectl-linux.md",
+        "content/es/docs/tasks/tools/included/install-kubectl-macos.md",
+        "content/es/docs/tasks/tools/included/install-kubectl-windows.md"
+      ]
+    },
+    "fr": {
+      "items": 42,
+      "matched": 38,
+      "rate": 0.9048,
+      "verdict": "parity — safe to compare",
+      "unmatched_examples": [
+        "content/fr/docs/tasks/configure-pod-container/configure-persistent-volume-storage.md",
+        "content/fr/docs/tasks/debug-application-cluster/get-shell-running-container.md",
+        "content/fr/docs/tasks/tools/install-kubectl.md",
+        "content/fr/docs/tasks/tools/install-minikube.md"
+      ]
+    },
+    "pt-br": {
+      "items": 69,
+      "matched": 68,
+      "rate": 0.9855,
+      "verdict": "parity — safe to compare",
+      "unmatched_examples": [
+        "content/pt-br/docs/tasks/configure-pod-container/configure-persistent-volume-storage.md"
+      ]
+    }
+  }
+}

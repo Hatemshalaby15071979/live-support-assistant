@@ -86,6 +86,63 @@ const CLEAN_CASES = [
   ['a reserved .test domain is not personal data', 'Mail admin@mail.test in the fixture.'],
 ];
 
+// ---------------------------------------------------------------------------
+// Precision, on the strings the real corpus produced.
+//
+// Every case below was an actual quarantine on a real Kubernetes document. The
+// recall fix that lifted non-English detection from 29-43% to 100% did so by
+// widening three rules, and widening them quarantined six documents that were
+// perfectly ordinary. These are those six, kept as counterexamples so the next
+// widening has to get past them.
+// ---------------------------------------------------------------------------
+
+const CORPUS_PRECISION_CASES = [
+  ['a memory quantity is not a phone number', 'requests: 2000 4096 for the container'],
+  ['a CPU count is not a phone number', 'limits are 1000 2000 in this example'],
+  ['a version fragment is not a phone number', 'the address 10.102.30 is internal'],
+  ['a dotted quantity is not a phone number', 'the cache grows to 162.900.000 bytes'],
+  ['a French preposition before a number is not an account id', "il faut au moins de 10000 objets"],
+  ['a French preposition across a line break is not an account id', 'la valeur\n 31568 est trop grande'],
+  ['a capitalised verb phrase is not a contact name', 'Signed CA Certificate must be present'],
+  ['a product name after a preposition is not a contact name', 'migrating from Docker Compose is supported'],
+  ['an SSH remote is not a personal address', 'clone it with git@github.com as the remote'],
+  ['a no-reply address is not a personal address', 'mail goes out from noreply@acme-helpdesk.co.uk'],
+  // From GitHub Docs, where this class quarantined 34.9% of the site-policy tree.
+  ['"contact <org> support" is an instruction, not a name', 'Please contact GitHub Support for help with this.'],
+  ['"Contact Us" is not a name', 'Contact Us if you have questions about the policy.'],
+  ['"Contact Information" is a heading, not a name', 'Contact Information\nName and address of the controller.'],
+  ['an all-caps heading is not a name', 'AUTHORITY TO BIND the company is required.'],
+  ['"MR This" is not a name', 'MR This section describes the limits.'],
+  ['a parenthesised date is not a phone number', 'see the entry (2018-04-03 for details'],
+  // Documentation placeholders, from GitHub Docs. Same reasoning as RFC 2606:
+  // a domain that exists only so an example has somewhere to point is not an
+  // address anyone can receive mail at.
+  ['a documented placeholder domain is not personal data', 'for example octocat@nowhere.com works fine'],
+  ['a template domain is not personal data', 'the form ID+USERNAME@users.noreply.github.com is used'],
+  ['a generic placeholder domain is not personal data', 'replace it with email+shortcode@domain.com'],
+];
+
+for (const [label, text] of CORPUS_PRECISION_CASES) {
+  const result = scanForPii(text);
+  expectTrue(label, result.clean === true, `matched: ${result.findings.map((finding) => finding.pattern).join(', ')}`);
+}
+
+// The cue rule must still catch a phone number the prose announces, or the
+// precision fix would have traded a false positive for a false negative.
+for (const [label, text] of [
+  ['a cued national number is caught', 'Call 912 345 678 to reach the desk.'],
+  ['a cued dotted number is caught', 'Our billing line is 555.987.6543.'],
+  ['a cued French number is caught', 'Appelez le 01 45 67 89 01 pour toute question.'],
+  ['a 3-3-4 grouping is caught without a cue', 'Report outages to 415-555-0199 at any hour.'],
+]) {
+  const result = scanForPii(text);
+  expectTrue(
+    label,
+    result.findings.some((finding) => finding.pattern.startsWith('phone-')),
+    result.findings.map((finding) => finding.pattern).join(', ') || 'none',
+  );
+}
+
 // The reserved-domain rule must not swallow real addresses.
 {
   const real = scanForPii('Contact security@djangoproject.com about it.');
@@ -164,7 +221,8 @@ for (const [label, text] of [
   expectTrue('findings are in document order', indexes[0] < indexes[1], JSON.stringify(indexes));
 }
 
-// The quarantine threshold, including its boundary.
+// The quarantine threshold, including its boundary, and the severity split that
+// the prereg `g10` introduced.
 {
   const clean = Array.from({ length: 20 }, () => ({ text: 'ordinary policy text' }));
   const empty = quarantineRate(clean);
@@ -183,6 +241,36 @@ for (const [label, text] of [
   const zero = quarantineRate([]);
   expect('an empty source has rate 0', 0, zero.rate);
   expect('an empty source is not dropped', false, zero.dropped);
+}
+
+// The prereg's actual content: only high severity counts toward the DROP rate,
+// and items carrying a review-severity finding stay quarantined all the same.
+// These two assertions together are the change, and either one alone would pass
+// on a gate that had quietly done something else.
+{
+  const base = Array.from({ length: 20 }, () => ({ text: 'ordinary policy text' }));
+  // Two review-severity findings: 10% of the source, well over the 5% limit if
+  // severity were ignored.
+  const reviewOnly = [...base.slice(2), { text: 'Reviewed by Dr Amina Farouk today.' }, { text: 'Contact: Jane Smith for escalation.' }];
+
+  const result = quarantineRate(reviewOnly);
+
+  expect('review-severity findings do not count toward the drop rate', 0, result.rate);
+  expect('the any-severity rate is reported alongside', 0.1, Number(result.rateAny.toFixed(2)));
+  expectTrue('a source with only review findings is not dropped', result.dropped === false, JSON.stringify(result));
+  expectTrue('but its items are still quarantined', result.quarantined === 2, JSON.stringify(result));
+  expectTrue('and none of them is high severity', result.quarantinedHigh === 0, JSON.stringify(result));
+}
+
+// A high-severity rate above the limit still drops the source. The relaxation
+// must not have disarmed the rule it relaxed.
+{
+  const base = Array.from({ length: 20 }, () => ({ text: 'ordinary policy text' }));
+  const high = [...base.slice(3), { text: 'mail a@b.com' }, { text: 'call (555) 123-4567' }, { text: 'write to c@d.org' }];
+  const result = quarantineRate(high);
+
+  expect('three high-severity items in twenty is 15%', 0.15, Number(result.rate.toFixed(2)));
+  expectTrue('and the source is dropped', result.dropped === true, JSON.stringify(result));
 }
 
 // ===========================================================================

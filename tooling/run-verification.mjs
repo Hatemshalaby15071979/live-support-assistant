@@ -117,6 +117,12 @@ const SUITES = [
     script: 'tooling/verify-corpus-gates.mjs',
     verdict: 'CORPUS GATE VERIFICATION OK',
   },
+  {
+    key: 'pii-recall',
+    name: 'planted-PII recall',
+    script: 'tooling/verify-pii-recall.mjs',
+    verdict: 'PII RECALL OK',
+  },
 ];
 
 const requested = process.argv.slice(2);

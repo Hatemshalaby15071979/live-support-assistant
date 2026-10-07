@@ -1,15 +1,15 @@
 {
   "note": "Corpus manifest. Every harvested source records the licence it was read under, when it was read, what the licence file actually said, the pinned revision, and the hash of the snapshot its own contents produced. Exclusions and quarantines are counted and named rather than silently dropped.",
   "data_mode": "web-sourced",
-  "generated_at": "2026-10-07T05:07:06.791Z",
+  "generated_at": "2026-10-07T05:35:30.252Z",
   "quarantine_limit": 0.05,
   "sources": [
     {
       "id": "cpython-faq-en",
       "status": "dropped",
-      "reason": "quarantine rate 25.0% exceeds the 5% limit",
+      "reason": "high-severity quarantine rate 12.5% exceeds the 5% limit (any-severity rate 12.5%)",
       "excluded": 1,
-      "quarantined": 2,
+      "quarantined": 1,
       "quarantine_detail": [
         {
           "path": "Doc/faq/library.rst",
@@ -18,15 +18,6 @@
           ],
           "examples": [
             "34A04430.CF9@ohioee.com"
-          ]
-        },
-        {
-          "path": "Doc/faq/programming.rst",
-          "patterns": [
-            "labelled-contact-name"
-          ],
-          "examples": [
-            "from Ulf Bartelt"
           ]
         }
       ],
@@ -40,7 +31,7 @@
     {
       "id": "django-faq-en",
       "status": "dropped",
-      "reason": "quarantine rate 12.5% exceeds the 5% limit",
+      "reason": "high-severity quarantine rate 12.5% exceeds the 5% limit (any-severity rate 12.5%)",
       "excluded": 1,
       "quarantined": 1,
       "quarantine_detail": [
@@ -62,6 +53,344 @@
       ]
     },
     {
+      "id": "ghdocs-account-en",
+      "status": "harvested",
+      "tenant": "T04-customer-support-style",
+      "domain_analogue": "customer-support-style",
+      "language": "en",
+      "repo": "github/docs",
+      "ref": "8794b3cd6aa66cc91c0dba5f15b8864b8636d1fb",
+      "path": "content/account-and-profile/",
+      "licence": "CC-BY-4.0",
+      "licence_url": "https://github.com/github/docs/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "attribution": "GitHub Docs, © GitHub, Inc., licensed under CC BY 4.0. https://github.com/github/docs",
+      "redistribute_text": true,
+      "redistribute_reason": "redistribution permitted with attribution; the attribution file is required for the corpus to be publishable",
+      "snapshot": "snapshots/362b751cb0af73a28707b995416270d69815f22c6c86cb97805615b4534733d3.json",
+      "snapshotSha256": "362b751cb0af73a28707b995416270d69815f22c6c86cb97805615b4534733d3",
+      "harvested_at": "2026-10-07T05:35:30.249Z",
+      "items": 55,
+      "excluded": 14,
+      "quarantined": 0,
+      "quarantine_rate": 0,
+      "quarantine_rate_any": 0,
+      "exclusion_detail": [
+        {
+          "path": "content/account-and-profile/concepts/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/get-started/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/account-management/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/account-settings/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/account-settings/set-your-hiring-status.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/contribution-settings/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/email-preferences/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/organization-membership/accessing-an-organization.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/organization-membership/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/profile-customization/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/reference/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/account-and-profile/tutorials/index.md",
+          "reason": "too little prose after extraction"
+        }
+      ],
+      "quarantine_detail": []
+    },
+    {
+      "id": "ghdocs-billing-en",
+      "status": "harvested",
+      "tenant": "T04-customer-support-style",
+      "domain_analogue": "customer-support-style",
+      "language": "en",
+      "repo": "github/docs",
+      "ref": "8794b3cd6aa66cc91c0dba5f15b8864b8636d1fb",
+      "path": "content/billing/",
+      "licence": "CC-BY-4.0",
+      "licence_url": "https://github.com/github/docs/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "attribution": "GitHub Docs, © GitHub, Inc., licensed under CC BY 4.0. https://github.com/github/docs",
+      "redistribute_text": true,
+      "redistribute_reason": "redistribution permitted with attribution; the attribution file is required for the corpus to be publishable",
+      "snapshot": "snapshots/617c93c050d9ce68fcd440147cb66724b5de80119aecff0a0ed0478baee8ff9b.json",
+      "snapshotSha256": "617c93c050d9ce68fcd440147cb66724b5de80119aecff0a0ed0478baee8ff9b",
+      "harvested_at": "2026-10-07T05:33:57.134Z",
+      "items": 81,
+      "excluded": 16,
+      "quarantined": 1,
+      "quarantine_rate": 0.0122,
+      "quarantine_rate_any": 0.0122,
+      "exclusion_detail": [
+        {
+          "path": "content/billing/concepts/enterprise-billing/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/concepts/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/concepts/product-billing/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/concepts/third-party-payments/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/get-started/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/how-tos/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/how-tos/manage-for-client/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/how-tos/manage-plan-and-licenses/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/how-tos/manage-server-licenses/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/how-tos/pay-third-parties/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/how-tos/products/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/how-tos/set-up-payment/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/how-tos/troubleshooting/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/reference/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/billing/tutorials/index.md",
+          "reason": "too little prose after extraction"
+        }
+      ],
+      "quarantine_detail": [
+        {
+          "path": "content/billing/tutorials/control-costs-at-scale.md",
+          "patterns": [
+            "email"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ghdocs-site-policy-en",
+      "status": "dropped",
+      "reason": "high-severity quarantine rate 19.0% exceeds the 5% limit (any-severity rate 19.0%)",
+      "excluded": 9,
+      "quarantined": 12,
+      "quarantine_detail": [
+        {
+          "path": "content/site-policy/content-removal-policies/guide-to-submitting-a-dmca-counter-notice.md",
+          "patterns": [
+            "email"
+          ],
+          "examples": [
+            "copyright@github.com"
+          ]
+        },
+        {
+          "path": "content/site-policy/content-removal-policies/guide-to-submitting-a-dmca-takedown-notice.md",
+          "patterns": [
+            "email"
+          ],
+          "examples": [
+            "copyright@github.com"
+          ]
+        },
+        {
+          "path": "content/site-policy/github-terms/github-corporate-terms-of-service.md",
+          "patterns": [
+            "email"
+          ],
+          "examples": [
+            "copyright@github.com"
+          ]
+        },
+        {
+          "path": "content/site-policy/github-terms/github-event-code-of-conduct.md",
+          "patterns": [
+            "email"
+          ],
+          "examples": [
+            "events@github.com"
+          ]
+        },
+        {
+          "path": "content/site-policy/github-terms/github-marketplace-developer-agreement.md",
+          "patterns": [
+            "email",
+            "postal-address"
+          ],
+          "examples": [
+            "legal-support@github.com",
+            "2710 Gateway Oaks Drive"
+          ]
+        },
+        {
+          "path": "content/site-policy/github-terms/github-secret-scanning-partner-program-agreement.md",
+          "patterns": [
+            "email"
+          ],
+          "examples": [
+            "secret-scanning@github.com"
+          ]
+        },
+        {
+          "path": "content/site-policy/github-terms/github-terms-of-service.md",
+          "patterns": [
+            "email"
+          ],
+          "examples": [
+            "copyright@github.com"
+          ]
+        },
+        {
+          "path": "content/site-policy/other-site-policies/guidelines-for-legal-requests-of-user-data.md",
+          "patterns": [
+            "email"
+          ],
+          "examples": [
+            "legal-support@github.com"
+          ]
+        },
+        {
+          "path": "content/site-policy/privacy-policies/github-candidate-privacy-policy.md",
+          "patterns": [
+            "email"
+          ],
+          "examples": [
+            "dpo@github.com"
+          ]
+        },
+        {
+          "path": "content/site-policy/privacy-policies/github-subprocessors.md",
+          "patterns": [
+            "email"
+          ],
+          "examples": [
+            "privacy@github.com"
+          ]
+        },
+        {
+          "path": "content/site-policy/site-policy-deprecated/github-enterprise-subscription-agreement.md",
+          "patterns": [
+            "email"
+          ],
+          "examples": [
+            "copyright@github.com"
+          ]
+        },
+        {
+          "path": "content/site-policy/site-policy-deprecated/github-supplemental-terms-for-microsoft-volume-licensing.md",
+          "patterns": [
+            "email"
+          ],
+          "examples": [
+            "copyright@github.com"
+          ]
+        }
+      ],
+      "exclusion_detail": [
+        {
+          "path": "content/site-policy/acceptable-use-policies/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/site-policy/content-removal-policies/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/site-policy/github-company-policies/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/site-policy/github-terms/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/site-policy/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/site-policy/other-site-policies/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/site-policy/privacy-policies/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/site-policy/security-policies/index.md",
+          "reason": "too little prose after extraction"
+        },
+        {
+          "path": "content/site-policy/site-policy-deprecated/index.md",
+          "reason": "too little prose after extraction"
+        }
+      ]
+    },
+    {
       "id": "k8s-tasks-en",
       "status": "harvested",
       "tenant": "T01-platform-operations-style",
@@ -76,12 +405,14 @@
       "attribution": "Kubernetes documentation, © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
       "redistribute_text": true,
       "redistribute_reason": "redistribution permitted with attribution; the attribution file is required for the corpus to be publishable",
-      "snapshot": "snapshots/f428d26f1ff720f4c88741eea0adeb665565dee6d5b3fb412b615fe46bb291c4.json",
-      "snapshotSha256": "f428d26f1ff720f4c88741eea0adeb665565dee6d5b3fb412b615fe46bb291c4",
-      "items": 198,
+      "snapshot": "snapshots/8b4fdc09490e860e927653505c44a3d3dbf42ea7a336ab3b56568cd7607f507e.json",
+      "snapshotSha256": "8b4fdc09490e860e927653505c44a3d3dbf42ea7a336ab3b56568cd7607f507e",
+      "harvested_at": "2026-10-07T05:26:44.617Z",
+      "items": 203,
       "excluded": 18,
-      "quarantined": 5,
-      "quarantine_rate": 0.0246,
+      "quarantined": 0,
+      "quarantine_rate": 0,
+      "quarantine_rate_any": 0,
       "exclusion_detail": [
         {
           "path": "content/en/docs/tasks/access-application-cluster/_index.md",
@@ -156,38 +487,7 @@
           "reason": "too little prose after extraction"
         }
       ],
-      "quarantine_detail": [
-        {
-          "path": "content/en/docs/tasks/administer-cluster/certificates.md",
-          "patterns": [
-            "labelled-contact-name"
-          ]
-        },
-        {
-          "path": "content/en/docs/tasks/administer-cluster/migrating-from-dockershim/find-out-runtime-you-use.md",
-          "patterns": [
-            "labelled-contact-name"
-          ]
-        },
-        {
-          "path": "content/en/docs/tasks/configure-pod-container/translate-compose-kubernetes.md",
-          "patterns": [
-            "labelled-contact-name"
-          ]
-        },
-        {
-          "path": "content/en/docs/tasks/debug/debug-application/debug-init-containers.md",
-          "patterns": [
-            "labelled-contact-name"
-          ]
-        },
-        {
-          "path": "content/en/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions.md",
-          "patterns": [
-            "labelled-contact-name"
-          ]
-        }
-      ]
+      "quarantine_detail": []
     },
     {
       "id": "k8s-tasks-es",
@@ -204,12 +504,14 @@
       "attribution": "Kubernetes documentation (Spanish), © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
       "redistribute_text": true,
       "redistribute_reason": "redistribution permitted with attribution; the attribution file is required for the corpus to be publishable",
-      "snapshot": "snapshots/32085b8951f1d5e280cfdea6dbab8bf47f8c0a44ae884474caa1f867eee54d77.json",
-      "snapshotSha256": "32085b8951f1d5e280cfdea6dbab8bf47f8c0a44ae884474caa1f867eee54d77",
+      "snapshot": "snapshots/4919cb72ad6208c44449441ec74f9f18e0d0b53db4e4145cbc1386ee3b55d5a6.json",
+      "snapshotSha256": "4919cb72ad6208c44449441ec74f9f18e0d0b53db4e4145cbc1386ee3b55d5a6",
+      "harvested_at": "2026-10-07T05:27:18.742Z",
       "items": 36,
       "excluded": 21,
       "quarantined": 0,
       "quarantine_rate": 0,
+      "quarantine_rate_any": 0,
       "exclusion_detail": [
         {
           "path": "content/es/docs/tasks/access-application-cluster/_index.md",
@@ -313,12 +615,14 @@
       "attribution": "Kubernetes documentation (French), © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
       "redistribute_text": true,
       "redistribute_reason": "redistribution permitted with attribution; the attribution file is required for the corpus to be publishable",
-      "snapshot": "snapshots/373f686812c1a5eb78e4cf28c0e3cb92e9f0a223a32c839a004d13b5660968dd.json",
-      "snapshotSha256": "373f686812c1a5eb78e4cf28c0e3cb92e9f0a223a32c839a004d13b5660968dd",
+      "snapshot": "snapshots/0a28888d198b76713fa7be2b8271f097d4abb858b09d80b5cd2f22105dc2196e.json",
+      "snapshotSha256": "0a28888d198b76713fa7be2b8271f097d4abb858b09d80b5cd2f22105dc2196e",
+      "harvested_at": "2026-10-07T05:28:36.609Z",
       "items": 42,
       "excluded": 17,
       "quarantined": 0,
       "quarantine_rate": 0,
+      "quarantine_rate_any": 0,
       "exclusion_detail": [
         {
           "path": "content/fr/docs/tasks/access-application-cluster/_index.md",
@@ -406,12 +710,14 @@
       "attribution": "Kubernetes documentation (Portuguese, Brazil), © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
       "redistribute_text": true,
       "redistribute_reason": "redistribution permitted with attribution; the attribution file is required for the corpus to be publishable",
-      "snapshot": "snapshots/0b8dd85e2f05f89be9efaa8d6a53605a5ec436d999d1ce8ee0380ae520e2bfff.json",
-      "snapshotSha256": "0b8dd85e2f05f89be9efaa8d6a53605a5ec436d999d1ce8ee0380ae520e2bfff",
+      "snapshot": "snapshots/9e09b5f6a0502b307ba4526b3a9a3f43dfdb561a94f517898424a50bf17311c3.json",
+      "snapshotSha256": "9e09b5f6a0502b307ba4526b3a9a3f43dfdb561a94f517898424a50bf17311c3",
+      "harvested_at": "2026-10-07T05:28:01.371Z",
       "items": 69,
       "excluded": 4,
       "quarantined": 0,
       "quarantine_rate": 0,
+      "quarantine_rate_any": 0,
       "exclusion_detail": [
         {
           "path": "content/pt-br/docs/tasks/access-application-cluster/_index.md",

@@ -109,7 +109,61 @@
       "extensions": [
         ".rst"
       ]
+    },
+    {
+      "id": "ghdocs-account-en",
+      "tenant": "T04-customer-support-style",
+      "domain_analogue": "customer-support-style",
+      "language": "en",
+      "repo": "github/docs",
+      "ref": "8794b3cd6aa66cc91c0dba5f15b8864b8636d1fb",
+      "path": "content/account-and-profile/",
+      "kind": "github-contents",
+      "licence": "CC-BY-4.0",
+      "licence_url": "https://github.com/github/docs/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "licence_evidence": "LICENSE fetched at raw.githubusercontent.com; the first non-empty line reads 'Attribution 4.0 International' and the body is the Creative Commons Attribution 4.0 legal code. The same licence file as the Kubernetes website source.",
+      "attribution": "GitHub Docs, © GitHub, Inc., licensed under CC BY 4.0. https://github.com/github/docs",
+      "extensions": [
+        ".md"
+      ]
+    },
+    {
+      "id": "ghdocs-billing-en",
+      "tenant": "T04-customer-support-style",
+      "domain_analogue": "customer-support-style",
+      "language": "en",
+      "repo": "github/docs",
+      "ref": "8794b3cd6aa66cc91c0dba5f15b8864b8636d1fb",
+      "path": "content/billing/",
+      "kind": "github-contents",
+      "licence": "CC-BY-4.0",
+      "licence_url": "https://github.com/github/docs/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "licence_evidence": "Same repository and same LICENSE file as ghdocs-account-en.",
+      "attribution": "GitHub Docs, © GitHub, Inc., licensed under CC BY 4.0. https://github.com/github/docs",
+      "extensions": [
+        ".md"
+      ]
+    },
+    {
+      "id": "ghdocs-site-policy-en",
+      "tenant": "T05-policy-style",
+      "domain_analogue": "policy-style",
+      "language": "en",
+      "repo": "github/docs",
+      "ref": "8794b3cd6aa66cc91c0dba5f15b8864b8636d1fb",
+      "path": "content/site-policy/",
+      "kind": "github-contents",
+      "licence": "CC-BY-4.0",
+      "licence_url": "https://github.com/github/docs/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "licence_evidence": "Same repository and same LICENSE file as ghdocs-account-en.",
+      "attribution": "GitHub Docs (site policy), © GitHub, Inc., licensed under CC BY 4.0. https://github.com/github/docs",
+      "extensions": [
+        ".md"
+      ]
     }
   ],
-  "fleet_note": "Three tenants across three domains, four languages on the primary tenant. V2 asked for four tenants and two non-English languages. The non-English requirement is met with real licensed localised documents rather than translations, which V2 permitted as a fallback only if no licensed non-English source existed — it does, so no translated corpus is built and nothing here is tagged origin: translated."
+  "fleet_note": "Three domains. T01 is platform-operations-style (Kubernetes), T04 is customer-support-style (GitHub Docs account and billing), T05 is policy-style (GitHub Docs site policy, which is GitHub's own terms, privacy and acceptable-use documents). Every source here is a TECHNICAL DOCUMENTATION ANALOGUE, not a support procedure corpus: they are published product and project documentation standing in for the kind of material a real tenant would supply. The T04/T05 pair is the closest licensed material to customer-support and policy text that was found — GitHub Docs is a product help centre, and its site-policy tree is literally policy. The non-English requirement is met with real licensed localised documents rather than translations, which V2 permitted as a fallback only if no licensed non-English source existed; it does, so nothing here is tagged origin: translated."
 }

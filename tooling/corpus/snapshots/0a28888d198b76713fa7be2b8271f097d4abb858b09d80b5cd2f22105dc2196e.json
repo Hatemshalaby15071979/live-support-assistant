@@ -12,7 +12,6 @@
   "licence_read_at": "2026-10-07",
   "licence_evidence": "Same repository and same LICENSE file as k8s-tasks-en.",
   "attribution": "Kubernetes documentation (French), © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
-  "harvested_at": "2026-10-07T05:06:54.245Z",
   "items": [
     {
       "path": "content/fr/docs/tasks/_index.md",

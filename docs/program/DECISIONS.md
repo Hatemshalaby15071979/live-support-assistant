@@ -4,6 +4,146 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-07 — G10 result: the quarantine rate counts high severity only — ACCEPTED, with a confound
+
+**Zone.** Y. Prereg: `docs/prereg/g10-quarantine-rate-severity.md`, committed at `00ebf08` **before**
+any re-run, as the owner's first condition required.
+
+**Result against the prereg's accept rule.**
+
+| Accept condition | Observed | Verdict |
+| --- | --- | --- |
+| Planted-PII recall ≥ 95% | **44/44 = 100%**, 8 categories, 4 languages | met |
+| Every previously-harvested source still harvested, or dropped on a high-severity rate > 5% | all four recovered | met |
+| No item quarantined before the change is in the corpus after it | **see the confound below** | **not checkable as written** |
+| `pnpm run verify` green | 13/13 | met |
+
+**The confound, stated plainly.** Two changes landed together and they are entangled:
+
+1. **the rate change** (this prereg), and
+2. **a detection fix** — the planted-PII test measured recall at **72.7%**, with English at 100% and
+   Spanish at 29%, Portuguese 40%, French 43%. The gate was effectively English-only while 147 of
+   345 corpus documents were not. The owner's second condition required that to be fixed before
+   moving on, so it was.
+
+The detection fix necessarily changed the rates, so the prereg's accept rule 2 cannot attribute a
+source's fate to one change or the other. What can be said precisely:
+
+| Source | Rate under old rules | Rate under new rules | Cause of the difference |
+| --- | --- | --- | --- |
+| k8s-tasks-en | 2.5% any | 0.0% | detection fix — the findings were false positives |
+| k8s-tasks-fr | 0.0% any | 0.0% | recovered from an intermediate regression the detection fix introduced |
+| django-faq-en | 12.5% any | 12.5% high | rate change only — unchanged |
+| cpython-faq-en | 25.0% any | 12.5% high | both |
+
+**Accept condition 3 is not checkable as written, and that is a defect in this prereg.** Nine items
+that were quarantined before the change are now in the corpus. Every one was a **false positive**,
+confirmed by reconstructing the old rule and reading what it matched: `from Docker Engine`,
+`from Kubernetes API`, `from Init Containers`, `Signed CA Certificate`, `from Docker Compose`,
+`2000 4096`, `10.102.30`, `de 10000`, `162.900.000`. None is personal data. The condition was
+written to catch an accidental *item-rule* relaxation, and it cannot distinguish "let a false
+positive back in" from "let a real finding back in" — so it reports a violation where there is
+none. A future version of this rule should compare **per-finding classification**, not item
+membership.
+
+**What actually protects the item rule** is that it was never touched: an item carrying a finding of
+any severity is still quarantined. `quarantineRate` returns `quarantined` (any severity, the corpus
+exclusion count) separately from `rate` (high severity, the drop decision), and the harvester uses
+each for its own purpose. `pnpm run verify` exercises both.
+
+**Detection, measured directly rather than inferred.** `tooling/verify-pii-recall.mjs` plants 44
+fabricated strings across 8 categories and 4 languages, each inside a carrier sentence, and counts a
+string caught only when the **category the gate claims** is the one that fires — "some finding
+appeared" would hide a broken rule behind a working one. Result: **100%**, floor 95%.
+
+**Four defects the planted test found that the unit tests had not:**
+
+1. `\p{L}` without the `u` flag — the property escape was not one; the rule could never match.
+2. The `i` flag turning `[A-Z]` into "any letter" — `from working with` read as a person's name.
+3. A phone rule hardcoded to the North-American 3-3-4 shape — Spanish and French numbers never matched.
+4. English-only trigger vocabulary in every rule — Spanish recall was 29%.
+
+**And the precision cost of fixing them, found on the real corpus.** Widening three rules to reach
+100% recall quarantined six ordinary Kubernetes documents and 34.9% of GitHub's site-policy tree.
+The counterexamples are now permanent test cases: `2000 4096`, `10.102.30`, `Signed CA Certificate`,
+`from Docker Compose`, `contact GitHub Support`, `AUTHORITY TO`, `MR This`, `(2018-04-03`. All are
+in `verify-corpus-gates.mjs`, which went from 75 checks to **105**.
+
+**Net effect on the corpus:** 345 items across 4 sources became **486 items across 6 sources and 2
+domains**, with the primary tenant at 0.0% quarantine in all four languages.
+
+---
+
+## 2026-10-07 — B2–B7 root-caused: the guard lock outlives the process that holds it
+
+**Zone.** G (diagnosis and a scoped workaround; the defect is in a vendor shim).
+
+**The question.** Why did `pnpm install` fail with
+`[safe-delete][SAFE_DELETE_BULK_GUARD_ERROR] state lock timeout`, and can it be fixed so
+`NODE_OPTIONS` no longer has to be cleared?
+
+**The mechanism, read from the shim rather than guessed.**
+
+`node-safe-delete-shim.cjs:217` (`checkBulkDeleteGuard`) runs a separate guard process for every
+bulk-delete check:
+
+```js
+execFileSync(nodeBin, [guardPath, 'check', '--target', absPath], { timeout: 10_000, ... })
+```
+
+`safe-delete-bulk-guard.cjs:238` (`withLock`) is what actually fails:
+
+```js
+const LOCK_TIMEOUT_MS = 2000;          // line 12
+const STALE_LOCK_MS   = 5 * 60 * 1000; // line 13
+
+fs.mkdirSync(lockDir);                 // atomic acquire; EEXIST means someone holds it
+if (removeStaleLock(lockDir)) continue;
+if (Date.now() - started > LOCK_TIMEOUT_MS) fail('state lock timeout');
+```
+
+and `removeStaleLock` (line 227) refuses to reclaim a lock whose `mtimeMs` is **younger than five
+minutes**.
+
+**So the two constants are mismatched by three orders of magnitude, and that is the defect.** A
+lock is *acquired* against a 2-second deadline but only *reclaimable* after 5 minutes. A process
+killed while holding the lock — which is exactly what the Bash tool's SIGTERM does — leaves an
+empty `.lock` directory with a fresh mtime, and **every subsequent bulk delete in that session
+fails for up to five minutes.**
+
+**Confirmed by evidence, not inference.** Two orphaned locks are still on disk:
+
+| Path | `.lock` mtime | Contents |
+| --- | --- | --- |
+| `…/codebuddy-safe-delete-bulk/0cb9f9d2…/.lock` | 2026-10-04 08:59 | empty |
+| `…/codebuddy-safe-delete-bulk/5fdfa369…/.lock` | 2026-10-02 00:13 | empty |
+
+Both are empty directories, days old, in a temp state root — the mechanism in its fossilised state.
+The failures in this session line up with the same cause: `pnpm install`, `pnpm -r run build` and
+the corpus harvest were each killed by the Bash timeout mid-operation.
+
+**What changes as a result.**
+
+1. **Long commands always run backgrounded.** A command that hits the foreground timeout is
+   SIGTERM'd mid-operation, and if it held the lock it poisons the session. This is the actual fix
+   available inside the repository, and it is a practice change rather than a code change.
+2. **The orphaned locks are removed** (logged here before the command, per the rule above). They
+   are empty, days old, and the guard would reclaim them itself under its own stale rule.
+3. **Where a bypass is genuinely needed, use the shim's own switch.**
+   `CODEBUDDY_SAFE_DELETE_ENABLED=0` disables the shim cleanly (`node-safe-delete-shim.cjs:22-26`).
+   Clearing `NODE_OPTIONS` is blunter: it also drops `node-language-shim.cjs`, a different shim
+   with a different job. Future B-entries should use the narrow switch.
+
+**What cannot be fixed from here, and what is needed.** The mismatch is in a vendor file outside
+this repository (`WorkBuddyAI/resources/app.asar.unpacked/cli/vendor/shim/safe-delete-bulk-guard.cjs`).
+Patching it would be overwritten on the next application update, and it is not this repository's
+code to change. **Needed from the owner:** either accept the documented workaround, or report
+upstream that `STALE_LOCK_MS` should be close to `LOCK_TIMEOUT_MS` — or better, that the lock
+should record the holding PID and be reclaimable once that PID is gone. The second is the real
+fix: a lock whose liveness is inferred from a directory mtime cannot tell "held" from "abandoned".
+
+---
+
 ## 2026-10-07 — P0 follow-up 4: the publisher refuses to sign a bundle for another model
 
 **Zone.** G (bug fix backed by a failing test; owner-instructed follow-up).
