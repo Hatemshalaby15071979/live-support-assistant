@@ -4,6 +4,27 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-07 (latest) — Corpus verifier went red on expanded gold set; historical "exit gate 0" claims qualified; repaired at `938ca32`
+
+**Zone.** Y (governance). **This note is a historical correction only** — it does not rewrite old
+evidence and does not pretend any earlier run was green.
+
+- The corpus verifier (`verify-corpus.mjs`) became **red after additional provenance-bearing rows
+  entered the generated gold set**: `construction` ×196 and `agent` ×95 (commit `1d75c9d`) and later
+  `agent-full-text` ×7 (commit `a9b57a1`) were outside the verifier's `LABEL_SOURCES` allowlist
+  (`owner | agent-agreed | agent-single`). Measured at HEAD `a9b57a1`: **298 failures**
+  (`construction` 196, `agent` 95, `agent-full-text` 7).
+- Therefore **historical "exit gate 0" statements made while those rows were present are not reliable
+  as current verification evidence.** They are left as written in earlier entries; this note qualifies
+  them rather than rewriting them.
+- The provenance vocabulary and the source-generation path were subsequently **corrected** (commit
+  `938ca32`): V2 rule 7 now defines the six-value vocabulary with separated evidence authority, the
+  source slices carry the corrected provenance, and `questions.json` is regenerated from source.
+- Current HEAD `938ca3219cb47695017c58a91b9ca71b78dbea06` **regenerates deterministically** (two
+  assembler runs byte-identical) and `verify-corpus` **exits 0 with 0 failures** (417 rows).
+
+---
+
 ## 2026-10-07 (later) — OQ-002: owner spot-check NOT DONE / NOT OWNER-VALIDATED; provisional relay preserved; agent full-text relabel layer recorded
 
 **Zone.** Y (governance). **Provenance ruling (owner, 2026-10-07):** Hatem did **not** independently
