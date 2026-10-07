@@ -1,5 +1,7 @@
 # AGENTS.md — build ledger
 
+Read and obey Hatem_specific.md and 00_CONSTITUTION.md before any action. On conflict about honesty or safety, Hatem_specific.md wins.
+
 Repository ledger for `live-support-assistant`, maintained by the agent. Read
 this first in any new session; update it at the end of every completed step.
 

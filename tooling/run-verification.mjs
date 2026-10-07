@@ -111,6 +111,12 @@ const SUITES = [
     script: 'tooling/verify-publish-model-policy.mjs',
     verdict: 'PUBLISH MODEL POLICY OK',
   },
+  {
+    key: 'agent-skill',
+    name: 'Hatem_specific agent skill enforcement',
+    script: 'tooling/verify-agent-skill.mjs',
+    verdict: '[verify-agent-skill] OK',
+  },
 ];
 
 const requested = process.argv.slice(2);
