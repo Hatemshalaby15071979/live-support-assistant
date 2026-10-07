@@ -79,3 +79,30 @@ These three are the D1-relevant joint metric. A change is accepted only if it re
 - Updated `KNOWN_ISSUES.md` §14 decision block recording option (d).
 - Entries in `docs/prereg/rejected-experiments.md` for the reranker (CLOSED) and the threshold-bump
   (REJECTED).
+
+---
+
+## Amendment — 2026-10-07: R3 floor set by the owner (original R3 text above preserved verbatim)
+
+**Zone.** Y (governance). **Status.** Owner decision recorded before any g15 run. The original R3
+wording above is unchanged; this amendment supplies the floor it deferred.
+
+- **R3 guard (Hatem, 2026-10-07):** maximum **10 percentage points** of answerable-recall loss versus
+  the **gate-alone baseline**, **per tenant**, on **both calibration and held-out**.
+- **The harness must report both:** the recall loss in percentage points **and** the number of
+  answerable questions lost. At the current answerable N (calibration T01 12 / T04 27 / T05 14;
+  held-out T01 6 / T04 11 / T05 11) one question is worth 3.7–16.7 pp, so the question count is the
+  precise unit and the pp figure the summary.
+- **This is a refusal-layer constraint, not a replacement for V2 D3.** V2 D3 ("In-scope recall >= 70%
+  at 500 procedures on the gold set, per language") is unchanged and remains the program exit floor.
+- **Why the guard is baseline-relative, not absolute:** the gate-alone baselines are T01 75.0/33.3,
+  T04 37.0/54.5, T05 21.4/9.1 % (calibration/held-out) — five of six tenant/split cells already sit
+  below 70%, so an absolute 70% floor would reject any layer before it ran. The prereg's own metric
+  definition ("reported as the loss vs the gate-alone baseline") makes the loss the measured quantity.
+- **Provenance of the baselines:** `tooling/corpus/gate-calibration.json` (data_mode: calibration,
+  SHA-256 fbba405392c6db0f464e8f7b178eb79e586fb8659ece62cc535c620fb88e212a) and
+  `tooling/corpus/gate-calibration-heldout.json` (data_mode: held-out, SHA-256
+  1da142237d6315fb63219c4425b7c5c63f67737a6f656802f25b9094a4c4196f), produced by
+  `GATE_SPLIT=calibration|held-out node tooling/corpus/calibrate-gate.mjs` at the `GATE_CONFIGS`
+  thresholds (unchanged). Labels are agent-produced and UNVERIFIED; g15 results are
+  agent-label-relative and establish no owner-backed D3 claim.
