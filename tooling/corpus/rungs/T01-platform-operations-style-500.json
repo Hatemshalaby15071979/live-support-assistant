@@ -1,6 +1,7 @@
 {
   "tenant": "T01-platform-operations-style",
-  "rung": 500,
+  "rung": "500",
+  "rung_size": 500,
   "seed": 20261007,
   "data_mode": "web-sourced",
   "note": "Fixed-seed rung. Contains every procedure of every gold answer document for this tenant, plus same-domain distractors in a stable order. No cross-tenant padding.",

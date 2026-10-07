@@ -1,0 +1,1175 @@
+{
+  "tenant": "T04-customer-support-style",
+  "rung": "MVR",
+  "rung_size": 57,
+  "seed": 20261007,
+  "data_mode": "web-sourced",
+  "note": "MINIMUM VIABLE RUNG. The smallest corpus that holds every gold answer document for this tenant, so no gold coverage is trimmed. Derived from the gold set, not chosen.",
+  "gold_documents": [
+    "content/account-and-profile/concepts/username-changes.md",
+    "content/account-and-profile/how-tos/account-management/changing-your-username.md",
+    "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md",
+    "content/account-and-profile/how-tos/account-management/managing-multiple-accounts.md",
+    "content/account-and-profile/how-tos/account-management/merging-multiple-personal-accounts.md",
+    "content/account-and-profile/how-tos/account-management/unlinking-your-email-address-from-a-locked-account.md",
+    "content/account-and-profile/how-tos/email-preferences/adding-an-email-address-to-your-github-account.md",
+    "content/account-and-profile/how-tos/email-preferences/blocking-command-line-pushes-that-expose-your-personal-email-address.md",
+    "content/account-and-profile/how-tos/email-preferences/changing-your-primary-email-address.md",
+    "content/account-and-profile/how-tos/email-preferences/setting-a-backup-email-address.md",
+    "content/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address.md",
+    "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+    "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md",
+    "content/account-and-profile/how-tos/organization-membership/removing-yourself-from-an-organization.md",
+    "content/account-and-profile/how-tos/profile-customization/managing-your-profile-readme.md",
+    "content/account-and-profile/how-tos/profile-customization/setting-your-profile-to-private.md",
+    "content/account-and-profile/reference/personal-account-reference.md",
+    "content/billing/how-tos/manage-plan-and-licenses/downgrade-plan.md",
+    "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md",
+    "content/billing/how-tos/set-up-payment/manage-payment-info.md",
+    "content/billing/how-tos/troubleshooting/locked-account.md"
+  ],
+  "gold_procedures": 57,
+  "distractor_procedures": 0,
+  "procedures": [
+    {
+      "id": "ghdocs-account-en-0029",
+      "title": "About username changes\n\nYou can change your username to another username that is not currently in use",
+      "category": "customer-support-style",
+      "summary": "About username changes\n\nYou can change your username to another username that is not currently in use.{% ifversion fpt or ghec %} If the username you want is not available, consider other names or unique variations. Using a number, hyphen, or an alternative spelling might help you find a similar username that's still available.\n\nAfter changing your username, your old username becomes available for anyone else to claim. Most references to your repositories under the old username automatically change to the new username. However, some links to your profile won't automatically redirect.\n\nUsername trademarks\n\nIf you hold a trademark for the username, you can find more information about making a trademark complaint on our Trademark Policy page.",
+      "suggestedReply": "About username changes\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/concepts/username-changes.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0030",
+      "title": "If you do not hold a trademark for the name, you can choose another username or keep your current username",
+      "category": "customer-support-style",
+      "summary": "If you do not hold a trademark for the name, you can choose another username or keep your current username. {% data variables.contact.github_support %} cannot release the unavailable username for you.{% endif %}\n\nRepository references\n\nAfter you change your username, {% data variables.product.github %} will automatically redirect references to your repositories.\n\nIf the new owner of your old username creates a repository with the same name as your repository, that will override the redirect entry and your redirect will stop working. Because of this possibility, we recommend you update all existing remote repository URLs after changing your username. For more information, see AUTOTITLE.\n\nLinks to your previous profile page",
+      "suggestedReply": "If you do not hold a trademark for the name, you can choose another username or keep your current username. {% data variables.contact.github_support %} cannot release the unavailable username for you.{% endif %}\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/concepts/username-changes.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0031",
+      "title": "After changing your username, links to your previous profile page, such as https://{% data variables",
+      "category": "customer-support-style",
+      "summary": "After changing your username, links to your previous profile page, such as https://{% data variables.product.product_url %}/previoususername, will return a 404 error. We recommend updating any links to your profile from elsewhere{% ifversion fpt or ghec %}, such as your LinkedIn or X (formerly Twitter) profile{% endif %}.\n\nAccounts logged in on {% data variables.product.prodname_mobile %}\n\nAccounts logged in on the {% data variables.product.prodname_mobile %} app may continue to display your original username until you log out. To ensure your updated username is displayed, we recommend you sign out and back in to your account on each mobile device.\n\nYour Git commits",
+      "suggestedReply": "After changing your username, links to your previous profile page, such as https://{% data variables.product.product_url %}/previoususername, will return a 404 error. We recommend updating any links to your profile from elsewhere{% ifversion fpt or ghec %}, such as your LinkedIn or X (formerly Twitter) profile{% end...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/concepts/username-changes.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0032",
+      "title": "If your Git commits are associated with another email address you've added to your {% data variables",
+      "category": "customer-support-style",
+      "summary": "If your Git commits are associated with another email address you've added to your {% data variables.product.github %} account, they'll continue to be attributed to you and appear in your contributions graph after you've changed your username. However, some commits using {% data variables.product.github %}-provided email addresses may be affected. For details, see AUTOTITLE.\n\nYour gists\n\nAfter changing your username, the URLs to any public or secret gists will also change and previous links to these will return a 404 error. We recommend updating the links to these gists anywhere you may have shared them.\n\nCODEOWNERS files",
+      "suggestedReply": "If your Git commits are associated with another email address you've added to your {% data variables.product.github %} account, they'll continue to be attributed to you and appear in your contributions graph after you've changed your username. However, some commits using {% data variables.product.github %}-provided ...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/concepts/username-changes.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0033",
+      "title": "After changing your username, CODEOWNERS files that include your old username will need to be manually updated",
+      "category": "customer-support-style",
+      "summary": "After changing your username, CODEOWNERS files that include your old username will need to be manually updated. When you view the CODEOWNERS files on {% data variables.product.github %}, an error message is displayed if the file contains any unknown users, or users without write access. We recommend updating all relevant CODEOWNERS files with your new username.\n\nNext steps\n\nTo change your username, see AUTOTITLE.",
+      "suggestedReply": "After changing your username, CODEOWNERS files that include your old username will need to be manually updated. When you view the CODEOWNERS files on {% data variables.product.github %}, an error message is displayed if the file contains any unknown users, or users without write access. We recommend updating all rel...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/concepts/username-changes.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0041",
+      "title": "changing your username (part 1)",
+      "category": "customer-support-style",
+      "summary": "Prerequisites\n\nBefore changing your username, you should be aware of potential impacts on your account and activity. For more information, see AUTOTITLE.\n\nChanging your username\n\n{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.account_settings %}\n1. In the \"Change username\" section, click **Change username**.{% ifversion fpt or ghec %}\n1. Read the warnings about changing your username. If you still want to change your username, click **I understand, let's change my username**.\n1. Type a new username.\n1. If the username you've chosen is available, click **Change my username**. If the username you've chosen is unavailable, you can try a different username or one of the suggestions you see.\n{% endif %}\n\nNext steps\n\nFor reference information and limitations, see AUTOTITLE.",
+      "suggestedReply": "Prerequisites\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/changing-your-username.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0048",
+      "title": "{% ifversion ghec %}\n[",
+      "category": "customer-support-style",
+      "summary": "{% ifversion ghec %}\n[!NOTE]\nIf your enterprise manages your account and you sign into {% data variables.product.github %} through your company's identity provider (IdP), you cannot delete your account. For more information, see AUTOTITLE.\n\n{% endif %}\n\n{% ifversion ghes %}\n[!NOTE]\n* You should contact an enterprise owner before deleting your account on {% data variables.product.prodname_ghe_server %}.\n\n{% endif %}\n\nBack up your account data\n\nBefore you delete your personal account, make a copy of all repositories, private forks, wikis, issues, and pull requests owned by your account. For more information, see the following articles:\nAUTOTITLE.\nAUTOTITLE\n\nDeleting your personal account\n[!WARNING]\nOnce your personal account has been deleted, {% ifversion fpt or ghec %}{% data variables.product.company_short %}{% elsif ghes %}an enterprise owner{% endif %} cannot restore your content.",
+      "suggestedReply": "{% ifversion ghec %}\n[!NOTE]\nIf your enterprise manages your account and you sign into {% data variables.product.github %} through your company's identity provider (IdP), you cannot delete your account. For more information, see AUTOTITLE.\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0049",
+      "title": "{% data reusables",
+      "category": "customer-support-style",
+      "summary": "{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.account_settings %}\n1. At the bottom of the Account Settings page, under \"Delete account\", click **Delete your account**. Before you can delete your personal account:\n1. In the \"Make sure you want to do this\" dialog box, complete the steps to confirm you understand what happens when your account is deleted:\nIn the first field, type your username or email.\nIn the second field, type the phrase from the prompt.\n\nNext steps\n\nFor reference information, see AUTOTITLE.",
+      "suggestedReply": "{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.account_settings %}\n1. At the bottom of the Account Settings page, under \"Delete account\", click **Delete your account**. Before you can delete your personal account:\n1. In the \"Make sure you want to do this\" dialog box, complete the ...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0050",
+      "title": "Contributing to multiple accounts using HTTPS and {% data variables",
+      "category": "customer-support-style",
+      "summary": "Contributing to multiple accounts using HTTPS and {% data variables.product.pat_generic %}s\n\nAlternatively, if you want to use the HTTPS protocol for both accounts, you can use different {% data variables.product.pat_generic %}s for each account by configuring Git to store different credentials for each repository.\n\n{% mac %}\n\n{% data reusables.git.open-terminal %}\n{% data reusables.git.confirm-credential-manager %}\n{% data reusables.git.clear-the-stored-credentials %}\n {% data reusables.git.no-credential-manager %}\nIf the output is osxkeychain, you're using the macOS keychain. To clear the credentials, you can use the credential helper on the command line:\n\n{% data reusables.git.clear-stored-gcm-credentials %}\n\n{% data reusables.git.cache-on-repository-path %}\n{% data reusables.accounts.create-personal-access-tokens %}\n{% data reusables.git.provide-credentials %}\n\n{% endmac %}",
+      "suggestedReply": "Contributing to multiple accounts using HTTPS and {% data variables.product.pat_generic %}s\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/managing-multiple-accounts.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0051",
+      "title": "{% windows %}\n\n1",
+      "category": "customer-support-style",
+      "summary": "{% windows %}\n\n1. Open Git Bash.\n{% data reusables.git.confirm-credential-manager %}\n{% data reusables.git.clear-the-stored-credentials %}\n {% data reusables.git.no-credential-manager %}\n {% data reusables.git.clear-stored-gcm-credentials %}\nIf the output is wincred, you're using the Windows Credential Manager. To clear the credentials, enter the following command.\n\n{% data reusables.git.cache-on-repository-path %}\n{% data reusables.accounts.create-personal-access-tokens %}\n{% data reusables.git.provide-credentials %}\n\n{% endwindows %}\n\n{% linux %}\n\n{% data reusables.git.open-terminal %}\n{% data reusables.git.confirm-credential-manager %}\n{% data reusables.git.clear-the-stored-credentials %}\n {% data reusables.git.no-credential-manager %}\n {% data reusables.git.clear-stored-gcm-credentials %}",
+      "suggestedReply": "{% windows %}\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/managing-multiple-accounts.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0052",
+      "title": "{% data reusables",
+      "category": "customer-support-style",
+      "summary": "{% data reusables.git.cache-on-repository-path %}\n{% data reusables.accounts.create-personal-access-tokens %}\n{% data reusables.git.provide-credentials %}\n\n{% endlinux %}\n\nContributing to multiple accounts using SSH and GIT_SSH_COMMAND\n\nIf you want to use the SSH protocol for both accounts, you can use different SSH keys for each account. For more information about using SSH, see AUTOTITLE.\n\nTo use a different SSH key for different repositories that you clone to your workstation, you must write a shell wrapper function for Git operations. The function should perform the following steps.\n1. Determine the repository's full name with owner, using a command such as git config --get remote.origin.url.\n1. Choose the correct SSH key for authentication.\n1. Modify GIT_SSH_COMMAND accordingly. For more information about GIT_SSH_COMMAND, see Environment Variables in the Git documentation.",
+      "suggestedReply": "{% data reusables.git.cache-on-repository-path %}\n{% data reusables.accounts.create-personal-access-tokens %}\n{% data reusables.git.provide-credentials %}\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/managing-multiple-accounts.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0053",
+      "title": "managing multiple accounts (part 4)",
+      "category": "customer-support-style",
+      "summary": "For example, the following command sets the GIT_SSH_COMMAND environment variable to specify an SSH command that uses the private key file at **_PATH/TO/KEY/FILE_** for authentication to clone the repository named OWNER/REPOSITORY on {% data variables.location.product_location %}.\n\nContributing to multiple accounts using SSH and multiple keys\n\nIf you are a member of an {% data variables.enterprise.prodname_emu_enterprise %}, but also want to collaborate outside your enterprise using a personal account, you can use different SSH keys for each account. For more information about using SSH, see AUTOTITLE.\n[!WARNING]\nYou cannot use the same SSH key to contribute to both repositories inside your {% data variables.enterprise.prodname_emu_org %} and outside the enterprise.",
+      "suggestedReply": "For example, the following command sets the GIT_SSH_COMMAND environment variable to specify an SSH command that uses the private key file at **_PATH/TO/KEY/FILE_** for authentication to clone the repository named OWNER/REPOSITORY on {% data variables.location.product_location %}.\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/managing-multiple-accounts.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0054",
+      "title": "managing multiple accounts (part 5)",
+      "category": "customer-support-style",
+      "summary": "1. Generate a different SSH key for the repositories in your {% data variables.enterprise.prodname_emu_org %}. See AUTOTITLE. When you save the key, give it a different filename from your existing key (for instance, add -emu to the suggested name of the file).\n\n1. Add the new ssh key to your {% data variables.enterprise.prodname_managed_user %}. See AUTOTITLE\n\n1. Configure your SSH Config File ~/.ssh/config to use the different keys. For example, if your personal SSH key is ~/.ssh/id_ed25519 and your {% data variables.enterprise.prodname_emu_enterprise %} SSH key is ~/.ssh/id_ed25519-emu\n[!NOTE]\nThe IdentitiesOnly line ensures that if the ssh-agent has loaded multiple keys, ssh uses the correct key when connecting.\n\n1. Test your SSH configuration by running the following command to connect using the SSH key associated with your personal account - see AUTOTITLE for further details",
+      "suggestedReply": "1. Generate a different SSH key for the repositories in your {% data variables.enterprise.prodname_emu_org %}. See AUTOTITLE. When you save the key, give it a different filename from your existing key (for instance, add -emu to the suggested name of the file).\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/managing-multiple-accounts.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0055",
+      "title": "Test to see if you can connect to ({% data variables",
+      "category": "customer-support-style",
+      "summary": "Test to see if you can connect to ({% data variables.product.github %}) using your {% data variables.enterprise.prodname_emu_enterprise %} SSH key\n\n1. Tell git to use the correct key when downloading or uploading a repository in an {% data variables.enterprise.prodname_emu_org %}. \n To list the organizations in your {% data variables.enterprise.prodname_emu_enterprise %},\n {% data reusables.profile.access_org %}\n 1. For each organization listed tell git to use the github-emu.com host.\n\nFor example, if one of your organizations is called octocat-emu then to tell git to use the host github-emu.com for repositories in the octocat-emu organization, run the following command\n\nNow, when you clone a repository using SSH, in the octocat-emu organization, git will use the SSH key associated with your {% data variables.enterprise.prodname_emu_enterprise %} instead of your personal key.\n\nNext steps",
+      "suggestedReply": "Test to see if you can connect to ({% data variables.product.github %}) using your {% data variables.enterprise.prodname_emu_enterprise %} SSH key\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/managing-multiple-accounts.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0056",
+      "title": "{% ifversion ghec %}\n[",
+      "category": "customer-support-style",
+      "summary": "{% ifversion ghec %}\n[!TIP]\n{% data variables.product.prodname_emus %} allow an enterprise to provision unique personal accounts for its members through an identity provider (IdP). For more information, see AUTOTITLE. For other use cases, we recommend using only one personal account to manage both personal and professional repositories.\n\n{% else %}\n[!TIP]\nWe recommend using only one personal account to manage both personal and professional repositories.\n\n{% endif %}",
+      "suggestedReply": "{% ifversion ghec %}\n[!TIP]\n{% data variables.product.prodname_emus %} allow an enterprise to provision unique personal accounts for its members through an identity provider (IdP). For more information, see AUTOTITLE. For other use cases, we recommend using only one personal account to manage both personal and profe...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/merging-multiple-personal-accounts.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0057",
+      "title": "merging multiple personal accounts (part 2)",
+      "category": "customer-support-style",
+      "summary": "1. Transfer any repositories from the account you want to delete to the account you want to keep. Issues, pull requests, and wikis are transferred as well. Verify the repositories exist on the account you want to keep.\n1. Update the remote URLs in any local clones of the repositories that were moved.\n1. Delete the account you no longer want to use.\n1. To attribute past commits to the new account, add the email address you used to author the commits to the account you're keeping.\n[!NOTE]\nThere are additional requirements for commits to count as contributions that you will need to ensure are met. See AUTOTITLE.\n\nNext steps\nAUTOTITLE\nAUTOTITLE\nAUTOTITLE",
+      "suggestedReply": "1. Transfer any repositories from the account you want to delete to the account you want to keep. Issues, pull requests, and wikis are transferred as well. Verify the repositories exist on the account you want to keep.\n1. Update the remote URLs in any local clones of the repositories that were moved.\n1. Delete the a...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/merging-multiple-personal-accounts.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0060",
+      "title": "unlinking your email address from a locked account (part 1)",
+      "category": "customer-support-style",
+      "summary": "[!WARNING]\nFollowing these steps will not disable 2FA or provide access to a locked account, but will instead unlink the associated email address so it may be used for a different account. If you cannot regain access to the 2FA locked account, these steps will permanently break the link between the account and the linked email address. Before continuing, be sure you have lost all access to your account. See AUTOTITLE.\n\nUnlinking with your password\n\nIf you know your password, you can sign in with your password to unlink your email address.\n\n{% data reusables.accounts.prompt-for-2fa-recovery-code %}\n{% data reusables.accounts.start-automated-recovery-with-password %}\n{% data reusables.accounts.unlinking-email-address %}\n\nUnlinking without your password\n\nIf you do not know your account password, you can request a password reset link to unlink your email address.",
+      "suggestedReply": "[!WARNING]\nFollowing these steps will not disable 2FA or provide access to a locked account, but will instead unlink the associated email address so it may be used for a different account. If you cannot regain access to the 2FA locked account, these steps will permanently break the link between the account and the l...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/unlinking-your-email-address-from-a-locked-account.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0061",
+      "title": "{% data reusables",
+      "category": "customer-support-style",
+      "summary": "{% data reusables.accounts.request-password-reset-link %}\n{% data reusables.accounts.start-automated-recovery-without-password %}\n{% data reusables.accounts.unlinking-email-address %}",
+      "suggestedReply": "{% data reusables.accounts.request-password-reset-link %}\n{% data reusables.accounts.start-automated-recovery-without-password %}\n{% data reusables.accounts.unlinking-email-address %}\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/account-management/unlinking-your-email-address-from-a-locked-account.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0091",
+      "title": "{% ifversion ghec %}\n[",
+      "category": "customer-support-style",
+      "summary": "{% ifversion ghec %}\n[!NOTE]\n* If you're a member of an {% data variables.enterprise.prodname_emu_enterprise %}, you cannot make changes to your email address on {% data variables.product.prodname_dotcom %}. {% data reusables.enterprise-accounts.emu-more-info-account %}\n\n{% endif %}\n\n{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.emails %}\n{% data reusables.user-settings.add_and_verify_email %}\n1. If you'd like to associate the email address with your web-based Git operations, select it from the \"Primary email address\" dropdown menu.\n\nNext steps\n\nIf you are having trouble adding an email address, see AUTOTITLE.\n\nFor reference information, see AUTOTITLE.",
+      "suggestedReply": "{% ifversion ghec %}\n[!NOTE]\n* If you're a member of an {% data variables.enterprise.prodname_emu_enterprise %}, you cannot make changes to your email address on {% data variables.product.prodname_dotcom %}. {% data reusables.enterprise-accounts.emu-more-info-account %}\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/adding-an-email-address-to-your-github-account.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0092",
+      "title": "When you enable this setting, each time you push to {% data variables",
+      "category": "customer-support-style",
+      "summary": "When you enable this setting, each time you push to {% data variables.product.github %}, we’ll check the most recent commit. If the author email on that commit is a private email on your GitHub account, we will block the push and warn you about exposing your private email.\n\n{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.emails %}\n{% data reusables.user-settings.keeping_your_email_address_private %}\n1. To keep your email address private in commits you push from the command line, select **Block command line pushes that expose my email**.\n\nNext steps\nFor reference information, see AUTOTITLE.",
+      "suggestedReply": "When you enable this setting, each time you push to {% data variables.product.github %}, we’ll check the most recent commit. If the author email on that commit is a private email on your GitHub account, we will block the push and warn you about exposing your private email.\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/blocking-command-line-pushes-that-expose-your-personal-email-address.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0093",
+      "title": "{% ifversion ghec %}\n[",
+      "category": "customer-support-style",
+      "summary": "{% ifversion ghec %}\n[!NOTE] This article **does not apply** to {% data variables.enterprise.prodname_managed_users %}. To change your email address as a {% data variables.enterprise.prodname_managed_user %}, contact the administrator for your company's identity provider (IdP). Your primary email address is the first one assigned to you in the IdP.\n\n{% endif %}",
+      "suggestedReply": "{% ifversion ghec %}\n[!NOTE] This article **does not apply** to {% data variables.enterprise.prodname_managed_users %}. To change your email address as a {% data variables.enterprise.prodname_managed_user %}, contact the administrator for your company's identity provider (IdP). Your primary email address is the firs...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/changing-your-primary-email-address.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0094",
+      "title": "{% data reusables",
+      "category": "customer-support-style",
+      "summary": "{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.emails %}\n1. If you'd like to add a new email address to set as your primary email address, under \"Add email address\", type a new email address and click **Add**.\n1. Under \"Primary email address\", use the drop-down menu to click the email address you'd like to set as your primary email address, and click **Save**.\n1. To remove the old email address from your account, next to the old email, click {% octicon \"trash\" aria-label=\"The trash symbol\" %}.\n{% ifversion fpt or ghec %}\n1. Verify your new primary email address. Without a verified email address, you won't be able to use all of {% data variables.product.github %}'s features. For more information, see AUTOTITLE.\n{% endif %}\n\nNext steps\nFor reference information, see AUTOTITLE.",
+      "suggestedReply": "{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.emails %}\n1. If you'd like to add a new email address to set as your primary email address, under \"Add email address\", type a new email address and click **Add**.\n1. Under \"Primary email address\", use the drop-down menu to click the e...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/changing-your-primary-email-address.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0097",
+      "title": "{% data reusables",
+      "category": "customer-support-style",
+      "summary": "{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.emails %}\n1. Under \"Backup email address,\" use the dropdown menu to select the address you want to set as your backup email address.\n1. Click **Save**.\n\nNext steps\nFor reference information, see AUTOTITLE.",
+      "suggestedReply": "{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.emails %}\n1. Under \"Backup email address,\" use the dropdown menu to select the address you want to set as your backup email address.\n1. Click **Save**.\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/setting-a-backup-email-address.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0098",
+      "title": "Setting your commit email address on {% data variables",
+      "category": "customer-support-style",
+      "summary": "Setting your commit email address on {% data variables.product.github %}\n\n{% data reusables.files.commit-author-email-options %}\n\n{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.emails %}\n{% data reusables.user-settings.add_and_verify_email %}\n{% data reusables.user-settings.select_primary_email %}{% ifversion fpt or ghec %}\n{% data reusables.user-settings.keeping_your_email_address_private %}{% endif %}\n\nSetting your commit email address in Git\n\nYou can use the git config command to change the email address you associate with your Git commits. The new email address you set will be visible in any future commits you push to {% data variables.product.github %} from the command line. Any commits you made prior to changing your commit email address are still associated with your previous email address.",
+      "suggestedReply": "Setting your commit email address on {% data variables.product.github %}\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0099",
+      "title": "Setting your email address for every repository on your computer\n\n{% data reusables",
+      "category": "customer-support-style",
+      "summary": "Setting your email address for every repository on your computer\n\n{% data reusables.command_line.open_the_multi_os_terminal %}\n\n1. {% data reusables.user-settings.set_your_email_address_in_git %}\n\n1. {% data reusables.user-settings.confirm_git_email_address_correct %}\n\n1. {% data reusables.user-settings.link_email_with_your_account %}\n\nSetting your email address for a single repository\n\n{% data variables.product.github %} uses the email address set in your local Git configuration to associate commits pushed from the command line with your account on {% data variables.product.github %}.\n\nYou can change the email address associated with commits you make in a single repository. This will override your global Git configuration settings in this one repository, but will not affect any other repositories.\n\n{% data reusables.command_line.open_the_multi_os_terminal %}",
+      "suggestedReply": "Setting your email address for every repository on your computer\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0100",
+      "title": "setting your commit email address (part 3)",
+      "category": "customer-support-style",
+      "summary": "1. Change the current working directory to the local repository where you want to configure the email address that you associate with your Git commits.\n1. {% data reusables.user-settings.set_your_email_address_in_git %}\n\n1. {% data reusables.user-settings.confirm_git_email_address_correct %}\n\n1. {% data reusables.user-settings.link_email_with_your_account %}\n\nNext steps\n\nFor reference information, see AUTOTITLE.\n\nFor more information about setting your Git username, see AUTOTITLE.",
+      "suggestedReply": "1. Change the current working directory to the local repository where you want to configure the email address that you associate with your Git commits.\n1. {% data reusables.user-settings.set_your_email_address_in_git %}\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0104",
+      "title": "Unable to send verification email\n\n{% data reusables",
+      "category": "customer-support-style",
+      "summary": "Unable to send verification email\n\n{% data reusables.user-settings.no-verification-disposable-emails %}\n\n{% ifversion fpt or ghec %}\n\nAccount is restricted until you change your email address\n\nIf your account is restricted and you're told to change the email address on your account before access can be restored, you must update your account email and then ask {% data variables.contact.github_support %} to review the restriction.\n\n1. Add a different, non-disposable email address and set it as your primary email address. For more information, see AUTOTITLE.\n1. Verify your new primary email address. For more information, see AUTOTITLE.\n1. Remove the previous email address from your account.\n1. Contact {% data variables.contact.github_support %} and ask for a review of the restriction.",
+      "suggestedReply": "Unable to send verification email\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0105",
+      "title": "troubleshooting email verification (part 2)",
+      "category": "customer-support-style",
+      "summary": "Using a noreply email address can help protect your commit privacy, but it does not replace the need for a valid account email address. For more information, see AUTOTITLE.\n\n{% endif %}\n\nError page after clicking verification link\n\nThe verification link expires after 24 hours. If you don't verify your email within 24 hours, you can request another email verification link.\n\nIf you click on the link in the confirmation email within 24 hours and you are directed to an error page, you should ensure that you're signed into the correct account on {% data variables.product.github %}.\n\n1. Sign out of your account.\n1. Quit and restart your browser.\n1. Sign in to your account.\n1. Click on the verification link in the email we sent you.\n\nEmail is already verified by another user",
+      "suggestedReply": "Using a noreply email address can help protect your commit privacy, but it does not replace the need for a valid account email address. For more information, see AUTOTITLE.\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0106",
+      "title": "troubleshooting email verification (part 3)",
+      "category": "customer-support-style",
+      "summary": "If you see the error message Error adding EMAIL: Email is already verified by another user, you must either unverify the email for the other account before proceeding, or choose a different email address to verify.\n\nTo unverify an email address, delete it in your email settings, then optionally re-add it without verifying to keep any commits linked to your account. See AUTOTITLE.\n\nNext steps\nFor reference information, see AUTOTITLE.",
+      "suggestedReply": "If you see the error message Error adding EMAIL: Email is already verified by another user, you must either unverify the email for the other account before proceeding, or choose a different email address to verify.\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0107",
+      "title": "Verifying your email address\n\n{% data reusables",
+      "category": "customer-support-style",
+      "summary": "Verifying your email address\n\n{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.emails %}\n1. Under your email address, click **Resend verification email**.\n\n1. {% data variables.product.prodname_dotcom %} will send you an email with a link in it. After you click that link, you'll be taken to your {% data variables.product.prodname_dotcom %} dashboard and see a confirmation banner.\n\nNext steps\n\nFor reference information, see AUTOTITLE.\n\nIf you are having trouble verifying your email address, see AUTOTITLE.",
+      "suggestedReply": "Verifying your email address\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0111",
+      "title": "{% ifversion fpt or ghec %}\n[",
+      "category": "customer-support-style",
+      "summary": "{% ifversion fpt or ghec %}\n[!WARNING]\nIf you're currently responsible for paying for {% data variables.product.github %} in your organization, removing yourself from the organization **does not** update the billing information on file for the organization. If you are currently responsible for billing, **you must** have another owner or billing manager for the organization update the organization's payment method.\nFor more information, see AUTOTITLE.\n\n{% endif %}\n\n{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.organizations %}\n1. Under \"Organizations\", next to the organization you'd like to remove yourself from, click **Leave**.\n\n{% ifversion fpt or ghec %}",
+      "suggestedReply": "{% ifversion fpt or ghec %}\n[!WARNING]\nIf you're currently responsible for paying for {% data variables.product.github %} in your organization, removing yourself from the organization **does not** update the billing information on file for the organization. If you are currently responsible for billing, **you must** ...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/organization-membership/removing-yourself-from-an-organization.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0112",
+      "title": "removing yourself from an organization (part 2)",
+      "category": "customer-support-style",
+      "summary": "If you remove yourself from every organization in an enterprise, you may also be automatically removed from the enterprise account. If you haven't been removed and want to leave an enterprise, see AUTOTITLE.\n\n{% endif %}",
+      "suggestedReply": "If you remove yourself from every organization in an enterprise, you may also be automatically removed from the enterprise account. If you haven't been removed and want to leave an enterprise, see AUTOTITLE.\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/organization-membership/removing-yourself-from-an-organization.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0116",
+      "title": "Prerequisites\n\n{% data variables",
+      "category": "customer-support-style",
+      "summary": "Prerequisites\n\n{% data variables.product.prodname_dotcom %} will display your profile README on your profile page if all of the following are true.\nYou've created a repository with a name that matches your {% data variables.product.prodname_dotcom %} username.\nThe repository is public.\nThe repository contains a file named README.md in its root.\nThe README.md file contains any content.\n[!NOTE]\nIf you created a public repository with the same name as your username before July 2020, {% data variables.product.prodname_dotcom %} won't automatically show the repository's README on your profile. You can manually share the repository's README to your profile by going to the repository on {% data variables.product.prodname_dotcom %} and clicking **Share to profile**.\n\nAdding a profile README\n\n{% data reusables.profile.create-profile-readme %}\n1. Above the right sidebar, click **Edit README**.",
+      "suggestedReply": "Prerequisites\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/profile-customization/managing-your-profile-readme.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0117",
+      "title": "managing your profile readme (part 2)",
+      "category": "customer-support-style",
+      "summary": "The generated README file is pre-populated with a template to give you some inspiration for your profile README.\n\nFor a summary of all the available emojis and their codes, see Emoji cheat sheet.\n\nRemoving a profile README\n\nThe profile README will be removed from your {% data variables.product.prodname_dotcom %} profile if any of the following apply:\nThe README file is removed or made empty.\nThe repository is made private.\nThe repository name no longer matches your username due to a change in either or both names.\n\nThe method you choose depends upon your needs, but if you're unsure, we recommend making your repository private. For steps on how to make your repository private, see AUTOTITLE.\n\nNext steps\nFor reference information, see AUTOTITLE.",
+      "suggestedReply": "The generated README file is pre-populated with a template to give you some inspiration for your profile README.\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/profile-customization/managing-your-profile-readme.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0119",
+      "title": "Changing your profile's privacy settings\n\n{% data reusables",
+      "category": "customer-support-style",
+      "summary": "Changing your profile's privacy settings\n\n{% data reusables.user-settings.access_settings %}\n1. Navigate to the \"Public profile\" section, and scroll down to \"Contributions & Activity\"\n1. Select the checkbox next to **Make profile private and hide activity**.\n{% data reusables.user-settings.update-preferences %}\n\nNext steps\nFor more information about private profiles, see AUTOTITLE.\nFor reference information, see AUTOTITLE.",
+      "suggestedReply": "Changing your profile's privacy settings\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/how-tos/profile-customization/setting-your-profile-to-private.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0123",
+      "title": "personal account reference (part 1)",
+      "category": "customer-support-style",
+      "summary": "Side effects of account deletion\n{% ifversion fpt or ghec %} All repositories, forks of private repositories, wikis, issues, pull requests and {% data variables.product.prodname_pages %} sites owned by your account will be deleted. Your billing will end immediately. Your username will be available for anyone to use after 90 days.{% else %}\nAll repositories, forks of private repositories, wikis, issues, pull requests and pages owned by your account will be deleted, and your username will be available for use.{% endif %}\nIf you're the only owner in the organization, you must transfer ownership to another person or delete your organization.\nIf there are other organization owners in the organization, you must remove yourself from the organization.\n\n{% ifversion fpt or ghec %}\n\n{% data reusables.accounts.delete-account-repo-namespace-retirement %}\n\n{% endif %}",
+      "suggestedReply": "Side effects of account deletion\n{% ifversion fpt or ghec %} All repositories, forks of private repositories, wikis, issues, pull requests and {% data variables.product.prodname_pages %} sites owned by your account will be deleted. Your billing will end immediately. Your username will be available for anyone to use ...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/reference/personal-account-reference.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0124",
+      "title": "{% data reusables",
+      "category": "customer-support-style",
+      "summary": "{% data reusables.package_registry.delete-account-namespace-retirement %}\n\nSide effects of converting an account to an organization\nYou will **no longer** be able to sign into the converted personal account.\nYou will **no longer** be able to create or modify gists owned by the converted personal account.\nAn organization **cannot** be converted back to a user.\nThe SSH keys, OAuth tokens, job profile, reactions, and associated user information, **will not** be transferred to the organization. This is only true for the personal account that's being converted, not any of the personal account's collaborators.\nAny {% data variables.product.prodname_github_apps %} installed on the converted personal account will be uninstalled.\nAny commits made with the converted personal account **will no longer be linked** to that account. The commits themselves **will** remain intact.",
+      "suggestedReply": "{% data reusables.package_registry.delete-account-namespace-retirement %}\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/reference/personal-account-reference.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0125",
+      "title": "Any existing comments made by the converted personal account **will no longer be linked** to that account",
+      "category": "customer-support-style",
+      "summary": "Any existing comments made by the converted personal account **will no longer be linked** to that account. The comments themselves **will** remain intact, but will be associated with the ghost user.\nAny forks of private repositories made with the converted personal account will be deleted.\nSince organizations cannot star repositories, you will no longer have access to your original list of starred repositories.\nYou will no longer have access to the list of users you were following from your user account.\nAny followers of your user account will not automatically follow the new organization.\nAny existing collaborators on your projects will still have access to those projects in the new organization.\n{% data variables.product.prodname_actions %} is not automatically enabled on the account after converting it to an organization, and will have to be re-enabled. To re-enable {% data variables.",
+      "suggestedReply": "Any existing comments made by the converted personal account **will no longer be linked** to that account. The comments themselves **will** remain intact, but will be associated with the ghost user.\nAny forks of private repositories made with the converted personal account will be deleted.\nSince organizations cannot...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/reference/personal-account-reference.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0126",
+      "title": "personal account reference (part 4)",
+      "category": "customer-support-style",
+      "summary": "Side effects of merging accounts\nOrganization and repository access permissions aren't transferable between accounts. If the account you want to delete has an existing access permission, an organization owner or repository administrator will need to invite the account that you want to keep.\nAny commits authored with a {% data variables.product.company_short %}-provided noreply email address cannot be transferred from one account to another. If the account you want to delete used the **Keep my email address private** option, it won't be possible to transfer the commits authored by the account you are deleting to the account you want to keep.\nIssues, pull requests, and discussions will not be attributed to the new account.\nAchievements are not able to be transferred between accounts.\n\nSecurity and analysis features settings",
+      "suggestedReply": "Side effects of merging accounts\nOrganization and repository access permissions aren't transferable between accounts. If the account you want to delete has an existing access permission, an organization owner or repository administrator will need to invite the account that you want to keep.\nAny commits authored with...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/reference/personal-account-reference.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-account-en-0127",
+      "title": "{% data reusables",
+      "category": "customer-support-style",
+      "summary": "{% data reusables.security.some-security-and-analysis-features-are-enabled-by-default %}\n\n{% data reusables.security.security-and-analysis-features-enable-read-only %}\n\n{% data reusables.security.displayed-information %}\n\nAvailable for hire\n\nWhen you select that you are **Available for hire** and someone uses the REST API to get public and private information about authenticated users, the hireable field returns true. For more information, see AUTOTITLE in the REST API documentation.",
+      "suggestedReply": "{% data reusables.security.some-security-and-analysis-features-are-enabled-by-default %}\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-account-en",
+      "source_path": "content/account-and-profile/reference/personal-account-reference.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0350",
+      "title": "Downgrading your personal account's plan\n\nIf you downgrade your personal account from {% data variables",
+      "category": "customer-support-style",
+      "summary": "Downgrading your personal account's plan\n\nIf you downgrade your personal account from {% data variables.product.prodname_pro %} to {% data variables.product.prodname_free_user %}, the account will lose access to advanced code review tools on private repositories. {% data reusables.gated-features.more-info %}\n\n{% data reusables.user-settings.access_settings %}\n{% data reusables.user-settings.billing_plans %}\n1. Under \"Current plan\", use the **Edit** drop-down and click **Downgrade to Free**.\n\n1. Read the information about the features your personal account will no longer have access to on your next billing date, then click **I understand. Continue with downgrade**.",
+      "suggestedReply": "Downgrading your personal account's plan\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/manage-plan-and-licenses/downgrade-plan.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0351",
+      "title": "If you published a {% data variables",
+      "category": "customer-support-style",
+      "summary": "If you published a {% data variables.product.prodname_pages %} site in a private repository and added a custom domain, remove or update your DNS records before downgrading from {% data variables.product.prodname_pro %} to {% data variables.product.prodname_free_user %}, to avoid the risk of a domain takeover. For more information, see AUTOTITLE.\n\nDowngrading your organization's plan\n\n{% data reusables.dotcom_billing.org-billing-perms %}\n\nAfter an organization's plan is downgraded, the organization will lose access to any functionality that is not included in the new plan. If an advanced feature, such as {% data variables.product.prodname_pages %}, is not available for private repositories in your new plan, consider whether you'd like to retain access to the feature by making affected repositories public. For more information, see AUTOTITLE.",
+      "suggestedReply": "If you published a {% data variables.product.prodname_pages %} site in a private repository and added a custom domain, remove or update your DNS records before downgrading from {% data variables.product.prodname_pro %} to {% data variables.product.prodname_free_user %}, to avoid the risk of a domain takeover. For mo...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/manage-plan-and-licenses/downgrade-plan.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0352",
+      "title": "Downgrading from {% data variables",
+      "category": "customer-support-style",
+      "summary": "Downgrading from {% data variables.product.prodname_ghe_cloud %} disables any SAML settings. If you later purchase {% data variables.product.prodname_enterprise %}, you will need to reconfigure SAML.\n[!NOTE]\nIf your organization is owned by an enterprise account, billing cannot be managed at the organization level. To downgrade, you must remove the organization from the enterprise account first. For more information, see AUTOTITLE.\n\n{% data reusables.organizations.billing-settings %}\n1. Under \"Current plan\", use the **Edit** drop-down and click the downgrade option you want.\n\n{% data reusables.dotcom_billing.confirm_cancel_org_plan %}\n\nDowngrading an organization's plan with legacy per-repository pricing\n\n{% data reusables.dotcom_billing.org-billing-perms %}\n\n{% data reusables.dotcom_billing.switch-legacy-billing %} For more information, see AUTOTITLE.",
+      "suggestedReply": "Downgrading from {% data variables.product.prodname_ghe_cloud %} disables any SAML settings. If you later purchase {% data variables.product.prodname_enterprise %}, you will need to reconfigure SAML.\n[!NOTE]\nIf your organization is owned by an enterprise account, billing cannot be managed at the organization level. ...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/manage-plan-and-licenses/downgrade-plan.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0353",
+      "title": "{% data reusables",
+      "category": "customer-support-style",
+      "summary": "{% data reusables.organizations.billing-settings %}\n5. Under \"Subscriptions\", next to your current plan, select the **Edit** dropdown menu and click **Edit plan**.\n1. Under \"Billing/Plans\", next to the plan you want to change, click **Downgrade**.\n1. Enter the reason you're downgrading your account, then click **Downgrade plan**.\n\nDowngrading your enterprise account's plan\n\nEnterprise accounts are only available with {% data variables.product.prodname_enterprise %}, so it's not possible to downgrade an enterprise account to another plan.\n\nIf you want to stop paying for {% data variables.product.prodname_enterprise %} altogether and your company pays via invoice, contact {% data variables.contact.contact_enterprise_sales %}.\n\nIf you have a self-serve enterprise account, an enterprise account owner can:",
+      "suggestedReply": "{% data reusables.organizations.billing-settings %}\n5. Under \"Subscriptions\", next to your current plan, select the **Edit** dropdown menu and click **Edit plan**.\n1. Under \"Billing/Plans\", next to the plan you want to change, click **Downgrade**.\n1. Enter the reason you're downgrading your account, then click **Dow...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/manage-plan-and-licenses/downgrade-plan.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0354",
+      "title": "downgrade plan (part 5)",
+      "category": "customer-support-style",
+      "summary": "1. Remove or delete all organizations from the enterprise. Removing an organization from an enterprise automatically downgrades the organization to {% data variables.product.prodname_free_team %}. See AUTOTITLE.\n1. Review and remove any remaining unaffiliated members from the enterprise. Depending on your policy settings, members who don't belong to any organizations may remain in your enterprise as unaffiliated members. To fully close the account, remove these unaffiliated members.\n1. Delete the enterprise account to cancel the {% data variables.product.prodname_enterprise %} subscription. See AUTOTITLE.\n\nFurther reading\nAUTOTITLE\nAUTOTITLE\nAUTOTITLE\nAUTOTITLE.\nAUTOTITLE",
+      "suggestedReply": "1. Remove or delete all organizations from the enterprise. Removing an organization from an enterprise automatically downgrades the organization to {% data variables.product.prodname_free_team %}. See AUTOTITLE.\n1. Review and remove any remaining unaffiliated members from the enterprise. Depending on your policy set...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/manage-plan-and-licenses/downgrade-plan.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0361",
+      "title": "Upgrading your personal account's plan\n\nYou can upgrade your personal account from {% data variables",
+      "category": "customer-support-style",
+      "summary": "Upgrading your personal account's plan\n\nYou can upgrade your personal account from {% data variables.product.prodname_free_user %} to {% data variables.product.prodname_pro %} to get advanced code review tools on private repositories owned by your personal account.\n\nUpgrading your personal account does not affect any organizations you may manage or repositories owned by those organizations. {% data reusables.gated-features.more-info %}",
+      "suggestedReply": "Upgrading your personal account's plan\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0362",
+      "title": "{% data reusables",
+      "category": "customer-support-style",
+      "summary": "{% data reusables.user-settings.access_settings %}\n1. In the left sidebar, click **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing & Licensing**, then click **Licensing**.\n1. Next to \"Current plan\", click **Upgrade**.\n1. Under \"Pro\" on the \"Compare plans\" page, click **Upgrade to Pro**.\n{% data reusables.dotcom_billing.choose-monthly-or-yearly-billing %}\n{% data reusables.dotcom_billing.show-plan-details %}\n{% data reusables.dotcom_billing.enter-billing-info %}\n{% data reusables.dotcom_billing.enter-payment-info %}\n{% data reusables.dotcom_billing.finish_upgrade %}\n\nUpgrading your organization's plan",
+      "suggestedReply": "{% data reusables.user-settings.access_settings %}\n1. In the left sidebar, click **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing & Licensing**, then click **Licensing**.\n1. Next to \"Current plan\", click **Upgrade**.\n1. Under \"Pro\" on the \"Compare plans\" page, click **Upgrade to Pro*...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0363",
+      "title": "You can upgrade your organization from {% data variables",
+      "category": "customer-support-style",
+      "summary": "You can upgrade your organization from {% data variables.product.prodname_free_team %} for an organization to {% data variables.product.prodname_team %} to access advanced collaboration and management tools for teams, or upgrade your organization to {% data variables.product.prodname_ghe_cloud %} for additional security, compliance, and deployment controls.\n\nUpgrading an organization does not affect your personal account or repositories owned by your personal account. {% data reusables.gated-features.more-info-org-products %}\n\n{% data reusables.dotcom_billing.org-billing-perms %}",
+      "suggestedReply": "You can upgrade your organization from {% data variables.product.prodname_free_team %} for an organization to {% data variables.product.prodname_team %} to access advanced collaboration and management tools for teams, or upgrade your organization to {% data variables.product.prodname_ghe_cloud %} for additional secu...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0364",
+      "title": "{% data reusables",
+      "category": "customer-support-style",
+      "summary": "{% data reusables.organizations.billing-settings %}\n{% data reusables.dotcom_billing.upgrade_org %}\n{% data reusables.dotcom_billing.choose_org_plan %}\n{% data reusables.dotcom_billing.choose-monthly-or-yearly-billing %}\n{% data reusables.dotcom_billing.show-plan-details %}\n{% data reusables.dotcom_billing.enter-payment-info %}\n{% data reusables.dotcom_billing.owned_by_business %}\n{% data reusables.dotcom_billing.finish_upgrade %}\n\nNext steps for organizations using {% data variables.product.prodname_ghe_cloud %}",
+      "suggestedReply": "{% data reusables.organizations.billing-settings %}\n{% data reusables.dotcom_billing.upgrade_org %}\n{% data reusables.dotcom_billing.choose_org_plan %}\n{% data reusables.dotcom_billing.choose-monthly-or-yearly-billing %}\n{% data reusables.dotcom_billing.show-plan-details %}\n{% data reusables.dotcom_billing.enter-pay...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0365",
+      "title": "As part of your upgrade to {% data variables",
+      "category": "customer-support-style",
+      "summary": "As part of your upgrade to {% data variables.product.prodname_ghe_cloud %}, you set up an enterprise account. An enterprise account allows you to manage multiple organizations. Optionally, you can set up identity and access management for an individual organization or enterprise account. See AUTOTITLE and AUTOTITLE{% ifversion fpt %} in the {% data variables.product.prodname_ghe_cloud %} documentation.{% else %}.{% endif %}\n\n{% data reusables.enterprise.create-an-enterprise-account %} See AUTOTITLE{% ifversion fpt %} in the {% data variables.product.prodname_ghe_cloud %} documentation.{% else %}.{% endif %}\n[!NOTE] {% data reusables.actions.org-to-enterprise-actions-permissions %}\n\nTroubleshooting a 500 error when upgrading\n\n{% data reusables.dotcom_billing.500-error %}\n\nSwitching your organization from per-repository to per-user pricing",
+      "suggestedReply": "As part of your upgrade to {% data variables.product.prodname_ghe_cloud %}, you set up an enterprise account. An enterprise account allows you to manage multiple organizations. Optionally, you can set up identity and access management for an individual organization or enterprise account. See AUTOTITLE and AUTOTITLE{...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0366",
+      "title": "{% data reusables",
+      "category": "customer-support-style",
+      "summary": "{% data reusables.dotcom_billing.switch-legacy-billing %} See AUTOTITLE.\n\n{% data reusables.organizations.billing-settings %}\n1. To the right of your plan name, select the **Edit** dropdown menu, then click **Edit plan**.\n1. To the right of \"Advanced tools for teams\", click **Upgrade now**.\n{% data reusables.dotcom_billing.choose_org_plan %}\n{% data reusables.dotcom_billing.choose-monthly-or-yearly-billing %}\n{% data reusables.dotcom_billing.owned_by_business %}\n{% data reusables.dotcom_billing.finish_upgrade %}\n\nFurther reading\nAUTOTITLE\nAUTOTITLE\nAUTOTITLE\nAUTOTITLE",
+      "suggestedReply": "{% data reusables.dotcom_billing.switch-legacy-billing %} See AUTOTITLE.\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0460",
+      "title": "The payment methods available depend on your account type",
+      "category": "customer-support-style",
+      "summary": "The payment methods available depend on your account type. Enterprise and organization accounts have more payment options than personal accounts. Invoiced enterprise accounts make their payments using other methods. For more information, see AUTOTITLE.\n\nManaging payment information\n\n{% data reusables.billing.manage-payment-info %}\n\nTroubleshooting payment method issues\n\nIf you encounter issues when adding or updating a payment method, you can try the following:\n\n1. Retry adding your payment method.\n1. Try adding a new payment method.\n1. Contact {% data variables.contact.github_support %} or your customer representative for additional assistance.\n\nViewing payment history\n\nYou can view your payment history, including the date, amount, and payment method. You can also download past payments.",
+      "suggestedReply": "The payment methods available depend on your account type. Enterprise and organization accounts have more payment options than personal accounts. Invoiced enterprise accounts make their payments using other methods. For more information, see AUTOTITLE.\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/set-up-payment/manage-payment-info.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0461",
+      "title": "manage payment info (part 2)",
+      "category": "customer-support-style",
+      "summary": "1. Display the **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing & Licensing** pages.\n1. Click **Payment history** to show details of payments.\n1. To view the receipt for a payment, click {% octicon \"eye\" aria-label=\"View receipt\" %}.\n1. To download a receipt or invoice, click {% octicon \"download\" aria-label=\"Download\" %} under \"Receipt\" or \"Invoice\".\n\nManaging billing contacts\n\nOrganizations and enterprises can add contacts to receive emails with billing notifications for payments, budget threshold alerts, and included usage alerts. One of the contacts is defined as the primary contact.\n\nOrganization billing contacts",
+      "suggestedReply": "1. Display the **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing & Licensing** pages.\n1. Click **Payment history** to show details of payments.\n1. To view the receipt for a payment, click {% octicon \"eye\" aria-label=\"View receipt\" %}.\n1. To download a receipt or invoice, click {% octi...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/set-up-payment/manage-payment-info.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0462",
+      "title": "manage payment info (part 3)",
+      "category": "customer-support-style",
+      "summary": "1. Display the **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing & Licensing** page for the organization.\n1. Click **Additional billing details**.\n1. In the table of \"Email recipients\":\nClick **Add**, enter an email address, and click **Add** to add a new billing contact.\nUse the **Edit** drop-down for an existing contact to remove the contact or make that contact the primary billing contact.\nClick **Edit** to update the email address for the primary billing contact.\n\nEnterprise billing contacts",
+      "suggestedReply": "1. Display the **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing & Licensing** page for the organization.\n1. Click **Additional billing details**.\n1. In the table of \"Email recipients\":\nClick **Add**, enter an email address, and click **Add** to add a new billing contact.\nUse the **Ed...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/set-up-payment/manage-payment-info.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0463",
+      "title": "manage payment info (part 4)",
+      "category": "customer-support-style",
+      "summary": "1. Display the **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing and Licensing** page for the enterprise.\n1. Click **Billing contacts**.\n1. In the table of \"Email recipients\":\nClick **Add**, enter an email address, and click **Add** to add a new billing contact.\nUse the **{% octicon \"kebab-horizontal\" aria-label=\"Show options for ...\" %}** drop-down for an existing contact to remove the contact or make that contact the primary billing contact.\nClick {% octicon \"pencil\" aria-label=\"Edit primary email address\" %} to update the email address for the primary billing contact.",
+      "suggestedReply": "1. Display the **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing and Licensing** page for the enterprise.\n1. Click **Billing contacts**.\n1. In the table of \"Email recipients\":\nClick **Add**, enter an email address, and click **Add** to add a new billing contact.\nUse the **{% octicon \"...\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/set-up-payment/manage-payment-info.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0486",
+      "title": "You can unlock and access your account by updating your account's payment method and resuming paid status",
+      "category": "customer-support-style",
+      "summary": "You can unlock and access your account by updating your account's payment method and resuming paid status. We do not ask you to pay for the time elapsed in locked mode.\n\nYou can downgrade your user account or organization to {% data variables.product.prodname_free_team %} to continue with the same advanced features in public repositories. For more information, see AUTOTITLE.\n\nUnlocking an account's features due to a declined payment\n\nIf your account's advanced features are locked due to a declined payment, you'll need to update your billing information to trigger a newly authorized charge.\n\n{% data reusables.billing.manage-payment-info %}\n\nIf the new billing information is approved, we will immediately charge you for the paid product you chose. The account will automatically unlock when a payment has been successfully processed. Payments may take up to 24 hours to process.",
+      "suggestedReply": "You can unlock and access your account by updating your account's payment method and resuming paid status. We do not ask you to pay for the time elapsed in locked mode.\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/troubleshooting/locked-account.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    },
+    {
+      "id": "ghdocs-billing-en-0487",
+      "title": "locked account (part 2)",
+      "category": "customer-support-style",
+      "summary": "Unlocking an account's features due to a failed authorization hold\n\nWhen initiating a subscription or trial, we verify the entered payment method using an authorization hold. If the hold is unsuccessful, the chosen subscription or trial will not activate.\n\nIf your account's advanced features are locked due to a failed authorization hold, you'll need to update your billing information to trigger a new authorization.\n\n{% data reusables.billing.manage-payment-info %}\n\nIf the new authorization is successful, the account will automatically unlock and you will be able to proceed with the chosen subscription.",
+      "suggestedReply": "Unlocking an account's features due to a failed authorization hold\n\nThis is taken from the procedure above; if it does not resolve the issue, a human should review it.",
+      "escalationRequired": false,
+      "escalationReason": "",
+      "triggerKeywords": [],
+      "language": "en",
+      "source_id": "ghdocs-billing-en",
+      "source_path": "content/billing/how-tos/troubleshooting/locked-account.md",
+      "licence": "CC-BY-4.0",
+      "derived": {
+        "title": "deterministic: first sentence (10-110 chars), else the filename stem",
+        "suggestedReply": "deterministic: first paragraph truncated to 320 chars, plus a fixed sentence",
+        "summary": false,
+        "model_involved": false
+      }
+    }
+  ]
+}

@@ -18,6 +18,7 @@ Each entry carries the default that is **in effect right now**, so the program n
 | id | Closed | How |
 | --- | --- | --- |
 | OQ-008 | 2026-10-07 | **Closed.** OD-13 labelled `out_of_scope` by the owner: the document explains how to add or update payment methods but does not answer why a stale card is charged, or how default payment selection works. The `decided: false` flag is gone and all 15 OD rows are decided. |
+| OQ-009 | **Retrieval baseline complete — review the numbers** | The baseline is the first measurement of the built gold set and it is not a headline until reviewed | Baseline recorded in `tooling/corpus/baseline-results.json`; no claim published | `node tooling/corpus/run-baseline.mjs` | 10 |
 | OQ-005 | 2026-10-07 | `@sop/mobile` excluded from the workspace (prereg `g9-drop-mobile`). node-forge, braces and sprintf-js left the lockfile with it; `sharp` was patched. `pnpm audit --prod` reports zero. |
 
 ---
@@ -82,3 +83,43 @@ label on the agent's evidence packet; it does **not** mean the owner inspected t
 **Eleven of fifteen resolve to `out_of_scope`, and that is the corpus-fit limit, not a labelling
 failure.** T04 is GitHub's own account and billing documentation; the questions describe a consumer
 service with phone verification and policy bans. See `docs/KNOWN_ISSUES.md` §10.
+
+---
+
+## OQ-009 in detail — the retrieval baseline
+
+**Command:** `node tooling/corpus/run-baseline.mjs`. Model `Xenova/all-MiniLM-L6-v2` (the shipped
+bi-encoder), no reranker, no confidence gate — the retrieval half only. Written to
+`tooling/corpus/baseline-results.json`.
+
+**These are the first measurements of the built gold set. They are not published as a claim until
+reviewed.**
+
+| Tenant | Rung | Group | n | R@1 | R@3 | R@5 | mean top-1 |
+| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
+| T01 | MVR 123 | A clean | 18 | 94.4% | 100.0% | 100.0% | 0.675 |
+| T01 | MVR 123 | A title-echo | 2 | 100.0% | 100.0% | 100.0% | 0.611 |
+| T01 | 500 | A clean | 18 | 77.8% | 100.0% | 100.0% | 0.678 |
+| T04 | MVR 57 | A clean | 18 | 77.8% | 88.9% | 94.4% | 0.627 |
+| T04 | MVR 57 | B answerable | 20 | 70.0% | 80.0% | 90.0% | 0.513 |
+| T04 | MVR 57 | B out_of_scope | 12 | — | — | — | **0.375** |
+| T04 | 500 | A clean | 18 | 72.2% | 83.3% | 94.4% | 0.638 |
+| T04 | 500 | B answerable | 20 | **30.0%** | 80.0% | 80.0% | 0.537 |
+| T04 | 500 | B out_of_scope | 12 | — | — | — | **0.413** |
+| T05 | MVR 123 | A clean | 7 | **42.9%** | 71.4% | 71.4% | 0.728 |
+| T05 | MVR 123 | A title-echo | 13 | **92.3%** | 100.0% | 100.0% | 0.812 |
+| T05 | MVR 123 | B answerable | 3 | 100.0% | 100.0% | 100.0% | 0.566 |
+
+**Three things a reviewer should look at first:**
+
+1. **Title-echo rows are trivially easy and must stay out of headlines.** T05: **92.3%** R@1 for
+   title-echo against **42.9%** for clean. Averaging them would report 75% for a set whose honest
+   figure is 42.9%.
+2. **T04 answerable R@1 collapses from 70% (MVR) to 30% (500).** The same questions, the same model,
+   a larger corpus. Any headline that does not name the rung is meaningless.
+3. **`out_of_scope` separates from answerable on top-1 similarity** — 0.375/0.413 against
+   0.513/0.537. That separation is what a confidence gate would act on, and it is the first evidence
+   that the gate has something to work with.
+
+**`out_of_scope` recall is shown as `—`, not 0%.** There is no correct document, so recall is
+undefined rather than zero.

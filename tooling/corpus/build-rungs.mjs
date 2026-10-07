@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build the 40 and 500 rungs.
+ * Build the Minimum Viable Rung and the 500-rung.
  *
  * A rung is a corpus of N procedures used to measure retrieval. Two rules from
  * the owner:
@@ -13,14 +13,23 @@
  *      between obviously different ones. Cross-tenant padding is what V2 calls
  *      `easy-mode` and it is not used here.
  *
- * ## The constraint this exposes
+ * ## Why the smallest rung is called MVR, not 40
  *
- * Rule 1 is a floor on the rung size, and the floor can exceed N. When the gold
- * answer documents contribute more procedures than the rung can hold, the rung
- * **cannot be built as specified** — and the honest output is a refusal with the
- * count, not a silently trimmed rung that drops gold coverage. The script prints
- * the floor for every tenant and rung so the constraint is visible before
- * anything is generated.
+ * V2 names a 40-procedure rung. It **cannot exist** under document-level labels:
+ * a question's acceptable set is every procedure of a document, documents average
+ * ~26 procedures, and T01 and T05 each have 123 gold procedures from their own
+ * answer documents alone. A 40-rung would have to drop gold coverage, which would
+ * make its questions unanswerable by construction and the resulting recall figure
+ * meaningless.
+ *
+ * The owner adopted option (c) on 2026-10-07: replace the 40-rung with the
+ * **Minimum Viable Rung** — the smallest corpus that holds every gold answer —
+ * and register it alongside the 500-rung. The MVR is therefore a *derived*
+ * quantity, different per tenant, and it is reported as such rather than
+ * presented as a chosen size.
+ *
+ * The builder still refuses rather than trimming, so if a future change makes the
+ * gold floor exceed 500 the 500-rung fails loudly too.
  *
  * Usage:
  *     node tooling/corpus/build-rungs.mjs
@@ -34,7 +43,7 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 
 const SEED = 20261007;
-const RUNGS = [40, 500];
+const TARGET_500 = 500;
 const TENANTS = ['T01-platform-operations-style', 'T04-customer-support-style', 'T05-policy-style'];
 
 const questions = JSON.parse(readFileSync(resolve(here, 'questions.json'), 'utf8')).questions;
@@ -77,7 +86,11 @@ for (const tenant of TENANTS) {
   console.log(`    minimum viable rung ${gold.length}   <- no rung below this can hold the gold answers`);
   console.log('');
 
-  for (const size of RUNGS) {
+  // The MVR is derived, not chosen: it is whatever size holds every gold answer.
+  const mvr = gold.length;
+  const rungs = [...new Set([mvr, TARGET_500])].sort((a, b) => a - b);
+
+  for (const size of rungs) {
     if (gold.length > size) {
       console.log(`    ${String(size).padStart(3)}-rung  REFUSED — ${gold.length} gold procedures exceed ${size}.`);
       console.log(`             The rung cannot hold the gold answers, and trimming them would make`);
@@ -88,20 +101,25 @@ for (const tenant of TENANTS) {
       continue;
     }
 
+    const kind = size === mvr ? 'MVR' : String(size);
     const fill = orderedRest.slice(0, size - gold.length);
     const procedures = [...gold, ...fill];
 
-    const file = `rungs/${tenant}-${size}.json`;
+    const file = `rungs/${tenant}-${kind}.json`;
     writeFileSync(
       resolve(here, file),
       `${JSON.stringify({
         tenant,
-        rung: size,
+        rung: kind,
+        rung_size: size,
         seed: SEED,
         data_mode: 'web-sourced',
         note:
-          'Fixed-seed rung. Contains every procedure of every gold answer document for this tenant, ' +
-          'plus same-domain distractors in a stable order. No cross-tenant padding.',
+          size === mvr
+            ? 'MINIMUM VIABLE RUNG. The smallest corpus that holds every gold answer document for this ' +
+              'tenant, so no gold coverage is trimmed. Derived from the gold set, not chosen.'
+            : 'Fixed-seed rung. Contains every procedure of every gold answer document for this tenant, ' +
+              'plus same-domain distractors in a stable order. No cross-tenant padding.',
         gold_documents: [...goldDocuments].sort(),
         gold_procedures: gold.length,
         distractor_procedures: fill.length,
@@ -110,14 +128,14 @@ for (const tenant of TENANTS) {
       'utf8',
     );
 
-    console.log(`    ${String(size).padStart(3)}-rung  built — ${gold.length} gold + ${fill.length} distractors = ${procedures.length}`);
+    console.log(`    ${kind.padStart(3)}-rung  built — ${gold.length} gold + ${fill.length} distractors = ${procedures.length}`);
     console.log(`             ${file}`);
     console.log('');
     report.push({ tenant, rung: size, built: true, gold_procedures: gold.length, distractors: fill.length, file });
   }
 }
 
-writeFileSync(resolve(here, 'rungs/index.json'), `${JSON.stringify({ seed: SEED, rungs: RUNGS, report }, null, 2)}\n`, 'utf8');
+writeFileSync(resolve(here, 'rungs/index.json'), `${JSON.stringify({ seed: SEED, target_500: TARGET_500, report }, null, 2)}\n`, 'utf8');
 
 console.log(`  refusals: ${refusals}`);
 console.log('');

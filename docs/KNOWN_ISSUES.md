@@ -146,3 +146,33 @@ records those refusals as first-class rows so that refusing is measured rather t
 **Not a claim that the fleet is unusable.** T01 (platform-operations) and T05 (policy) have their own
 coverage; this limit is stated for T04 and applies to the question classes named above. Any headline
 drawn from T04 must say which classes it covers.
+
+## 11. `out_of_scope` is tenant-scoped, not fleet-scoped
+
+**A question that is `out_of_scope` for one tenant may be answerable for another, and any
+fleet-level refusal figure that ignores this is wrong.**
+
+Established by construction in the gold set. The same question — a suspended account and how to
+appeal it — appears twice:
+
+| Row | Tenant | Label | Why |
+| --- | --- | --- | --- |
+| OD-11 | T04-customer-support-style | **`out_of_scope`** | T04 has no appeal material: 0 documents match `appeal`, `reinstate` or `banned`. |
+| SB-20 | T05-policy-style | **`answerable`** | T05 has `acceptable-use-policies/github-appeal-and-reinstatement.md`. |
+
+Both labels are correct. **`out_of_scope` means "this tenant's corpus does not answer it", not "no
+tenant's corpus answers it."**
+
+**Consequences, and they are easy to get wrong:**
+
+- A per-tenant refusal rate is meaningful. A fleet-wide refusal rate computed by pooling tenants is
+  not, unless it is stated per tenant.
+- Routing a question to the tenant that can answer it is a legitimate behaviour, and a retriever that
+  refuses because the *current* tenant cannot answer has not failed.
+- The eleven `out_of_scope` rows in Slice B are all tenant-scoped statements about T04. None of them
+  says the fleet has no answer.
+
+**Measured, not assumed.** In the first retrieval baseline (`tooling/corpus/run-baseline.mjs`), T04's
+twelve `out_of_scope` rows have a mean top-1 similarity of **0.375** at the MVR and **0.413** at the
+500-rung, against **0.513** and **0.537** for the twenty answerable rows. The two groups separate, and
+the separation is the signal a confidence gate would act on.
