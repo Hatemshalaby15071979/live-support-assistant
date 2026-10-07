@@ -6,7 +6,7 @@ Each entry carries the default that is **in effect right now**, so the program n
 | id | What | Why it is Zone R | Default in effect | To review | Owner minutes |
 | --- | --- | --- | --- | --- | --- |
 | OQ-001 | Push `prog/main` and the phase branches to `origin` | Anything that leaves this machine | Stay local; branches exist only on this host | `git push -u origin prog/main` | 1 |
-| OQ-002 | **Label spot-check batch 1 — 15 rows, all owner-supplied. OWNER REVIEW NOT DONE / UNVERIFIED.** | Label provenance: only `owner` and verified `agent-agreed` rows may carry a headline | `agent-agreed` rows stay `unverified` and are excluded from headlines; P1 proceeds | `node tooling/corpus/spotcheck.mjs --batch 1` | **15** |
+| OQ-002 | **Label spot-check batch 1 — 15 rows, all owner-supplied. OWNER REVIEW DONE — FAILED (7/14 = 50%, below 85% bar).** | Label provenance: only `owner` rows may carry a recall/D3 headline; agent labels DISCARDED for recall | Agent labels DISCARDED for recall/D3; 7 DISAGREE rows under relabel review (step 3); P1 proceeds on refusal/robustness only | `node tooling/corpus/spotcheck.mjs --batch 1` | **15** |
 | OQ-003 | Confirm the NC/ND licence exclusion list before P1 harvest | Licence compliance; a wrong call is a legal exposure, not an engineering one | NC/ND and unclear-terms sources are excluded automatically | `tooling/corpus/licence-allowlist.json` | 5 |
 | OQ-004 | Release tag and public deployment at the end of P8 | Public action | Prepare the exact command; do not run it | — | 2 |
 | OQ-005 | ~~Accepting the node-forge advisory past its 2026-10-30 review date~~ **MOOT — closed 2026-10-07** | The advisory left with `@sop/mobile`; the accepted-advisory set is now empty and the gate is strict | Nothing to accept | — | 0 |
@@ -25,22 +25,23 @@ Each entry carries the default that is **in effect right now**, so the program n
 
 ## OQ-002 in detail — the batch that is ready now
 
-> ### ⚠️ OWNER REVIEW: NOT DONE / UNVERIFIED
+> ### ⚠️ OWNER REVIEW: DONE — FAILED (7/14 = 50% < 85%)
 >
-> The owner confirmed on **2026-10-07** that he did **not** independently inspect the T04 documents for
-> these 15 rows. He initially marked the proposed labels "agree" from the agent's presentation, not by
-> reading the source documents.
+> The owner completed OQ-002 batch 1 on **2026-10-07** (continuation): explicit AGREE/DISAGREE verdicts
+> on all 14 countable rows — **7 AGREE / 7 DISAGREE = 50%**, below the 85% acceptance bar → **FAIL.**
+> This is the **third consecutive** below-bar spot-check (prior 5/15, 8/15; this 7/14).
 >
-> Therefore, and this is binding:
+> Binding consequences:
 >
-> 1. Those marks are **not** an independent owner spot-check.
-> 2. They **do not** count toward the 85% owner-match acceptance threshold.
-> 3. They are **not** rewritten as if validated.
-> 4. `spotcheck-batch-1.json` records `review_status: "NOT DONE"` and an evidence note saying so.
-> 5. No row is relabelled or excluded on the basis of those provisional marks.
+> 1. Agent-produced labels are **DISCARDED for recall and D3 claims** (per the new rule, step 5).
+> 2. The 7 DISAGREE rows are under **active relabel review** (step 3); their final `label_source` is
+>    not settled until the owner chooses [A]/[B]/[C].
+> 3. OD-13 is excluded (owner OQ-008, `out_of_scope`); it is **not** counted as AGREE.
+> 4. The excerpts shown at review time were 150-char fragments insufficient to support a judgement
+>    (see WEAK EVIDENCE in the report); the DISAGREEs may partly reflect that weakness, not the labels.
 >
-> **The owner spot-check is parked and must not be used as evidence for recall or gold-label quality
-> claims.** Every label below is agent-produced and unverified.
+> **Every answerability label below remains agent-produced pending relabel; recall/D3 claims are NOT
+> MEASURABLE from owner rows (see DECISIONS.md).**
 
 **Run `node tooling/corpus/spotcheck.mjs --batch 1`.** It prints 15 rows and writes
 `tooling/corpus/spotcheck-batch-1.json`.

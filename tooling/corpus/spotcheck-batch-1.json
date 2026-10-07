@@ -1,6 +1,6 @@
 {
-  "review_status": "NOT DONE",
-  "evidence_note": "Owner review is NOT DONE. No row has been independently inspected by the owner. These labels must not be used as evidence for recall or gold-label quality claims. Any provisional marks recorded outside this file are not an independent spot-check and do not count toward the acceptance threshold.",
+  "review_status": "REVIEWED-BELOW-BAR-7-OF-14-FAIL",
+  "evidence_note": "Owner completed the OQ-002 batch-1 review on 2026-10-07 (continuation): 7 AGREE / 7 DISAGREE of 14 countable rows = 50%, below the 85% acceptance bar. FAIL. Third consecutive below-bar spot-check (prior 5/15, 8/15; this 7/14). OD-13 is excluded (owner OQ-008, out_of_scope) and is NOT counted as AGREE. Per protocol, agent-produced labels are DISCARDED for recall and D3 claims. The 7 DISAGREE rows are under active relabel review (step 3); their final owner label_source is not yet settled. The excerpts shown at review time were 150-char fragments insufficient to support a judgement (see WEAK EVIDENCE in the report).",
   "note": "Owner spot-check batch. For each row: is the label right, and if the row is answerable, is the named document the one that answers it? Mark AGREE or DISAGREE. A disagreement is the most valuable output of this batch — it is the only thing that can find a wrong label.",
   "batch": 1,
   "batch_size": 15,
@@ -12,15 +12,15 @@
       "question": "added a new card but it still charges the old one",
       "tenant": "T04-customer-support-style",
       "slice": "B",
-      "proposed_label": "answerable",
+      "proposed_label": "out_of_scope",
       "proposed_documents": [
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
       "confidence": "medium",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
       "split": "held-out",
       "your_verdict": "",
-      "your_note": ""
+      "your_note": "Resolved by owner OQ-008 (2026-10-07) as out_of_scope — the document explains how to add or update payment methods but not why a stale card is still charged, nor how default-payment selection works. Excluded from the OQ-002 batch-1 count; NOT counted as AGREE."
     },
     {
       "id": "OD-01",
@@ -32,8 +32,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "held-out",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "DISAGREE",
+      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
     },
     {
       "id": "OD-02",
@@ -48,8 +48,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "DISAGREE",
+      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
     },
     {
       "id": "OD-03",
@@ -61,8 +61,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "AGREE",
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
     },
     {
       "id": "OD-04",
@@ -76,8 +76,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "DISAGREE",
+      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
     },
     {
       "id": "OD-05",
@@ -91,8 +91,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "DISAGREE",
+      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
     },
     {
       "id": "OD-06",
@@ -104,8 +104,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "DISAGREE",
+      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
     },
     {
       "id": "OD-07",
@@ -117,8 +117,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "AGREE",
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
     },
     {
       "id": "OD-08",
@@ -130,8 +130,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "AGREE",
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
     },
     {
       "id": "OD-09",
@@ -143,8 +143,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "AGREE",
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
     },
     {
       "id": "OD-10",
@@ -156,8 +156,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "AGREE",
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
     },
     {
       "id": "OD-11",
@@ -169,8 +169,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "held-out",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "DISAGREE",
+      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
     },
     {
       "id": "OD-12",
@@ -182,8 +182,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "AGREE",
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
     },
     {
       "id": "OD-14",
@@ -195,8 +195,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "AGREE",
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
     },
     {
       "id": "OD-15",
@@ -208,8 +208,8 @@
       "confidence": "high",
       "label_source": "owner",
       "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
+      "your_verdict": "DISAGREE",
+      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
     }
   ]
 }
