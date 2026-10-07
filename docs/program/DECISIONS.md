@@ -51,6 +51,35 @@ The owner's review was conducted on 150-character excerpt fragments that did not
 ("WEAK EVIDENCE" in the report); the DISAGREEs may partly reflect that weakness. The relabel exercise
 (step 3) supplies full procedure summaries so the owner can decide on the actual corpus text.
 
+### Relabel outcomes (step 3 complete, 2026-10-07)
+All 7 DISAGREE rows were relabelled against full-source text (re-fetched pinned corpus, verified
+SHA-256; embedding top-3 + keyword search over all 193 T04/T05 documents). Recorded as separate
+records in `spotcheck-batch-1.json` → `relabel_decisions`; the 7/14 tally stands.
+
+| Row | Choice | Outcome | Effect on gold set |
+| --- | --- | --- | --- |
+| OD-01 | [B] | out_of_scope CONFIRMED | none |
+| OD-02 | [A] | answerable | acceptable set + `username-reference.md` (agent label miss: the managed-account/SSO/LDAP reason) |
+| OD-04 | [A] | answerable | none (manage-payment-info.md stands) |
+| OD-05 | [A] | answerable | **acceptable document changed** to `declined-card.md` (the only passage addressing an expired card; manage-payment-info.md has 0 hits for delete/expired) |
+| OD-06 | [C] | UNRESOLVED — stays out_of_scope, not owner-confirmed either way | excluded from verified rows for recall/D3 claims |
+| OD-11 | [B] | out_of_scope CONFIRMED | none (the answering appeal doc is T05 — tenant-scoped, per SB-20) |
+| OD-15 | [B] | out_of_scope CONFIRMED | none |
+
+Net: **no OOS/answerable flips.** Owner rows remain 15 (all T04, all calibration; 12 OOS, 3
+answerable). Full-text-verified owner rows: **6 CONFIRMED + 1 UNRESOLVED**; the 7 spot-check AGREE
+rows remain fragment-based owner agreements (not re-verified against full text). The "recall/D3 use
+only owner rows" rule now has full-text evidence behind 14 of 15 owner rows' labels (OD-06 excepted),
+but the row COUNTS are unchanged → T01/T05 still 0 owner rows, T04 still 3 answerable owner rows →
+**recall/D3 remain NOT MEASURABLE at claimed N**.
+
+### Step-4 impact re-run after relabels (thresholds unchanged)
+`calibrate-tagged.mjs` re-run on current HEAD post-relabel: **identical** to the pre-relabel run —
+total unsafe 20 (T01 cal 1 · T04 cal 9 · T04 held-out 9 · T05 held-out 1); 14 near-domain (agent) OOS,
+6 construction (cross-tenant), **0 owner/od-batch**. (i) construction-only = 6 (all T04);
+(ii) construction+owner = 6. Expected: relabels changed only answerable-row acceptable sets and
+confirmed OOS labels — no threshold or label-composition change. Output: `calibrate-tagged-output.json`.
+
 ### g15 experiment status (owner ruling, 2026-10-07)
 g15 (P4 scope/refusal layer) **remains PAUSED** until all OQ-002 relabel choices are recorded and the step-4
 unsafe-by-type impact tables are re-run. It was not run during this session.

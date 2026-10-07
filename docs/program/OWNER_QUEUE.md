@@ -6,7 +6,7 @@ Each entry carries the default that is **in effect right now**, so the program n
 | id | What | Why it is Zone R | Default in effect | To review | Owner minutes |
 | --- | --- | --- | --- | --- | --- |
 | OQ-001 | Push `prog/main` and the phase branches to `origin` | Anything that leaves this machine | Stay local; branches exist only on this host | `git push -u origin prog/main` | 1 |
-| OQ-002 | **Label spot-check batch 1 — 15 rows, all owner-supplied. OWNER REVIEW DONE — FAILED (7/14 = 50%, below 85% bar).** | Label provenance: only `owner` rows may carry a recall/D3 headline; agent labels DISCARDED for recall | Agent labels DISCARDED for recall/D3; 7 DISAGREE rows under relabel review (step 3); P1 proceeds on refusal/robustness only | `node tooling/corpus/spotcheck.mjs --batch 1` | **15** |
+| OQ-002 | **Label spot-check batch 1 — 15 rows, all owner-supplied. OWNER REVIEW DONE — FAILED (7/14 = 50%, below 85% bar). RELABEL COMPLETE (7/7 decisions, full-text evidence).** | Label provenance: only `owner` rows may carry a recall/D3 headline; agent labels DISCARDED for recall | 7 relabel decisions recorded (5 CONFIRMED, 1 label-stands on weaker evidence, 1 UNRESOLVED); no OOS/answerable flips; impact tables re-run unchanged; g15 pause conditions now met — lift on owner word | `node tooling/corpus/spotcheck.mjs --batch 1` | **15** |
 | OQ-003 | Confirm the NC/ND licence exclusion list before P1 harvest | Licence compliance; a wrong call is a legal exposure, not an engineering one | NC/ND and unclear-terms sources are excluded automatically | `tooling/corpus/licence-allowlist.json` | 5 |
 | OQ-004 | Release tag and public deployment at the end of P8 | Public action | Prepare the exact command; do not run it | — | 2 |
 | OQ-006 | Whether organisational role addresses (`copyright@`, `privacy@`, `dpo@`, `legal-support@`, `events@`, `secret-scanning@`) count as personal data | All 12 findings that drop GitHub's 72-document site-policy tree are role addresses published so anyone can contact the organisation. GDPR argues a role mailbox does not identify a natural person; the counter is that it can still reach one. **My recommendation: exclude a defined role set — it would recover the whole policy tree and make T05-policy-style a real tenant.** It is a threshold change and needs a prereg. | Site-policy stays dropped; T05-policy-style stays empty | `docs/CORPUS_PROVENANCE.md` §5 | 3 |
@@ -33,8 +33,14 @@ Each entry carries the default that is **in effect right now**, so the program n
 > Binding consequences:
 >
 > 1. Agent-produced labels are **DISCARDED for recall and D3 claims** (per the new rule, step 5).
-> 2. The 7 DISAGREE rows are under **active relabel review** (step 3); their final `label_source` is
->    not settled until the owner chooses [A]/[B]/[C].
+> 2. The 7 DISAGREE rows went through **full-text relabel review — COMPLETE 2026-10-07**:
+>    OD-01 [B] out_of_scope CONFIRMED · OD-02 [A] answerable (acceptable set +username-reference.md,
+>    an agent label miss) · OD-04 [A] answerable (manage-payment-info.md) · OD-05 [A] answerable
+>    (acceptable document changed to declined-card.md) · OD-06 [C] UNRESOLVED (stays out_of_scope,
+>    not owner-confirmed either way) · OD-11 [B] out_of_scope CONFIRMED · OD-15 [B] out_of_scope
+>    CONFIRMED. Decisions are separate records in `spotcheck-batch-1.json` → `relabel_decisions`;
+>    they do not alter the 7/14 tally. Net effect on the gold set: no OOS/answerable flips;
+>    OD-02's and OD-05's acceptable documents were corrected.
 > 3. OD-13 is excluded (owner OQ-008, `out_of_scope`); it is **not** counted as AGREE.
 > 4. The excerpts shown at review time were 150-char fragments insufficient to support a judgement
 >    (see WEAK EVIDENCE in the report); the DISAGREEs may partly reflect that weakness, not the labels.
