@@ -212,7 +212,15 @@ if (!existsSync(questionsPath)) {
     fail('questions.json carries no questions');
   }
 
-  const ORIGINS = ['owner', 'public', 'derived-paraphrase'];
+  // The allowed values, extended on the owner's instruction 2026-10-07.
+  //
+  // `owner-directed-draft` is a distinct origin from `owner` and the distinction
+  // is load-bearing: it means the owner chose the topic but the wording was
+  // drafted, so the row is NOT a real customer question and must never be
+  // described as one. Collapsing it into `owner` would lose exactly that fact.
+  // `derived-style` means the row was written in the style of the owner's
+  // queries without being one.
+  const ORIGINS = ['owner', 'public', 'derived-paraphrase', 'owner-directed-draft', 'derived-style'];
   const LABEL_SOURCES = ['owner', 'agent-agreed', 'agent-single'];
 
   for (const [index, row] of rows.entries()) {

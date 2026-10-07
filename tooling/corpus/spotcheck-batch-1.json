@@ -1,0 +1,226 @@
+{
+  "note": "Owner spot-check batch. For each row: is the label right, and if the row is answerable, is the named document the one that answers it? Mark AGREE or DISAGREE. A disagreement is the most valuable output of this batch — it is the only thing that can find a wrong label.",
+  "batch": 1,
+  "batch_size": 15,
+  "total_rows": 15,
+  "accept_threshold": 0.85,
+  "rows": [
+    {
+      "id": "OD-07",
+      "question": "can i get my invoice in another language or as a pdf",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/set-up-payment/manage-enterprise-invoice.md"
+      ],
+      "confidence": "medium",
+      "label_source": "agent-single",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-09",
+      "question": "how do i reset everything on my account and start from zero",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md"
+      ],
+      "confidence": "medium",
+      "label_source": "agent-single",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-03",
+      "question": "i never got the OTP code to verify my account. tried 3 times",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+        "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md"
+      ],
+      "confidence": "medium",
+      "label_source": "agent-agreed",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-11",
+      "question": "why did you ban my account?? I did nothing wrong. how do I appeal",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/troubleshooting/locked-account.md"
+      ],
+      "confidence": "medium",
+      "label_source": "agent-agreed",
+      "split": "held-out",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-12",
+      "question": "verification code never arrives on my phone and resend doesnt work",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md"
+      ],
+      "confidence": "medium",
+      "label_source": "agent-agreed",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-01",
+      "question": "why is my account blacklisted?? i cant log in and nobody told me anything",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/troubleshooting/locked-account.md"
+      ],
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "split": "held-out",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-02",
+      "question": "I want to change my username but it won't let me. why?",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/account-and-profile/how-tos/account-management/changing-your-username.md",
+        "content/account-and-profile/concepts/username-changes.md"
+      ],
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-04",
+      "question": "how do i change my payment method? my old card was replaced",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-05",
+      "question": "How can I delete an expired card from my account?",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-06",
+      "question": "stop sending me marketing sms and emails. how do i turn them off",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-08",
+      "question": "can I pay only part of my invoice now and the rest later?",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-10",
+      "question": "I want to freeze my account for a few months, not delete it. is that possible?",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-13",
+      "question": "added a new card but it still charges the old one",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "split": "held-out",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-14",
+      "question": "too many emails from you!! unsubscribe me from everything",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-15",
+      "question": "I was charged twice for a gift during a live stream last week. can I get a refund",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "note": "Owner-supplied Slice B rows. Topics chosen by the owner; wording drafted by Claude. These are NOT real customer questions and must never be described as such anywhere. origin=owner-directed-draft, slice=B, data_mode=simulated.",
+  "tenant": "T04-customer-support-style",
+  "rows": [
+    { "id": "OD-01", "text": "why is my account blacklisted?? i cant log in and nobody told me anything" },
+    { "id": "OD-02", "text": "I want to change my username but it won't let me. why?" },
+    { "id": "OD-03", "text": "i never got the OTP code to verify my account. tried 3 times" },
+    { "id": "OD-04", "text": "how do i change my payment method? my old card was replaced" },
+    { "id": "OD-05", "text": "How can I delete an expired card from my account?" },
+    { "id": "OD-06", "text": "stop sending me marketing sms and emails. how do i turn them off" },
+    { "id": "OD-07", "text": "can i get my invoice in another language or as a pdf" },
+    { "id": "OD-08", "text": "can I pay only part of my invoice now and the rest later?" },
+    { "id": "OD-09", "text": "how do i reset everything on my account and start from zero" },
+    { "id": "OD-10", "text": "I want to freeze my account for a few months, not delete it. is that possible?" },
+    { "id": "OD-11", "text": "why did you ban my account?? I did nothing wrong. how do I appeal" },
+    { "id": "OD-12", "text": "verification code never arrives on my phone and resend doesnt work" },
+    { "id": "OD-13", "text": "added a new card but it still charges the old one" },
+    { "id": "OD-14", "text": "too many emails from you!! unsubscribe me from everything" },
+    { "id": "OD-15", "text": "I was charged twice for a gift during a live stream last week. can I get a refund" }
+  ],
+  "tags": {
+    "origin": "owner-directed-draft",
+    "slice": "B",
+    "data_mode": "simulated"
+  },
+  "note_on_od15": "OD-15 is a near-domain refusal test: a live-stream gift double-charge is the simulated WaveCast tenant's subject matter, not T04's. It is expected to be out_of_scope against T04/T05, and that is the point of including it."
+}

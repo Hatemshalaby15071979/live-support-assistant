@@ -248,10 +248,10 @@
       "attribution": "GitHub Docs (site policy), © GitHub, Inc., licensed under CC BY 4.0. https://github.com/github/docs",
       "redistribute_text": true,
       "redistribute_reason": "redistribution permitted with attribution; the attribution file is required for the corpus to be publishable",
-      "snapshot": "snapshots/0d09792d21e7fcb520392a7a073872525891372a81232b4afd88f8c6638ca835.json",
-      "snapshotSha256": "0d09792d21e7fcb520392a7a073872525891372a81232b4afd88f8c6638ca835",
+      "snapshot": "snapshots/b6d1f4ab07f4014a39f24616651db17576ff96c83c6b1047e59ffe2984d38c05.json",
+      "snapshotSha256": "b6d1f4ab07f4014a39f24616651db17576ff96c83c6b1047e59ffe2984d38c05",
       "harvested_at": "2026-10-07T05:59:14.492Z",
-      "items": 58,
+      "items": 57,
       "excluded": 9,
       "quarantined": 5,
       "quarantine_rate": 0.0476,
@@ -296,39 +296,13 @@
       ],
       "quarantine_detail": [
         {
-          "path": "content/site-policy/github-terms/github-corporate-terms-of-service.md",
+          "path": "content/site-policy/privacy-policies/github-candidate-privacy-policy.md",
           "patterns": [
-            "honorific-name"
-          ]
-        },
-        {
-          "path": "content/site-policy/github-terms/github-marketplace-developer-agreement.md",
-          "patterns": [
-            "postal-address"
-          ]
-        },
-        {
-          "path": "content/site-policy/github-terms/github-secret-scanning-partner-program-agreement.md",
-          "patterns": [
-            "email"
-          ]
-        },
-        {
-          "path": "content/site-policy/github-terms/github-terms-of-service.md",
-          "patterns": [
-            "honorific-name"
-          ]
-        },
-        {
-          "path": "content/site-policy/privacy-policies/github-general-privacy-statement.md",
-          "patterns": [
-            "email-obfuscated",
-            "email-obfuscated",
-            "email-obfuscated",
-            "email-obfuscated"
+            "account-identifier-shape"
           ]
         }
-      ]
+      ],
+      "refiltered_at": "2026-10-07T06:32:39.349Z"
     },
     {
       "id": "k8s-tasks-en",
@@ -345,10 +319,10 @@
       "attribution": "Kubernetes documentation, © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
       "redistribute_text": true,
       "redistribute_reason": "redistribution permitted with attribution; the attribution file is required for the corpus to be publishable",
-      "snapshot": "snapshots/8b4fdc09490e860e927653505c44a3d3dbf42ea7a336ab3b56568cd7607f507e.json",
-      "snapshotSha256": "8b4fdc09490e860e927653505c44a3d3dbf42ea7a336ab3b56568cd7607f507e",
+      "snapshot": "snapshots/dfdc29da33d670f0acce2bc495b1b7eed882a459c0690196c6cfbc77512512f3.json",
+      "snapshotSha256": "dfdc29da33d670f0acce2bc495b1b7eed882a459c0690196c6cfbc77512512f3",
       "harvested_at": "2026-10-07T05:26:44.617Z",
-      "items": 203,
+      "items": 199,
       "excluded": 18,
       "quarantined": 0,
       "quarantine_rate": 0,
@@ -427,7 +401,33 @@
           "reason": "too little prose after extraction"
         }
       ],
-      "quarantine_detail": []
+      "quarantine_detail": [
+        {
+          "path": "content/en/docs/tasks/administer-cluster/kubelet-credential-provider.md",
+          "patterns": [
+            "account-identifier-shape"
+          ]
+        },
+        {
+          "path": "content/en/docs/tasks/configure-pod-container/assign-resources/set-up-dra-cluster.md",
+          "patterns": [
+            "honorific-name"
+          ]
+        },
+        {
+          "path": "content/en/docs/tasks/debug/debug-application/debug-running-pod.md",
+          "patterns": [
+            "account-identifier-shape"
+          ]
+        },
+        {
+          "path": "content/en/docs/tasks/debug/debug-cluster/topology.md",
+          "patterns": [
+            "account-identifier-shape"
+          ]
+        }
+      ],
+      "refiltered_at": "2026-10-07T06:32:39.540Z"
     },
     {
       "id": "k8s-tasks-es",
@@ -444,10 +444,10 @@
       "attribution": "Kubernetes documentation (Spanish), © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
       "redistribute_text": true,
       "redistribute_reason": "redistribution permitted with attribution; the attribution file is required for the corpus to be publishable",
-      "snapshot": "snapshots/4919cb72ad6208c44449441ec74f9f18e0d0b53db4e4145cbc1386ee3b55d5a6.json",
-      "snapshotSha256": "4919cb72ad6208c44449441ec74f9f18e0d0b53db4e4145cbc1386ee3b55d5a6",
+      "snapshot": "snapshots/1f590ab46c2568630e97a77ba558b199f3010ff022e97c263cce2cec47091271.json",
+      "snapshotSha256": "1f590ab46c2568630e97a77ba558b199f3010ff022e97c263cce2cec47091271",
       "harvested_at": "2026-10-07T05:27:18.742Z",
-      "items": 36,
+      "items": 35,
       "excluded": 21,
       "quarantined": 0,
       "quarantine_rate": 0,
@@ -538,7 +538,16 @@
           "reason": "too little prose after extraction"
         }
       ],
-      "quarantine_detail": []
+      "quarantine_detail": [
+        {
+          "path": "content/es/docs/tasks/run-application/run-stateless-application-deployment.md",
+          "patterns": [
+            "account-identifier-shape",
+            "account-identifier-shape"
+          ]
+        }
+      ],
+      "refiltered_at": "2026-10-07T06:32:39.582Z"
     },
     {
       "id": "k8s-tasks-fr",
@@ -650,10 +659,10 @@
       "attribution": "Kubernetes documentation (Portuguese, Brazil), © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
       "redistribute_text": true,
       "redistribute_reason": "redistribution permitted with attribution; the attribution file is required for the corpus to be publishable",
-      "snapshot": "snapshots/9e09b5f6a0502b307ba4526b3a9a3f43dfdb561a94f517898424a50bf17311c3.json",
-      "snapshotSha256": "9e09b5f6a0502b307ba4526b3a9a3f43dfdb561a94f517898424a50bf17311c3",
+      "snapshot": "snapshots/a141f5723771b0f845df5f9632126c53f0d03466dddeefce51fc9b4b0a861ec4.json",
+      "snapshotSha256": "a141f5723771b0f845df5f9632126c53f0d03466dddeefce51fc9b4b0a861ec4",
       "harvested_at": "2026-10-07T05:28:01.371Z",
-      "items": 69,
+      "items": 67,
       "excluded": 4,
       "quarantined": 0,
       "quarantine_rate": 0,
@@ -676,7 +685,22 @@
           "reason": "too little prose after extraction"
         }
       ],
-      "quarantine_detail": []
+      "quarantine_detail": [
+        {
+          "path": "content/pt-br/docs/tasks/administer-cluster/kubelet-credential-provider.md",
+          "patterns": [
+            "account-identifier-shape"
+          ]
+        },
+        {
+          "path": "content/pt-br/docs/tasks/debug/debug-application/debug-running-pod.md",
+          "patterns": [
+            "account-identifier-shape"
+          ]
+        }
+      ],
+      "refiltered_at": "2026-10-07T06:32:39.687Z"
     }
-  ]
+  ],
+  "refilter_note": "Items were re-gated after the privacy rules changed. This is not a harvest: no source was added and nothing was fetched. Snapshots whose contents changed were renamed to their new content hash."
 }

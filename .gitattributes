@@ -7,3 +7,19 @@
 # The SQL test suites and migrations are fed to psql via stdin. CRLF is tolerated
 # there, but pinning them removes a class of "works locally, fails in CI".
 *.sql text eol=lf
+
+# Corpus snapshots are named by the SHA-256 of their own contents. If Git
+# rewrites the line endings on checkout, the file no longer hashes to the name it
+# carries and verify-corpus.mjs reports "the snapshot was modified in place" --
+# which is true, and not what happened. On Windows core.autocrlf=true is the
+# default, so this fired on every checkout. A content-addressed scheme and an
+# automatic newline translation are incompatible; one of them has to be pinned.
+tooling/corpus/snapshots/*.json text eol=lf
+tooling/corpus/manifest.json text eol=lf
+tooling/corpus/translation-pairs.json text eol=lf
+
+# The skill's frontmatter is parsed by tooling/verify-agent-skill.mjs, which was
+# CRLF-sensitive and failed on every Windows checkout until it was fixed. It is
+# fixed, and the file is still pinned to LF so the parser is not the only thing
+# standing between a checkout and a red gate.
+Hatem_specific.md text eol=lf

@@ -1,0 +1,249 @@
+{
+  "note": "Gold set. Every row carries origin, label_source, data_mode and slice. Labels are at DOCUMENT level: acceptable_documents names the source document(s) that contain the answer, and a hit is a retrieved procedure belonging to one of them. The split is a fixed-seed hash of the row id, not a PRNG, so adding a row never re-splits the others.",
+  "seed": 20261007,
+  "calibration_fraction": 0.7,
+  "owner_wording_note": "The OD- rows are owner-directed drafts: topics chosen by the owner, wording drafted by Claude. They are NOT real customer questions and must never be described as such.",
+  "counts": {
+    "total": 15,
+    "answerable": 10,
+    "out_of_scope": 5,
+    "calibration": 12,
+    "held_out": 3,
+    "agent_agreed": 13,
+    "agent_single": 2
+  },
+  "questions": [
+    {
+      "id": "OD-01",
+      "text": "why is my account blacklisted?? i cant log in and nobody told me anything",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/troubleshooting/locked-account.md"
+      ],
+      "reasoning": "A locked account is the corpus's term for what the writer calls blacklisted. The document covers unlocking by resuming paid status.",
+      "split": "held-out"
+    },
+    {
+      "id": "OD-02",
+      "text": "I want to change my username but it won't let me. why?",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/changing-your-username.md",
+        "content/account-and-profile/concepts/username-changes.md"
+      ],
+      "reasoning": "The how-to covers the change; the concept page covers why a name is refused (unavailable, reserved, recently changed). The question asks why it will not let them.",
+      "split": "calibration"
+    },
+    {
+      "id": "OD-03",
+      "text": "i never got the OTP code to verify my account. tried 3 times",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "answerable",
+      "confidence": "medium",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+        "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md"
+      ],
+      "reasoning": "The writer says OTP, which suggests SMS, but the corpus only covers email verification. The document covers a verification message that never arrives. Medium, not high, because the channel may differ.",
+      "split": "calibration"
+    },
+    {
+      "id": "OD-04",
+      "text": "how do i change my payment method? my old card was replaced",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "reasoning": "Adding and replacing a payment method is exactly this document.",
+      "split": "calibration"
+    },
+    {
+      "id": "OD-05",
+      "text": "How can I delete an expired card from my account?",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "reasoning": "Removing a card is the same document as adding one.",
+      "split": "calibration"
+    },
+    {
+      "id": "OD-06",
+      "text": "stop sending me marketing sms and emails. how do i turn them off",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "out_of_scope",
+      "confidence": "high",
+      "acceptable_documents": [],
+      "reasoning": "No T04 document covers marketing or SMS opt-out. A targeted search for marketing, unsubscribe and notification settings returns only the cookie-preferences page, which is unrelated. REFUSAL CASE.",
+      "split": "calibration"
+    },
+    {
+      "id": "OD-07",
+      "text": "can i get my invoice in another language or as a pdf",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-single",
+      "label": "answerable",
+      "confidence": "medium",
+      "acceptable_documents": [
+        "content/billing/how-tos/set-up-payment/manage-enterprise-invoice.md"
+      ],
+      "reasoning": "The invoice document covers retrieving and downloading invoices. It does not state a language option, so the second half of the question is likely unanswerable while the first is covered. Medium for that reason.",
+      "split": "calibration"
+    },
+    {
+      "id": "OD-08",
+      "text": "can I pay only part of my invoice now and the rest later?",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "out_of_scope",
+      "confidence": "high",
+      "acceptable_documents": [],
+      "reasoning": "No document covers partial payment or instalments. REFUSAL CASE.",
+      "split": "calibration"
+    },
+    {
+      "id": "OD-09",
+      "text": "how do i reset everything on my account and start from zero",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-single",
+      "label": "answerable",
+      "confidence": "medium",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md"
+      ],
+      "reasoning": "Deleting is the closest documented action to the writer's reset, but it is not the same request — the writer may want to clear data and keep the account. Medium, and a spot-check should confirm whether the owner accepts it.",
+      "split": "calibration"
+    },
+    {
+      "id": "OD-10",
+      "text": "I want to freeze my account for a few months, not delete it. is that possible?",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "out_of_scope",
+      "confidence": "high",
+      "acceptable_documents": [],
+      "reasoning": "No document covers suspending or freezing an account without deleting it. REFUSAL CASE.",
+      "split": "calibration"
+    },
+    {
+      "id": "OD-11",
+      "text": "why did you ban my account?? I did nothing wrong. how do I appeal",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "answerable",
+      "confidence": "medium",
+      "acceptable_documents": [
+        "content/billing/how-tos/troubleshooting/locked-account.md"
+      ],
+      "reasoning": "Locked is the documented state. The document does not describe an appeal process, so the second half of the question is only partly covered. Medium.",
+      "split": "held-out"
+    },
+    {
+      "id": "OD-12",
+      "text": "verification code never arrives on my phone and resend doesnt work",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "answerable",
+      "confidence": "medium",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md"
+      ],
+      "reasoning": "Same reasoning as OD-03: the corpus covers email verification, the writer describes a phone code. Medium.",
+      "split": "calibration"
+    },
+    {
+      "id": "OD-13",
+      "text": "added a new card but it still charges the old one",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "reasoning": "Setting the method that is actually charged is this document.",
+      "split": "held-out"
+    },
+    {
+      "id": "OD-14",
+      "text": "too many emails from you!! unsubscribe me from everything",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "out_of_scope",
+      "confidence": "high",
+      "acceptable_documents": [],
+      "reasoning": "As OD-06. REFUSAL CASE.",
+      "split": "calibration"
+    },
+    {
+      "id": "OD-15",
+      "text": "I was charged twice for a gift during a live stream last week. can I get a refund",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "owner-directed-draft",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label": "out_of_scope",
+      "confidence": "high",
+      "acceptable_documents": [],
+      "reasoning": "A live-stream gift double-charge is the simulated WaveCast tenant's subject matter, not T04's. The owner supplied this deliberately as a near-domain refusal test. REFUSAL CASE.",
+      "split": "calibration"
+    }
+  ]
+}
