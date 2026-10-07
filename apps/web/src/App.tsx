@@ -4,6 +4,7 @@ import {
   buildEscalationRecord,
   DEFAULT_GATE_CONFIG,
   evaluateGate,
+  GATE_CONFIGS,
   type AgentView,
   type EscalationRecord,
   type SopDocument,
@@ -133,6 +134,11 @@ function App() {
   const activeLoad = useRef(0);
   const activeQuery = useRef(0);
   const queryInFlight = useRef(false);
+
+  // Identity is resolved from the server (currentTenant()), never from anything the
+  // client could set — see ./auth. The tenant key it yields is the ONLY input to the
+  // confidence gate below; there is no client-chosen fallback.
+  const { auth, signIn, signOut } = useIdentity();
 
   useEffect(() => {
     return () => {
@@ -350,11 +356,15 @@ function App() {
       }
 
       const candidates = searchTopK(vector, index.entries, 5);
-      const decision = evaluateGate(candidates, {
-        thresholdAccept: DEFAULT_GATE_CONFIG.thresholdAccept,
-        minMargin,
-        topK: DEFAULT_GATE_CONFIG.topK,
-      });
+
+      // The gate is tenant-keyed and fails closed. The tenant key comes from the
+      // server-attributed identity (currentTenant()), never from the client; an
+      // unknown or missing tenant blocks with reason 'unknown_tenant'. There is no
+      // fallback to a global config — see packages/core/src/gate.ts.
+      const tenantKey = auth.status === 'signed-in' ? auth.identity.tenantId : null;
+      const tenantGateConfig =
+        tenantKey !== null && tenantKey in GATE_CONFIGS ? GATE_CONFIGS[tenantKey] : null;
+      const decision = evaluateGate(candidates, GATE_CONFIGS, tenantKey ?? undefined);
       const queryEventId = crypto.randomUUID();
       const queryOccurredAt = new Date().toISOString();
       const escalationId = crypto.randomUUID();
@@ -376,8 +386,8 @@ function App() {
           score: nextView.kind === 'answer' ? nextView.score : null,
           margin: nextView.kind === 'answer' ? nextView.margin : null,
           gateReason: nextView.kind === 'escalation' ? nextView.reason : null,
-          thresholdAccept: DEFAULT_GATE_CONFIG.thresholdAccept,
-          minMargin,
+          thresholdAccept: tenantGateConfig?.thresholdAccept ?? DEFAULT_GATE_CONFIG.thresholdAccept,
+          minMargin: tenantGateConfig?.minMargin ?? DEFAULT_GATE_CONFIG.minMargin,
           topCandidates: decision.evidence.map((candidate) => ({
             sopId: candidate.sopId,
             score: candidate.score,
@@ -394,10 +404,9 @@ function App() {
             bundleVersion,
             modelId: servingModel.id,
             modelRevision: servingModel.revision,
-            parameters: {
-              thresholdAccept: DEFAULT_GATE_CONFIG.thresholdAccept,
-              minMargin,
-            },
+            parameters: tenantGateConfig
+              ? { thresholdAccept: tenantGateConfig.thresholdAccept, minMargin: tenantGateConfig.minMargin }
+              : { thresholdAccept: DEFAULT_GATE_CONFIG.thresholdAccept, minMargin: DEFAULT_GATE_CONFIG.minMargin },
           })
         : null;
       queue.enqueueDecision(event, record);
@@ -423,7 +432,7 @@ function App() {
         setSearching(false);
       }
     }
-  }, [index, inputText, minMargin, queue, flush, activeCorpus, bundleVersion]);
+  }, [index, inputText, minMargin, queue, flush, activeCorpus, bundleVersion, auth]);
 
 
   const copyToClipboard = useCallback(async () => {
@@ -442,7 +451,6 @@ function App() {
 
   const sopTitle = (sopId: string) =>
     activeCorpus.find((document) => document.id === sopId)?.title ?? sopId;
-  const { auth, signIn, signOut } = useIdentity();
 
   // Signing out has to end the session *and* release what this browser is holding for
   // the tenant. Ending the session alone left a decrypted policy corpus, a

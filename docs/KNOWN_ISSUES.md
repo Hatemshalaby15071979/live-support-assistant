@@ -234,35 +234,85 @@ measured rather than smoothed.
 alone. Before this, T01 and T05 had zero `out_of_scope` rows in the calibration split and their gates
 could only be assessed on false refusals.
 
-## 14. Held-out validation (V2 D1): 0 unsafe met for T01/T04, **not** for T05
+## 14. Held-out validation (V2 D1): **not measurable** at current N
 
 **V2 D1 requires 0 unsafe answers on the held-out split.** The operating point is read from
 `GATE_CONFIGS` (`packages/core/src/types.ts`) — never re-derived from held-out — so this is a
-pass/fail check, not tuning. Measured on the held-out split, 500-rung, model
-`Xenova/all-MiniLM-L6-v2`, `tooling/corpus/gate-calibration-heldout.json` (`data_mode: held-out`).
+pass/fail check, not tuning. 500-rung, model `Xenova/all-MiniLM-L6-v2`,
+`tooling/corpus/gate-calibration-heldout.json` (`data_mode: held-out`).
 
-| Tenant | answerable | out_of_scope | operating @ | TP | FP | FN | **unsafe** | precision | recall | false-refusal |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| T01 | 6 | 2 | 0.68 | 2 | 0 | 4 | **0** | 100.0% | 33.3% | 66.7% |
-| T04 | 11 | 3 | 0.53 | 6 | 2 | 3 | **0** | 75.0% | 54.5% | 27.3% |
-| T05 | 11 | 2 | 0.61 | 1 | 3 | 8 | **1** | 25.0% | 9.1% | 72.7% |
+**Definitions (where the taxonomy lives).** The gate decision taxonomy — `outcome: 'accepted' | 'blocked'`
+and `GateBlockReason` — is in `packages/core/src/gate.ts`. The calibration metrics semantics are in
+`tooling/corpus/calibrate-gate.mjs`:
+- **unsafe** = an `out_of_scope` question the gate **served** (returned a procedure). Reported separately;
+  never folded into precision.
+- **wrong-procedure answer served** = a served answer to an **answerable** question that names the **wrong**
+  document = `FP − unsafe`.
+- TP / FN = answerable served / refused; FP = wrong served **OR** `out_of_scope` served; TN =
+  `out_of_scope` refused.
 
-**Result: V2 D1 passes for T01 and T04, fails for T05.** T05 still serves **1 `out_of_scope`** at its
-calibrated 0.61, so the 0-unsafe property that holds on the calibration split does **not** transfer to
-held-out.
+**Label provenance — applies to every table below.** Every gold label here is **agent-agreed and
+UNVERIFIED** (OQ-002 spot-check is still NOT DONE: the owner confirmed he did not independently inspect
+the documents, and his earlier "agree" marks came from the agent's presentation, not from reading the
+text). These figures therefore describe **agent-agreed labels, not validated ground truth**, and are
+**not headline-eligible**. `label_source = agent`, `spot_check = NOT DONE` for all rows.
 
-**Why T05 fails on held-out but not calibration.** The calibrated 0.61 was the first zero-unsafe
-threshold on the calibration split; on held-out the first zero-unsafe point moves to **~0.69**, which
-would refuse **10 of 11** answerable questions. The discrepancy is driven by only **2 `out_of_scope`**
-rows in T05's held-out slice — a single such question crossing the threshold flips the pass/fail verdict.
-The held-out measurement is therefore high-variance for T05 and should be read as "threshold unproven",
-not "threshold proven safe at 0.61".
+**Measurability of D1 at this N.** Held-out `out_of_scope` counts are **T01 = 2, T04 = 3, T05 = 2
+(total 7)**, against the prereg floor of **300 per tenant**. With 0 observed unsafe in N=3 (T04, T05),
+the **upper 95% bound is ≈ 100%** — a zero observed does **not** establish zero true. **D1 is not
+measurable at N=7**, and not measurable per tenant at N ≤ 3. "T01/T04 reached zero unsafe" overstates it:
+they *served* 0 unsafe; that is an anecdote, not a bound. Treat all three as **unproven**, not proven
+safe.
 
-**T01 and T04 are genuinely zero-unsafe on held-out** (0 `out_of_scope` served), but their verdicts rest
-on small held-out `out_of_scope` counts too (2 and 3 respectively). The recall cost is large in all
-three (T01 33.3%, T04 54.5%, T05 9.1%) — the gate protects safety at the expense of serving answerable
-traffic, which is the agreed V2 trade.
+### Held-out operating points (data_mode=held-out)
 
-**Decision pending (NOT resolved in this commit):** raise T05 to its held-out zero-unsafe point (~0.69,
-at 10/11 false refusals — near-total refusal), or accept 1 unsafe on held-out, or expand T05's
-`out_of_scope` coverage and re-evaluate. The choice is a product/safety call, not a code change.
+`ans N` = answerable rows, `OOS N` = out_of_scope rows. Recall figures are over answerable N of 6–11
+rows — **anecdote, not measurement** (marked \*).
+
+| Tenant | ans N | OOS N | @ | TP | FP | FN | **unsafe** | wrong-proc served | precision | recall\* | false-refusal | label_source | spot_check |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |
+| T01 | 6 | 2 | 0.68 | 2 | 0 | 4 | **0** | 0 | 100.0% | 33.3% | 66.7% | agent | NOT DONE |
+| T04 | 11 | 3 | 0.53 | 6 | 2 | 3 | **0** | 2 | 75.0% | 54.5% | 27.3% | agent | NOT DONE |
+| T05 | 11 | 2 | 0.61 | 1 | 3 | 8 | **1** | 2 | 25.0% | 9.1% | 72.7% | agent | NOT DONE |
+
+**D1 verdict.** T01 served 0 unsafe (OOS N=2), T04 served 0 unsafe (OOS N=3), T05 served **1 unsafe**
+(OOS N=2). T05 **fails**. T01 and T04 are **not a measurable pass**: 0 of 2–3 with a 95% upper bound
+≈ 100%. D1 is **NOT MET as a measured property** at this N; it is "unproven", not "proven safe".
+
+### Calibration operating points (data_mode=calibration — reference; same unverified labels)
+
+| Tenant | ans N | OOS N | @ | TP | FP | FN | unsafe | wrong-proc served | precision | recall\* | false-refusal | label_source | spot_check |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |
+| T01 | 12 | 6 | 0.68 | 9 | 2 | 1 | 0 | 2 | 81.8% | 75.0% | 8.3% | agent | NOT DONE |
+| T04 | 27 | 9 | 0.53 | 10 | 10 | 7 | 0 | **10** | 50.0% | 37.0% | 25.9% | agent | NOT DONE |
+| T05 | 14 | 6 | 0.61 | 3 | 3 | 8 | 0 | 3 | 50.0% | 21.4% | 57.1% | agent | NOT DONE |
+
+**The T04 precision story, both halves.** At 0.53 T04 precision is 50.0%, but FP=10 with unsafe=0 means
+**all 10 false positives were wrong-procedure answers** — half of T04's served answers named the wrong
+document. That is a retrieval-quality failure a threshold cannot fix; `unsafe=0` only means none of
+those wrong answers were `out_of_scope`. Reporting precision alone hid this; the **wrong-proc served**
+column is the half that matters for product quality.
+
+**Calibration vs held-out for T05.** Calibration showed 0 unsafe at 0.61; held-out shows 1 unsafe at the
+same 0.61. The operating point is read from `GATE_CONFIGS`, never re-tuned on held-out — so this is a
+held-out failure, not a recalibration. It is driven by OOS N=2 on held-out; a single `out_of_scope`
+crossing the threshold flips the verdict.
+
+### calibration_status (PROVISIONAL — see DECISIONS.md)
+
+| Tenant | threshold | calibration_status |
+| --- | ---: | --- |
+| T01 | 0.68 | `unproven-heldout` (OOS N=2) |
+| T04 | 0.53 | `unproven-heldout` (OOS N=3) |
+| T05 | 0.61 | **`failed-heldout`** (1 unsafe on held-out) |
+
+Thresholds chosen on the calibration split with unverified labels and tiny OOS N. **Not
+production-calibrated.** No production claim is made for any tenant.
+
+**T05 decision (owner, this review): option (c).** Do **not** raise T05 to ~0.69 (tuning on held-out
+destroys the split), do **not** accept 1 unsafe. Grow `out_of_scope` to ≥ 100 per tenant (fleet N ≥ 300)
+in two slices — (i) cross-tenant OOS, `label_source=construction`, tagged easy-mode; (ii) near-domain
+OOS, answer genuinely absent, agent-labelled and queued for owner spot-check — on a fixed-seed 70/30
+split with a fresh held-out never used for tuning. Prereg first; recalibrate on the new held-out with N
+and the 3/N bound. The held-out rows already seen become calibration data, labelled as such. Until done,
+T05 = `calibration_status=failed-heldout`, no production claim, D1 NOT MET. (Implemented under task #9.)

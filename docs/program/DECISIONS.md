@@ -4,6 +4,47 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-07 (later) — Per-tenant gate thresholds: POST-HOC governance record
+
+**Zone.** Y (governance). **Status.** POST-HOC — no prereg existed for these changes; recorded after the
+fact per the owner's review.
+
+### What changed, and the gap
+Commit `f8cbf0b` (and the follow-up in the same session) introduced per-tenant confidence-gate thresholds
+(T01 0.68, T04 0.53, T05 0.61) via `GATE_CONFIGS` (`packages/core/src/types.ts`), made `evaluateGate`
+**fail closed** on unknown/missing tenants (`reason: 'unknown_tenant'`, no global fallback), and fixed the
+zero-unsafe label in `calibrate-gate.mjs`.
+
+**No prereg covered either change.** `docs/prereg/` holds g9 (drop mobile), g10 (quarantine-rate severity),
+g12 (role addresses), g13 (shape-first). None addresses gate-threshold calibration or calibration-report
+labelling. The V2 contract treats a *threshold* change as lower-risk than a *rule* change, but the
+`calibrate-gate.mjs` label fix is a reporting-rule change and should have carried a prereg.
+
+### Provisional status (owner ruling, this review)
+All three thresholds are **provisional**:
+- chosen on the **calibration** split (never re-tuned on held-out),
+- on **agent-agreed, UNVERIFIED** gold labels (OQ-002 spot-check still NOT DONE),
+- at **tiny held-out OOS N** (T01 2, T04 3, T05 2; prereg floor is 300 per tenant).
+
+`calibration_status` per tenant:
+
+| Tenant | threshold | calibration_status |
+| --- | ---: | --- |
+| T01 | 0.68 | `unproven-heldout` |
+| T04 | 0.53 | `unproven-heldout` |
+| T05 | 0.61 | **`failed-heldout`** (1 unsafe on held-out) |
+
+**No production claim is made for any tenant.** D1 (0 unsafe on held-out) is **NOT MET** as a measured
+property at N=7 OOS; it is *unproven*, not *proven safe*. See `docs/KNOWN_ISSUES.md` §14.
+
+### Remediation going forward
+- T05 recalibration (option **(c)**, owner-chosen) gets a **prereg before the run**: zero unsafe on the
+  new calibration split first, then max answer rate; report on a fresh held-out with N and the 3/N bound.
+- Rule changes to calibration reporting get a prereg going forward; threshold-only changes keep the
+  lower bar but must still state `calibration_status`.
+
+---
+
 ## 2026-10-07 — Headline standard, and the confidence gate has no safe threshold in the tested range
 
 **Zone.** Y.

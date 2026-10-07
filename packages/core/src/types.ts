@@ -103,6 +103,11 @@ export const DEFAULT_GATE_CONFIG: ConfidenceGateConfig = {
  * reach zero unsafe answers; `minMargin` and `topK` are held at the shipped
  * default because calibration addressed `thresholdAccept` only.
  *
+ * **PROVISIONAL.** Chosen on the calibration split, on agent-agreed UNVERIFIED
+ * labels (OQ-002 spot-check NOT DONE), at tiny held-out `out_of_scope` N
+ * (T01 2, T04 3, T05 2). Not production-calibrated. See `calibration_status`
+ * below and `docs/KNOWN_ISSUES.md` §14.
+ *
  * There is deliberately no global entry other than `simulated`: a tenant absent
  * from this map fails closed in `evaluateGate` rather than borrowing another
  * tenant's threshold. Calibrated values therefore cannot be overridden by a
@@ -110,8 +115,11 @@ export const DEFAULT_GATE_CONFIG: ConfidenceGateConfig = {
  */
 export const GATE_CONFIGS: PerTenantGateConfig = {
   simulated: DEFAULT_GATE_CONFIG,
+  // PROVISIONAL · calibration_status: unproven-heldout (OOS N=2 on held-out)
   'T01-platform-operations-style': { thresholdAccept: 0.68, minMargin: 0.18, topK: 5 },
+  // PROVISIONAL · calibration_status: unproven-heldout (OOS N=3 on held-out)
   'T04-customer-support-style': { thresholdAccept: 0.53, minMargin: 0.18, topK: 5 },
+  // PROVISIONAL · calibration_status: failed-heldout (1 unsafe on held-out; D1 NOT MET)
   'T05-policy-style': { thresholdAccept: 0.61, minMargin: 0.18, topK: 5 },
 };
 

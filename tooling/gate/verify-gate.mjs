@@ -256,6 +256,36 @@ const invalidDecision = evaluateGate(
 );
 
 // ---------------------------------------------------------------------------
+// Fail-closed on unknown / missing tenant. The gate is tenant-keyed and must NOT
+// fall back to a global default: an unknown or absent tenant blocks with
+// reason 'unknown_tenant'. These guards lock that contract; a missing/unknown
+// tenant must never reach a decision from another tenant's config.
+// ---------------------------------------------------------------------------
+
+const highCandidate = { sopId: 'abc', score: 0.99, evidence: ['a passage the gate may return'] };
+
+const unknownTenantDecision = evaluateGate([highCandidate], CONFIGS, 'no-such-tenant');
+expectTrue(
+  'unknown tenant blocks (unknown_tenant)',
+  unknownTenantDecision.outcome === 'blocked' && unknownTenantDecision.reason === 'unknown_tenant',
+  JSON.stringify(unknownTenantDecision),
+);
+
+const missingTenantDecision = evaluateGate([highCandidate], CONFIGS);
+expectTrue(
+  'missing tenant blocks (unknown_tenant)',
+  missingTenantDecision.outcome === 'blocked' && missingTenantDecision.reason === 'unknown_tenant',
+  JSON.stringify(missingTenantDecision),
+);
+
+const knownTenantDecision = evaluateGate([highCandidate], CONFIGS, 'T01-platform-operations-style');
+expectTrue(
+  'known tenant still answers above its threshold',
+  knownTenantDecision.outcome === 'accepted',
+  JSON.stringify(knownTenantDecision),
+);
+
+// ---------------------------------------------------------------------------
 // Report
 // ---------------------------------------------------------------------------
 
