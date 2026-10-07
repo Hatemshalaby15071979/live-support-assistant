@@ -1,4 +1,6 @@
 {
+  "review_status": "NOT DONE",
+  "evidence_note": "Owner review is NOT DONE. No row has been independently inspected by the owner. These labels must not be used as evidence for recall or gold-label quality claims. Any provisional marks recorded outside this file are not an independent spot-check and do not count toward the acceptance threshold.",
   "note": "Owner spot-check batch. For each row: is the label right, and if the row is answerable, is the named document the one that answers it? Mark AGREE or DISAGREE. A disagreement is the most valuable output of this batch — it is the only thing that can find a wrong label.",
   "batch": 1,
   "batch_size": 15,

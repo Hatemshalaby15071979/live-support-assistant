@@ -65,6 +65,19 @@ if (batch.length === 0) {
 }
 
 const payload = {
+  // Review state, stated as a field rather than left to be inferred from empty
+  // strings. An empty `your_verdict` could mean "not reviewed yet" or "reviewed
+  // and nothing to say"; the difference matters because only one of them is
+  // evidence. The owner confirmed on 2026-10-07 that the 15 rows were marked
+  // "agree" from the agent's presentation and NOT by reading the source
+  // documents, so those marks are not an independent spot-check, do not count
+  // toward the 85% threshold, and are not rewritten as if validated.
+  review_status: 'NOT DONE',
+  evidence_note:
+    'Owner review is NOT DONE. No row has been independently inspected by the owner. These labels ' +
+    'must not be used as evidence for recall or gold-label quality claims. Any provisional marks ' +
+    'recorded outside this file are not an independent spot-check and do not count toward the ' +
+    'acceptance threshold.',
   note:
     'Owner spot-check batch. For each row: is the label right, and if the row is answerable, is the ' +
     'named document the one that answers it? Mark AGREE or DISAGREE. A disagreement is the most ' +

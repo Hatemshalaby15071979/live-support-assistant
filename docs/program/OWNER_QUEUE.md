@@ -6,7 +6,7 @@ Each entry carries the default that is **in effect right now**, so the program n
 | id | What | Why it is Zone R | Default in effect | To review | Owner minutes |
 | --- | --- | --- | --- | --- | --- |
 | OQ-001 | Push `prog/main` and the phase branches to `origin` | Anything that leaves this machine | Stay local; branches exist only on this host | `git push -u origin prog/main` | 1 |
-| OQ-002 | **Label spot-check batch 1 — 15 rows, all owner-supplied.** | Label provenance: only `owner` and verified `agent-agreed` rows may carry a headline | `agent-agreed` rows stay `unverified` and are excluded from headlines; P1 proceeds | `node tooling/corpus/spotcheck.mjs --batch 1` | **15** |
+| OQ-002 | **Label spot-check batch 1 — 15 rows, all owner-supplied. OWNER REVIEW NOT DONE / UNVERIFIED.** | Label provenance: only `owner` and verified `agent-agreed` rows may carry a headline | `agent-agreed` rows stay `unverified` and are excluded from headlines; P1 proceeds | `node tooling/corpus/spotcheck.mjs --batch 1` | **15** |
 | OQ-003 | Confirm the NC/ND licence exclusion list before P1 harvest | Licence compliance; a wrong call is a legal exposure, not an engineering one | NC/ND and unclear-terms sources are excluded automatically | `tooling/corpus/licence-allowlist.json` | 5 |
 | OQ-004 | Release tag and public deployment at the end of P8 | Public action | Prepare the exact command; do not run it | — | 2 |
 | OQ-005 | ~~Accepting the node-forge advisory past its 2026-10-30 review date~~ **MOOT — closed 2026-10-07** | The advisory left with `@sop/mobile`; the accepted-advisory set is now empty and the gate is strict | Nothing to accept | — | 0 |
@@ -22,6 +22,23 @@ Each entry carries the default that is **in effect right now**, so the program n
 ---
 
 ## OQ-002 in detail — the batch that is ready now
+
+> ### ⚠️ OWNER REVIEW: NOT DONE / UNVERIFIED
+>
+> The owner confirmed on **2026-10-07** that he did **not** independently inspect the T04 documents for
+> these 15 rows. He initially marked the proposed labels "agree" from the agent's presentation, not by
+> reading the source documents.
+>
+> Therefore, and this is binding:
+>
+> 1. Those marks are **not** an independent owner spot-check.
+> 2. They **do not** count toward the 85% owner-match acceptance threshold.
+> 3. They are **not** rewritten as if validated.
+> 4. `spotcheck-batch-1.json` records `review_status: "NOT DONE"` and an evidence note saying so.
+> 5. No row is relabelled or excluded on the basis of those provisional marks.
+>
+> **The owner spot-check is parked and must not be used as evidence for recall or gold-label quality
+> claims.** Every label below is agent-produced and unverified.
 
 **Run `node tooling/corpus/spotcheck.mjs --batch 1`.** It prints 15 rows and writes
 `tooling/corpus/spotcheck-batch-1.json`.
