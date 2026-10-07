@@ -1,0 +1,333 @@
+{
+  "commit": "63a1dce1ba6f78c5d6a03e83961eeb5f2c03b6ce",
+  "generated_at": "2026-10-07T18:29:06.898Z",
+  "split": "calibration",
+  "data_mode": "calibration",
+  "models": [
+    {
+      "role": "incumbent",
+      "id": "Xenova/all-MiniLM-L6-v2",
+      "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+      "dtype": "q8",
+      "dimensions": 384
+    },
+    {
+      "role": "candidate",
+      "id": "Xenova/multilingual-e5-small",
+      "revision": "761b726dd34fb83930e26aab4e9ac3899aa1fa78",
+      "dtype": "q8",
+      "dimensions": 384
+    }
+  ],
+  "tenants": {
+    "incumbent": {
+      "T01-platform-operations-style": {
+        "data_mode": "calibration",
+        "groups": {
+          "slice_a_clean": {
+            "n": 12,
+            "recall@1": 0.8333,
+            "wrongDoc@1": 0.1667,
+            "recall@3": 1,
+            "wrongDoc@3": 0,
+            "recall@5": 1,
+            "wrongDoc@5": 0,
+            "meanTop1": 0.7186
+          },
+          "slice_b_answerable": null,
+          "headline_cleanA_plus_answerableB": {
+            "n": 12,
+            "recall@1": 0.8333,
+            "wrongDoc@1": 0.1667,
+            "recall@3": 1,
+            "wrongDoc@3": 0,
+            "recall@5": 1,
+            "wrongDoc@5": 0,
+            "meanTop1": 0.7186
+          }
+        },
+        "out_of_scope_observed": {
+          "oosN": 75,
+          "top1Distribution": {
+            "min": 0.129586,
+            "p25": 0.2024,
+            "median": 0.2505,
+            "p75": 0.321,
+            "max": 0.755853
+          },
+          "note": "OBSERVED ONLY — no gate re-run, no threshold applied or changed; the shipped thresholdAccept is reported for context against a different model and is not transferable.",
+          "shippedThresholdAcceptForContext": 0.68,
+          "oosAboveShippedThreshold": 1
+        }
+      },
+      "T04-customer-support-style": {
+        "data_mode": "calibration",
+        "groups": {
+          "slice_a_clean": {
+            "n": 12,
+            "recall@1": 0.6667,
+            "wrongDoc@1": 0.3333,
+            "recall@3": 0.8333,
+            "wrongDoc@3": 0.1667,
+            "recall@5": 0.9167,
+            "wrongDoc@5": 0.0833,
+            "meanTop1": 0.6265
+          },
+          "slice_b_answerable": {
+            "n": 15,
+            "recall@1": 0.2667,
+            "wrongDoc@1": 0.7333,
+            "recall@3": 0.7333,
+            "wrongDoc@3": 0.2667,
+            "recall@5": 0.7333,
+            "wrongDoc@5": 0.2667,
+            "meanTop1": 0.5575
+          },
+          "headline_cleanA_plus_answerableB": {
+            "n": 27,
+            "recall@1": 0.4444,
+            "wrongDoc@1": 0.5556,
+            "recall@3": 0.7778,
+            "wrongDoc@3": 0.2222,
+            "recall@5": 0.8148,
+            "wrongDoc@5": 0.1852,
+            "meanTop1": 0.5882
+          }
+        },
+        "out_of_scope_observed": {
+          "oosN": 75,
+          "top1Distribution": {
+            "min": 0.211557,
+            "p25": 0.3237,
+            "median": 0.3938,
+            "p75": 0.4886,
+            "max": 0.619083
+          },
+          "note": "OBSERVED ONLY — no gate re-run, no threshold applied or changed; the shipped thresholdAccept is reported for context against a different model and is not transferable.",
+          "shippedThresholdAcceptForContext": 0.53,
+          "oosAboveShippedThreshold": 9
+        }
+      },
+      "T05-policy-style": {
+        "data_mode": "calibration",
+        "groups": {
+          "slice_a_clean": {
+            "n": 13,
+            "recall@1": 0.4615,
+            "wrongDoc@1": 0.5385,
+            "recall@3": 0.6923,
+            "wrongDoc@3": 0.3077,
+            "recall@5": 0.8462,
+            "wrongDoc@5": 0.1538,
+            "meanTop1": 0.5879
+          },
+          "slice_b_answerable": {
+            "n": 1,
+            "recall@1": 1,
+            "wrongDoc@1": 0,
+            "recall@3": 1,
+            "wrongDoc@3": 0,
+            "recall@5": 1,
+            "wrongDoc@5": 0,
+            "meanTop1": 0.6343
+          },
+          "headline_cleanA_plus_answerableB": {
+            "n": 14,
+            "recall@1": 0.5,
+            "wrongDoc@1": 0.5,
+            "recall@3": 0.7143,
+            "wrongDoc@3": 0.2857,
+            "recall@5": 0.8571,
+            "wrongDoc@5": 0.1429,
+            "meanTop1": 0.5912
+          }
+        },
+        "out_of_scope_observed": {
+          "oosN": 81,
+          "top1Distribution": {
+            "min": 0.102611,
+            "p25": 0.2884,
+            "median": 0.3432,
+            "p75": 0.4145,
+            "max": 0.686092
+          },
+          "note": "OBSERVED ONLY — no gate re-run, no threshold applied or changed; the shipped thresholdAccept is reported for context against a different model and is not transferable.",
+          "shippedThresholdAcceptForContext": 0.69,
+          "oosAboveShippedThreshold": 0
+        }
+      }
+    },
+    "candidate": {
+      "T01-platform-operations-style": {
+        "data_mode": "calibration",
+        "groups": {
+          "slice_a_clean": {
+            "n": 12,
+            "recall@1": 0.8333,
+            "wrongDoc@1": 0.1667,
+            "recall@3": 1,
+            "wrongDoc@3": 0,
+            "recall@5": 1,
+            "wrongDoc@5": 0,
+            "meanTop1": 0.9148
+          },
+          "slice_b_answerable": null,
+          "headline_cleanA_plus_answerableB": {
+            "n": 12,
+            "recall@1": 0.8333,
+            "wrongDoc@1": 0.1667,
+            "recall@3": 1,
+            "wrongDoc@3": 0,
+            "recall@5": 1,
+            "wrongDoc@5": 0,
+            "meanTop1": 0.9148
+          }
+        },
+        "out_of_scope_observed": {
+          "oosN": 75,
+          "top1Distribution": {
+            "min": 0.797066,
+            "p25": 0.8255,
+            "median": 0.8328,
+            "p75": 0.8486,
+            "max": 0.885573
+          },
+          "note": "OBSERVED ONLY — no gate re-run, no threshold applied or changed; the shipped thresholdAccept is reported for context against a different model and is not transferable.",
+          "shippedThresholdAcceptForContext": 0.68,
+          "oosAboveShippedThreshold": 75
+        }
+      },
+      "T04-customer-support-style": {
+        "data_mode": "calibration",
+        "groups": {
+          "slice_a_clean": {
+            "n": 12,
+            "recall@1": 0.75,
+            "wrongDoc@1": 0.25,
+            "recall@3": 0.9167,
+            "wrongDoc@3": 0.0833,
+            "recall@5": 1,
+            "wrongDoc@5": 0,
+            "meanTop1": 0.9095
+          },
+          "slice_b_answerable": {
+            "n": 15,
+            "recall@1": 0.2667,
+            "wrongDoc@1": 0.7333,
+            "recall@3": 0.4,
+            "wrongDoc@3": 0.6,
+            "recall@5": 0.5333,
+            "wrongDoc@5": 0.4667,
+            "meanTop1": 0.879
+          },
+          "headline_cleanA_plus_answerableB": {
+            "n": 27,
+            "recall@1": 0.4815,
+            "wrongDoc@1": 0.5185,
+            "recall@3": 0.6296,
+            "wrongDoc@3": 0.3704,
+            "recall@5": 0.7407,
+            "wrongDoc@5": 0.2593,
+            "meanTop1": 0.8926
+          }
+        },
+        "out_of_scope_observed": {
+          "oosN": 75,
+          "top1Distribution": {
+            "min": 0.823737,
+            "p25": 0.8459,
+            "median": 0.8552,
+            "p75": 0.8652,
+            "max": 0.89616
+          },
+          "note": "OBSERVED ONLY — no gate re-run, no threshold applied or changed; the shipped thresholdAccept is reported for context against a different model and is not transferable.",
+          "shippedThresholdAcceptForContext": 0.53,
+          "oosAboveShippedThreshold": 75
+        }
+      },
+      "T05-policy-style": {
+        "data_mode": "calibration",
+        "groups": {
+          "slice_a_clean": {
+            "n": 13,
+            "recall@1": 0.5385,
+            "wrongDoc@1": 0.4615,
+            "recall@3": 0.6154,
+            "wrongDoc@3": 0.3846,
+            "recall@5": 0.6923,
+            "wrongDoc@5": 0.3077,
+            "meanTop1": 0.8815
+          },
+          "slice_b_answerable": {
+            "n": 1,
+            "recall@1": 1,
+            "wrongDoc@1": 0,
+            "recall@3": 1,
+            "wrongDoc@3": 0,
+            "recall@5": 1,
+            "wrongDoc@5": 0,
+            "meanTop1": 0.8822
+          },
+          "headline_cleanA_plus_answerableB": {
+            "n": 14,
+            "recall@1": 0.5714,
+            "wrongDoc@1": 0.4286,
+            "recall@3": 0.6429,
+            "wrongDoc@3": 0.3571,
+            "recall@5": 0.7143,
+            "wrongDoc@5": 0.2857,
+            "meanTop1": 0.8816
+          }
+        },
+        "out_of_scope_observed": {
+          "oosN": 81,
+          "top1Distribution": {
+            "min": 0.834596,
+            "p25": 0.8499,
+            "median": 0.8572,
+            "p75": 0.8643,
+            "max": 0.887499
+          },
+          "note": "OBSERVED ONLY — no gate re-run, no threshold applied or changed; the shipped thresholdAccept is reported for context against a different model and is not transferable.",
+          "shippedThresholdAcceptForContext": 0.69,
+          "oosAboveShippedThreshold": 81
+        }
+      }
+    }
+  },
+  "t01_per_language": {
+    "status": "NOT MEASURABLE",
+    "reason": "Gold rows carry no language metadata (0 \"language\" fields in questions.json) and all 20 answerable T01 rows accept only content/en/ documents (measured). The es/fr/pt-BR arm of the corpus cannot be probed by the current gold set; per-language RX-03 results need new gold rows, which is a gold-set change outside RX-03."
+  },
+  "a1_calibration": {
+    "perTenant": {
+      "T01-platform-operations-style": {
+        "incumbentR1": 0.8333,
+        "candidateR1": 0.8333,
+        "deltaPP": 0,
+        "incumbentWrongDoc1": 0.1667,
+        "candidateWrongDoc1": 0.1667,
+        "verdict": "unchanged"
+      },
+      "T04-customer-support-style": {
+        "incumbentR1": 0.4444,
+        "candidateR1": 0.4815,
+        "deltaPP": 3.71,
+        "incumbentWrongDoc1": 0.5556,
+        "candidateWrongDoc1": 0.5185,
+        "verdict": "improved"
+      },
+      "T05-policy-style": {
+        "incumbentR1": 0.5,
+        "candidateR1": 0.5714,
+        "deltaPP": 7.14,
+        "incumbentWrongDoc1": 0.5,
+        "candidateWrongDoc1": 0.4286,
+        "verdict": "improved"
+      }
+    },
+    "improvedTenants": 2,
+    "disqualifiers": [],
+    "verdict": "A1 MET on calibration — held-out validation may be requested"
+  }
+}

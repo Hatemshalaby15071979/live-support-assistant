@@ -4,6 +4,49 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-07 (latest) — RX-03 calibration run: A1 MET on calibration; EMBEDDING_MODELS consumer correction
+
+**Zone.** Y (governance).
+
+### Correction (owner-flagged): `EMBEDDING_MODELS` has an iterating consumer
+The RX-03 candidate-selection package stated the model registry had no iterating consumers. **Wrong.**
+`tooling/eval/semantic-eval.mjs:232` loops `for (const spec of EMBEDDING_MODELS)` for its bi-encoder
+comparison. Consequence of the freeze: the next semantic-eval run will embed with the frozen candidate
+too, and its first use downloads the q8 weights (~0.1B params). No shipped-path effect — semantic-eval
+is an evaluation harness, not the serving path. Logged so the next semantic-eval run's extra model
+column and download are expected, not a surprise.
+
+### RX-03 calibration (calibration split ONLY; held-out untouched)
+Command: `RX03_COMMIT=$(git rev-parse HEAD) node tooling/retrieval/run-rx03-calibration.mjs` at HEAD
+`63a1dce1ba6f78c5d6a03e83961eeb5f2c03b6ce`; model `Xenova/all-MiniLM-L6-v2` (incumbent, `751bff37…`)
+vs `Xenova/multilingual-e5-small` (candidate, `761b726d…`, upstream `614241f6…`); data_mode:
+calibration. Population: headline = clean Slice A + answerable Slice B (N: T01 12, T04 27, T05 14);
+OOS observed-only (N: 75/75/81). Scoring mirrors `run-baseline.mjs` exactly (document-level hits over
+`${title}\n${summary}` 500-rung passages).
+
+| Tenant | Incumbent R@1/R@3/R@5 | Candidate R@1/R@3/R@5 | R@1 Δ |
+|---|---|---|---|
+| T01 | 83.3% / 100.0% / 100.0% | 83.3% / 100.0% / 100.0% | 0 pp |
+| T04 | 44.4% / 77.8% / 81.5% | 48.1% / **63.0%** / **74.1%** | +3.7 pp |
+| T05 | 50.0% / 71.4% / 85.7% | 57.1% / **64.3%** / **71.4%** | +7.1 pp |
+
+- **A1 MET on calibration**: R@1 improved on 2/3 tenants, no tenant's R@1 dropped >2 pp, wrongDoc@1
+  not worse anywhere (T01 16.7%, T04 55.6→51.8%, T05 50.0→42.9%). Held-out validation may be
+  requested — it was NOT run (owner boundary).
+- **Reported trade-off, not gated by A1:** R@3/R@5 **degraded** on T04 (77.8→63.0, 81.5→74.1) and
+  T05 (71.4→64.3, 85.7→71.4). The candidate sharpens top-1 at the cost of depth. Any held-out decision
+  should weigh this explicitly.
+- **OOS top-1 distributions rose** (max: T01 0.756→0.886, T04 0.619→0.896, T05 0.686→0.887) —
+  observed only; confirms that a future threshold recalibration (a separate prereg) cannot reuse the
+  current thresholds.
+- **T01 per-language arm: NOT MEASURABLE** — gold rows carry no language metadata (0 `language`
+  fields in `questions.json`) and all 20 answerable T01 rows accept only `content/en/` documents
+  (measured). Testing es/fr/pt-BR retrieval needs new gold rows — a gold-set change outside RX-03.
+- All comparisons are agent-label-relative (0 `label_source=owner` rows); no owner-backed D3 claim.
+- Thresholds unchanged; D3 unchanged; g15 stays CLOSED; nothing pushed.
+
+---
+
 ## 2026-10-07 (latest) — g15 CLOSED as a negative experiment; NOT ADOPTED; RX-03 drafted
 
 **Zone.** Y (governance). **Owner decision (Hatem): CLOSE g15 as a negative experiment. Do NOT adopt
