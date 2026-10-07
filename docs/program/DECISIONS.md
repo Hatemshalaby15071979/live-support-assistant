@@ -4,6 +4,78 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-07 — G13 result: shape-first, three cycles, and the held-out number is NOT MET
+
+**Zone.** Y. Prereg: `docs/prereg/g13-shape-first.md`, committed at `43a4a00` **before** the change and
+before the set. The set was frozen at `f304a9c` before its run. **Scored once.**
+
+### The number, published as it landed
+
+**28/30 = 93.3%. Floor 95%. NOT MET.**
+
+One of the two misses is a defect in the **measuring instrument**, not the gate, and both numbers are
+published because a reader needs both:
+
+| | Caught | Recall | Verdict |
+| --- | ---: | ---: | --- |
+| As scored, per the prereg | 28/30 | **93.3%** | **NOT MET** |
+| Instrument corrected, same set, same gate | 29/30 | **96.7%** | above the floor |
+
+The instrument defect: `zephyrium 88213467` **was** caught, by `account-identifier-shape`, and
+`pii-categories.mjs` still mapped `account-identifier` to `['account-identifier']` alone. The same
+mapping drift had already been fixed once. Fixing a stale mapping is not re-scoring the gate — the
+set and the rules are untouched — but the prereg'd number is reported first, because a figure
+adjusted after seeing it is exactly what the prereg exists to prevent.
+
+The one genuine miss is **`M. Julien Berger`**, and it is deliberate.
+
+### The three cycles
+
+| Cycle | Change | Result |
+| --- | --- | --- |
+| 1 | Shape-first as prereg'd: any label-like word + a long number | **Precision collapse** — every source but one would drop, 28.6% on French. The prereg's own reject condition fired. |
+| 2 | Identifier floor raised to six digits | Better; four sources still over |
+| 3 | **Hybrid**: enumerated rule where precision is known, plus a shape rule at a length technical prose does not produce | **All seven sources harvest, worst 2.9%** |
+
+**Why cycle 1 failed, and it is the finding of this prereg.** In technical prose *every* noun before
+a number looks like a label: `requests: 2000 4096`, `limits are 1000 2000`, `replicas: 3`. Inverting
+the default to "assume label" is correct for support text and wrong for documentation, and this
+corpus is documentation. The shape-first idea is sound; applying it as the *default* to this
+material is not.
+
+### Two false-positive classes of my own
+
+Found by reading the actual hits rather than the rates — the rates said 19%, the hits said why:
+
+1. **`Me` and `M` as honorifics**, added for French, matched the French pronoun `me` and bare single
+   letters. They were quarantining **19% of the French corpus** — `Déploiement`, `me Pod`, `M O`.
+   Removed. **This is the trade the 93.3%/96.7% prices:** two regression strings of recall for the
+   whole French arm.
+2. **`account-identifier-shape` matched Kubernetes pod names** (`nginx-deployment-1370807587`). A
+   hyphen-joined label with no whitespace before the digits is a resource identifier, not an account
+   number, unless the prefix is short like `AC-`.
+
+### The third occurrence of one defect
+
+The shape-first validator used `/^[\p{L}][\p{L}'/.-]*/` with **no flags**, so `\p{L}` was not a
+property escape — the class degraded to the literal characters `p`, `{`, `L`, `}` — and **every
+candidate was rejected**. The rule looked implemented and detected nothing.
+
+This is the same defect as the original `labelled-contact-name` rule, and the `i`-flag bug is its
+cousin. `verify-corpus-gates.mjs` now scans `pii-gate.mjs` for `\p{` in a regex without `u`, so a
+fourth occurrence fails the gate rather than quietly detecting nothing.
+
+### Disclosed residual risk, as the prereg required
+
+**Name detection is incomplete and this is known, not discovered.** Names stay vocabulary-driven. A
+name in free prose — `the account was reviewed by Marta Ruiz` — is not detected at all. The
+independent precision scan is the mitigation, not a second regex: a human reading 105 distinct
+values is the only thing in this pipeline that would catch a name nobody anticipated.
+
+The floor was **not** lowered, the set was **not** re-scored, and no fourth set was written.
+
+---
+
 ## 2026-10-07 — The agent skill was installed in the wrong repository first, and is now installed here
 
 **Zone.** G (owner-instructed; a cross-repository incident).

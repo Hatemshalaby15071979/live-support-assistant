@@ -5,7 +5,7 @@ One row per phase. Updated at every phase end. Values: `done` | `in progress` | 
 | Phase | Scope | Status | Gate | Report |
 | --- | --- | --- | --- | --- |
 | P0 | Integrity and baseline | **done** | `pnpm run verify` 10/10; ticket validator OK; D7 red-then-green (client and server); `docs/BASELINE.md` complete. SQL suites `not re-run` (host sandbox). | `docs/program/phase-0-report.md` |
-| P1 | Licensed corpus and gold set | in progress | **544 items, 7 sources, 3 tenants, 3 domains, 4 languages.** Harvesting is now CLOSED (4-tenant cap). Held-out recall 60.0% on first contact — the structural limit is enumerated vocabulary. `verify-corpus.mjs` fails on the missing gold set. | `docs/CORPUS_PROVENANCE.md` |
+| P1 | Licensed corpus and gold set | in progress | **3 tenants / 3 domains, harvesting CLOSED (cut #1 — one below the cut-line floor).** 544 documents → 3,659 procedures. Gold set under construction: register C, document-level labels. `verify-corpus.mjs` fails on the missing gold set. | `docs/CORPUS_PROVENANCE.md` |
 | P2 | Market Twin (smoke + standard) | not started | `run-market.mjs --seed 20261006 --rung smoke` exits 0 | — |
 | P3 | Retrieval at 500 | not started | per-rung/per-language tables; D3/D4 reported honestly | — |
 | P4 | Gate and safety hardening | not started | D1, D2, D5, D7 reported honestly | — |
@@ -22,7 +22,13 @@ P7 cost model → P6 metering → P3 per-language index (keep per-language thres
 
 ## Cuts taken
 
-_(none yet)_
+| # | Cut | Line allows | Actual | Why | Consequence |
+| --- | --- | --- | --- | --- | --- |
+| 1 | **P1 fleet** | 4 tenants (cut line) · 4–6 (V2) | **3** — T01, T04, T05 | Two further candidates (`django-faq-en`, `cpython-faq-en`) were registered and dropped on genuine findings — one published security contact and one example address, each a single finding in a very small source. Harvesting is closed by owner instruction. | **Below the cut line's own floor, not merely within it.** Recorded as a cut *beyond* the line. Every figure from the fleet is a 3-tenant figure, and the per-language arm is T01 alone. |
+
+**Fleet as accepted, 2026-10-07:** T01-platform-operations-style (2,318 procedures, en/es/fr/pt-BR),
+T04-customer-support-style (577, en), T05-policy-style (764, en). **Harvesting is closed. No further
+sources will be added.**
 
 ## Open items carried into P1
 

@@ -20,7 +20,7 @@ export const ACCEPTED_PATTERNS = Object.freeze({
   'phone-international': ['phone-international'],
   'phone-national': ['phone-national'],
   'postal-address': ['postal-address'],
-  'account-identifier': ['account-identifier'],
+  'account-identifier': ['account-identifier', 'account-identifier-shape'],
   'honorific-name': ['honorific-name'],
   'labelled-contact-name': ['labelled-contact-name'],
   'national-id': ['national-id', 'national-insurance-or-ssn-shaped'],
