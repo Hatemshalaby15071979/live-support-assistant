@@ -264,10 +264,10 @@ measurable at N=7**, and not measurable per tenant at N ≤ 3. "T01/T04 reached 
 they *served* 0 unsafe; that is an anecdote, not a bound. Treat all three as **unproven**, not proven
 safe.
 
-### Held-out operating points (data_mode=held-out)
+### Held-out operating points (data_mode=held-out) — pre-expansion, OOS N=2/3/2, historical
 
 `ans N` = answerable rows, `OOS N` = out_of_scope rows. Recall figures are over answerable N of 6–11
-rows — **anecdote, not measurement** (marked \*).
+rows — **anecdote, not measurement** (marked \*). See the g14 table below for the measurable run.
 
 | Tenant | ans N | OOS N | @ | TP | FP | FN | **unsafe** | wrong-proc served | precision | recall\* | false-refusal | label_source | spot_check |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |
@@ -275,9 +275,36 @@ rows — **anecdote, not measurement** (marked \*).
 | T04 | 11 | 3 | 0.53 | 6 | 2 | 3 | **0** | 2 | 75.0% | 54.5% | 27.3% | agent | NOT DONE |
 | T05 | 11 | 2 | 0.61 | 1 | 3 | 8 | **1** | 2 | 25.0% | 9.1% | 72.7% | agent | NOT DONE |
 
-**D1 verdict.** T01 served 0 unsafe (OOS N=2), T04 served 0 unsafe (OOS N=3), T05 served **1 unsafe**
-(OOS N=2). T05 **fails**. T01 and T04 are **not a measurable pass**: 0 of 2–3 with a 95% upper bound
-≈ 100%. D1 is **NOT MET as a measured property** at this N; it is "unproven", not "proven safe".
+**D1 verdict (old, at N=7).** T01 served 0 unsafe (OOS N=2), T04 served 0 unsafe (OOS N=3), T05 served
+**1 unsafe** (OOS N=2). T05 **fails**. T01 and T04 are **not a measurable pass**: 0 of 2–3 with a 95%
+upper bound ≈ 100%. D1 is **NOT MET as a measured property** at this N; "unproven", not "proven safe".
+
+### Held-out operating points — g14 expansion (data_mode=held-out, post-`1d75c9d`)
+
+New held-out OOS N = **T01 33, T04 30, T05 25** (fleet 88). Rule-of-three 95% upper bound on the unsafe
+rate: T01 ≤ 9.1%, T04 ≤ 10.0%, T05 ≤ 12.0% — versus ≈100% at the old N≤3. Thresholds read from
+`GATE_CONFIGS` (T05 now **0.69**, recalibrated on calibration).
+
+| Tenant | ans N | OOS N | @ | TP | FP | FN | **unsafe** | wrong-proc served | precision | recall | false-refusal | label_source | spot_check |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |
+| T01 | 6 | 33 | 0.68 | 2 | 0 | 4 | **0** | 0 | 100.0% | 33.3% | 66.7% | agent | NOT DONE |
+| T04 | 11 | 30 | 0.53 | 6 | 11 | 3 | **9** | 2 | 35.3% | 54.5% | 27.3% | agent | NOT DONE |
+| T05 | 11 | 25 | 0.69 | 1 | 1 | 10 | **1** | 0 | 50.0% | 9.1% | 90.9% | agent | NOT DONE |
+
+**D1 verdict (g14 new held-out).** V2 D1 = 0 unsafe on held-out.
+- **T01: PASS on this held-out (0 unsafe, OOS N=33, 3/N ≤ 9.1%). FRAGILE** — T01 serves 1 unsafe on the
+  expanded calibration split (OOS N=75), so the pass depends on the held-out not containing a high-scoring
+  OOS row. Not robustly proven.
+- **T04: FAIL (9 unsafe, OOS N=30).** Confirms the retrieval-quality limit (cf. §12); 0.53 is far from
+  zero-unsafe on any usable sample.
+- **T05: FAIL (1 unsafe at 0.69, OOS N=25, 3/N ≤ 12.0%).** The calibration zero-unsafe point (0.69) does
+  **not** transfer: one held-out OOS row scores **0.7017 > 0.69**. Reaching 0 unsafe on held-out needs
+  **0.71**, refusing 10/11 answerable (90.9%) — unusable. **D1 NOT MET.**
+
+**Conclusion of g14.** Growing the gold set made D1 *measurable* (3/N 9–12% vs ~100%) but did **not** make
+T05 pass. All three tenants' zero-unsafe is blocked by **retrieval quality** (MiniLM-L6-v2 at the 500-rung
+returns top-1 ≥ 0.70 for out-of-scope questions); no usable threshold separates them. T05 stays
+`failed-heldout`. No threshold is pushed to 0.71 (that tunes on held-out and destroys answer rate).
 
 ### Calibration operating points (data_mode=calibration — reference; **pre-expansion, OOS N=6/9/6, historical**)
 
@@ -332,7 +359,7 @@ was. Until then they stay at their shipped thresholds with `calibration_status =
 | --- | ---: | --- |
 | T01 | 0.68 | `fails-calibration` (1 unsafe @ 0.68, OOS N=75) |
 | T04 | 0.53 | `fails-calibration` (9 unsafe @ 0.53, OOS N=75) |
-| T05 | 0.69 | `calibration-zero-unsafe` (0 unsafe @ 0.69; held-out validation pending) |
+| T05 | 0.69 | **`failed-heldout`** (1 unsafe @ 0.69 on new held-out, OOS N=25; calibration-zero-unsafe at 0.69) |
 
 Thresholds chosen/updated on the calibration split with unverified labels. **Not
 production-calibrated.** No production claim is made for any tenant. D1 (0 unsafe on held-out)

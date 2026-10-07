@@ -122,8 +122,9 @@ export const GATE_CONFIGS: PerTenantGateConfig = {
   // PROVISIONAL · calibration_status: fails-calibration (9 unsafe @ 0.53 on expanded calibration, OOS N=75)
   'T04-customer-support-style': { thresholdAccept: 0.53, minMargin: 0.18, topK: 5 },
   // PROVISIONAL · recalibrated to calibration zero-unsafe point (g14): 0.69 = first zero-unsafe
-  // on the expanded calibration split (OOS N=81). Held-out validation pending. Refusal cost at 0.69
-  // is high (9/14 answerable refused). Prior 0.61 served 3 unsafe on calibration.
+  // on the expanded calibration split (OOS N=81). On the NEW held-out (OOS N=25) it still serves
+  // 1 unsafe (a held-out OOS row scores 0.7017 > 0.69); 0 unsafe there needs 0.71 (refuses 10/11).
+  // calibration_status: failed-heldout. Retrieval quality (MiniLM-L6-v2 @ 500-rung) is the limit.
   'T05-policy-style': { thresholdAccept: 0.69, minMargin: 0.18, topK: 5 },
 };
 
