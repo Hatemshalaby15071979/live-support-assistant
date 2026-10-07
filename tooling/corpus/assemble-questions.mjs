@@ -49,6 +49,7 @@ const sliceAT05 = read('slice-a-t05-expansion.json');
 const refusalSurface = read('slice-b-refusal-surface.json');
 const crossTenant = read('slice-c-cross-tenant-oos.json');
 const nearDomain = read('slice-d-near-domain-oos.json');
+const multilingual = read('slice-b-multilingual.json');
 
 /** Every document path per tenant, for verification. */
 const tenantDocuments = new Map();
@@ -226,6 +227,29 @@ for (const row of nearDomain.rows) {
   });
 }
 
+// Gold-set extension (prereg docs/prereg/gold-multilingual-rows.md): T01 es/fr/pt-BR
+// user-voiced rows, authored in-language from documents already in the frozen 500-rung.
+// Two independent agent passes; disagreements excluded at authoring time (none occurred).
+for (const row of multilingual.rows) {
+  verifyDocuments(multilingual.tenant, row.documents);
+  questions.push({
+    id: row.id,
+    text: row.text,
+    tenant: multilingual.tenant,
+    slice: 'B',
+    origin: multilingual.origin,
+    data_mode: multilingual.data_mode,
+    language: row.language,
+    label_source: row.label_source ?? 'agent-agreed',
+    label_basis: row.label_basis ?? multilingual.label_basis,
+    label: row.label,
+    confidence: row.confidence,
+    acceptable_documents: row.documents,
+    reasoning: row.reasoning,
+    split: splitFor(row.id, PINNED_CALIBRATION.has(row.id)),
+  });
+}
+
 for (const row of [...sliceA.rows, ...sliceAT05.rows]) {
   verifyDocuments(row.tenant, row.documents);
   const reference = tenantText.get(row.tenant).get(row.documents[0]);
@@ -273,6 +297,13 @@ const counts = {
 const byTenant = {};
 for (const q of questions) byTenant[q.tenant] = (byTenant[q.tenant] ?? 0) + 1;
 
+const byLanguageSplit = {};
+for (const q of questions) {
+  if (q.language === undefined) continue;
+  const key = `${q.language} ${q.split}`;
+  byLanguageSplit[key] = (byLanguageSplit[key] ?? 0) + 1;
+}
+
 const output = {
   note:
     'Gold set. Every row carries origin, label_source, data_mode and slice. Labels are at DOCUMENT ' +
@@ -307,6 +338,9 @@ console.log(`  slice A title-echo above ${LEAKAGE_LIMIT}: ${counts.title_echo} o
 console.log(`  slice A leakage mean ${(echoScores.reduce((s, v) => s + v, 0) / (echoScores.length || 1)).toFixed(4)}, max ${Math.max(...echoScores).toFixed(4)}`);
 console.log('');
 for (const [tenant, n] of Object.entries(byTenant)) console.log(`  ${tenant.padEnd(32)} ${n}`);
+console.log('');
+console.log('  multilingual rows by language and split:');
+for (const [key, n] of Object.entries(byLanguageSplit)) console.log(`    ${key.padEnd(16)} ${n}`);
 console.log('');
 console.log(`  all ${counts.total} document paths verified against the corpus`);
 console.log('');

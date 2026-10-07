@@ -1,0 +1,607 @@
+{
+  "note": "Multilingual gold rows (T01 es/fr/pt-BR), authored per docs/prereg/gold-multilingual-rows.md. Each row is user-voiced, written in the document's language, grounded in a document that is already represented in the FROZEN 500-rung. Two independent agent passes: pass A authored the question from the document's rung text; pass B was a fresh-context agent, blind to pass A's pairing, that independently matched each question to a document in the pool (the pool file was its only input). Pass B agreed with pass A on all 42 rows (14 per language); no rows were excluded. label_source=agent-agreed: per V2 rule 7 these rows carry NO headline authority until the owner spot-check (>=85% per language) has actually occurred and is recorded.",
+  "tenant": "T01-platform-operations-style",
+  "origin": "derived-paraphrase",
+  "data_mode": "simulated",
+  "label_basis": "Two independent agent passes, 2026-10-07. Pass A authored each question in the document's language (es/fr/pt-BR) from the document's verbatim rung text; pass B was a fresh-context agent that read only the rung document pool and independently matched every question to a document, blind to pass A's pairing. All 42 pairings agreed; 0 disagreements; 0 exclusions. NOT owner validation; per V2 rule 7 no headline authority until the per-language owner spot-check (>=85%) passes and is recorded.",
+  "pending": "owner spot-check per language (OQ-010)",
+  "rows": [
+    {
+      "id": "ML-T01-es-01",
+      "text": "Estoy revisando la carga de eventos de auditoría en mi clúster: si kube-apiserver recibe 100 peticiones por segundo auditando las etapas ResponseStarted y ResponseComplete, ¿cuántos eventos por segundo debo esperar y cómo dimensiono el throttling y el tamaño del buffer del backend?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/debug/debug-cluster/audit.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento calcula explícitamente el ejemplo 100 req/s -> ~200 eventos/s, el throttling mínimo de 2 QPS y un buffer de 1000 eventos (5 segundos en lotes de 100).",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (audit part 12, part 1, part 13)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-02",
+      "text": "Voy a actualizar mi clúster de Kubernetes con kubeadm: ¿en qué orden se actualizan los nodos y qué debo tener en cuenta al actualizar el kubelet (drenaje previo y versiones)?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento enumera el orden (nodo controlador principal, resto de controladores, nodos de trabajo), exige drenar antes de actualizar el kubelet y describe la desviación kubelet/kubeadm.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (upgrade steps, part 3)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-03",
+      "text": "¿Cómo genero un Secret a partir de valores literales con Kustomize y por qué los Secrets generados llevan un sufijo de hash?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/manage-kubernetes-objects/kustomization.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento muestra secretGenerator con literals y explica el sufijo de hash de contenido (y generatorOptions para desactivarlo).",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (part 5)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-04",
+      "text": "¿Qué atributos tiene un PodDisruptionBudget y qué protege exactamente un presupuesto de interrupción de pods?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/run-application/configure-pdb.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento enumera los tres atributos (selector, minAvailable, maxUnavailable) y aclara que el presupuesto solo protege contra desalojos voluntarios.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (part 1, atributos, part 9)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-05",
+      "text": "¿Cuál es la forma recomendada de eliminar objetos gestionados con kubectl apply y cuándo puede usarse la opción --prune?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/manage-kubernetes-objects/declarative-config.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento recomienda kubectl delete -f <archivo> y describe kubectl apply --prune como alpha con advertencias.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (cómo eliminar objetos)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-06",
+      "text": "¿Cómo activo el autocompletado de kubectl en PowerShell para todas mis sesiones?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/tools/included/optional-kubectl-configs-pwsh.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento muestra kubectl completion powershell y cómo añadirlo al $PROFILE para todas las sesiones.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (part 1)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-07",
+      "text": "¿Qué riesgos tiene eliminar a la fuerza un Pod de un StatefulSet y qué relación tiene con pod.Spec.TerminationGracePeriodSeconds?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/run-application/force-delete-stateful-set-pod.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento advierte sobre TerminationGracePeriodSeconds=0 para StatefulSets y describe la eliminación forzosa y sus riesgos.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (graceful termination, part 7)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-08",
+      "text": "Quiero borrar un StatefulSet pero conservar sus Pods ejecutándose, ¿cómo se hace?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/run-application/delete-stateful-set.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento muestra kubectl delete con --cascade=orphan para conservar los Pods al eliminar el StatefulSet.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (part 1)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-09",
+      "text": "¿Cómo compruebo que el autocompletado de bash para kubectl está correctamente instalado en Linux?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/tools/included/optional-kubectl-configs-bash-linux.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento indica recargar el shell y ejecutar type _init_completion, y las dos formas de instalar el script de completado.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-10",
+      "text": "El token para añadir un nodo me ha caducado, ¿cómo genero un comando kubeadm join con un token nuevo?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/administer-cluster/kubeadm/adding-linux-nodes.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento explica la caducidad de 24 horas, cómo crear un token nuevo y cómo imprimir kubeadm join con token y hash.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (part 2)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-11",
+      "text": "Tengo que hacer mantenimiento en un nodo, ¿cómo desalojo sus pods de forma segura respetando los presupuestos de interrupción?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/administer-cluster/safely-drain-node.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento muestra kubectl drain para desalojos seguros que respetan el presupuesto de interrupción de pods.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (part 1, part 3)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-12",
+      "text": "¿Cuándo funciona la estrategia retainKeys en kubectl patch y qué formas alternativas tiene el comando?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento explica que retainKeys solo funciona donde patchStrategy lo contiene y enumera las formas alternativas de kubectl patch.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-13",
+      "text": "Además del almacenamiento local tipo emptyDir, ¿qué soluciones de almacenamiento en red soporta Kubernetes para datos críticos?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/configure-pod-container/configure-volume-storage.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento menciona soluciones de almacenamiento en red (Persistent Disks de GCP, Elastic Block Storage de AWS) preferidas para datos críticos.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (part 4)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-es-14",
+      "text": "¿Cómo valido el binario de kubectl-convert con su checksum antes de instalarlo?",
+      "language": "es",
+      "documents": ["content/es/docs/tasks/tools/install-kubectl-linux.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "El documento describe descargar el checksum de kubectl-convert y validar el binario con sha256.",
+      "two_pass": {
+        "passA": "drafted in Spanish from this document's rung text (part 7)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-01",
+      "text": "Que se passe-t-il si mon conteneur dépasse sa limite de mémoire, et quelle est la différence entre la demande de mémoire et la limite pour l'ordonnancement ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/configure-pod-container/assign-memory-resource.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document explique l'ordonnancement basé sur les demandes, le comportement d'un conteneur au-delà de sa limite (candidat à la terminaison) et les exercices demande/limite.",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-02",
+      "text": "Comment basculer rapidement entre plusieurs clusters avec kubectl config use-context, et que décrit un fichier kubeconfig ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/access-application-cluster/configure-access-multiple-clusters.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document montre la configuration de clusters, utilisateurs et contextes, et le basculement via kubectl config use-context.",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (part 1)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-03",
+      "text": "Quand est-il nécessaire de forcer la suppression d'un Pod d'un StatefulSet, et quels sont les risques de la sémantique « au plus un » (split-brain, perte de données) ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/run-application/force-delete-stateful-set-pod.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document détaille la sémantique au plus un, les risques de split-brain/perte de données et les cas où un Pod n'est pas supprimé automatiquement.",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (parts 2-3)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-04",
+      "text": "Comment demander une ressource supplémentaire (un « dongle ») pour un conteneur, et pourquoi un deuxième Pod demandant deux dongles ne peut-il pas être planifié ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/configure-pod-container/extended-resource.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document montre resources:requests pour les ressources étendues et l'exemple des dongles rendant un deuxième Pod non planifiable.",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (part 1 et exercice dongles)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-05",
+      "text": "Quels sont les champs de configuration des probes (initialDelaySeconds, periodSeconds, timeoutSeconds, failureThreshold) et à quoi sert une startup probe pour les applications à démarrage lent ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document liste les champs des probes avec valeurs par défaut et explique la startup probe (failureThreshold * periodSeconds) pour les démarrages lents.",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (part 9, part 13, part 10)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-06",
+      "text": "Avec quel compte les processus dans les conteneurs sont-ils authentifiés auprès de l'apiserver, et peut-on mettre à jour le compte de service d'un Pod déjà créé ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/configure-pod-container/configure-service-account.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document explique l'authentification via spec.serviceAccountName et indique qu'on ne peut pas mettre à jour le compte de service d'un Pod déjà créé.",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (part 2)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-07",
+      "text": "Comment créer un Secret avec kubectl et exposer ses données sensibles à un conteneur via un Volume ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/inject-data-application/distribute-credentials-secure.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document montre kubectl create secret, le montage via /etc/secret-volume et .spec.volumes[].secret.items pour les chemins.",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (parts 2-3)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-08",
+      "text": "Comment un HorizontalPodAutoscaler gère-t-il plusieurs métriques, et que se passe-t-il lorsqu'on augmente la charge sur le serveur php-apache ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document explique le choix du nombre de réplicas le plus élevé parmi les métriques et la réaction à l'augmentation de charge (exercice php-apache).",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (parts 2, 11, 3, 5)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-09",
+      "text": "À quoi correspond une unité de CPU dans Kubernetes, et pourquoi mon conteneur ne peut-il pas utiliser plus de CPU que ce que le nœud peut offrir ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/configure-pod-container/assign-cpu-resource.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document définit l'unité CPU (1 vCPU AWS/GCP/Azure, 1 hyperthread) et la restriction par la capacité du nœud.",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (part 4)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-10",
+      "text": "Comment développer un cloud-controller-manager out-of-tree, et quel rôle joue cloudprovider.RegisterCloudProvider ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/administer-cluster/developing-cloud-controller-manager.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document décrit les étapes out-of-tree et l'enregistrement du fournisseur via cloudprovider.RegisterCloudProvider.",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (parts 2-3)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-11",
+      "text": "Pourquoi ma variable d'environnement qui en référence une autre ne se résout-elle pas, et comment échapper une référence avec $$(VAR_NAME) ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/inject-data-application/define-interdependent-environment-variables.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document explique l'importance de l'ordre dans la liste env, les références non résolues et l'échappement $$(VAR_NAME).",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (parts 1-3)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-12",
+      "text": "Que contient le Secret regcred créé pour un registre privé, et pourquoi saisir des secrets sur la ligne de commande est-il risqué ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/configure-pod-container/pull-image-private-registry.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document décrit .dockerconfigjson en base64 et le risque de conserver les secrets dans l'historique du shell.",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (part 4)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-13",
+      "text": "À quoi sert le partage de l'espace de noms des processus dans un Pod, et comment l'activer ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/configure-pod-container/share-process-namespace.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document explique le champ shareProcessNamespace de v1.PodSpec et les cas d'usage (sidecar de logs, débogage).",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (part 1)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-fr-14",
+      "text": "Comment fonctionne kubectl port-forward quand on laisse kubectl choisir le port local, et vers quoi les connexions sont-elles redirigées ?",
+      "language": "fr",
+      "documents": ["content/fr/docs/tasks/access-application-cluster/port-forward-access-application-cluster.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "Le document explique l'attribution automatique du port local (en évitant les ports bas) et la redirection vers le port 27017 du pod MongoDB.",
+      "two_pass": {
+        "passA": "drafted in French from this document's rung text (part 3)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-01",
+      "text": "Como personalizo os servidores DNS do meu cluster e qual serviço implementa o DNS do Kubernetes (CoreDNS ou kube-dns)?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/administer-cluster/dns-custom-nameservers.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento explica a personalização da resolução de DNS e que o serviço CoreDNS é chamado de kube-dno metadata.name por interoperabilidade.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (part 1)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-02",
+      "text": "Como monitoro o uso de recursos da minha aplicação em um cluster Kubernetes e quais pipelines de métricas de recursos existem?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/debug/debug-cluster/resource-usage-monitoring.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento apresenta o monitoramento por contêineres, pods, services e cluster, e os pipelines de métricas de recursos versus métricas completas.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (part 1)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-03",
+      "text": "Depois de criar um Service do tipo LoadBalancer, como descubro o IP externo para acessar meu frontend de fora do cluster?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/access-application-cluster/connecting-frontend-backend.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento mostra o IP externo como <pending> inicialmente e sua provisão na seção EXTERNAL-IP.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (part 5)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-04",
+      "text": "Em uma topologia MySQL com StatefulSet, como o controlador garante que o primário fique Ready antes das réplicas, e como faço consultas de leitura balanceadas?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/run-application/run-replicated-stateful-application.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento explica a garantia de ordem do StatefulSet (ordinal 0 como primário) e o Service mysql-read com balanceamento apenas para leitura.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (init-mysql, part 4)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-05",
+      "text": "Como abro um shell em um contêiner em execução e como especifico o contêiner certo quando o Pod tem mais de um?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/debug/debug-application/get-shell-running-container.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento mostra kubectl exec com --container/-c para escolher o contêiner em Pods com vários contêineres.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (part 2)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-06",
+      "text": "Como executo os processos de um contêiner Windows com um nome de usuário específico (runAsUserName)?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/configure-pod-container/configure-runasusername.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento documenta SecurityContext com WindowsOptions.runAsUserName no nível do Pod e do contêiner.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (part 3)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-07",
+      "text": "Quais são os riscos da exclusão forçada de um Pod de um StatefulSet e o que acontece imediatamente com o nome do Pod no servidor de API?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/run-application/force-delete-stateful-set-pod.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento explica que exclusões forçadas não aguardam o kubelet, liberam o nome imediatamente e podem violar a semântica de no máximo um.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (exclusões forçadas, grace period)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-08",
+      "text": "Como funciona o vínculo entre um PersistentVolumeClaim e um PersistentVolume, e o que significa o STATUS Bound?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/configure-pod-container/configure-persistent-volume-storage.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento mostra o control plane ligando o claim ao volume adequado e a saída com STATUS Bound.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (PVC, PV Available)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-09",
+      "text": "Por que perco as alterações do sistema de arquivos quando meu contêiner termina e reinicia, e como um Volume emptyDir ajuda?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/configure-pod-container/configure-volume-storage.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento explica a perda do sistema de arquivos do contêiner e o emptyDir que persiste durante a existência do Pod (exemplo Redis).",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (part 1, saída se parece)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-10",
+      "text": "Recebo \"Unable to connect to the server: dial tcp ... i/o timeout\" ao usar o kubectl, por onde começo a diagnosticar?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/debug/debug-cluster/troubleshoot-kubectl.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento aborda exatamente essa mensagem e a verificação da instalação do kubectl e do kubeconfig.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (part 2)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-11",
+      "text": "Quais tipos de daemons de problema o Node Problem Detector suporta (SystemLogMonitor, CustomPluginMonitor, etc.)?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/debug/debug-cluster/monitor-node-health.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento lista SystemLogMonitor, SystemStatsMonitor, CustomPluginMonitor e HealthChecker com suas funções.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (daemon de problema)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-12",
+      "text": "De dentro de um Pod, quais são as formas recomendadas de se conectar à API do Kubernetes?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/run-application/access-api-from-pod.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento lista as bibliotecas cliente oficiais (Go/Python) com InClusterConfig, o kubectl proxy como sidecar e o acesso direto com token.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (parts 2 e 5)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-13",
+      "text": "Como um LimitRange e um ResourceQuota limitam, cada um à sua maneira, o armazenamento consumido por um namespace?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/administer-cluster/limit-storage-consumption.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento contrasta LimitRange (limite por solicitação) com ResourceQuota (número de claims e capacidade cumulativa).",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (sexto PVC, resumo)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    },
+    {
+      "id": "ML-T01-ptbr-14",
+      "text": "Quais validações se aplicam ao redimensionar solicitações e limites de recursos de um Pod em execução?",
+      "language": "pt-BR",
+      "documents": ["content/pt-br/docs/tasks/configure-pod-container/resize-pod-resources.md"],
+      "label": "answerable",
+      "confidence": "high",
+      "label_source": "agent-agreed",
+      "reasoning": "O documento descreve a validação de solicitações no nível do Pod (>= soma dos contêineres) e a validação de limites por contêiner.",
+      "two_pass": {
+        "passA": "drafted in pt-BR from this document's rung text (part 6)",
+        "passB": "independent fresh-context agent matched this exact path blind; LANG correct"
+      }
+    }
+  ],
+  "summary": {
+    "total": 42,
+    "by_language": { "es": 14, "fr": 14, "pt-BR": 14 },
+    "label": "answerable",
+    "two_pass_agreements": 42,
+    "two_pass_disagreements_excluded": 0,
+    "pending_owner_decision": 0,
+    "note": "All 42 rows are two-pass agreements; 0 disagreements. label_source=agent-agreed (no headline authority until the per-language owner spot-check >=85% passes and is recorded)."
+  }
+}
