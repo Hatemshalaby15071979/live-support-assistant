@@ -1,0 +1,854 @@
+{
+  "note": "Independent precision scan: three plain patterns written separately from the privacy gate, run over every document in the corpus. Every distinct hit is listed for hand classification.",
+  "generated_at": "2026-10-07T05:56:39.294Z",
+  "documents": 486,
+  "raw_hits": 160,
+  "distinct_values": 105,
+  "by_pattern": {
+    "phone-shape": 85,
+    "long-digit-run": 14,
+    "email-shape": 6
+  },
+  "hits": [
+    {
+      "pattern": "phone-shape",
+      "value": "127.0.0.1",
+      "count": 6,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definition-versioning.md",
+      "context": "ddress. Please note that using localhost or 127.0.0.1 as a host is risky unless you take great car"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "169.254.0.0",
+      "count": 5,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/ip-masq-agent.md",
+      "context": "s for IPv4 are defined in the address block 169.254.0.0/16 in CIDR notation. The ip-masq-agent conf"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.0.0.0",
+      "count": 4,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/ip-masq-agent.md",
+      "context": "918 as non-masquerade CIDR. These ranges are 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16. The ag"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "148880595",
+      "count": 4,
+      "source_id": "k8s-tasks-es",
+      "path": "content/es/docs/tasks/run-application/run-stateless-application-deployment.md",
+      "context": " READY STATUS RESTARTS AGE nginx-deployment-148880595-4zdqq 1/1 Running 0 25s nginx-deployment-14"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "148880595",
+      "count": 4,
+      "source_id": "k8s-tasks-es",
+      "path": "content/es/docs/tasks/run-application/run-stateless-application-deployment.md",
+      "context": " READY STATUS RESTARTS AGE nginx-deployment-148880595-4zdqq 1/1 Running 0 25s nginx-deployment-14"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "2321272333",
+      "count": 3,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/extend-kubernetes/http-proxy-access-api.md",
+      "context": " \"metadata\": { \"name\": \"kubernetes-bootcamp-2321272333-ix8pt\", \"generateName\": \"kubernetes-bootcam"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "2321272333",
+      "count": 3,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/extend-kubernetes/http-proxy-access-api.md",
+      "context": " \"metadata\": { \"name\": \"kubernetes-bootcamp-2321272333-ix8pt\", \"generateName\": \"kubernetes-bootcam"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1.16.1.\n\n \n\n1",
+      "count": 3,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/run-application/run-stateless-application-deployment.md",
+      "context": "he deployment should be updated to use nginx 1.16.1. 1. Apply the new YAML file: 1. Watch the d"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "1771418926",
+      "count": 3,
+      "source_id": "k8s-tasks-es",
+      "path": "content/es/docs/tasks/run-application/run-stateless-application-deployment.md",
+      "context": "ets: <none> NewReplicaSet: nginx-deployment-1771418926 (2/2 replicas created) No events. 3. Lista"
+    },
+    {
+      "pattern": "email-shape",
+      "value": "ID+USERNAME@users.noreply.github.com",
+      "count": 2,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/email-addresses-reference.md",
+      "context": "umber and your username in the form of <code>ID+USERNAME@users.noreply.github.com</code>. If you created your account _prior t"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "0.10.0 0.10.0",
+      "count": 2,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": " kjd/idna 2.10 v2.10 jmespath/jmespath.py 0.10.0 0.10.0 nucleic/kiwi 1.3.1 1.3.1 matplotlib/matp"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1.1.1 1.1.1",
+      "count": 2,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": ".2.4 pallets/click 7.0 7.0 pallets/flask 1.1.1 1.1.1 flask-restful/flask-restful 0.3.7 0.3.7 "
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1.1.0 1.1.0",
+      "count": 2,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "niconfig 1.0.0 v1.0.0 pallets/itsdangerous 1.1.0 1.1.0 pallets/jinja 2.10.3 2.10.3 lxml/lxml 4."
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "192.0.2.1",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/access-application-cluster/access-cluster-services.md",
+      "context": "sticsearch), which can be reached at https://192.0.2.1/api/v1/namespaces/kube-system/services/elast"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "31496.\n\n1",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/access-application-cluster/service-access-application-cluster.md",
+      "context": " the preceding output, the NodePort value is 31496. 1. List the pods that are running the Hello Wo"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.150.0.1",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/dns-custom-nameservers.md",
+      "context": "rator has a Consul domain server located at \"10.150.0.1\", and all Consul names have the suffix \".con"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "172.16.0.1",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/dns-custom-nameservers.md",
+      "context": "okups to go through a specific nameserver at 172.16.0.1, point the forward to the nameserver instead"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "172.16.0.0",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/ip-masq-agent.md",
+      "context": "asquerade CIDR. These ranges are 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16. The agent will also "
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "192.168.0.0",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/ip-masq-agent.md",
+      "context": "se ranges are 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16. The agent will also treat link-local (16"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "123456789",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/kubelet-credential-provider.md",
+      "context": " example values of matchImages patterns are: 123456789.dkr.ecr.us-east-1.amazonaws.com *.azurecr.io"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "123456789",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/kubelet-credential-provider.md",
+      "context": " example values of matchImages patterns are: 123456789.dkr.ecr.us-east-1.amazonaws.com *.azurecr.io"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1370807587",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-application/debug-running-pod.md",
+      "context": " To find out why the nginx-deployment-1370807587-fz9sd pod is not running, we can use kubectl"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "1370807587",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-application/debug-running-pod.md",
+      "context": " To find out why the nginx-deployment-1370807587-fz9sd pod is not running, we can use kubectl"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.0.0.10",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-application/debug-service.md",
+      "context": "also try this from a Node in the cluster: 10.0.0.10 is the cluster's DNS Service IP, yours might"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.0.1.175",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-application/debug-service.md",
+      "context": " servers. In this example, service hostnames(10.0.1.175:80) has 3 endpoints(10.244.0.5:9376, 10.244."
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.244.0.5",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-application/debug-service.md",
+      "context": "ice hostnames(10.0.1.175:80) has 3 endpoints(10.244.0.5:9376, 10.244.0.6:9376, 10.244.0.7:9376). Is"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.244.0.6",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-application/debug-service.md",
+      "context": "0.1.175:80) has 3 endpoints(10.244.0.5:9376, 10.244.0.6:9376, 10.244.0.7:9376). Is kube-proxy proxy"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.244.0.7",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-application/debug-service.md",
+      "context": " endpoints(10.244.0.5:9376, 10.244.0.6:9376, 10.244.0.7:9376). Is kube-proxy proxying? Assuming yo"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "103739236352",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-cluster/topology.md",
+      "context": "MA node 0 (\"free\":0) and NUMA node 1 (\"free\":103739236352). So, the total amount of free \"conventional"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "3221225472",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-cluster/topology.md",
+      "context": "3739236352 bytes. The line \"systemReserved\":3221225472 indicates that the administrator of this nod"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "103739236352",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-cluster/topology.md",
+      "context": "MA node 0 (\"free\":0) and NUMA node 1 (\"free\":103739236352). So, the total amount of free \"conventional"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "3221225472",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-cluster/topology.md",
+      "context": "3739236352 bytes. The line \"systemReserved\":3221225472 indicates that the administrator of this nod"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "299460680",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information.md",
+      "context": "tory: in this example, ..2982_06_02_21_47_53.299460680. In the /etc/podinfo directory, ..data is a "
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "299460680",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information.md",
+      "context": "tory: in this example, ..2982_06_02_21_47_53.299460680. In the /etc/podinfo directory, ..data is a "
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.96.0.0",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/network/extend-service-ip-ranges.md",
+      "context": "dding a new ServiceCIDR On a cluster with a 10.96.0.0/28 range for Services, there is only 2^(32-2"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "34450317-0",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/network/validate-dual-stack.md",
+      "context": "s example, the Node's name is k8s-linuxpool1-34450317-0: There should be one IPv4 block and o"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "34450317",
+      "count": 2,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/network/validate-dual-stack.md",
+      "context": "s example, the Node's name is k8s-linuxpool1-34450317-0: There should be one IPv4 block and"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1771418926",
+      "count": 2,
+      "source_id": "k8s-tasks-es",
+      "path": "content/es/docs/tasks/run-application/run-stateless-application-deployment.md",
+      "context": " READY STATUS RESTARTS AGE nginx-deployment-1771418926-7o5ns 1/1 Running 0 16h nginx-deployment-17"
+    },
+    {
+      "pattern": "email-shape",
+      "value": "email+shortcode@domain.com",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/concepts/email-addresses.md",
+      "context": "ple, the AUTOTITLE and AUTOTITLE will return email+shortcode@domain.com. In rare cases, you may find that your compa"
+    },
+    {
+      "pattern": "email-shape",
+      "value": "octocat@nowhere.com",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/how-tos/contribution-settings/troubleshooting-missing-contributions.md",
+      "context": "le, the email address used for the commit is octocat@nowhere.com. If the email address used for the commit i"
+    },
+    {
+      "pattern": "email-shape",
+      "value": "jane@computer.local",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/how-tos/contribution-settings/troubleshooting-missing-contributions.md",
+      "context": "% endif %} Generic email addresses, such as jane@computer.local, cannot be added to {% data variables.produc"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "2018-04-03",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/how-tos/contribution-settings/viewing-commit-details-from-your-timeline.md",
+      "context": "the specific date: To search by author date (2018-04-03): https://github.com/your-organization-or-"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "2018-04-10",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/how-tos/contribution-settings/viewing-commit-details-from-your-timeline.md",
+      "context": "18-04-03T23:59:59Z To search by commit date (2018-04-10): https://github.com/your-organization-or-"
+    },
+    {
+      "pattern": "email-shape",
+      "value": "USERNAME@users.noreply.github.com",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/email-addresses-reference.md",
+      "context": "at date, your noreply email address is <code>USERNAME@users.noreply.github.com</code>. To get an ID-based noreply email add"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1.17.17 1.17.17",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "4 python/cpython 3.9.2 v3.9.2 boto/boto3 1.17.17 1.17.17 boto/botocore 1.20.11 1.20.11 certifi/py"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1.20.11 1.20.11",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": " boto/boto3 1.17.17 1.17.17 boto/botocore 1.20.11 1.20.11 certifi/python-certifi 2020.12.5 2020.12.0"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "2020.12.5 2020.12.05",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "ore 1.20.11 1.20.11 certifi/python-certifi 2020.12.5 2020.12.05 chardet/chardet 4.0.0 4.0.0 matplotlib/c"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "4.0.0 4.0.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "rtifi 2020.12.5 2020.12.05 chardet/chardet 4.0.0 4.0.0 matplotlib/cycler 0.10.0 v0.10.0 elastic"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "6.8.1 6.8.1",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "er 0.10.0 v0.10.0 elastic/elasticsearch-py 6.8.1 6.8.1 ianare/exif-py 2.3.2 2.3.2 kjd/idna 2.10"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "2.3.2 2.3.2",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "lasticsearch-py 6.8.1 6.8.1 ianare/exif-py 2.3.2 2.3.2 kjd/idna 2.10 v2.10 jmespath/jmespath.py"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1.3.1 1.3.1",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "ath/jmespath.py 0.10.0 0.10.0 nucleic/kiwi 1.3.1 1.3.1 matplotlib/matplotlib 3.3.4 v3.3.4 numpy"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "4.5.1.48 48",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "/numpy 1.20.1 v1.20.1 opencv/opencv-python 4.5.1.48 48 python-pillow/Pillow 8.1.0 8.1.0 pycurl/"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "8.1.0 8.1.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "cv-python 4.5.1.48 48 python-pillow/Pillow 8.1.0 8.1.0 pycurl/pycurl 7.43.0.6 REL_7_43_0_6 pypa"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "7.43.0.6",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "on-pillow/Pillow 8.1.0 8.1.0 pycurl/pycurl 7.43.0.6 REL_7_43_0_6 pyparsing/pyparsing 2.4.7 pyp"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "2.8.1 2.8.1",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "serial/pyserial 3.5 v3.5 dateutil/dateutil 2.8.1 2.8.1 yaml/pyyaml 5.4.1 5.4.1 psf/requests 2.2"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "5.4.1 5.4.1",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": " dateutil/dateutil 2.8.1 2.8.1 yaml/pyyaml 5.4.1 5.4.1 psf/requests 2.25.1 v2.25.1 boto/s3trans"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "0.3.4 0.3.4",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "sf/requests 2.25.1 v2.25.1 boto/s3transfer 0.3.4 0.3.4 enthought/scimath 4.2.0 4.2.0 scipy/scip"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "4.2.0 4.2.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "o/s3transfer 0.3.4 0.3.4 enthought/scimath 4.2.0 4.2.0 scipy/scipy 1.6.1 v1.6.1 benjaminp/six 1"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1.15.0 1.15.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "0 scipy/scipy 1.6.1 v1.6.1 benjaminp/six 1.15.0 1.15.0 enthought/traits 6.2.0 6.2.0 urllib3/url"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "6.2.0 6.2.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "njaminp/six 1.15.0 1.15.0 enthought/traits 6.2.0 6.2.0 urllib3/urllib3 1.26.3 1.26.3 python-att"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1.26.3 1.26.3",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "thought/traits 6.2.0 6.2.0 urllib3/urllib3 1.26.3 1.26.3 python-attrs/attrs 19.3.0 19.3.0 Cheetah"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "19.3.0 19.3.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "3/urllib3 1.26.3 1.26.3 python-attrs/attrs 19.3.0 19.3.0 CheetahTemplate3/cheetah3 3.2.4 3.2.4 pa"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "3.2.4 3.2.4",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "rs 19.3.0 19.3.0 CheetahTemplate3/cheetah3 3.2.4 3.2.4 pallets/click 7.0 7.0 pallets/flask 1.1."
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "0.3.7 0.3.7",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "sk 1.1.1 1.1.1 flask-restful/flask-restful 0.3.7 0.3.7 pytest-dev/iniconfig 1.0.0 v1.0.0 pallet"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "2.10.3 2.10.3",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "ets/itsdangerous 1.1.0 1.1.0 pallets/jinja 2.10.3 2.10.3 lxml/lxml 4.4.1 lxml-4.4.1 Python-Markdo"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "3.1.1 3.1.1",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": " 4.4.1 lxml-4.4.1 Python-Markdown/markdown 3.1.1 3.1.1 pallets/markupsafe 1.1.1 1.1.1 pypa/pack"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "19.2 19.2",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "lets/markupsafe 1.1.1 1.1.1 pypa/packaging 19.2 19.2 pexpect/pexpect 4.7.0 4.7.0 pytest-dev/p"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "4.7.0 4.7.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": " pypa/packaging 19.2 19.2 pexpect/pexpect 4.7.0 4.7.0 pytest-dev/pluggy 0.13.0 0.13.0 pexpect/"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "0.13.0 0.13.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "pect/pexpect 4.7.0 4.7.0 pytest-dev/pluggy 0.13.0 0.13.0 pexpect/ptyprocess 0.6.0 0.6.0 pytest-de"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "0.6.0 0.6.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "ev/pluggy 0.13.0 0.13.0 pexpect/ptyprocess 0.6.0 0.6.0 pytest-dev/py 1.8.0 1.8.0 pyparsing/pypa"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1.8.0 1.8.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "xpect/ptyprocess 0.6.0 0.6.0 pytest-dev/py 1.8.0 1.8.0 pyparsing/pyparsing 2.4.5 pyparsing_2.4.5 "
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "5.3.0 5.3.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "ng 2.4.5 pyparsing_2.4.5 pytest-dev/pytest 5.3.0 5.3.0 stub42/pytz 2019.3 release_2019.3 uiri/t"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "0.16.0 0.16.0",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": " uiri/toml 0.10.0 0.10.0 pallets/werkzeug 0.16.0 0.16.0 dmnfarrell/tkintertable 1.2 v1.2 wxWidge"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "4.5.1 4.5.1",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "3 nucleic/cppy 1.1.0 1.1.0 opencv/opencv 4.5.1 4.5.1 curl/curl 7.72.0 curl-7_72_0 madler/zlib"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "0.2.5 0.2.5",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": ".3 releases/lucene-solr/7.7.3 yaml/libyaml 0.2.5 0.2.5 elastic/elasticsearch 6.8.1 v6.8.1 twbs/"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "0.7.1 0.7.1",
+      "count": 1,
+      "source_id": "ghdocs-account-en",
+      "path": "content/account-and-profile/reference/profile-reference.md",
+      "context": "vuejs/vue 2.6.10 v2.6.10 carrotsearch/hppc 0.7.1 0.7.1 JodaOrg/joda-time 2.10.1 v2.10.1 tdunnin"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "0.000024",
+      "count": 1,
+      "source_id": "ghdocs-billing-en",
+      "path": "content/billing/concepts/product-billing/cloud-and-local-sandboxes.md",
+      "context": " sandbox session is running. Compute second $0.000024 Memory Memory allocated to a cloud sandbox"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "0.000003",
+      "count": 1,
+      "source_id": "ghdocs-billing-en",
+      "path": "content/billing/concepts/product-billing/cloud-and-local-sandboxes.md",
+      "context": "box session while it is running. GiB second $0.000003 Storage Snapshot storage for stopped sessi"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "000024",
+      "count": 1,
+      "source_id": "ghdocs-billing-en",
+      "path": "content/billing/concepts/product-billing/cloud-and-local-sandboxes.md",
+      "context": "andbox session is running. Compute second $0.000024 Memory Memory allocated to a cloud sandbox"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "000003",
+      "count": 1,
+      "source_id": "ghdocs-billing-en",
+      "path": "content/billing/concepts/product-billing/cloud-and-local-sandboxes.md",
+      "context": "x session while it is running. GiB second $0.000003 Storage Snapshot storage for stopped sessi"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.0.0.1",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/configure-upgrade-etcd.md",
+      "context": "tcd cluster. Let the URLs be, member1=http://10.0.0.1, member2=http://10.0.0.2, and member3=http:/"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.0.0.2",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/configure-upgrade-etcd.md",
+      "context": " be, member1=http://10.0.0.1, member2=http://10.0.0.2, and member3=http://10.0.0.3. When member1 f"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.0.0.3",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/configure-upgrade-etcd.md",
+      "context": " member2=http://10.0.0.2, and member3=http://10.0.0.3. When member1 fails, replace it with member4"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.0.0.4.\n\n1",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/configure-upgrade-etcd.md",
+      "context": "ember1 fails, replace it with member4=http://10.0.0.4. 1. Get the member ID of the failed member1: "
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.0.0.4",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/configure-upgrade-etcd.md",
+      "context": " newly added member on a machine with the IP 10.0.0.4: 1. Do either of the following: 1. If "
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "192.168.2.0",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/ip-masq-agent.md",
+      "context": "g the number of bits of the prefix, such as 192.168.2.0/24. **Link Local**: A link-local address is"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "192.168.0.8.\n1",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/kubelet-config-file.md",
+      "context": "ddress: The kubelet will serve on IP address 192.168.0.8. 1. port: The kubelet will serve on port 20250."
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "20250.\n1",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/administer-cluster/kubelet-config-file.md",
+      "context": "0.8. 1. port: The kubelet will serve on port 20250. 1. serializeImagePulls: Image pulls will be do"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "800000",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/configure-pod-container/resize-container-resources.md",
+      "context": "didn't have enough capacity: cpu, requested: 800000, capacity: ...) Crucially, status.containerS"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "112879",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/configure-pod-container/security-context.md",
+      "context": "ssing the volumes (see kubernetes/kubernetes#112879 for details). If you want to avoid this. Ple"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.244.4.1",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/debug/debug-cluster/windows.md",
+      "context": "fferent number. For example, if node subnet 10.244.4.1/24 is desired: Further investigation If"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.0.2.15",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/extend-kubernetes/http-proxy-access-api.md",
+      "context": "clientCIDR\": \"0.0.0.0/0\", \"serverAddress\": \"10.0.2.15:8443\" } ] } Get a list of pods: curl h"
+    },
+    {
+      "pattern": "email-shape",
+      "value": "username@kubernetes-remote-server.example",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/extend-kubernetes/socks5-proxy-access-api.md",
+      "context": "e command. Useful for just forwarding ports. username@kubernetes-remote-server.example: the remote SSH server behind which the Kube"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.1.2.3",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/network/customize-hosts-file-for-pods.md",
+      "context": "l to 127.0.0.1 and foo.remote, bar.remote to 10.1.2.3, you can configure HostAliases for a Pod und"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.96.0.1",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/network/extend-service-ip-ranges.md",
+      "context": "lt Service, in this case, uses the ClusterIP 10.96.0.1, that has the corresponding IPAddress object"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "32-28) - 2",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/network/extend-service-ip-ranges.md",
+      "context": ".0.0/28 range for Services, there is only 2^(32-28) - 2 = 14 IP addresses available. The kubernetes."
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.96.1.0",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/network/extend-service-ip-ranges.md",
+      "context": "licy would allow a ServiceCIDR with cidrs: ['10.96.1.0/24'] or cidrs: ['2001:db8:0:0:ffff::/80', '1"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "172.20.0.0",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/network/extend-service-ip-ranges.md",
+      "context": " would not allow a ServiceCIDR with cidrs: ['172.20.0.0/16'].) You can copy this policy and change t"
+    },
+    {
+      "pattern": "long-digit-run",
+      "value": "864000",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/tls/certificate-issue-client-csr.md",
+      "context": "expirationSeconds could be made longer (i.e. 864000 for ten days) or shorter (i.e. 3600 for one "
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "192.0.2.24",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/tls/managing-tls-in-a-cluster.md",
+      "context": " by running the following command: Where 192.0.2.24 is the service's cluster IP, my-svc.my-names"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "10.0.34.2",
+      "count": 1,
+      "source_id": "k8s-tasks-en",
+      "path": "content/en/docs/tasks/tls/managing-tls-in-a-cluster.md",
+      "context": "svc.cluster.local is the service's DNS name, 10.0.34.2 is the pod's IP and my-pod.my-namespace.pod."
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "37 -0700",
+      "count": 1,
+      "source_id": "k8s-tasks-es",
+      "path": "content/es/docs/tasks/run-application/run-stateless-application-deployment.md",
+      "context": "t CreationTimestamp: Tue, 30 Aug 2016 18:11:37 -0700 Labels: app=nginx Annotations: deployment."
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1771418926 (2",
+      "count": 1,
+      "source_id": "k8s-tasks-es",
+      "path": "content/es/docs/tasks/run-application/run-stateless-application-deployment.md",
+      "context": "ets: <none> NewReplicaSet: nginx-deployment-1771418926 (2/2 replicas created) No events. 3. Lista lo"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "1.8.\n\n \n\n1",
+      "count": 1,
+      "source_id": "k8s-tasks-es",
+      "path": "content/es/docs/tasks/run-application/run-stateless-application-deployment.md",
+      "context": "ment debería ser actualizado para usar nginx 1.8. 1. Aplica el nuevo fichero YAML: kubectl app"
+    },
+    {
+      "pattern": "phone-shape",
+      "value": "162.900.000",
+      "count": 1,
+      "source_id": "k8s-tasks-fr",
+      "path": "content/fr/docs/tasks/configure-pod-container/assign-memory-resource.md",
+      "context": " La sortie montre que le Pod utilise environ 162.900.000 bytes de mémoire, qui est d'environ 150 MiB."
+    }
+  ]
+}

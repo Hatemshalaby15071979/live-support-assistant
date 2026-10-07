@@ -1,7 +1,7 @@
 {
   "note": "Corpus manifest. Every harvested source records the licence it was read under, when it was read, what the licence file actually said, the pinned revision, and the hash of the snapshot its own contents produced. Exclusions and quarantines are counted and named rather than silently dropped.",
   "data_mode": "web-sourced",
-  "generated_at": "2026-10-07T05:35:30.252Z",
+  "generated_at": "2026-10-07T05:59:14.495Z",
   "quarantine_limit": 0.05,
   "sources": [
     {
@@ -235,122 +235,27 @@
     },
     {
       "id": "ghdocs-site-policy-en",
-      "status": "dropped",
-      "reason": "high-severity quarantine rate 19.0% exceeds the 5% limit (any-severity rate 19.0%)",
+      "status": "harvested",
+      "tenant": "T05-policy-style",
+      "domain_analogue": "policy-style",
+      "language": "en",
+      "repo": "github/docs",
+      "ref": "8794b3cd6aa66cc91c0dba5f15b8864b8636d1fb",
+      "path": "content/site-policy/",
+      "licence": "CC-BY-4.0",
+      "licence_url": "https://github.com/github/docs/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "attribution": "GitHub Docs (site policy), © GitHub, Inc., licensed under CC BY 4.0. https://github.com/github/docs",
+      "redistribute_text": true,
+      "redistribute_reason": "redistribution permitted with attribution; the attribution file is required for the corpus to be publishable",
+      "snapshot": "snapshots/0d09792d21e7fcb520392a7a073872525891372a81232b4afd88f8c6638ca835.json",
+      "snapshotSha256": "0d09792d21e7fcb520392a7a073872525891372a81232b4afd88f8c6638ca835",
+      "harvested_at": "2026-10-07T05:59:14.492Z",
+      "items": 58,
       "excluded": 9,
-      "quarantined": 12,
-      "quarantine_detail": [
-        {
-          "path": "content/site-policy/content-removal-policies/guide-to-submitting-a-dmca-counter-notice.md",
-          "patterns": [
-            "email"
-          ],
-          "examples": [
-            "copyright@github.com"
-          ]
-        },
-        {
-          "path": "content/site-policy/content-removal-policies/guide-to-submitting-a-dmca-takedown-notice.md",
-          "patterns": [
-            "email"
-          ],
-          "examples": [
-            "copyright@github.com"
-          ]
-        },
-        {
-          "path": "content/site-policy/github-terms/github-corporate-terms-of-service.md",
-          "patterns": [
-            "email"
-          ],
-          "examples": [
-            "copyright@github.com"
-          ]
-        },
-        {
-          "path": "content/site-policy/github-terms/github-event-code-of-conduct.md",
-          "patterns": [
-            "email"
-          ],
-          "examples": [
-            "events@github.com"
-          ]
-        },
-        {
-          "path": "content/site-policy/github-terms/github-marketplace-developer-agreement.md",
-          "patterns": [
-            "email",
-            "postal-address"
-          ],
-          "examples": [
-            "legal-support@github.com",
-            "2710 Gateway Oaks Drive"
-          ]
-        },
-        {
-          "path": "content/site-policy/github-terms/github-secret-scanning-partner-program-agreement.md",
-          "patterns": [
-            "email"
-          ],
-          "examples": [
-            "secret-scanning@github.com"
-          ]
-        },
-        {
-          "path": "content/site-policy/github-terms/github-terms-of-service.md",
-          "patterns": [
-            "email"
-          ],
-          "examples": [
-            "copyright@github.com"
-          ]
-        },
-        {
-          "path": "content/site-policy/other-site-policies/guidelines-for-legal-requests-of-user-data.md",
-          "patterns": [
-            "email"
-          ],
-          "examples": [
-            "legal-support@github.com"
-          ]
-        },
-        {
-          "path": "content/site-policy/privacy-policies/github-candidate-privacy-policy.md",
-          "patterns": [
-            "email"
-          ],
-          "examples": [
-            "dpo@github.com"
-          ]
-        },
-        {
-          "path": "content/site-policy/privacy-policies/github-subprocessors.md",
-          "patterns": [
-            "email"
-          ],
-          "examples": [
-            "privacy@github.com"
-          ]
-        },
-        {
-          "path": "content/site-policy/site-policy-deprecated/github-enterprise-subscription-agreement.md",
-          "patterns": [
-            "email"
-          ],
-          "examples": [
-            "copyright@github.com"
-          ]
-        },
-        {
-          "path": "content/site-policy/site-policy-deprecated/github-supplemental-terms-for-microsoft-volume-licensing.md",
-          "patterns": [
-            "email"
-          ],
-          "examples": [
-            "copyright@github.com"
-          ]
-        }
-      ],
+      "quarantined": 5,
+      "quarantine_rate": 0.0476,
+      "quarantine_rate_any": 0.0794,
       "exclusion_detail": [
         {
           "path": "content/site-policy/acceptable-use-policies/index.md",
@@ -387,6 +292,41 @@
         {
           "path": "content/site-policy/site-policy-deprecated/index.md",
           "reason": "too little prose after extraction"
+        }
+      ],
+      "quarantine_detail": [
+        {
+          "path": "content/site-policy/github-terms/github-corporate-terms-of-service.md",
+          "patterns": [
+            "honorific-name"
+          ]
+        },
+        {
+          "path": "content/site-policy/github-terms/github-marketplace-developer-agreement.md",
+          "patterns": [
+            "postal-address"
+          ]
+        },
+        {
+          "path": "content/site-policy/github-terms/github-secret-scanning-partner-program-agreement.md",
+          "patterns": [
+            "email"
+          ]
+        },
+        {
+          "path": "content/site-policy/github-terms/github-terms-of-service.md",
+          "patterns": [
+            "honorific-name"
+          ]
+        },
+        {
+          "path": "content/site-policy/privacy-policies/github-general-privacy-statement.md",
+          "patterns": [
+            "email-obfuscated",
+            "email-obfuscated",
+            "email-obfuscated",
+            "email-obfuscated"
+          ]
         }
       ]
     },

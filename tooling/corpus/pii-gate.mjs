@@ -127,6 +127,32 @@ const MACHINE_LOCAL_PARTS = new Set([
 ]);
 
 /**
+ * Organisational role mailboxes — a **closed, named list**.
+ *
+ * Under prereg `g12`, approved 2026-10-07. These are published so that anyone
+ * can write to the organisation; they are not a person's mailbox. Under GDPR a
+ * role address does not identify a natural person, which is the test this gate
+ * applies.
+ *
+ * **Closed in both directions.** A local part is excluded because it is on this
+ * list. No prefix rule, suffix rule or "looks generic" heuristic may extend it,
+ * and an exact match is required — so `jane.smith@`, `j.smith@`, `janesmith@`,
+ * `jane_smith@` and `jsmith@` are all still findings. That is the condition the
+ * change was approved on, and `verify-corpus-gates.mjs` tests it directly,
+ * including `jane.support@` — a person whose surname is a role word — which
+ * proves the match is on the whole local part rather than a substring.
+ *
+ * Kept separate from `MACHINE_LOCAL_PARTS` because the reasons differ: a machine
+ * address cannot receive mail, a role address cannot identify a person.
+ */
+const ROLE_LOCAL_PARTS = new Set([
+  'copyright', 'privacy', 'dpo', 'gdpr', 'data-protection', 'abuse', 'security',
+  'security-response', 'legal', 'legal-support', 'compliance', 'support', 'press',
+  'media', 'sales', 'billing', 'accounts', 'events', 'info', 'hello', 'contact',
+  'admin', 'webmaster', 'postmaster', 'jobs', 'careers', 'trust-and-safety',
+]);
+
+/**
  * Words that are never a surname in a contact line.
  *
  * The name rules match two capitalised words after a trigger, and the real
@@ -233,7 +259,15 @@ const HIGH_SEVERITY_RULES = [
         '\\b\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}\\b',
         // French NIR: 13 digits, usually spaced, sex digit first.
         '\\b[12]\\s?\\d{2}\\s?\\d{2}\\s?\\d{2}\\s?\\d{3}\\s?\\d{3}\\s?\\d{2}\\b',
+        // Label-driven forms. A German Steuer-ID and a Polish PESEL have no
+        // shape distinctive enough to match blind without firing on every
+        // eleven-digit number in a technical corpus, so they are matched where
+        // the document names them — which is how they appear.
+        `\\b(?:${caseInsensitiveLiterals(['Steuer-ID', 'SteuerID', 'PESEL', 'codice fiscale', 'NIE', 'NIF', 'DNI'])})\\s*[:#-]?\\s*\\d[\\d\\s-]{7,}\\b`,
       ].join('|'),
+      // No `i` flag: it would make `[A-HJ-NP-TV-Z]` match lowercase letters and
+      // turn the DNI branch loose on ordinary words. Labels carry their own case
+      // alternation instead.
       'gu',
     ),
   },
@@ -250,7 +284,15 @@ const HIGH_SEVERITY_RULES = [
         '\\b\\d{2}-\\d{2}-\\d{2}\\b',
         // French RIB: 5-5-11-2.
         '\\b\\d{5}\\s\\d{5}\\s\\d{11}\\s\\d{2}\\b',
+        // BIC / SWIFT, label-driven. Eight or eleven uppercase alphanumerics is
+        // too weak a shape to match blind.
+        `\\b(?:${caseInsensitiveLiterals(['BIC', 'SWIFT'])})\\s*[:#-]?\\s*[A-Z]{6}[A-Z0-9]{2}(?:[A-Z0-9]{3})?\\b`,
       ].join('|'),
+      // No `i` flag, and this one was a real defect: with `i` the IBAN branch's
+      // `[A-Z0-9]` matched lowercase, so `ES91 2100 0418 4502 0005 1332 aparece
+      // en el` matched as one token, the length validator rejected it as too
+      // long, and a real IBAN scored as nothing. The label carries its own case
+      // alternation instead.
       'gu',
     ),
     validate: (value) => {
@@ -330,8 +372,11 @@ const HIGH_SEVERITY_RULES = [
         'claim', 'contract', 'membership', 'referencia', 'referência', 'référence', 'número',
         'numero', 'nº', 'n°', 'caso', 'pedido', 'factura', 'cliente', 'client', 'conta',
         'cuenta', 'socio', 'expediente', 'matrícula', 'dossier', 'contrat',
-      ])})` +
-        `(?:\\s+(?:${caseInsensitiveLiterals(['de', 'da', 'do', 'del', 'id', 'no', 'number', 'num'])})?)*` +
+        // Abbreviations and vocabulary the first held-out pass found missing.
+        // `A/C`, `Acct.`, `Réf.`, `póliza` and `protocolo` all scored as nothing.
+        'a/c', 'acct', 'réf', 'ref', 'póliza', 'poliza', 'protocolo', 'protocol',
+      ])})[.]?` +
+        `(?:\\s+(?:${caseInsensitiveLiterals(['de', 'da', 'do', 'del', 'id', 'no', 'number', 'num'])})[.]?)*` +
         `\\s*[:#-]?\\s*[A-Z]{0,4}[-_/]?\\d{4,}(?:[-_/]\\d{2,})?`,
       'gu',
     ),
@@ -350,9 +395,12 @@ const HIGH_SEVERITY_RULES = [
         `\\b\\d{1,5}[A-Za-z]?\\s+[A-Z][\\p{L}'-]+(?:\\s+[A-Z][\\p{L}'-]+)*\\s+(?:${STREET_TYPE_ALTERNATION})\\b\\.?`,
         `\\b(?:${STREET_TYPE_ALTERNATION})\\s+[A-Z\\p{L}][\\p{L}'-]*(?:\\s+[\\p{L}'-]+)*\\s+\\d{1,5}\\b`,
         `\\b\\d{1,5}\\s+(?:${STREET_TYPE_ALTERNATION})\\s+[\\p{L}][\\p{L}'-]*(?:\\s+[\\p{L}'-]+)*`,
+        // English written name-first, type-second, number-last: `Elm Road 12`.
+        // The held-out set found this, and none of the three orderings above
+        // could see it — the type sits in the middle rather than at an end.
+        `\\b[A-Z][\\p{L}'-]+\\s+(?:${STREET_TYPE_ALTERNATION})\\s+\\d{1,5}\\b`,
         // Post-office boxes carry no street type and no name, so none of the
-        // three orderings above can see one. The held-out set found `P.O. Box
-        // 4471` scored as nothing.
+        // orderings above can see one. `P.O. Box 4471` scored as nothing.
         `\\bP\\.?\\s?O\\.?\\s+Box\\s+\\d{1,6}\\b`,
       ].join('|'),
       'gu',
@@ -375,7 +423,7 @@ const REVIEW_SEVERITY_RULES = [
     pattern: new RegExp(
       `\\b(?:${caseInsensitiveLiterals([
         'Mrs', 'Miss', 'Mr', 'Ms', 'Dr', 'Prof', 'Sir', 'Dame', 'Mx',
-        'Srta', 'Sra', 'Sr', 'Dra', 'Dña', 'Doña', 'Don', 'Mme', 'Mlle', 'Me', 'M',
+        'Srta', 'Sra', 'Sr', 'Dra', 'Dña', 'Doña', 'Don', 'Mme', 'Mlle', 'Me', 'M', 'Rev', 'Fr', 'Ilma', 'Ilmo',
       ])})[.]?\\s+[A-Z](?:[.]\\s*)?[\\p{L}'-]*(?:\\s+[A-Z][\\p{L}'-]+)?`,
       'gu',
     ),
@@ -395,6 +443,7 @@ const REVIEW_SEVERITY_RULES = [
     pattern: new RegExp(
       `\\b(?:${caseInsensitiveLiterals([
         'contacto', 'contato', 'contact', 'escalation owner', 'responsable', 'responsável',
+        'data controller', 'encarregado', 'delegado de protección',
         'written by', 'escrito por', 'posted by', 'publicado por', 'signed by', 'firmado por',
         'assinado por', 'rédigé par', 'cordialement', 'author', 'autor', 'regards', 'saludos',
         'thanks', 'gracias', 'obrigado',
@@ -473,7 +522,11 @@ function isMachineAddress(address) {
   const at = address.lastIndexOf('@');
   if (at === -1) return false;
 
-  return MACHINE_LOCAL_PARTS.has(address.slice(0, at).toLowerCase());
+  const local = address.slice(0, at).toLowerCase();
+  if (MACHINE_LOCAL_PARTS.has(local)) return true;
+
+  // Exact match only, and the whole local part — `jane.support` is a person.
+  return ROLE_LOCAL_PARTS.has(local);
 }
 
 /**

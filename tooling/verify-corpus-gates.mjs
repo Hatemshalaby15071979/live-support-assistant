@@ -39,9 +39,10 @@ function expectTrue(name, condition, detail = '') {
 // ===========================================================================
 
 const PII_CASES = [
-  // Deliberately not example.com: a reserved domain is not a finding, so using
-  // one here would test the exclusion rather than the rule.
-  ['email in prose', 'Write to support@acme-helpdesk.co.uk for help.', 'email'],
+  // Deliberately not example.com (reserved) and not a role local-part (excluded
+  // under prereg g12): using either here would test an exclusion rather than the
+  // rule.
+  ['email in prose', 'Write to jane.smith@acme-helpdesk.co.uk for help.', 'email'],
   ['email with plus addressing', 'Reach jane.doe+support@example.co.uk today.', 'email'],
   ['international phone', 'Call +44 20 7946 0958 between 9 and 5.', 'phone-international'],
   ['national phone', 'Ring (555) 123-4567 to confirm.', 'phone-national'],
@@ -143,20 +144,76 @@ for (const [label, text] of [
   );
 }
 
-// The reserved-domain rule must not swallow real addresses.
-{
-  const real = scanForPii('Contact security@djangoproject.com about it.');
-  expectTrue(
-    'a real domain is still caught',
-    real.findings.some((finding) => finding.pattern === 'email'),
-    real.findings.map((finding) => finding.pattern).join(', ') || 'none',
-  );
+// ---------------------------------------------------------------------------
+// Prereg g12: organisational role addresses are excluded, and — the condition
+// the change was approved on — an address shaped like a person is NOT.
+//
+// This is the test that makes the exclusion safe to make. If any of the first
+// group stops being caught, the change has to be rolled back.
+// ---------------------------------------------------------------------------
 
+const PERSON_SHAPED = [
+  ['first.last', 'Write to jane.smith@acme-helpdesk.co.uk about the invoice.'],
+  ['first_last', 'Write to jane_smith@acme-helpdesk.co.uk about the invoice.'],
+  ['firstlast', 'Write to janesmith@acme-helpdesk.co.uk about the invoice.'],
+  ['initial.surname', 'Write to j.smith@acme-helpdesk.co.uk about the invoice.'],
+  ['initials-surname', 'Write to jm.smith@acme-helpdesk.co.uk about the invoice.'],
+  ['surname.first', 'Write to smith.jane@acme-helpdesk.co.uk about the invoice.'],
+  ['initial+surname', 'Write to jsmith@acme-helpdesk.co.uk about the invoice.'],
+  ['first.initial', 'Write to jane.s@acme-helpdesk.co.uk about the invoice.'],
+  ['initials.surname', 'Write to j.okafor@northgate-helpdesk.co.uk about it.'],
+  ['accented name', 'Write to josé.muñoz@asistencia-iberica.es about it.'],
+  ['hyphenated name', 'Write to anne-marie.dubois@support-loire.fr about it.'],
+  ['a person whose surname is a role word', 'Write to jane.support@acme-helpdesk.co.uk about it.'],
+  ['a person whose forename is a role word', 'Write to legal.jones@acme-helpdesk.co.uk about it.'],
+];
+
+for (const [label, text] of PERSON_SHAPED) {
+  const result = scanForPii(text);
+  expectTrue(
+    `person-shaped address still caught: ${label}`,
+    result.findings.some((finding) => finding.pattern === 'email'),
+    result.findings.map((finding) => finding.pattern).join(', ') || 'none',
+  );
+}
+
+// The negative control. Without this the test above would pass on a gate that
+// catches every address, and the exclusion would never be exercised.
+const ROLE_ADDRESSES = [
+  ['copyright', 'Notice to copyright@github.com about the takedown.'],
+  ['privacy', 'Requests go to privacy@github.com and are logged.'],
+  ['dpo', 'The DPO can be reached at dpo@github.com.'],
+  ['legal-support', 'Write to legal-support@github.com for the agreement.'],
+  ['events', 'Questions go to events@github.com before the conference.'],
+  ['security', 'Report it to security@djangoproject.com in confidence.'],
+  ['abuse', 'Report abuse to abuse@acme-helpdesk.co.uk promptly.'],
+];
+
+for (const [label, text] of ROLE_ADDRESSES) {
+  const result = scanForPii(text);
+  expectTrue(
+    `role address excluded: ${label}`,
+    !result.findings.some((finding) => finding.pattern === 'email'),
+    result.findings.map((finding) => finding.pattern).join(', ') || 'none',
+  );
+}
+
+// The reserved-domain rule must not swallow a lookalike, and must not swallow a
+// person. The real-domain control no longer uses `security@` — that is a role
+// address under prereg g12 — so it uses a person-shaped one instead.
+{
   const lookalike = scanForPii('Mail a@example.com.evil.test-host.io now.');
   expectTrue(
     'a lookalike of a reserved domain is still caught',
     lookalike.findings.some((finding) => finding.pattern === 'email'),
     lookalike.findings.map((finding) => finding.pattern).join(', ') || 'none',
+  );
+
+  const person = scanForPii('Contact jane.smith@acme-helpdesk.co.uk about it.');
+  expectTrue(
+    'a person-shaped address on a real domain is still caught',
+    person.findings.some((finding) => finding.pattern === 'email'),
+    person.findings.map((finding) => finding.pattern).join(', ') || 'none',
   );
 }
 

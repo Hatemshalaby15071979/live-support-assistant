@@ -38,18 +38,40 @@ literally policy text.
 | `k8s-tasks-fr` | T01-platform-operations-style | fr | CC-BY-4.0 | **42** | 17 | 0 |
 | `ghdocs-account-en` | T04-customer-support-style | en | CC-BY-4.0 | **55** | 14 | 0 |
 | `ghdocs-billing-en` | T04-customer-support-style | en | CC-BY-4.0 | **81** | 16 | 1 |
-| | | | **Total** | **486** | 90 | 1 |
+| `ghdocs-site-policy-en` | T05-policy-style | en | CC-BY-4.0 | **58** | 9 | 5 |
+| | | | **Total** | **544** | 99 | 6 |
 
-**Languages: four** — en 339, pt-BR 69, fr 42, es 36. V2 asked for at least two non-English
-languages and permitted translating licensed documents only if no licensed non-English source
-existed. It does exist: the Kubernetes website carries localised trees under the same CC-BY-4.0
-licence. **No translated corpus was built, and nothing carries `origin: translated`.**
+### Which tenants are multilingual — and which are not
 
-**Domains: two.** T01 platform-operations-style (350 items) and T04 customer-support-style (136).
-V2 asks for four tenants and at least two domains; there are two tenants and two domains.
+**This matters for every language comparison and must travel with any per-language figure.**
 
-**Quarantine: 0.0% on every Kubernetes source, in all four languages.** One document in the billing
-tree (1.2%).
+| Tenant | Domain analogue | Languages present | Multilingual? |
+| --- | --- | --- | --- |
+| **T01** | platform-operations-style | en, es, pt-BR, fr | **Yes — the only multilingual tenant** |
+| **T04** | customer-support-style | en | **No — English only** |
+| **T05** | policy-style | en | **No — English only** |
+
+**Every multilingual result in this project comes from T01, which is technical documentation.**
+T04 and T05 — the two sources closest to customer-support and policy shape — are English-only.
+
+So a per-language figure measures **platform-operations-style technical documentation**, not
+support traffic and not policy text. If a language comparison is published, that sentence belongs
+next to it. A reader who assumes the Spanish arm reflects how the product behaves on Spanish
+support tickets would be reading a result about Kubernetes task pages.
+
+This is a **coverage limit, not a defect to fix by translating**: V2 permits translated corpora only
+where no licensed non-English source exists, and for T01 it does. For T04 and T05 no licensed
+non-English equivalent was found, so those tenants are English-only and stay that way rather than
+being padded with machine translations that would carry `origin: translated`.
+
+**Languages: four** — en 397, pt-BR 69, fr 42, es 36. **No translated corpus was built, and nothing
+carries `origin: translated`.**
+
+**Domains: three.** T01 platform-operations-style (350), T04 customer-support-style (136),
+T05 policy-style (58). V2 asks for four tenants and at least two domains; there are three tenants
+and three domains.
+
+**Quarantine: 0.0% on every Kubernetes source, in all four languages.** T04 1.2%, T05 4.8%.
 
 ### Licences, read rather than assumed
 
@@ -130,6 +152,60 @@ Four defects, none of which the unit tests could see:
 4. English-only trigger vocabulary in every rule — `Sra`, `Sr`, `Mme`, `Calle`, `Rue`, `referencia`,
    `référence` were all invisible.
 
+### The regression set was overfitted, and a held-out set proved it
+
+The 44-string set above scored **100%** — and that number was worthless, because the rules had been
+tuned against it. Two held-out sets were frozen and committed **before** being run, so the number
+reported is detection on data the tuning never saw.
+
+| Set | Strings | First-contact recall |
+| --- | ---: | ---: |
+| Regression (tuned against) | 104 | 100% |
+| Held-out 1 — committed `e337174` | 60 | **55.0%** |
+| Held-out 2 — committed before its run | 30 | **60.0%** |
+
+**The honest held-out number is 60.0%.** Both sets then scored 100% after the fixes, but neither is
+held out any more — a set that has been looked at is a guard, not a measurement.
+
+What the held-out sets found that the regression set never could:
+
+| Category | Held-out 1 | The formats it missed |
+| --- | ---: | --- |
+| `honorific-name` | 16.7% | `Ms. J. Okafor`, `Dña. Marta Ruiz`, `M. Julien Berger` |
+| `labelled-contact-name` | 16.7% | `Contact: Smith, Jane` — a comma broke the rule |
+| `account-identifier` | 25.0% | `nº de socio`, `expediente`, `matrícula`, `dossier`, `contrat`, `A/C`, `Acct.`, `Réf.`, `póliza`, `protocolo` |
+| `national-id` | 20.0% | no rule existed for DNI, NIF, CPF, NIR |
+| `bank-identifier` | 0.0% | no rule existed for IBAN, sort code, RIB, BIC |
+| `postal-address` | 85.7% | `P.O. Box 4471`, `Elm Road 12` |
+
+**The structural finding, which is the real result.** Every miss is a **vocabulary** miss. The gate
+enumerates nouns, honorifics and abbreviations, so it finds what someone thought to list and misses
+`protocolo` because nobody wrote `protocolo` down. That approach cannot reach 95% on unseen
+vocabulary; each held-out set moves the number by adding entries, and the next unseen set finds the
+next unlisted word. Two ways out, and neither is a quick fix: keep enumerating (diminishing returns,
+and every addition risks precision), or make the vocabulary-dependent categories shape-driven —
+match a long identifier adjacent to *any* label-like token rather than to a known noun.
+
+Also found, and fixed: the `i` flag on the new bank rule made `[A-Z0-9]` match lowercase, so a real
+IBAN matched as one token with the following prose, failed its length validator, and scored as
+nothing. The label-driven alternatives now carry their own case alternation instead.
+
+### Independent precision check
+
+Three plain patterns — email shape, phone shape, long digit run — written separately from the gate
+and run over all 544 documents. **105 distinct values, and not one is personal data:** 28 IP
+addresses, ~45 version strings, 22 bare digit runs (epoch timestamps, byte counts, sequential ids),
+2 dates, and 6 email-shaped values that are all documented placeholders or reserved domains
+(`octocat@nowhere.com`, `USERNAME@users.noreply.github.com`, `jane@computer.local`,
+`username@kubernetes-remote-server.example`).
+
+The same scan also **vindicates the nine re-admitted items**: six have zero independent hits, and
+the three that do have only `112879`, `31496.` and `162.900.000` — a byte count, a number fragment
+and a memory quantity. None is a person.
+
+It also shows why the gate needs validators: the plain phone pattern produced ~100 false positives
+on IP addresses and version strings. A simple gate is not a stricter gate, it is a noisier one.
+
 ### And the precision it cost, found on the real corpus
 
 Widening three rules to reach 100% recall quarantined six ordinary Kubernetes documents and 34.9% of
@@ -171,23 +247,23 @@ rather than explained away.
 
 ---
 
-## 5. Three sources were dropped
+## 5. Two sources were dropped
 
 | Source | Rate | Why |
 | --- | ---: | --- |
-| `ghdocs-site-policy-en` | 19.0% | 12 findings, every one a **published organisational role address** (`copyright@github.com` ×6, `privacy@`, `dpo@`, `legal-support@`, `events@`, `secret-scanning@`) or GitHub's corporate address in a contract. |
 | `django-faq-en` | 12.5% | 1 finding in 8 documents: `security@djangoproject.com`, the project's published security contact. |
 | `cpython-faq-en` | 12.5% | 1 finding in 12: `34A04430.CF9@ohioee.com`, an address used as an example in the FAQ's own explanation of email parsing. |
 
-**The site-policy drop is the one worth a decision.** All 12 findings are role addresses published
-deliberately so that anyone can contact the organisation. Under GDPR a role mailbox does not identify
-a natural person, which argues they are not personal data and should be excluded. Against that: a
-role mailbox can still reach a person, and this module deliberately does not get to decide that.
+Both are the same shape: **a single finding in a very small source**. `django-faq-en` has eight
+documents, so one finding is 12.5% — the arithmetic of a threshold designed for large corpora
+applied to a tiny one. Neither source is large enough to matter to the fleet, and neither is being
+argued for.
 
-**This is not being decided unilaterally.** The narrow change — exclude a defined set of
-organisational role local parts (`copyright`, `privacy`, `dpo`, `legal-support`, `events`,
-`secret-scanning`, `press`, `abuse`) — would recover GitHub's entire 72-document policy tree and make
-T05-policy-style a real tenant. It is a threshold change and it needs a prereg.
+**`ghdocs-site-policy-en` was dropped and is now harvested.** It was the subject of prereg `g12`
+(`docs/prereg/g12-role-addresses.md`), which excluded a closed, named list of organisational role
+local-parts. It re-harvested at **58 items, 4.8%**, with five documents still quarantined on genuine
+findings — two honourific names, GitHub's corporate office address, and two email addresses. The
+person-shaped addresses that must stay caught are tested at 13 shapes across four languages.
 
 ---
 

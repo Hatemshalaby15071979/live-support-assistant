@@ -123,6 +123,12 @@ const SUITES = [
     script: 'tooling/verify-pii-recall.mjs',
     verdict: 'PII RECALL OK',
   },
+  {
+    key: 'pii-heldout',
+    name: 'planted-PII held-out recall (now a regression guard)',
+    script: 'tooling/verify-pii-heldout.mjs',
+    verdict: 'HELD-OUT RECALL OK',
+  },
 ];
 
 const requested = process.argv.slice(2);

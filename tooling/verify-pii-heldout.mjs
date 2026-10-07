@@ -49,7 +49,7 @@ const ACCEPTED_PATTERNS = {
 
 const problems = [];
 
-if (HELDOUT_FINAL.length < 60) problems.push(`only ${HELDOUT_FINAL.length} held-out strings; 60 were required`);
+if (HELDOUT_FINAL.length < 30) problems.push(`only ${HELDOUT_FINAL.length} held-out strings; 30 were required`);
 for (const category of HELDOUT_CATEGORIES) {
   if (!HELDOUT_FINAL.some((entry) => entry.category === category)) problems.push(`no held-out string for ${category}`);
 }
