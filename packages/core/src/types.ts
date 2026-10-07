@@ -126,6 +126,13 @@ export const GATE_CONFIGS: PerTenantGateConfig = {
   // 1 unsafe (a held-out OOS row scores 0.7017 > 0.69); 0 unsafe there needs 0.71 (refuses 10/11).
   // calibration_status: failed-heldout. Retrieval quality (MiniLM-L6-v2 @ 500-rung) is the limit.
   'T05-policy-style': { thresholdAccept: 0.69, minMargin: 0.18, topK: 5 },
+  // PROVISIONAL · deployed demo/stranger tenant (verify-deployed.mjs:49 TENANT_ID default).
+  // Explicitly named, NOT a fallback: the stranger path provisions the demo user under this id, and
+  // without it every deployed query failed closed with unknown_tenant. Calibrated on the 2-SOP demo
+  // bundle only (embedding probe: refund query 0.63 vs SOP, 0.68 margin). Replace with a
+  // tenant-calibrated value at onboarding. If a deployment overrides TENANT_ID, that value must be
+  // added here as its own key — there is still no global fallback.
+  '11111111-1111-1111-1111-111111111111': { thresholdAccept: 0.40, minMargin: 0.18, topK: 5 },
 };
 
 /**

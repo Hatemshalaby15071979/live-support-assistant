@@ -285,6 +285,19 @@ expectTrue(
   JSON.stringify(knownTenantDecision),
 );
 
+// The deployed stranger path (verify-deployed.mjs:49) provisions the demo user
+// under TENANT_ID, default '11111111-1111-1111-1111-111111111111'. If that id is
+// absent from GATE_CONFIGS the deployed app fails closed with unknown_tenant for
+// every query. This guard must fail until an explicitly named demo config exists —
+// it is the regression lock for the deployed wiring, not a fallback.
+const DEMO_TENANT = '11111111-1111-1111-1111-111111111111';
+const demoTenantDecision = evaluateGate([highCandidate], CONFIGS, DEMO_TENANT);
+expectTrue(
+  'deployed demo/stranger tenant resolves a gate (not unknown_tenant)',
+  demoTenantDecision.outcome === 'accepted',
+  JSON.stringify(demoTenantDecision),
+);
+
 // ---------------------------------------------------------------------------
 // Report
 // ---------------------------------------------------------------------------

@@ -198,6 +198,11 @@ const decided = await waitForCondition(`[...document.querySelectorAll('h2,h3')].
 check('query produces an answer or an escalation', decided);
 const isAnswer = await evaluate(`[...document.querySelectorAll('h2')].some((h) => /Matched Procedure/.test(h.textContent))`);
 process.stdout.write(`  info  outcome: ${isAnswer ? 'safe answer' : 'content-free escalation'}\n`);
+// Hard guard: the stranger path must ANSWER from its published bundle, not fall back to a
+// content-free escalation. Without the named demo-tenant gate config (packages/core/src/types.ts)
+// every deployed query is blocked with reason 'unknown_tenant'; this check fails the run if that
+// regression returns.
+check('stranger query is answered from the published bundle (not blocked/unknown_tenant)', isAnswer);
 if (!isAnswer) {
   const refusal = await evaluate(`document.body.innerText`);
   check('escalation carries no procedure text', !refusal.includes('fourteen days') && !refusal.includes('six and nine'), refusal.slice(0, 80));
