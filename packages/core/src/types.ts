@@ -99,16 +99,16 @@ export const DEFAULT_GATE_CONFIG: ConfidenceGateConfig = {
 /**
  * Calibrated per-tenant gate thresholds (V2 P3).
  *
- * T01 0.68, T04 0.53, T05 0.61 were chosen on the 500-rung calibration split to
- * reach zero unsafe answers; `minMargin` and `topK` are held at the shipped
- * default because calibration addressed `thresholdAccept` only.
+ * T01 0.68, T04 0.53, T05 0.69 are the current operating points; `minMargin`
+ * and `topK` are held at the shipped default because calibration addressed
+ * `thresholdAccept` only.
  *
- * **PROVISIONAL.** Chosen on the calibration split, on agent-agreed UNVERIFIED
- * labels (OQ-002 spot-check NOT DONE). The expanded calibration run (g14, OOS N
- * ~75-81 per tenant) shows T01/T04/T05 serve 1/9/3 unsafe at these thresholds,
- * so none is zero-unsafe on calibration; T05 is recalibrated to its calibration
- * zero-unsafe point (0.69). Not production-calibrated. See `calibration_status`
- * below and `docs/KNOWN_ISSUES.md` §14.
+ * **PROVISIONAL.** The expanded calibration run (g14, OOS N ~75-81 per tenant)
+ * shows T01/T04/T05 serve 1/9/0 unsafe at these current thresholds. T05 0.69
+ * is its calibration zero-unsafe point, but it serves 1 unsafe on held-out.
+ * OQ-002 batch 1 reviewed 14 countable rows at 7/14 (50%, below the 85% bar);
+ * agent labels are discarded for recall/D3 claims. Not production-calibrated.
+ * See `calibration_status` below and `docs/KNOWN_ISSUES.md` §14.
  *
  * There is deliberately no global entry other than `simulated`: a tenant absent
  * from this map fails closed in `evaluateGate` rather than borrowing another

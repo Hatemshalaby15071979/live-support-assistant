@@ -85,7 +85,7 @@ All three thresholds are **provisional**:
 | --- | ---: | --- |
 | T01 | 0.68 | `unproven-heldout` |
 | T04 | 0.53 | `unproven-heldout` |
-| T05 | 0.69 | **`unproven-heldout`** (1 unsafe on held-out @0.69; 0 unsafe needs 0.71) |
+| T05 | 0.69 | **`failed-heldout`** (1 unsafe on held-out @0.69; 0 unsafe needs 0.71) |
 
 **No production claim is made for any tenant.** D1 (0 unsafe on held-out) is **NOT MET** as a measured
 property at N=7 OOS; it is *unproven*, not *proven safe*. See `docs/KNOWN_ISSUES.md` §14.

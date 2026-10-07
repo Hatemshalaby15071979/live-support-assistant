@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 // fetch-corpus-cache.mjs — committed tool.
-// Materialize the FULL T04/T05 documents from their pinned-revision snapshots into a
-// gitignored cache (tooling/corpus/cache/), verifying each snapshot's SHA-256 against the
-// recorded manifest. The snapshots are the immutable harvest of the exact GitHub revisions
-// pinned in sources.json (ref 8794b3cd... for github/docs T04/T05); materializing them IS
-// the faithful "re-fetch from the pinned revisions" — harvest.mjs is explicit that the
-// snapshot, never a live fetch, is the build input. Integrity is proven against manifest.json
-// (snapshotSha256), so the cache is a verified copy of what was harvested at that ref.
+// Re-fetch full T04/T05 source documents from raw.githubusercontent.com at the pinned refs
+// declared in sources.json, run the same extraction as harvest.mjs, and materialize the
+// processed full documents in gitignored tooling/corpus/cache/. Before fetching, verify each
+// source snapshot hash against manifest.json; after extraction, verify every document SHA-256
+// against its snapshot item hash. The latter is the manifest's per-document evidence ledger.
 // Usage: node tooling/corpus/fetch-corpus-cache.mjs
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,8 +15,50 @@ const here = dirname(fileURLToPath(import.meta.url));
 const manifest = JSON.parse(readFileSync(resolve(here, 'manifest.json'), 'utf8'));
 const TENANTS = ['T04-customer-support-style', 'T05-policy-style'];
 const cacheRoot = resolve(here, 'cache');
+const sleep = (ms) => new Promise((resolvePromise) => setTimeout(resolvePromise, ms));
 
-if (existsSync(cacheRoot)) rmSync(cacheRoot, { recursive: true, force: true });
+function extractProse(document) {
+  let text = document;
+  if (text.startsWith('---')) {
+    const end = text.indexOf('\n---', 3);
+    if (end !== -1) text = text.slice(end + 4);
+  }
+  return text
+    .replace(/\{\{[%<][\s\S]*?[%>]\}\}/g, ' ')
+    .replace(/^\s*\.\.\s+\w+::.*(?:\n(?:\s{3,}.*|\s*))*/gm, ' ')
+    .replace(/:\w+:`([^`]*)`/g, '$1')
+    .replace(/^\s*[=\-~^"']{3,}\s*$/gm, ' ')
+    .replace(/^\s*\.\.\s+_?[^\n]*$/gm, ' ')
+    .replace(/^#{1,6}\s*/gm, '')
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`([^`]*)`/g, '$1')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*>\s?/gm, '')
+    .replace(/\|/g, ' ')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+async function fetchPinned(url) {
+  let lastError;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const response = await fetch(url, { headers: { 'User-Agent': 'live-support-assistant-corpus-relabel/1.0' } });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.text();
+    } catch (error) {
+      lastError = error;
+      if (attempt < 3) await sleep(800 * attempt);
+    }
+  }
+  throw lastError;
+}
+
+// Reuse and overwrite existing cached paths; this avoids bulk deletion and keeps
+// previously fetched verified files intact if a network retry is needed.
 mkdirSync(cacheRoot, { recursive: true });
 
 const index = { generated_at: new Date().toISOString(), tenants: TENANTS, sources: [], documents: 0 };
@@ -41,11 +81,19 @@ for (const s of manifest.sources) {
   mkdirSync(dir, { recursive: true });
   let n = 0;
   for (const item of snap.items) {
+    const url = `https://raw.githubusercontent.com/${s.repo}/${s.ref}/${item.path}`;
+    const sourceText = await fetchPinned(url);
+    const text = extractProse(sourceText);
+    const itemHash = createHash('sha256').update(text, 'utf8').digest('hex');
+    if (itemHash !== item.textSha256) {
+      throw new Error(`RE-FETCH SHA-256 MISMATCH for ${s.id}/${item.path}: snapshot manifest ${item.textSha256} != fetched ${itemHash}`);
+    }
     const dest = join(dir, item.path);
     mkdirSync(dirname(dest), { recursive: true });
-    writeFileSync(dest, item.text, 'utf8');
+    writeFileSync(dest, text, 'utf8');
     index.documents++;
     n++;
+    if (n < snap.items.length) await sleep(250);
   }
   totalDocs += n;
   index.sources.push({
@@ -54,10 +102,11 @@ for (const s of manifest.sources) {
     repo: s.repo,
     ref: s.ref,
     snapshotSha256: s.snapshotSha256,
-    verified: true,
+    snapshot_verified: true,
+    document_hashes_verified: n,
     items: n,
   });
-  console.log(`OK  ${s.id.padEnd(22)} ref=${s.ref.slice(0, 12)} snap=${s.snapshotSha256.slice(0, 12)} items=${n} SHA256 VERIFIED`);
+  console.log(`OK  ${s.id.padEnd(22)} ref=${s.ref.slice(0, 12)} snapshot SHA256 VERIFIED; document SHA256 ${n}/${n} verified`);
 }
 
 writeFileSync(join(cacheRoot, 'index.json'), `${JSON.stringify(index, null, 2)}\n`, 'utf8');

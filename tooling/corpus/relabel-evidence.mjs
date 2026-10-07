@@ -2,12 +2,12 @@
 // relabel-evidence.mjs — committed tool.
 // Produce UPGRADED relabel evidence for T04 OD rows (the owner DISAGREE batch).
 // For each question it prints:
-//   (a) TOP-3 nearest documents by the live bi-encoder (Xenova/all-MiniLM-L6-v2) over the
-//       cached T04 corpus — the text the model actually retrieves.
-//   (b) KEYWORD SEARCH over ALL cached T04 full documents using terms taken from the
-//       question, with the document title (path) and the verbatim passage (~1200 chars)
-//       around each hit. Embedding top-3 can miss the real answer; the keyword pass is the
-//       cross-check that catches documents the vector search ranked low.
+//   (a) TOP-3 nearest documents by the live bi-encoder (Xenova/all-MiniLM-L6-v2) over
+//       full-text documents from both cached T04 and T05 corpora.
+//   (b) KEYWORD SEARCH across ALL cached T04+T05 full documents using terms from the
+//       question, with document paths and exact source passages (up to ~1200 chars)
+//       around hits. Embedding top-3 can miss the real answer; keyword search is the
+//       independent cross-check. Excerpts preserve source whitespace and punctuation.
 // Usage: node tooling/corpus/relabel-evidence.mjs "question 1" "question 2" ...
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, resolve, join, relative } from 'node:path';
@@ -16,8 +16,8 @@ import { cosineSimilarity } from '../../packages/vector-store/dist/cosine.js';
 import { createEmbedder } from '../../packages/embedder/dist/embedder.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const TENANT = 'T04-customer-support-style';
-const cacheDir = resolve(here, 'cache', TENANT);
+const cacheRoot = resolve(here, 'cache');
+const TENANTS = ['T04-customer-support-style', 'T05-policy-style'];
 
 function walk(dir) {
   const out = [];
@@ -28,9 +28,9 @@ function walk(dir) {
   }
   return out;
 }
-const files = walk(cacheDir).sort();
-const docs = files.map((p) => ({ path: relative(cacheDir, p), text: readFileSync(p, 'utf8') }));
-console.error(`Loaded ${docs.length} T04 documents from cache.`);
+const files = TENANTS.flatMap((t) => walk(join(cacheRoot, t))).sort();
+const docs = files.map((p) => ({ path: relative(cacheRoot, p), text: readFileSync(p, 'utf8') }));
+console.error(`Loaded ${docs.length} full T04/T05 documents from cache.`);
 
 const STOP = new Set([
   'why', 'what', 'when', 'where', 'how', 'who', 'the', 'and', 'you', 'your', 'my', 'me', 'do',
@@ -50,7 +50,7 @@ function terms(q) {
 }
 
 const embedder = await createEmbedder();
-const docVecs = await embedder.embedPassages(docs.map((d) => d.text.slice(0, 2000)));
+const docVecs = await embedder.embedPassages(docs.map((d) => d.text));
 console.error(`Embedded ${docVecs.length} documents.`);
 
 const questions = process.argv.slice(2);
@@ -89,14 +89,17 @@ for (const q of questions) {
       if (matched.size > 0) ranked.push({ path: d.path, text: d.text, terms: matched, firstHit });
     }
     ranked.sort((a, b) => b.terms.size - a.terms.size || a.firstHit - b.firstHit);
+    console.log(`   Scanned ${docs.length} documents; ${ranked.length} had at least one term hit.`);
     const top = ranked.slice(0, 6);
-    if (top.length === 0) console.log('   (no keyword hits in T04 corpus)');
+    if (top.length === 0) console.log('   (no keyword hits in T04/T05 corpus)');
     for (const r of top) {
       const start = Math.max(0, r.firstHit - 200);
       const end = Math.min(r.text.length, r.firstHit + 1000);
-      const snippet = r.text.slice(start, end).replace(/\s+/g, ' ').trim();
+      const snippet = r.text.slice(start, end);
       console.log(`   HIT ${r.path}  (terms: ${[...r.terms].join(', ')})`);
-      console.log(`        …${snippet}…`);
+      console.log(`        exact source excerpt begins at character ${start}:`);
+      console.log(snippet);
+      console.log('        [excerpt end]');
     }
   }
 }
