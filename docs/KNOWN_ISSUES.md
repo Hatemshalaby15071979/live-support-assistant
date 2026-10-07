@@ -301,7 +301,7 @@ rate: T01 ≤ 9.1%, T04 ≤ 10.0%, T05 ≤ 12.0% — versus ≈100% at the old N
   **not** transfer: one held-out OOS row scores **0.7017 > 0.69**. Reaching 0 unsafe on held-out needs
   **0.71**, refusing 10/11 answerable (90.9%) — unusable. **D1 NOT MET.**
 
-**Conclusion of g14.** Growing the gold set made D1 *measurable* (3/N 9–12% vs ~100%) but did **not** make
+**Conclusion of g14.** Growing the gold set tightened D1's bound (3/N 9–12% vs ~100%) but D1 stays **NOT MEASURABLE** at the required per-tenant held-out N≥300 (held-out fleet OOS is 88, not 300), and did **not** make
 T05 pass. All three tenants' zero-unsafe is blocked by **retrieval quality** (MiniLM-L6-v2 at the 500-rung
 returns top-1 ≥ 0.70 for out-of-scope questions); no usable threshold separates them. T05 stays
 `failed-heldout`. No threshold is pushed to 0.71 (that tunes on held-out and destroys answer rate).
@@ -373,6 +373,25 @@ split with a fresh held-out never used for tuning. Prereg first; recalibrate on 
 and the 3/N bound. The held-out rows already seen become calibration data, labelled as such. Until done,
 T05 = `calibration_status=failed-heldout`, no production claim, D1 NOT MET. (Implemented under task #9.)
 
+### Retrieval-path decision (owner, 2026-10-07): option (d)
+
+The g14 expansion grew evidence but did **not** reach a D1 pass (all three tenants' zero-unsafe is
+blocked by retrieval quality). Four further paths were considered and disposed of:
+
+- **(a) new / stronger embedder** — DEFERRED. The likely real fix for retrieval quality, but it enters
+  only via its **own prereg** and a check against this register (g15 R4), before any code is written.
+- **(b) move T01/T04 to their calibration zero-unsafe points (0.76 / 0.62)** — REJECTED on product
+  cost: that refuses 83% / 74% of answerable traffic. T01/T04 therefore **stay at their shipped
+  thresholds** with `calibration_status = fails-calibration`; no move to 0.76/0.62.
+- **(c) grow OOS further** — not pursued (repeats g14; the per-tenant held-out N≥300 floor is the real
+  blocker, and D1 is still NOT MEASURABLE there).
+
+The owner chose **(d)**: a **P4 scope/refusal layer**, refusal-only (it may escalate, never answer),
+measured on the calibrated gold. The cross-encoder reranker stays **CLOSED**. See prereg
+`docs/prereg/g15-p4-scope-refusal-layer.md` (hypothesis, joint metric unsafe+wrong-proc+recall,
+calibration split, margin band, 2 seeds, accept/reject rules). Run on calibration, then **once** on the
+new held-out.
+
 ### Addendum — g14 OOS expansion implemented (post-`565c8c1`)
 
 The option (c) expansion is committed (prereg `docs/prereg/g14-t05-oos-expansion.md`): cross-tenant
@@ -382,9 +401,9 @@ previously measured on the old held-out are pinned to the calibration split (`PI
 `assemble-questions.mjs`) so they are never re-used as a measurement. Fixed-seed 70/30 split (seed
 `20261007`) unchanged.
 
-New held-out `out_of_scope` N (fresh, never measured): **T01 33, T04 30, T05 25** (fleet **319 ≥ 300**).
+New held-out `out_of_scope` N (fresh, never measured): **T01 33, T04 30, T05 25** (held-out fleet OOS = **88**, far below the per-tenant ≥300 floor; the 319 figure is total OOS across both splits, not held-out).
 Rule-of-three 95% upper bound on the unsafe rate: T01 ≤ 9.1%, T04 ≤ 10.0%, T05 ≤ 12.0% — versus ≈100% at the
-old N ≤ 3. This makes D1 *potentially measurable* where it was not.
+old N ≤ 3. D1 remains **NOT MEASURABLE** at the required per-tenant held-out N≥300; the 3/N bounds (9.1/10.0/12.0%) are reported as bounds only, not as a pass.
 
 T05 stays `calibration_status=failed-heldout`, **D1 NOT MET**, until the new held-out is run and shows 0
 unsafe at its operating threshold. The bi-encoder validation on the new split is pending (heavy compute;
