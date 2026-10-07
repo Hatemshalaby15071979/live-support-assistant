@@ -108,6 +108,16 @@ function App() {
   const [surface, setSurface] = useState<'ask' | 'command' | 'escalations'>('ask');
   const bundleVersion =
     bundleState.status === 'ready' ? bundleState.bundleVersion : BUNDLE_VERSION;
+  // Which model is serving, read from the manifest the install pipeline verified
+  // rather than from this build's constant. The pipeline refuses a bundle built
+  // for a different model, so when one is active the two agree — but the value
+  // recorded in telemetry should come from the artifact, not from an assumption
+  // about it. That assumption is exactly what let a mismatched bundle install
+  // silently in the first place.
+  const servingModel =
+    bundleState.status === 'ready'
+      ? { id: bundleState.modelId, revision: bundleState.modelRevision }
+      : { id: EMBEDDING_MODEL.id, revision: EMBEDDING_MODEL.revision };
   const [delivery, setDelivery] = useState<DeliveryState>({ state: 'idle', sent: 0 });
 
 
@@ -358,7 +368,7 @@ function App() {
         deviceId: null,
         userPseudonym: 'agent-console',
         eventType: 'query',
-        bundleVersion: BUNDLE_VERSION,
+        bundleVersion,
         occurredAt: queryOccurredAt,
         payload: {
           outcome: nextView.kind === 'answer' ? 'answered' : 'escalated',
@@ -381,9 +391,9 @@ function App() {
             queryEventId,
             queryOccurredAt,
             queryText,
-            bundleVersion: BUNDLE_VERSION,
-            modelId: EMBEDDING_MODEL.id,
-            modelRevision: EMBEDDING_MODEL.revision,
+            bundleVersion,
+            modelId: servingModel.id,
+            modelRevision: servingModel.revision,
             parameters: {
               thresholdAccept: DEFAULT_GATE_CONFIG.thresholdAccept,
               minMargin,
@@ -553,7 +563,7 @@ function App() {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-800">Customer Message</h2>
                 <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
-                  bundle v{BUNDLE_VERSION}
+                  bundle v{bundleVersion}
                 </span>
               </div>
 

@@ -27,18 +27,37 @@
  */
 
 import type { SopDocument } from '@sop/core';
+import { EMBEDDING_MODEL } from '@sop/embedder/model';
 import {
   IdbBundleStore,
   IdbIdentityStore,
   installBundle,
   newDeviceIdentity,
   type DeviceIdentity,
+  type ModelIdentity,
   type SignedBundle,
 } from '@sop/sync';
 
 import { currentTenant, supabase } from './supabase';
 
 const APP_SCHEMA = 'app';
+
+/**
+ * The model this client loaded, expressed as the manifest's model identity.
+ *
+ * These are two different questions that happen to share fields.
+ * `EmbeddingModelSpec` says how to *run* the model — pooling, query prefixes,
+ * quantisation dtype. `ModelIdentity` says which *artifact* a bundle was built
+ * for. The mapping is written out rather than left to structural coincidence:
+ * `dtype` here is `quantization` there, and if those ever diverge, a silent
+ * field mismatch is exactly the class of bug the check below exists to catch.
+ */
+const LOADED_MODEL: ModelIdentity = {
+  id: EMBEDDING_MODEL.id,
+  revision: EMBEDDING_MODEL.revision,
+  quantization: EMBEDDING_MODEL.dtype,
+  dimensions: EMBEDDING_MODEL.dimensions,
+};
 
 export type BundleState =
   | { readonly status: 'unavailable'; readonly detail: string }
@@ -47,6 +66,19 @@ export type BundleState =
       readonly bundleVersion: number;
       readonly sops: readonly SopDocument[];
       readonly installedNow: boolean;
+      /**
+       * The model the active bundle was built for, read from the manifest that
+       * the install pipeline verified — not from this build's constant.
+       *
+       * The two are equal by construction: `installBundle` refuses a bundle whose
+       * manifest names a different model, so anything that became active matched
+       * what this client loaded. Recording the manifest value rather than the
+       * constant means the answer to "which model is serving" comes from the
+       * artifact instead of from an assumption about the artifact, which is the
+       * defect this field removes.
+       */
+      readonly modelId: string;
+      readonly modelRevision: string;
     };
 
 function required(name: string): string {
@@ -192,7 +224,16 @@ export async function syncBundle(platform: 'web' = 'web'): Promise<BundleState> 
   let installedNow = false;
 
   if (fetchError === null && fetched !== null && fetched !== undefined) {
-    const outcome = await installBundle(fetched as unknown as SignedBundle, identity, store);
+    // The model this client loaded is part of what it takes to accept a bundle.
+    // The pipeline refuses anything built for a different embedding space, so a
+    // mismatch becomes a named 'unavailable' state below rather than a corpus
+    // scored against the wrong vectors.
+    const outcome = await installBundle(
+      fetched as unknown as SignedBundle,
+      identity,
+      store,
+      LOADED_MODEL,
+    );
     if (outcome.outcome === 'installed') {
       installedNow = true;
     } else if (outcome.outcome === 'rejected' && outcome.reason !== 'not_monotonic') {
@@ -233,6 +274,8 @@ export async function syncBundle(platform: 'web' = 'web'): Promise<BundleState> 
     bundleVersion: active.manifest.bundleVersion,
     sops: active.sops,
     installedNow,
+    modelId: active.manifest.modelId,
+    modelRevision: active.manifest.modelRevision,
   };
 }
 

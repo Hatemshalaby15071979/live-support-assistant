@@ -27,15 +27,7 @@ import {
   tenantKekSalt,
   wrapContentKey,
 } from './crypto.js';
-import { manifestBytes, type BundleManifest, type SignedBundle } from './manifest.js';
-
-/** Model identity recorded in every manifest. */
-export interface ModelIdentity {
-  readonly id: string;
-  readonly revision: string;
-  readonly quantization: string;
-  readonly dimensions: number;
-}
+import { manifestBytes, type BundleManifest, type ModelIdentity, type SignedBundle } from './manifest.js';
 
 /** An enrolled device that will receive this bundle. */
 export interface EnrolledDevice {

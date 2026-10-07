@@ -9,7 +9,16 @@
  * The checks are ordered deliberately. The signature is verified first, because
  * nothing from an unauthenticated source should be parsed or acted upon. The
  * version check comes next, so a replayed old bundle is rejected before its
- * payload is even hashed.
+ * payload is even hashed. The model check follows, because a bundle built for a
+ * different embedding space is not interpretable by this client at all and there
+ * is no reason to spend a hash, an unwrap and a decrypt discovering that.
+ *
+ * The model check is why this pipeline takes the loaded model as an argument
+ * rather than trusting a caller to have compared it. The manifest has always
+ * carried the model identity; nothing enforced it, so a mismatched bundle
+ * installed cleanly and scored every passage against the wrong space — no error,
+ * a plausible answer, a wrong one. The invariant belongs here, beside the
+ * signature and the version, where every consumer of this package inherits it.
  */
 
 import type { SopDocument } from '@sop/core';
@@ -25,12 +34,19 @@ import {
   unwrapContentKey,
   verifyBytes,
 } from './crypto.js';
-import { manifestBytes, type BundleManifest, type BundlePayload, type SignedBundle } from './manifest.js';
+import {
+  manifestBytes,
+  type BundleManifest,
+  type BundlePayload,
+  type ModelIdentity,
+  type SignedBundle,
+} from './manifest.js';
 
 /** Why an install was refused. Reported to telemetry, never guessed at. */
 export type InstallRejectReason =
   | 'signature_invalid'
   | 'not_monotonic'
+  | 'model_mismatch'
   | 'payload_hash_mismatch'
   | 'key_unwrap_failed'
   | 'decrypt_failed'
@@ -101,13 +117,28 @@ function rejected(reason: InstallRejectReason, detail: string): InstallResult {
  * @param signed Bundle as delivered for this device.
  * @param identity Device keys and the tenant's public keys.
  * @param store Where the active bundle lives. Untouched on rejection.
+ * @param expectedModel The model this client actually loaded. Required: a corpus
+ *   is only interpretable against the embedding space it was vectorised in, so a
+ *   caller that cannot name its model cannot safely accept a bundle.
  * @returns The outcome. A rejection is a normal result, not an exception.
  */
 export async function installBundle(
   signed: SignedBundle,
   identity: SyncIdentity,
   store: BundleStore,
+  expectedModel: ModelIdentity,
 ): Promise<InstallResult> {
+  // 0. A missing expected model is a caller defect, not a bundle defect, so it is
+  //    loud. An untyped caller that forgets the argument must not silently get the
+  //    pre-fix behaviour back, which is the whole failure this check removes.
+  if (expectedModel === undefined || expectedModel === null) {
+    throw new Error(
+      'installBundle requires the model this client loaded; without it a bundle ' +
+        'built for a different embedding space would be accepted and every passage ' +
+        'would be scored against the wrong vectors',
+    );
+  }
+
   // 1. Authenticate the manifest before trusting anything in it.
   const signatureValid = await verifyBytes(
     identity.tenantSigningPublicKey,
@@ -129,7 +160,28 @@ export async function installBundle(
     );
   }
 
-  // 3. The ciphertext must be exactly what the signed manifest describes.
+  // 3. The bundle must have been built for the model this client loaded. A
+  //    mismatch is not a degraded result, it is an uninterpretable one: the
+  //    stored vectors and the query vectors would live in different spaces, and
+  //    nothing downstream would report it.
+  const built = signed.manifest;
+
+  if (
+    built.modelId !== expectedModel.id ||
+    built.modelRevision !== expectedModel.revision ||
+    built.quantization !== expectedModel.quantization ||
+    built.dimensions !== expectedModel.dimensions
+  ) {
+    return rejected(
+      'model_mismatch',
+      `bundle was built for ${built.modelId}@${built.modelRevision.slice(0, 12)} ` +
+        `(${built.quantization}, ${built.dimensions}d); this client loaded ` +
+        `${expectedModel.id}@${expectedModel.revision.slice(0, 12)} ` +
+        `(${expectedModel.quantization}, ${expectedModel.dimensions}d)`,
+    );
+  }
+
+  // 4. The ciphertext must be exactly what the signed manifest describes.
   const ciphertext = fromBase64(signed.payloadCiphertext);
   const actualHash = await sha256Hex(ciphertext);
 
@@ -140,7 +192,7 @@ export async function installBundle(
     );
   }
 
-  // 4. Unwrap the content key. A device that was never enrolled fails here.
+  // 5. Unwrap the content key. A device that was never enrolled fails here.
   const kek = await deriveKek(
     identity.devicePrivateKey,
     identity.serverWrappingPublicKey,
@@ -154,7 +206,7 @@ export async function installBundle(
     return rejected('key_unwrap_failed', 'content key could not be unwrapped');
   }
 
-  // 5. Decrypt. A wrong key or damaged bytes fail the GCM tag here.
+  // 6. Decrypt. A wrong key or damaged bytes fail the GCM tag here.
   const plaintext = await decryptPayload(
     contentKey,
     signed.manifest.iv,
@@ -165,7 +217,7 @@ export async function installBundle(
     return rejected('decrypt_failed', 'payload failed authentication');
   }
 
-  // 6. Parse, and refuse anything that is not a corpus.
+  // 7. Parse, and refuse anything that is not a corpus.
   let payload: BundlePayload;
 
   try {
@@ -178,7 +230,7 @@ export async function installBundle(
     return rejected('malformed_payload', 'payload carried no sop array');
   }
 
-  // 7. Commit. The first and only mutation in this function.
+  // 8. Commit. The first and only mutation in this function.
   await store.commit({
     tenantId: signed.manifest.tenantId,
     bundleVersion: signed.manifest.bundleVersion,

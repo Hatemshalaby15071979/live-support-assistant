@@ -19,11 +19,13 @@
  * environment or .env.local.
  */
 import { spawn } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
+
+import { findChrome } from './find-chrome.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const TARGET = process.env.TARGET_URL ?? '';
@@ -45,15 +47,10 @@ const supabaseUrl = env('SUPABASE_URL');
 const pub = env('SUPABASE_PUBLISHABLE_KEY');
 const sec = env('SUPABASE_SECRET_KEY');
 const TENANT = process.env.TENANT_ID ?? '11111111-1111-1111-1111-111111111111';
-const RUN_START = new Date().toISOString();
-const marker = `DEPLOYED${randomUUID().slice(0, 8).replace(/-/g, '')}`;
+const RUN_START = new Date().toISOString();const marker = `DEPLOYED${randomUUID().slice(0, 8).replace(/-/g, '')}`;
 
-const chrome = [
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-  `${process.env.LOCALAPPDATA ?? ''}\\Google\\Chrome\\Application\\chrome.exe`,
-].find((c) => existsSync(c));
-if (!chrome) { process.stderr.write('no Chrome found\n'); process.exit(2); }
+const chrome = findChrome();
+if (chrome === null) { process.stderr.write('no Chrome found; set SOP_CHROME_PATH or install one\n'); process.exit(2); }
 
 const checks = [];
 function check(name, ok, detail) {

@@ -47,6 +47,9 @@ import { basename, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
 
+import { gitProvenance, provenanceLine } from './provenance.mjs';
+import { requireChrome } from '../browser/find-chrome.mjs';
+
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const evaluationDir = resolve(root, 'tooling/eval/simulated-tenant');
 const runnerUrl = resolve(evaluationDir, 'real-phrased-runner.html');
@@ -216,17 +219,7 @@ writeFileSync(tempInputPath, `${JSON.stringify({
   queries,
 }, null, 2)}\n`);
 
-const chromeCandidates = [
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-  `${process.env.LOCALAPPDATA ?? ''}\\Google\\Chrome\\Application\\chrome.exe`,
-];
-const chromePath = chromeCandidates.find((candidate) => existsSync(candidate));
-if (chromePath === undefined) {
-  rmSync(tempInputPath, { force: true });
-  process.stderr.write('Chrome is required for the browser-local scoring path\n');
-  process.exit(2);
-}
+const chromePath = requireChrome();
 for (const path of [
   resolve(root, 'packages/core/dist/index.js'),
   resolve(root, 'packages/embedder/dist/index.js'),
@@ -460,6 +453,9 @@ const totals = {
 const written = {
   data_mode: DATA_MODE,
   evaluatedAt: new Date().toISOString(),
+  // Which revision produced these numbers. `provenance` below is the *data*
+  // provenance — where the questions came from. This is the code provenance.
+  git: await gitProvenance(root),
   evaluation: 'Local browser decision-path scoring of operator-labelled real-phrased queries; no live tenant, hosted database, or telemetry transport used.',
   sources: sourcePaths.map((path) => basename(path)),
   marginNote: `minMargin ${minMargin}; the recorded simulated-batch baseline used 0.17 and the shipped default is 0.18`,

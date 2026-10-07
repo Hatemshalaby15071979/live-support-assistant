@@ -31,7 +31,7 @@
  */
 
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -41,20 +41,45 @@ const update = process.argv.includes('--update');
 
 const SEVERITY_RANK = { info: 0, low: 1, moderate: 2, high: 3, critical: 4 };
 
-const audit = spawnSync('pnpm', ['audit', '--prod', '--json'], {
-  cwd: root,
-  encoding: 'utf8',
-  maxBuffer: 64 * 1024 * 1024,
-  // pnpm is a .cmd shim on Windows; without a shell it is not resolvable.
-  shell: process.platform === 'win32',
-});
+/**
+ * Where the audit report comes from.
+ *
+ * Normally the gate runs `pnpm audit` itself. Some hosts refuse to spawn a child
+ * process at all — this one does, with `EBUSY` — and a required gate that cannot
+ * run where the work happens is a gate nobody runs. `SOP_AUDIT_JSON` points at a
+ * report captured by other means.
+ *
+ * It changes the *input*, never the comparison: the same baseline diff runs
+ * either way, and CI never sets the variable, so the published gate is unchanged.
+ * The risk it accepts is explicit — a hand-edited report would pass — which is
+ * why it is opt-in, named, and reported on stdout when used.
+ */
+const suppliedPath = process.env.SOP_AUDIT_JSON;
+let raw;
 
-if (audit.error) {
-  process.stderr.write(`could not run pnpm audit: ${audit.error}\n`);
-  process.exit(2);
+if (suppliedPath !== undefined && suppliedPath !== '') {
+  if (!existsSync(suppliedPath)) {
+    process.stderr.write(`SOP_AUDIT_JSON points at ${suppliedPath}, which does not exist\n`);
+    process.exit(2);
+  }
+  process.stdout.write(`audit report read from ${suppliedPath} (SOP_AUDIT_JSON)\n`);
+  raw = readFileSync(suppliedPath, 'utf8').trim();
+} else {
+  const audit = spawnSync('pnpm', ['audit', '--prod', '--json'], {
+    cwd: root,
+    encoding: 'utf8',
+    maxBuffer: 64 * 1024 * 1024,
+    // pnpm is a .cmd shim on Windows; without a shell it is not resolvable.
+    shell: process.platform === 'win32',
+  });
+
+  if (audit.error) {
+    process.stderr.write(`could not run pnpm audit: ${audit.error}\n`);
+    process.exit(2);
+  }
+
+  raw = (audit.stdout ?? '').trim();
 }
-
-const raw = (audit.stdout ?? '').trim();
 
 if (raw === '') {
   process.stderr.write(

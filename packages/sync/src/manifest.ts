@@ -12,6 +12,24 @@ import type { SopDocument } from '@sop/core';
 import { canonicalJson } from './canonical.js';
 import { encodeUtf8 } from './crypto.js';
 
+/**
+ * The model a bundle was built for.
+ *
+ * Recorded in the manifest because a corpus is only interpretable against the
+ * embedding space it was vectorised in. A client that loaded a different build
+ * scores every passage against the wrong space: no error, a plausible answer, a
+ * wrong one — the worst failure shape this product has. The install pipeline
+ * compares these values against the model the client actually loaded and refuses
+ * the bundle when they disagree, so the check belongs beside the manifest it
+ * reads rather than in the publisher that writes it.
+ */
+export interface ModelIdentity {
+  readonly id: string;
+  readonly revision: string;
+  readonly quantization: string;
+  readonly dimensions: number;
+}
+
 /** Everything a client needs to authenticate and interpret a bundle. */
 export interface BundleManifest {
   readonly tenantId: string;

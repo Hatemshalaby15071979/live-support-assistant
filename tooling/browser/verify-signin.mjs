@@ -32,16 +32,12 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
 
+import { findChrome } from './find-chrome.mjs';
+
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 
 const DEV_PORT = 5199;
 const CDP_PORT = 9222;
-
-const CHROME_CANDIDATES = [
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-  `${process.env.LOCALAPPDATA ?? ''}\\Google\\Chrome\\Application\\chrome.exe`,
-];
 
 function readEnvFile(path) {
   if (!existsSync(path)) return {};
@@ -65,9 +61,9 @@ if (supabaseUrl === '' || publishableKey === '' || secretKey === '') {
   process.exit(2);
 }
 
-const chrome = CHROME_CANDIDATES.find((candidate) => existsSync(candidate));
-if (chrome === undefined) {
-  process.stderr.write('no Chrome installation found; cannot verify the browser path\n');
+const chrome = findChrome();
+if (chrome === null) {
+  process.stderr.write('no Chrome installation found; set SOP_CHROME_PATH or install one\n');
   process.exit(2);
 }
 

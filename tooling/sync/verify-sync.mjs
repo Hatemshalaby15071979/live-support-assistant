@@ -27,7 +27,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { EMBEDDING_MODEL } from '../../packages/embedder/dist/index.js';
+import { BGE_SMALL_EN_V1_5, EMBEDDING_MODEL } from '../../packages/embedder/dist/index.js';
 import {
   MemoryBundleStore,
   bundleForDevice,
@@ -133,6 +133,7 @@ const firstInstall = await installBundle(
   bundleForDevice(publishedV1, 'device-1'),
   identityFor('device-1', deviceOne.privateKey),
   storeOne,
+  MODEL,
 );
 
 expect('first install outcome', 'installed', firstInstall.outcome);
@@ -158,6 +159,7 @@ const tamperedSignature = await installBundle(
   },
   identityFor('device-1', deviceOne.privateKey),
   storeOne,
+  MODEL,
 );
 
 expect('tampered manifest rejected', 'signature_invalid', tamperedSignature.reason);
@@ -170,6 +172,7 @@ const foreignSignature = await installBundle(
     tenantSigningPublicKey: foreignSigningKeys.publicKey,
   },
   storeOne,
+  MODEL,
 );
 
 expect('bundle signed by a foreign key rejected', 'signature_invalid', foreignSignature.reason);
@@ -184,6 +187,7 @@ const replayed = await installBundle(
   bundleForDevice(publishedV1, 'device-1'),
   identityFor('device-1', deviceOne.privateKey),
   storeOne,
+  MODEL,
 );
 
 expect('replayed v1 rejected', 'not_monotonic', replayed.reason);
@@ -217,6 +221,7 @@ const corruptedOnFresh = await installBundle(
   },
   identityFor('device-1', deviceOne.privateKey),
   freshStore,
+  MODEL,
 );
 
 expect('tampered ciphertext rejected (fresh client)', 'payload_hash_mismatch', corruptedOnFresh.reason);
@@ -241,6 +246,7 @@ const corruptedInstall = await installBundle(
   corruptedV2,
   identityFor('device-1', deviceOne.privateKey),
   storeOne,
+  MODEL,
 );
 
 expect('tampered ciphertext rejected (upgrade)', 'payload_hash_mismatch', corruptedInstall.reason);
@@ -271,6 +277,7 @@ const resignedInstall = await installBundle(
   resignedBundle,
   identityFor('device-1', deviceOne.privateKey),
   storeOne,
+  MODEL,
 );
 
 expect('re-signed corrupt payload rejected', 'decrypt_failed', resignedInstall.reason);
@@ -287,6 +294,7 @@ const strangerInstall = await installBundle(
   bundleForDevice(publishedV1, 'device-1'),
   identityFor('stranger', stranger.privateKey),
   strangerStore,
+  MODEL,
 );
 
 expect('unenrolled device rejected', 'key_unwrap_failed', strangerInstall.reason);
@@ -303,6 +311,7 @@ await installBundle(
   bundleForDevice(publishedV1, 'device-2'),
   identityFor('device-2', deviceTwo.privateKey),
   storeTwo,
+  MODEL,
 );
 
 expect('device 2 on v1 before going offline', 1, (await storeTwo.active())?.bundleVersion);
@@ -327,6 +336,7 @@ const reconnectInstall = await installBundle(
   bundleForDevice(publishedV2, 'device-2'),
   identityFor('device-2', deviceTwo.privateKey),
   storeTwo,
+  MODEL,
 );
 
 expect('offline install on reconnect', 'installed', reconnectInstall.outcome);
@@ -337,6 +347,7 @@ const deviceOneV2 = await installBundle(
   bundleForDevice(publishedV2, 'device-1'),
   identityFor('device-1', deviceOne.privateKey),
   storeOne,
+  MODEL,
 );
 
 expect('device 1 installs v2', 'installed', deviceOneV2.outcome);
@@ -347,10 +358,86 @@ const staleAfterV2 = await installBundle(
   bundleForDevice(publishedV1, 'device-1'),
   identityFor('device-1', deviceOne.privateKey),
   storeOne,
+  MODEL,
 );
 
 expect('stale v1 refused after v2', 'not_monotonic', staleAfterV2.reason);
 expect('device 1 still on v2', 2, (await storeOne.active())?.bundleVersion);
+
+// ---------------------------------------------------------------------------
+// Criterion 5: a bundle built for a different model is refused
+//
+// The manifest has always carried the model identity, and the package has always
+// documented that a client which loaded a different model build must refuse to
+// serve search. Nothing enforced it. A client that serves a corpus it cannot
+// interpret scores every passage against the wrong embedding space and degrades
+// silently, which is the worst failure shape this product has: no error, a
+// plausible answer, a wrong one.
+//
+// The control matters as much as the rejection. A check that refuses everything
+// would pass the first assertion and break the product, so the same bundle is
+// offered to a client that *did* load the matching model and must install.
+// ---------------------------------------------------------------------------
+
+const FOREIGN_MODEL = {
+  id: BGE_SMALL_EN_V1_5.id,
+  revision: BGE_SMALL_EN_V1_5.revision,
+  quantization: BGE_SMALL_EN_V1_5.dtype,
+  dimensions: BGE_SMALL_EN_V1_5.dimensions,
+};
+
+const foreignModelBundle = await publishBundle({
+  tenantId,
+  bundleVersion: 4,
+  sops: corpus,
+  model: FOREIGN_MODEL,
+  signingPrivateKey: tenantSigningKeys.privateKey,
+  wrappingPrivateKey: serverWrappingKeys.privateKey,
+  kekSalt,
+  devices: enrolledDevices,
+  publishedAt: '2026-10-06T00:00:00.000Z',
+});
+
+const mismatchedStore = new MemoryBundleStore();
+
+const mismatched = await installBundle(
+  bundleForDevice(foreignModelBundle, 'device-1'),
+  identityFor('device-1', deviceOne.privateKey),
+  mismatchedStore,
+  MODEL,
+);
+
+expect('bundle built for another model rejected', 'model_mismatch', mismatched.reason);
+expect('mismatched bundle did not become active', 'null', String(await mismatchedStore.active()));
+expect('mismatched bundle recorded no commit', 0, mismatchedStore.commits);
+
+const matchedStore = new MemoryBundleStore();
+
+const matched = await installBundle(
+  bundleForDevice(foreignModelBundle, 'device-1'),
+  identityFor('device-1', deviceOne.privateKey),
+  matchedStore,
+  FOREIGN_MODEL,
+);
+
+expect('control: matching model still installs', 'installed', matched.outcome);
+expect('control: matching model is active', 4, (await matchedStore.active())?.bundleVersion);
+
+// A missing expected model is a caller defect, not a bundle defect, so it is
+// loud rather than a silent pass. An untyped caller that forgets the argument
+// must not get the old behaviour back by accident.
+let missingModelThrew = false;
+try {
+  await installBundle(
+    bundleForDevice(publishedV1, 'device-1'),
+    identityFor('device-1', deviceOne.privateKey),
+    new MemoryBundleStore(),
+  );
+} catch {
+  missingModelThrew = true;
+}
+
+expectTrue('a missing expected model throws rather than silently installing', missingModelThrew);
 
 // ---------------------------------------------------------------------------
 // Report

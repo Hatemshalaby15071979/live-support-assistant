@@ -143,12 +143,12 @@ async function scenario(makeStore, label) {
   let store = await makeStore(server);
 
   // 1. first install
-  const first = await installBundle(bundleForDevice(v1, 'device-1'), identity, store);
+  const first = await installBundle(bundleForDevice(v1, 'device-1'), identity, store, MODEL);
   expect(`${label}: first install succeeds`, 'installed', first.outcome,
     first.outcome === 'installed' && first.bundleVersion === 1);
 
   // 2. upgrade install
-  const second = await installBundle(bundleForDevice(v2, 'device-1'), identity, store);
+  const second = await installBundle(bundleForDevice(v2, 'device-1'), identity, store, MODEL);
   expect(`${label}: upgrade install succeeds`, 'installed', second.outcome,
     second.outcome === 'installed' && second.bundleVersion === 2);
 
@@ -164,7 +164,7 @@ async function scenario(makeStore, label) {
     deepEqual(active?.sops, corpus), deepEqual(active?.sops, corpus));
 
   // 4. a rejected install leaves the previous bundle active
-  const rejected = await installBundle(damaged, identity, store);
+  const rejected = await installBundle(damaged, identity, store, MODEL);
   expect(`${label}: corrupted bundle rejected`, 'rejected', rejected.outcome,
     rejected.outcome === 'rejected' && rejected.reason === 'payload_hash_mismatch');
 
@@ -194,7 +194,7 @@ async function scenario(makeStore, label) {
   expect(`${label}: a wipe leaves nothing a reader could serve`, 'null', String(afterWipe), afterWipe === null);
 
   // A wiped store must still work, or the device is bricked rather than wiped.
-  const reinstalled = await installBundle(bundleForDevice(v1, 'device-1'), identity, store);
+  const reinstalled = await installBundle(bundleForDevice(v1, 'device-1'), identity, store, MODEL);
   expect(`${label}: a wiped store can install again`, 'installed', reinstalled.outcome,
     reinstalled.outcome === 'installed' && (await store.active())?.bundleVersion === 1);
   return { identity, v1, v2 };
@@ -275,7 +275,7 @@ await scenario(
   });
 
   const first = new MemoryBundleStore();
-  await installBundle(bundleForDevice(v1, 'device-1'), identity, first);
+  await installBundle(bundleForDevice(v1, 'device-1'), identity, first, MODEL);
   const second = new MemoryBundleStore();
   const after = await second.active();
   expect('memory: restart loses the bundle (documented limitation)', null, after, after === null);
@@ -350,6 +350,7 @@ await scenario(
       serverWrappingPublicKey: restored.serverWrappingPublicKey,
     },
     bundleStore,
+    MODEL,
   );
   expect(
     'identity: the restored key installs a bundle (no salt passed)',
