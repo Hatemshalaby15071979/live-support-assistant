@@ -31,6 +31,9 @@ import { importWrappingPublicKey, publishBundle } from '../../../packages/sync/d
 // lint CLI and the verification harnesses. A bundle whose corpus carries a
 // same-category numeric conflict is blocked here, before it is signed.
 import { lintCorpusForPublish } from '../../../tooling/conflicts/conflict-core.mjs';
+// Which model a bundle may name. Extracted so the Node harness can test it and
+// so the rule has one home rather than living inline in this file.
+import { resolvePublishModel } from './model-policy.mjs';
 
 const ALGORITHMS = { signing: { name: 'Ed25519' }, wrapping: { name: 'X25519' } };
 
@@ -214,19 +217,30 @@ Deno.serve(async (request) => {
     return json({ error: 'no enrolled device could be wrapped for' }, 409);
   }
 
-  const model = {
-    id: 'Xenova/all-MiniLM-L6-v2',
-    revision: '751bff37182d3f1213fa05d7196b954e230abad9',
-    quantization: 'q8',
-    dimensions: 384,
-    ...(typeof body.model === 'object' && body.model !== null ? (body.model as object) : {}),
-  };
+  // The model is deployment configuration, and it comes from this side.
+  //
+  // Same rule as the corpus above, and for the same reason: a caller-supplied
+  // fact about what the bundle *is* cannot be authoritative. This used to spread
+  // `body.model` over a hardcoded default, so any authenticated publisher could
+  // sign a bundle naming a model the tenant's devices do not have — and the
+  // client, which had no check either, would install it and score every passage
+  // against the wrong embedding space.
+  //
+  // A request that restates this deployment's model is accepted and ignored; a
+  // request that contradicts it is refused with 400 rather than silently
+  // overridden, because a publisher who believes they shipped model X and did
+  // not is a publisher who will not find out until the answers are wrong.
+  const modelResolution = resolvePublishModel(body.model);
+
+  if (!modelResolution.ok) {
+    return json({ error: modelResolution.error }, modelResolution.status);
+  }
 
   const published = await publishBundle({
     tenantId: tenant as string,
     bundleVersion: Number(nextVersion),
     sops: corpus as never,
-    model: model as never,
+    model: modelResolution.model as never,
     signingPrivateKey,
     wrappingPrivateKey,
     devices,
