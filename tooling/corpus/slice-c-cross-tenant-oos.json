@@ -1,0 +1,1576 @@
+{
+  "note": "Cross-tenant out_of_scope rows, constructed from existing answerable rows (g14 slice i). Each row is an answerable question from one tenant, relabelled out_of_scope for the other two tenants. label_source = construction; all rows are easy-mode (answer document absent from the target corpus). Never counted as validated ground truth.",
+  "origin": "derived-style",
+  "data_mode": "simulated",
+  "label_basis": "construction: the source question is answerable in its own tenant; the target tenant does not contain the source document, so it is out_of_scope for the target by KNOWN_ISSUES.md §11.",
+  "rows": [
+    {
+      "id": "XO-T01-from-OD-02",
+      "tenant": "T01-platform-operations-style",
+      "text": "I want to change my username but it won't let me. why?",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-OD-02",
+      "tenant": "T05-policy-style",
+      "text": "I want to change my username but it won't let me. why?",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-OD-04",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i change my payment method? my old card was replaced",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-OD-04",
+      "tenant": "T05-policy-style",
+      "text": "how do i change my payment method? my old card was replaced",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-OD-05",
+      "tenant": "T01-platform-operations-style",
+      "text": "How can I delete an expired card from my account?",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-OD-05",
+      "tenant": "T05-policy-style",
+      "text": "How can I delete an expired card from my account?",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-01",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i change my username? will my old one be free for someone else to take",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-01",
+      "tenant": "T05-policy-style",
+      "text": "how do i change my username? will my old one be free for someone else to take",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-02",
+      "tenant": "T01-platform-operations-style",
+      "text": "someone has taken my name as their username and is pretending to be me, is that allowed",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SB-02",
+      "tenant": "T04-customer-support-style",
+      "text": "someone has taken my name as their username and is pretending to be me, is that allowed",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-03",
+      "tenant": "T01-platform-operations-style",
+      "text": "the card on my account expired last month, how do i put a new one on",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-03",
+      "tenant": "T05-policy-style",
+      "text": "the card on my account expired last month, how do i put a new one on",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-04",
+      "tenant": "T01-platform-operations-style",
+      "text": "where can i find my old receipts, i need one from a few months back",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-04",
+      "tenant": "T05-policy-style",
+      "text": "where can i find my old receipts, i need one from a few months back",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-05",
+      "tenant": "T01-platform-operations-style",
+      "text": "the verification email never turns up, can i get another one sent",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-05",
+      "tenant": "T05-policy-style",
+      "text": "the verification email never turns up, can i get another one sent",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-06",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i add a second email address to my account",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-06",
+      "tenant": "T05-policy-style",
+      "text": "how do i add a second email address to my account",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-07",
+      "tenant": "T01-platform-operations-style",
+      "text": "can i change which email address is my main one",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-07",
+      "tenant": "T05-policy-style",
+      "text": "can i change which email address is my main one",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-08",
+      "tenant": "T01-platform-operations-style",
+      "text": "i want a backup email on file in case i lose access to my main one",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-08",
+      "tenant": "T05-policy-style",
+      "text": "i want a backup email on file in case i lose access to my main one",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-09",
+      "tenant": "T01-platform-operations-style",
+      "text": "my commits show my personal email address, how do i stop that",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-09",
+      "tenant": "T05-policy-style",
+      "text": "my commits show my personal email address, how do i stop that",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-10",
+      "tenant": "T01-platform-operations-style",
+      "text": "i have a work account and a personal one, can i switch between them easily",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-10",
+      "tenant": "T05-policy-style",
+      "text": "i have a work account and a personal one, can i switch between them easily",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-11",
+      "tenant": "T01-platform-operations-style",
+      "text": "i accidentally made two accounts years ago, can i combine them into one",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-11",
+      "tenant": "T05-policy-style",
+      "text": "i accidentally made two accounts years ago, can i combine them into one",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-12",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i permanently close my account and what happens to my repositories",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-12",
+      "tenant": "T05-policy-style",
+      "text": "how do i permanently close my account and what happens to my repositories",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-13",
+      "tenant": "T01-platform-operations-style",
+      "text": "i lost my phone and i cant get past the two factor screen, what are my options",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-13",
+      "tenant": "T05-policy-style",
+      "text": "i lost my phone and i cant get past the two factor screen, what are my options",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-14",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i leave an organisation that someone added me to",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-14",
+      "tenant": "T05-policy-style",
+      "text": "how do i leave an organisation that someone added me to",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-15",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i put a readme on my profile page",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-15",
+      "tenant": "T05-policy-style",
+      "text": "how do i put a readme on my profile page",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-16",
+      "tenant": "T01-platform-operations-style",
+      "text": "can i make my profile private so it stops showing up when people search for me",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-16",
+      "tenant": "T05-policy-style",
+      "text": "can i make my profile private so it stops showing up when people search for me",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-17",
+      "tenant": "T01-platform-operations-style",
+      "text": "what do i actually get if i move from the free plan to the paid one",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-17",
+      "tenant": "T05-policy-style",
+      "text": "what do i actually get if i move from the free plan to the paid one",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-18",
+      "tenant": "T01-platform-operations-style",
+      "text": "if i go back down to the free plan what do i lose",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SB-18",
+      "tenant": "T05-policy-style",
+      "text": "if i go back down to the free plan what do i lose",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-19",
+      "tenant": "T01-platform-operations-style",
+      "text": "someone posted my personal information on a public repo, how do i get it taken down",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SB-19",
+      "tenant": "T04-customer-support-style",
+      "text": "someone posted my personal information on a public repo, how do i get it taken down",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SB-20",
+      "tenant": "T01-platform-operations-style",
+      "text": "my account was suspended and i think it was a mistake, how do i appeal",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SB-20",
+      "tenant": "T04-customer-support-style",
+      "text": "my account was suspended and i think it was a mistake, how do i appeal",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-01",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i configure dns for a cluster",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-01",
+      "tenant": "T05-policy-style",
+      "text": "how do i configure dns for a cluster",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-02",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i change the default storage class",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-02",
+      "tenant": "T05-policy-style",
+      "text": "how do i change the default storage class",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-03",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i declare a network policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-03",
+      "tenant": "T05-policy-style",
+      "text": "how do i declare a network policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-04",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i create an external load balancer",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-04",
+      "tenant": "T05-policy-style",
+      "text": "how do i create an external load balancer",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-05",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i use port forwarding to access an application in a cluster",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-05",
+      "tenant": "T05-policy-style",
+      "text": "how do i use port forwarding to access an application in a cluster",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-06",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i manage certificates for a cluster",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-06",
+      "tenant": "T05-policy-style",
+      "text": "how do i manage certificates for a cluster",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-07",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i upgrade a cluster",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-07",
+      "tenant": "T05-policy-style",
+      "text": "how do i upgrade a cluster",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-08",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i configure feature gates",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-08",
+      "tenant": "T05-policy-style",
+      "text": "how do i configure feature gates",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-09",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i configure cpu management policies",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-09",
+      "tenant": "T05-policy-style",
+      "text": "how do i configure cpu management policies",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-10",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i decrypt data at rest",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-10",
+      "tenant": "T05-policy-style",
+      "text": "how do i decrypt data at rest",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-11",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i configure access to multiple clusters",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-11",
+      "tenant": "T05-policy-style",
+      "text": "how do i configure access to multiple clusters",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-12",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i use a service to access an application in a cluster",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-12",
+      "tenant": "T05-policy-style",
+      "text": "how do i use a service to access an application in a cluster",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-13",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i access the cluster api",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-13",
+      "tenant": "T05-policy-style",
+      "text": "how do i access the cluster api",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-14",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i deploy the web ui dashboard",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-14",
+      "tenant": "T05-policy-style",
+      "text": "how do i deploy the web ui dashboard",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-15",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i list all running container images",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-15",
+      "tenant": "T05-policy-style",
+      "text": "how do i list all running container images",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-16",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i connect a frontend to a backend",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-16",
+      "tenant": "T05-policy-style",
+      "text": "how do i connect a frontend to a backend",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-17",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i configure and upgrade etcd",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-17",
+      "tenant": "T05-policy-style",
+      "text": "how do i configure and upgrade etcd",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-18",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i use coredns for service discovery",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-18",
+      "tenant": "T05-policy-style",
+      "text": "how do i use coredns for service discovery",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-19",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i change the persistent volume reclaim policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-19",
+      "tenant": "T05-policy-style",
+      "text": "how do i change the persistent volume reclaim policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T01-20",
+      "tenant": "T04-customer-support-style",
+      "text": "how do containers in the same pod communicate using a shared volume",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T01-20",
+      "tenant": "T05-policy-style",
+      "text": "how do containers in the same pod communicate using a shared volume",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in the Kubernetes tasks tree; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-01",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i change my username",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-01",
+      "tenant": "T05-policy-style",
+      "text": "how do i change my username",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-02",
+      "tenant": "T01-platform-operations-style",
+      "text": "what should i know about username changes",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-02",
+      "tenant": "T05-policy-style",
+      "text": "what should i know about username changes",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-03",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i manage my payment information",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-03",
+      "tenant": "T05-policy-style",
+      "text": "how do i manage my payment information",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-04",
+      "tenant": "T01-platform-operations-style",
+      "text": "troubleshooting payment method issues",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-04",
+      "tenant": "T05-policy-style",
+      "text": "troubleshooting payment method issues",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-05",
+      "tenant": "T01-platform-operations-style",
+      "text": "unable to send verification email",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-05",
+      "tenant": "T05-policy-style",
+      "text": "unable to send verification email",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-06",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i verify my email address",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-06",
+      "tenant": "T05-policy-style",
+      "text": "how do i verify my email address",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-07",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i add an email address to my account",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-07",
+      "tenant": "T05-policy-style",
+      "text": "how do i add an email address to my account",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-08",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i change my primary email address",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-08",
+      "tenant": "T05-policy-style",
+      "text": "how do i change my primary email address",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-09",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i set a backup email address",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-09",
+      "tenant": "T05-policy-style",
+      "text": "how do i set a backup email address",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-10",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i set my commit email address",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-10",
+      "tenant": "T05-policy-style",
+      "text": "how do i set my commit email address",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-11",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i manage multiple accounts",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-11",
+      "tenant": "T05-policy-style",
+      "text": "how do i manage multiple accounts",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-12",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i merge multiple personal accounts",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-12",
+      "tenant": "T05-policy-style",
+      "text": "how do i merge multiple personal accounts",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-13",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i delete my personal account",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-13",
+      "tenant": "T05-policy-style",
+      "text": "how do i delete my personal account",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-14",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i unlink my email address from a locked account",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-14",
+      "tenant": "T05-policy-style",
+      "text": "how do i unlink my email address from a locked account",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-15",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i remove myself from an organization",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-15",
+      "tenant": "T05-policy-style",
+      "text": "how do i remove myself from an organization",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-16",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i manage my profile readme",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-16",
+      "tenant": "T05-policy-style",
+      "text": "how do i manage my profile readme",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-17",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i set my profile to private",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-17",
+      "tenant": "T05-policy-style",
+      "text": "how do i set my profile to private",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-18",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i upgrade my plan",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-18",
+      "tenant": "T05-policy-style",
+      "text": "how do i upgrade my plan",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-19",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i downgrade my plan",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-19",
+      "tenant": "T05-policy-style",
+      "text": "how do i downgrade my plan",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T04-20",
+      "tenant": "T01-platform-operations-style",
+      "text": "unlocking an account due to a declined payment",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T05-from-SA-T04-20",
+      "tenant": "T05-policy-style",
+      "text": "unlocking an account due to a declined payment",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub account-and-billing technical documentation; GitHub site-policy and terms does not contain it, so it is out_of_scope for T05 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-01",
+      "tenant": "T01-platform-operations-style",
+      "text": "github username policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-01",
+      "tenant": "T04-customer-support-style",
+      "text": "github username policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-02",
+      "tenant": "T01-platform-operations-style",
+      "text": "github account recovery policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-02",
+      "tenant": "T04-customer-support-style",
+      "text": "github account recovery policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-03",
+      "tenant": "T01-platform-operations-style",
+      "text": "github deceased user policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-03",
+      "tenant": "T04-customer-support-style",
+      "text": "github deceased user policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-04",
+      "tenant": "T01-platform-operations-style",
+      "text": "github cookies",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-04",
+      "tenant": "T04-customer-support-style",
+      "text": "github cookies",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-05",
+      "tenant": "T01-platform-operations-style",
+      "text": "github subprocessors",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-05",
+      "tenant": "T04-customer-support-style",
+      "text": "github subprocessors",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-06",
+      "tenant": "T01-platform-operations-style",
+      "text": "guide to submitting a dmca takedown notice",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-06",
+      "tenant": "T04-customer-support-style",
+      "text": "guide to submitting a dmca takedown notice",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-07",
+      "tenant": "T01-platform-operations-style",
+      "text": "guide to submitting a dmca counter notice",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-07",
+      "tenant": "T04-customer-support-style",
+      "text": "guide to submitting a dmca counter notice",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-08",
+      "tenant": "T01-platform-operations-style",
+      "text": "github private information removal policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-08",
+      "tenant": "T04-customer-support-style",
+      "text": "github private information removal policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-09",
+      "tenant": "T01-platform-operations-style",
+      "text": "github trademark policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-09",
+      "tenant": "T04-customer-support-style",
+      "text": "github trademark policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-10",
+      "tenant": "T01-platform-operations-style",
+      "text": "submitting content removal requests",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-10",
+      "tenant": "T04-customer-support-style",
+      "text": "submitting content removal requests",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-11",
+      "tenant": "T01-platform-operations-style",
+      "text": "github appeal and reinstatement",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-11",
+      "tenant": "T04-customer-support-style",
+      "text": "github appeal and reinstatement",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-12",
+      "tenant": "T01-platform-operations-style",
+      "text": "github acceptable use policies",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-12",
+      "tenant": "T04-customer-support-style",
+      "text": "github acceptable use policies",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-13",
+      "tenant": "T01-platform-operations-style",
+      "text": "github impersonation policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-13",
+      "tenant": "T04-customer-support-style",
+      "text": "github impersonation policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-14",
+      "tenant": "T01-platform-operations-style",
+      "text": "github doxxing and invasion of privacy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-14",
+      "tenant": "T04-customer-support-style",
+      "text": "github doxxing and invasion of privacy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-15",
+      "tenant": "T01-platform-operations-style",
+      "text": "github hate speech and discrimination policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-15",
+      "tenant": "T04-customer-support-style",
+      "text": "github hate speech and discrimination policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-16",
+      "tenant": "T01-platform-operations-style",
+      "text": "github threats of violence and gratuitously violent content",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-16",
+      "tenant": "T04-customer-support-style",
+      "text": "github threats of violence and gratuitously violent content",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-17",
+      "tenant": "T01-platform-operations-style",
+      "text": "github government takedown policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-17",
+      "tenant": "T04-customer-support-style",
+      "text": "github government takedown policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-18",
+      "tenant": "T01-platform-operations-style",
+      "text": "github logo policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-18",
+      "tenant": "T04-customer-support-style",
+      "text": "github logo policy",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-19",
+      "tenant": "T01-platform-operations-style",
+      "text": "coordinated disclosure of security vulnerabilities",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-19",
+      "tenant": "T04-customer-support-style",
+      "text": "coordinated disclosure of security vulnerabilities",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05-20",
+      "tenant": "T01-platform-operations-style",
+      "text": "github bug bounty program legal safe harbor",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05-20",
+      "tenant": "T04-customer-support-style",
+      "text": "github bug bounty program legal safe harbor",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-01",
+      "tenant": "T01-platform-operations-style",
+      "text": "can someone else take a name i want to use",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-01",
+      "tenant": "T04-customer-support-style",
+      "text": "can someone else take a name i want to use",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-02",
+      "tenant": "T01-platform-operations-style",
+      "text": "i lost access and my old email no longer works, can i get back in",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-02",
+      "tenant": "T04-customer-support-style",
+      "text": "i lost access and my old email no longer works, can i get back in",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-03",
+      "tenant": "T01-platform-operations-style",
+      "text": "how does a family member request access to someone who has died",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-03",
+      "tenant": "T04-customer-support-style",
+      "text": "how does a family member request access to someone who has died",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-04",
+      "tenant": "T01-platform-operations-style",
+      "text": "what tracking does the site do and can i opt out of the non essential parts",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-04",
+      "tenant": "T04-customer-support-style",
+      "text": "what tracking does the site do and can i opt out of the non essential parts",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-05",
+      "tenant": "T01-platform-operations-style",
+      "text": "which third parties process my data",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-05",
+      "tenant": "T04-customer-support-style",
+      "text": "which third parties process my data",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-06",
+      "tenant": "T01-platform-operations-style",
+      "text": "someone filed a takedown against my repository and i disagree with it",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-06",
+      "tenant": "T04-customer-support-style",
+      "text": "someone filed a takedown against my repository and i disagree with it",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-07",
+      "tenant": "T01-platform-operations-style",
+      "text": "my home address is visible in a public repository and i want it gone",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-07",
+      "tenant": "T04-customer-support-style",
+      "text": "my home address is visible in a public repository and i want it gone",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-08",
+      "tenant": "T01-platform-operations-style",
+      "text": "someone is using my company logo without permission",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-08",
+      "tenant": "T04-customer-support-style",
+      "text": "someone is using my company logo without permission",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-09",
+      "tenant": "T01-platform-operations-style",
+      "text": "how do i ask for something to be removed from the site",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-09",
+      "tenant": "T04-customer-support-style",
+      "text": "how do i ask for something to be removed from the site",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-10",
+      "tenant": "T01-platform-operations-style",
+      "text": "my account was disabled and i want it looked at again",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-10",
+      "tenant": "T04-customer-support-style",
+      "text": "my account was disabled and i want it looked at again",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-11",
+      "tenant": "T01-platform-operations-style",
+      "text": "what kinds of behaviour are not allowed here",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-11",
+      "tenant": "T04-customer-support-style",
+      "text": "what kinds of behaviour are not allowed here",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-12",
+      "tenant": "T01-platform-operations-style",
+      "text": "where is the line on content that offends a group of people",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-12",
+      "tenant": "T04-customer-support-style",
+      "text": "where is the line on content that offends a group of people",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-13",
+      "tenant": "T01-platform-operations-style",
+      "text": "if i report a security flaw can i be sued for it",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-13",
+      "tenant": "T04-customer-support-style",
+      "text": "if i report a security flaw can i be sued for it",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-14",
+      "tenant": "T01-platform-operations-style",
+      "text": "how does the whole takedown process work from start to finish",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-14",
+      "tenant": "T04-customer-support-style",
+      "text": "how does the whole takedown process work from start to finish",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T01-from-SA-T05X-15",
+      "tenant": "T01-platform-operations-style",
+      "text": "what happens if law enforcement asks you for my data",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; the Kubernetes tasks tree does not contain it, so it is out_of_scope for T01 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    },
+    {
+      "id": "XO-T04-from-SA-T05X-15",
+      "tenant": "T04-customer-support-style",
+      "text": "what happens if law enforcement asks you for my data",
+      "reason": "Cross-tenant OOS (easy-mode): the answer to this question lives in GitHub site-policy and terms; GitHub account-and-billing technical documentation does not contain it, so it is out_of_scope for T04 specifically.",
+      "label_source": "construction",
+      "easy_mode": true
+    }
+  ]
+}

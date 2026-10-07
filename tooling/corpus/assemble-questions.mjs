@@ -5,7 +5,11 @@
  * Sources, in the order they appear in the output:
  *   - `slice-b-owner-rows.json` + `slice-b-owner-labels.json` — the 15 owner-supplied rows
  *   - `slice-b-expansion.json` — 20 agent-authored user-voiced rows
- *   - `slice-a.json` — 60 authored corpus-voiced rows across T01, T04 and T05
+ *   - `slice-a.json` + `slice-a-t05-expansion.json` — authored corpus-voiced rows
+ *   - `slice-b-refusal-surface.json` — 16 agent-labelled refusal rows (T01, T05)
+ *   - `slice-c-cross-tenant-oos.json` — OOS rows constructed from other tenants' answerable
+ *     questions (g14 slice i; `label_source = construction`, `easy_mode = true`)
+ *   - `slice-d-near-domain-oos.json` — agent-authored near-domain OOS, `queued_spot_check = true` (g14 slice ii)
  *
  * ## What it refuses to do
  *
@@ -43,6 +47,8 @@ const expansion = read('slice-b-expansion.json');
 const sliceA = read('slice-a.json');
 const sliceAT05 = read('slice-a-t05-expansion.json');
 const refusalSurface = read('slice-b-refusal-surface.json');
+const crossTenant = read('slice-c-cross-tenant-oos.json');
+const nearDomain = read('slice-d-near-domain-oos.json');
 
 /** Every document path per tenant, for verification. */
 const tenantDocuments = new Map();
@@ -85,7 +91,18 @@ function unitHash(value) {
   return createHash('sha256').update(value, 'utf8').digest().readUInt32BE(0) / 0x100000000;
 }
 
-const splitFor = (id) => (unitHash(`${SEED}:${id}`) < CALIBRATION_FRACTION ? 'calibration' : 'held-out');
+// The 7 out_of_scope rows that were already measured on the old held-out are pinned to
+// the calibration split so they are never re-used as a measurement (g14: the already-seen
+// held-out becomes calibration data). Implemented as an id pin; the seed/split logic is
+// otherwise unchanged and reproducible.
+const PINNED_CALIBRATION = new Set([
+  'OD-01', 'OD-11', 'OD-13', // T04
+  'SB-T01R-06', 'SB-T01R-07', // T01
+  'SB-T05R-02', 'SB-T05R-03', // T05
+]);
+
+const splitFor = (id, forceCalibration = false) =>
+  forceCalibration || unitHash(`${SEED}:${id}`) < CALIBRATION_FRACTION ? 'calibration' : 'held-out';
 
 // ---------------------------------------------------------------------------
 // Verify every path. Fail loudly on a miss.
@@ -122,7 +139,7 @@ for (const row of ownerRows.rows) {
     confidence: label.confidence,
     acceptable_documents: label.documents,
     reasoning: label.reasoning,
-    split: splitFor(row.id),
+    split: splitFor(row.id, PINNED_CALIBRATION.has(row.id)),
   });
 }
 
@@ -141,7 +158,7 @@ for (const row of expansion.rows) {
     confidence: row.confidence,
     acceptable_documents: row.documents,
     reasoning: 'Authored against the named document, which was verified to exist before the row was written.',
-    split: splitFor(row.id),
+    split: splitFor(row.id, PINNED_CALIBRATION.has(row.id)),
   });
 }
 
@@ -161,7 +178,50 @@ for (const row of refusalSurface.rows) {
     confidence: 'high',
     acceptable_documents: [],
     reasoning: row.reason,
-    split: splitFor(row.id),
+    split: splitFor(row.id, PINNED_CALIBRATION.has(row.id)),
+  });
+}
+
+// g14 slice (i): cross-tenant OOS, constructed from other tenants' answerable rows.
+// label_source = construction; easy_mode = true (answer document is absent from the target corpus).
+for (const row of crossTenant.rows) {
+  verifyDocuments(row.tenant, []); // out_of_scope: no documents
+  questions.push({
+    id: row.id,
+    text: row.text,
+    tenant: row.tenant,
+    slice: 'B',
+    origin: crossTenant.origin,
+    data_mode: crossTenant.data_mode,
+    label_source: 'construction',
+    label_basis: crossTenant.label_basis,
+    label: 'out_of_scope',
+    confidence: 'high',
+    acceptable_documents: [],
+    reasoning: row.reason,
+    easy_mode: row.easy_mode === true,
+    split: splitFor(row.id, PINNED_CALIBRATION.has(row.id)),
+  });
+}
+
+// g14 slice (ii): near-domain OOS, agent-authored, queued for owner spot-check.
+for (const row of nearDomain.rows) {
+  verifyDocuments(row.tenant, []); // out_of_scope: no documents
+  questions.push({
+    id: row.id,
+    text: row.text,
+    tenant: row.tenant,
+    slice: 'B',
+    origin: nearDomain.origin,
+    data_mode: nearDomain.data_mode,
+    label_source: 'agent',
+    label_basis: nearDomain.label_basis,
+    label: 'out_of_scope',
+    confidence: 'high',
+    acceptable_documents: [],
+    reasoning: row.reason,
+    queued_spot_check: row.queued_spot_check === true,
+    split: splitFor(row.id, PINNED_CALIBRATION.has(row.id)),
   });
 }
 

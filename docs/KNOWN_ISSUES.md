@@ -316,3 +316,21 @@ OOS, answer genuinely absent, agent-labelled and queued for owner spot-check —
 split with a fresh held-out never used for tuning. Prereg first; recalibrate on the new held-out with N
 and the 3/N bound. The held-out rows already seen become calibration data, labelled as such. Until done,
 T05 = `calibration_status=failed-heldout`, no production claim, D1 NOT MET. (Implemented under task #9.)
+
+### Addendum — g14 OOS expansion implemented (post-`565c8c1`)
+
+The option (c) expansion is committed (prereg `docs/prereg/g14-t05-oos-expansion.md`): cross-tenant
+construction rows (`slice-c-cross-tenant-oos.json`, `label_source=construction`, `easy_mode=true`) plus
+agent-authored near-domain rows (`slice-d-near-domain-oos.json`, `queued_spot_check=true`). The 7 OOS rows
+previously measured on the old held-out are pinned to the calibration split (`PINNED_CALIBRATION` in
+`assemble-questions.mjs`) so they are never re-used as a measurement. Fixed-seed 70/30 split (seed
+`20261007`) unchanged.
+
+New held-out `out_of_scope` N (fresh, never measured): **T01 33, T04 30, T05 25** (fleet **319 ≥ 300**).
+Rule-of-three 95% upper bound on the unsafe rate: T01 ≤ 9.1%, T04 ≤ 10.0%, T05 ≤ 12.0% — versus ≈100% at the
+old N ≤ 3. This makes D1 *potentially measurable* where it was not.
+
+T05 stays `calibration_status=failed-heldout`, **D1 NOT MET**, until the new held-out is run and shows 0
+unsafe at its operating threshold. The bi-encoder validation on the new split is pending (heavy compute;
+run in background). Until that run reports, no production claim is made for any tenant and the thresholds
+remain provisional per `DECISIONS.md`.
