@@ -209,6 +209,16 @@ never as real companies' help centres. Rungs 40 and 500 where the source support
 claim requires >= 2 tenants at 500 same-domain procedures; otherwise the claim is restricted to the
 largest rung actually measured. Cross-tenant distractor padding is allowed but labeled `easy-mode`,
 because cross-domain distractors are easier than same-domain ones.
+
+**Known corpus-fit limit (recorded 2026-10-07).** **T04 is strictly GitHub technical/billing
+documentation. It lacks material for generic consumer scenarios (bans, phone OTPs, live streams).
+User-voiced queries for these topics must correctly resolve to `out_of_scope`.** Established by
+measurement at commit `bab7bf4`: across T04's 136 documents, **0** match `banned`, `appeal`,
+`reinstate`, `blacklist`, `sms`, `text message`, `phone number` or `translation` (the 16 documents
+matching `ban` are substrings — banner, bandwidth, bank, banks). Of 15 owner-supplied user-voiced
+questions, **11 resolved to `out_of_scope`** and 3 to an answering document. A retriever that answers
+these anyway is guessing, and the gold set records the refusals as first-class rows so that refusing
+is measured rather than assumed. Full record: `docs/KNOWN_ISSUES.md` §10.
 If no licensed non-English source of adequate size exists, create non-English corpora by translating
 licensed documents with attribution preserved, tagged `data_mode: "simulated"` and
 `origin: translated`, and say so in every table that uses them.

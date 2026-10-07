@@ -1,23 +1,21 @@
 {
   "note": "AUTOMATED evidence audit. This is NOT an owner spot-check and does not validate a label. It confirms that a document contains the answer, not that a human would agree it is the right document. Labels are unchanged and no row is excluded.",
-  "generated_at": "2026-10-07T07:45:02.489Z",
+  "generated_at": "2026-10-07T08:42:02.989Z",
   "tenant": "T04-customer-support-style",
   "data_mode": "simulated",
   "match_floor": 0.34,
   "competitor_ratio": 0.8,
   "counts": {
-    "supported": 2,
-    "not_supported": 9,
-    "ambiguous": 4
+    "supported": 0,
+    "not_supported": 13,
+    "ambiguous": 2
   },
   "rows": [
     {
       "id": "OD-01",
       "question": "why is my account blacklisted?? i cant log in and nobody told me anything",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/billing/how-tos/troubleshooting/locked-account.md"
-      ],
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
       "strategies": [
         {
           "terms": [
@@ -46,9 +44,9 @@
         }
       ],
       "best_overall": 0.646,
-      "proposed_score": 0.429,
-      "evidence_document": "content/billing/how-tos/troubleshooting/locked-account.md",
-      "evidence_excerpt": "You can unlock and access your account by updating your account's payment method and resuming paid status You can unlock and access your account by updating your account's payment method and",
+      "proposed_score": 0,
+      "evidence_document": null,
+      "evidence_excerpt": null,
       "competitors": [
         {
           "path": "content/account-and-profile/how-tos/account-management/creating-an-account-on-github.md",
@@ -68,8 +66,8 @@
       ],
       "verdict": "NOT SUPPORTED",
       "confidence": "high",
-      "reason": "A competing document scores 0.65 against the proposed document's 0.43, so the labelled document is not the best match in the corpus.",
-      "partial_match": true
+      "reason": "A document reaches 0.65 against the floor of 0.34, so the corpus does contain relevant material and the out_of_scope label does not hold.",
+      "partial_match": false
     },
     {
       "id": "OD-02",
@@ -129,11 +127,8 @@
     {
       "id": "OD-03",
       "question": "i never got the OTP code to verify my account. tried 3 times",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
-        "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md"
-      ],
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
       "strategies": [
         {
           "terms": [
@@ -161,29 +156,29 @@
         }
       ],
       "best_overall": 1,
-      "proposed_score": 1,
-      "evidence_document": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
-      "evidence_excerpt": "Unable to send verification email {% data reusables Unable to send verification email {% data reusables.user-settings.no-verification-disposable-emails %} {% ifversion fpt or ghec %} Account",
+      "proposed_score": 0,
+      "evidence_document": null,
+      "evidence_excerpt": null,
       "competitors": [
+        {
+          "path": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+          "score": 1,
+          "excerpt": "Unable to send verification email {% data reusables Unable to send verification email {% data reusables.user-settings.no-verification-dispos"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md",
+          "score": 1,
+          "excerpt": "Verifying your email address {% data reusables Verifying your email address {% data reusables.user-settings.access_settings %} {% data reusa"
+        },
         {
           "path": "content/account-and-profile/concepts/email-addresses.md",
           "score": 0.762,
           "excerpt": "You can verify your email address after signing up for a new account, or when you add a new email address You can verify your email address "
-        },
-        {
-          "path": "content/account-and-profile/reference/email-addresses-reference.md",
-          "score": 0.762,
-          "excerpt": "Email verification restrictions {% data reusables Email verification restrictions {% data reusables.user-settings.no-verification-disposable"
-        },
-        {
-          "path": "content/billing/how-tos/troubleshooting/declined-card.md",
-          "score": 0.572,
-          "excerpt": "**If your card is declined, we'll send you an email about why the payment was declined **If your card is declined, we'll send you an email a"
         }
       ],
-      "verdict": "SUPPORTED",
+      "verdict": "NOT SUPPORTED",
       "confidence": "high",
-      "reason": "The proposed document reaches 1.00 and no competing document comes within 20% of it.",
+      "reason": "A document reaches 1.00 against the floor of 0.34, so the corpus does contain relevant material and the out_of_scope label does not hold.",
       "partial_match": false
     },
     {
@@ -349,10 +344,8 @@
     {
       "id": "OD-07",
       "question": "can i get my invoice in another language or as a pdf",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/billing/how-tos/set-up-payment/manage-enterprise-invoice.md"
-      ],
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
       "strategies": [
         {
           "terms": [
@@ -377,9 +370,9 @@
         }
       ],
       "best_overall": 0.736,
-      "proposed_score": 0.45,
-      "evidence_document": "content/billing/how-tos/set-up-payment/manage-enterprise-invoice.md",
-      "evidence_excerpt": "{% data variables {% data variables.product.github %} bills invoiced {% data variables.product.prodname_enterprise %} customers through an enterprise account on {% data variables.product.pro",
+      "proposed_score": 0,
+      "evidence_document": null,
+      "evidence_excerpt": null,
       "competitors": [
         {
           "path": "content/billing/tutorials/automate-usage-reporting.md",
@@ -399,8 +392,8 @@
       ],
       "verdict": "NOT SUPPORTED",
       "confidence": "high",
-      "reason": "A competing document scores 0.74 against the proposed document's 0.45, so the labelled document is not the best match in the corpus.",
-      "partial_match": true
+      "reason": "A document reaches 0.74 against the floor of 0.34, so the corpus does contain relevant material and the out_of_scope label does not hold.",
+      "partial_match": false
     },
     {
       "id": "OD-08",
@@ -461,10 +454,8 @@
     {
       "id": "OD-09",
       "question": "how do i reset everything on my account and start from zero",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md"
-      ],
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
       "strategies": [
         {
           "terms": [
@@ -490,10 +481,15 @@
         }
       ],
       "best_overall": 1,
-      "proposed_score": 1,
-      "evidence_document": "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md",
-      "evidence_excerpt": "% ifversion ghec %} [!NOTE] If your enterprise manages your account and you sign into {% data variables.product.github %} through your company's identity provider (IdP), you cannot delete yo",
+      "proposed_score": 0,
+      "evidence_document": null,
+      "evidence_excerpt": null,
       "competitors": [
+        {
+          "path": "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md",
+          "score": 1,
+          "excerpt": "% ifversion ghec %} [!NOTE] If your enterprise manages your account and you sign into {% data variables.product.github %} through your compa"
+        },
         {
           "path": "content/account-and-profile/reference/personal-account-reference.md",
           "score": 1,
@@ -503,16 +499,11 @@
           "path": "content/billing/how-tos/set-up-budgets.md",
           "score": 1,
           "excerpt": "set up budgets (part 7) To edit or delete a budget, on the \"Budget and alerts\" page, click **Edit** or **Delete** next to the budget you wan"
-        },
-        {
-          "path": "content/account-and-profile/concepts/account-management.md",
-          "score": 0.858,
-          "excerpt": "account management (part 2) You can move repositories and projects from your personal account to an organization while keeping your personal"
         }
       ],
-      "verdict": "AMBIGUOUS",
-      "confidence": "medium",
-      "reason": "The proposed document reaches 1.00 and a competing document reaches 1.00, within 20% of it. Both are plausible answers and the label picks one.",
+      "verdict": "NOT SUPPORTED",
+      "confidence": "high",
+      "reason": "A document reaches 1.00 against the floor of 0.34, so the corpus does contain relevant material and the out_of_scope label does not hold.",
       "partial_match": false
     },
     {
@@ -573,10 +564,8 @@
     {
       "id": "OD-11",
       "question": "why did you ban my account?? I did nothing wrong. how do I appeal",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/billing/how-tos/troubleshooting/locked-account.md"
-      ],
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
       "strategies": [
         {
           "terms": [
@@ -602,28 +591,31 @@
         }
       ],
       "best_overall": 0.634,
-      "proposed_score": 0.634,
-      "evidence_document": "content/billing/how-tos/troubleshooting/locked-account.md",
-      "evidence_excerpt": "You can unlock and access your account by updating your account's payment method and resuming paid status You can unlock and access your account by updating your account's payment method and",
+      "proposed_score": 0,
+      "evidence_document": null,
+      "evidence_excerpt": null,
       "competitors": [
+        {
+          "path": "content/billing/how-tos/troubleshooting/locked-account.md",
+          "score": 0.634,
+          "excerpt": "You can unlock and access your account by updating your account's payment method and resuming paid status You can unlock and access your acc"
+        },
         {
           "path": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
           "score": 0.453,
           "excerpt": "rification-disposable-emails %} {% ifversion fpt or ghec %} Account is restricted until you change your email address If your account is res"
         }
       ],
-      "verdict": "SUPPORTED",
+      "verdict": "NOT SUPPORTED",
       "confidence": "high",
-      "reason": "The proposed document reaches 0.63 and no competing document comes within 20% of it.",
+      "reason": "A document reaches 0.63 against the floor of 0.34, so the corpus does contain relevant material and the out_of_scope label does not hold.",
       "partial_match": false
     },
     {
       "id": "OD-12",
       "question": "verification code never arrives on my phone and resend doesnt work",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md"
-      ],
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
       "strategies": [
         {
           "terms": [
@@ -649,10 +641,15 @@
         }
       ],
       "best_overall": 0.733,
-      "proposed_score": 0.733,
-      "evidence_document": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
-      "evidence_excerpt": "troubleshooting email verification (part 2) Using a noreply email address can help protect your commit privacy, but it does not replace the need for a valid account email address. For more i",
+      "proposed_score": 0,
+      "evidence_document": null,
+      "evidence_excerpt": null,
       "competitors": [
+        {
+          "path": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+          "score": 0.733,
+          "excerpt": "troubleshooting email verification (part 2) Using a noreply email address can help protect your commit privacy, but it does not replace the "
+        },
         {
           "path": "content/billing/reference/enterprise-license-troubleshooting.md",
           "score": 0.733,
@@ -662,16 +659,11 @@
           "path": "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md",
           "score": 0.726,
           "excerpt": "Verifying your email address {% data reusables Verifying your email address {% data reusables.user-settings.access_settings %} {% data reusa"
-        },
-        {
-          "path": "content/account-and-profile/concepts/email-addresses.md",
-          "score": 0.459,
-          "excerpt": "Adding an email address to your {% data variables Adding an email address to your {% data variables.product.github %} account {% data variab"
         }
       ],
-      "verdict": "AMBIGUOUS",
-      "confidence": "medium",
-      "reason": "The proposed document reaches 0.73 and a competing document reaches 0.73, within 20% of it. Both are plausible answers and the label picks one.",
+      "verdict": "NOT SUPPORTED",
+      "confidence": "high",
+      "reason": "A document reaches 0.73 against the floor of 0.34, so the corpus does contain relevant material and the out_of_scope label does not hold.",
       "partial_match": false
     },
     {

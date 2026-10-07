@@ -5,12 +5,12 @@
   "owner_wording_note": "The OD- rows are owner-directed drafts: topics chosen by the owner, wording drafted by Claude. They are NOT real customer questions and must never be described as such.",
   "counts": {
     "total": 15,
-    "answerable": 10,
-    "out_of_scope": 5,
+    "answerable": 4,
+    "out_of_scope": 11,
     "calibration": 12,
     "held_out": 3,
-    "agent_agreed": 13,
-    "agent_single": 2
+    "agent_agreed": 1,
+    "agent_single": 0
   },
   "questions": [
     {
@@ -20,13 +20,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
-      "label": "answerable",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label": "out_of_scope",
       "confidence": "high",
-      "acceptable_documents": [
-        "content/billing/how-tos/troubleshooting/locked-account.md"
-      ],
-      "reasoning": "A locked account is the corpus's term for what the writer calls blacklisted. The document covers unlocking by resuming paid status.",
+      "acceptable_documents": [],
+      "reasoning": "T04 contains no ban material: zero documents for banned, appeal, reinstate or blacklist, and the 16 documents matching `ban` are substrings (banner, bandwidth, bank, banks). locked-account.md covers a BILLING lock, not a policy ban, so it does not answer why the account was actioned.",
       "split": "held-out"
     },
     {
@@ -36,14 +35,15 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
       "label": "answerable",
       "confidence": "high",
       "acceptable_documents": [
         "content/account-and-profile/how-tos/account-management/changing-your-username.md",
         "content/account-and-profile/concepts/username-changes.md"
       ],
-      "reasoning": "The how-to covers the change; the concept page covers why a name is refused (unavailable, reserved, recently changed). The question asks why it will not let them.",
+      "reasoning": "The how-to covers the change; the concept page covers why a name is refused. Confirmed in the human-review packet.",
       "split": "calibration"
     },
     {
@@ -53,14 +53,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
-      "label": "answerable",
-      "confidence": "medium",
-      "acceptable_documents": [
-        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
-        "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md"
-      ],
-      "reasoning": "The writer says OTP, which suggests SMS, but the corpus only covers email verification. The document covers a verification message that never arrives. Medium, not high, because the channel may differ.",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label": "out_of_scope",
+      "confidence": "high",
+      "acceptable_documents": [],
+      "reasoning": "The phone-versus-email mismatch is total. T04 has zero documents containing sms, text message, phone number or authenticator; every verification procedure is about an emailed link.",
       "split": "calibration"
     },
     {
@@ -70,13 +68,14 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
       "label": "answerable",
       "confidence": "high",
       "acceptable_documents": [
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
-      "reasoning": "Adding and replacing a payment method is exactly this document.",
+      "reasoning": "The payment-information and payment-troubleshooting sections directly cover adding and replacing a card. The competing upgrade-plan.md is about changing a plan, not a card.",
       "split": "calibration"
     },
     {
@@ -86,13 +85,14 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
       "label": "answerable",
       "confidence": "high",
       "acceptable_documents": [
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
-      "reasoning": "Removing a card is the same document as adding one.",
+      "reasoning": "Managing and removing a payment method is this document. Confirmed in the human-review packet.",
       "split": "calibration"
     },
     {
@@ -102,11 +102,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
       "label": "out_of_scope",
       "confidence": "high",
       "acceptable_documents": [],
-      "reasoning": "No T04 document covers marketing or SMS opt-out. A targeted search for marketing, unsubscribe and notification settings returns only the cookie-preferences page, which is unrelated. REFUSAL CASE.",
+      "reasoning": "No marketing or SMS opt-out document exists. The nearest match, manage-cookie-preferences.md, is about cookies.",
       "split": "calibration"
     },
     {
@@ -116,13 +117,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-single",
-      "label": "answerable",
-      "confidence": "medium",
-      "acceptable_documents": [
-        "content/billing/how-tos/set-up-payment/manage-enterprise-invoice.md"
-      ],
-      "reasoning": "The invoice document covers retrieving and downloading invoices. It does not state a language option, so the second half of the question is likely unanswerable while the first is covered. Medium for that reason.",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label": "out_of_scope",
+      "confidence": "high",
+      "acceptable_documents": [],
+      "reasoning": "Half the question is supported and half is not: PDF is explicit ('click View invoice to open a PDF of your latest invoice') but another language is absent — translation, localis, localiz and currency are all zero across T04, and the `language` hits are about programming languages. The owner resolved the split by ruling the row out of scope.",
       "split": "calibration"
     },
     {
@@ -132,11 +132,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
       "label": "out_of_scope",
       "confidence": "high",
       "acceptable_documents": [],
-      "reasoning": "No document covers partial payment or instalments. REFUSAL CASE.",
+      "reasoning": "No partial-payment or instalment document exists. The nearest match, india-one-time-payments.md, is about a one-time payment, which is a different thing.",
       "split": "calibration"
     },
     {
@@ -146,13 +147,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-single",
-      "label": "answerable",
-      "confidence": "medium",
-      "acceptable_documents": [
-        "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md"
-      ],
-      "reasoning": "Deleting is the closest documented action to the writer's reset, but it is not the same request — the writer may want to clear data and keep the account. Medium, and a spot-check should confirm whether the owner accepts it.",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label": "out_of_scope",
+      "confidence": "high",
+      "acceptable_documents": [],
+      "reasoning": "The corpus documents irreversible account deletion, not a reset. Deletion is a strictly larger act than the request, and there is no clear-my-data-and-keep-the-account procedure.",
       "split": "calibration"
     },
     {
@@ -162,11 +162,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
       "label": "out_of_scope",
       "confidence": "high",
       "acceptable_documents": [],
-      "reasoning": "No document covers suspending or freezing an account without deleting it. REFUSAL CASE.",
+      "reasoning": "No freeze or suspend document exists. The nearest match, downgrade-plan.md, is about plan changes.",
       "split": "calibration"
     },
     {
@@ -176,13 +177,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
-      "label": "answerable",
-      "confidence": "medium",
-      "acceptable_documents": [
-        "content/billing/how-tos/troubleshooting/locked-account.md"
-      ],
-      "reasoning": "Locked is the documented state. The document does not describe an appeal process, so the second half of the question is only partly covered. Medium.",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label": "out_of_scope",
+      "confidence": "high",
+      "acceptable_documents": [],
+      "reasoning": "Same defect as OD-01. The question asks why and how to appeal; T04 has no appeal material (appeal 0, reinstate 0, banned 0) and locked-account.md covers a billing lock. The agent excluded this row from CLEAR_ROWS and the owner ruled it out of scope.",
       "split": "held-out"
     },
     {
@@ -192,13 +192,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
-      "label": "answerable",
-      "confidence": "medium",
-      "acceptable_documents": [
-        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md"
-      ],
-      "reasoning": "Same reasoning as OD-03: the corpus covers email verification, the writer describes a phone code. Medium.",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label": "out_of_scope",
+      "confidence": "high",
+      "acceptable_documents": [],
+      "reasoning": "The corpus's resend mechanism is for emailed links and the question describes a phone code that never arrives. Zero SMS or phone-code material exists.",
       "split": "calibration"
     },
     {
@@ -209,12 +208,15 @@
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
       "label_source": "agent-agreed",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
       "label": "answerable",
-      "confidence": "high",
+      "confidence": "medium",
       "acceptable_documents": [
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
-      "reasoning": "Setting the method that is actually charged is this document.",
+      "reasoning": "UNCHANGED FROM THE ORIGINAL PROPOSAL. The document explains how to add or update a card but never states which card is charged when several exist, which is the question being asked. The owner's instruction listed 14 rows and this was not among them.",
+      "status": "PENDING OWNER DECISION — omitted from the owner's final label list. Left at its original label rather than guessed.",
+      "decided": false,
       "split": "held-out"
     },
     {
@@ -224,11 +226,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
       "label": "out_of_scope",
       "confidence": "high",
       "acceptable_documents": [],
-      "reasoning": "As OD-06. REFUSAL CASE.",
+      "reasoning": "No unsubscribe document exists. The nearest match, email-addresses.md, is about blocking commits that expose your email.",
       "split": "calibration"
     },
     {
@@ -238,11 +241,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
+      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
       "label": "out_of_scope",
       "confidence": "high",
       "acceptable_documents": [],
-      "reasoning": "A live-stream gift double-charge is the simulated WaveCast tenant's subject matter, not T04's. The owner supplied this deliberately as a near-domain refusal test. REFUSAL CASE.",
+      "reasoning": "A live-stream gift double-charge is the simulated WaveCast tenant's subject matter. The nearest match, cancel-sponsorship.md, is about sponsorships.",
       "split": "calibration"
     }
   ]

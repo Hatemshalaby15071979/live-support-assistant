@@ -12,6 +12,7 @@ Each entry carries the default that is **in effect right now**, so the program n
 | OQ-005 | ~~Accepting the node-forge advisory past its 2026-10-30 review date~~ **MOOT — closed 2026-10-07** | The advisory left with `@sop/mobile`; the accepted-advisory set is now empty and the gate is strict | Nothing to accept | — | 0 |
 | OQ-006 | Whether organisational role addresses (`copyright@`, `privacy@`, `dpo@`, `legal-support@`, `events@`, `secret-scanning@`) count as personal data | All 12 findings that drop GitHub's 72-document site-policy tree are role addresses published so anyone can contact the organisation. GDPR argues a role mailbox does not identify a natural person; the counter is that it can still reach one. **My recommendation: exclude a defined role set — it would recover the whole policy tree and make T05-policy-style a real tenant.** It is a threshold change and needs a prereg. | Site-policy stays dropped; T05-policy-style stays empty | `docs/CORPUS_PROVENANCE.md` §5 | 3 |
 | OQ-007 | The vendor delete-guard defect, for reporting upstream | Two independent failures on this host: the lock's `STALE_LOCK_MS` (5 min) is three orders of magnitude larger than `LOCK_TIMEOUT_MS` (2 s), so a process killed while holding it poisons bulk deletes for five minutes; and the `genie-trash` helper times out under `spawnSync`. Both are in `WorkBuddyAI/resources/…/shim/`, outside this repository. **Needed from you: accept the documented workaround, or report it.** | Workaround documented in `DECISIONS.md`: run long commands backgrounded; use `CODEBUDDY_SAFE_DELETE_ENABLED=0` rather than clearing `NODE_OPTIONS` | `docs/program/DECISIONS.md` | 2 |
+| OQ-008 | **OD-13 has no label decision — it was omitted from the final list** | The owner's final instruction covered **14 of the 15 rows**. OD-13 was one of the seven in the human-review packet, where the agent returned NEEDS HUMAN DECISION: the document explains how to add or update a card but never states which card is charged when several exist, which is the question being asked. | **Left at its original `answerable` label, marked `decided: false` in `questions.json`, and sorted first in the spot-check batch.** Not guessed. | `tooling/corpus/questions.json` row OD-13 | 3 |
 
 ## Closed
 
@@ -55,32 +56,29 @@ their agreement measures whether two *methods* agree, not whether the labels are
 
 **Acceptance: 85% AGREE.** Below that the labelling protocol is re-run.
 
-**The 15 labels, with document and confidence, in batch order:**
+**The 15 labels as they now stand, in batch order.** `label_source: owner` means the owner decided the
+label on the agent's evidence packet; it does **not** mean the owner inspected the documents.
 
-| # | ID | Label | Document | Conf | Pass |
+| # | ID | Label | Document | Conf | Split |
 | --- | --- | --- | --- | --- | --- |
-| 1 | OD-07 | answerable | `billing/…/manage-enterprise-invoice.md` | medium | single |
-| 2 | OD-09 | answerable | `…/deleting-your-personal-account.md` | medium | single |
-| 3 | OD-03 | answerable | `…/troubleshooting-email-verification.md` + `verifying-your-email-address.md` | medium | agreed |
-| 4 | OD-11 | answerable | `billing/…/troubleshooting/locked-account.md` | medium | agreed |
-| 5 | OD-12 | answerable | `…/troubleshooting-email-verification.md` | medium | agreed |
-| 6 | OD-01 | answerable | `billing/…/troubleshooting/locked-account.md` | high | agreed |
-| 7 | OD-02 | answerable | `…/changing-your-username.md` + `concepts/username-changes.md` | high | agreed |
-| 8 | OD-04 | answerable | `billing/…/manage-payment-info.md` | high | agreed |
-| 9 | OD-05 | answerable | `billing/…/manage-payment-info.md` | high | agreed |
-| 10 | OD-13 | answerable | `billing/…/manage-payment-info.md` | high | agreed |
-| 11 | OD-06 | **out_of_scope** | — | high | agreed |
-| 12 | OD-08 | **out_of_scope** | — | high | agreed |
-| 13 | OD-10 | **out_of_scope** | — | high | agreed |
-| 14 | OD-14 | **out_of_scope** | — | high | agreed |
-| 15 | OD-15 | **out_of_scope** | — | high | agreed |
+| 1 | **OD-13** | **answerable — NOT DECIDED** | `billing/…/manage-payment-info.md` | medium | held-out |
+| 2 | OD-01 | out_of_scope | — | high | held-out |
+| 3 | OD-02 | answerable | `…/changing-your-username.md` + `concepts/username-changes.md` | high | calibration |
+| 4 | OD-03 | out_of_scope | — | high | calibration |
+| 5 | OD-04 | answerable | `billing/…/manage-payment-info.md` | high | calibration |
+| 6 | OD-05 | answerable | `billing/…/manage-payment-info.md` | high | calibration |
+| 7 | OD-06 | out_of_scope | — | high | calibration |
+| 8 | OD-07 | out_of_scope | — | high | calibration |
+| 9 | OD-08 | out_of_scope | — | high | calibration |
+| 10 | OD-09 | out_of_scope | — | high | calibration |
+| 11 | OD-10 | out_of_scope | — | high | calibration |
+| 12 | OD-11 | out_of_scope | — | high | held-out |
+| 13 | OD-12 | out_of_scope | — | high | calibration |
+| 14 | OD-14 | out_of_scope | — | high | calibration |
+| 15 | OD-15 | out_of_scope | — | high | calibration |
 
-**Five refusal cases.** OD-06/14 (marketing opt-out), OD-08 (partial payment) and OD-10 (freeze an
-account) have no matching document anywhere in T04. **OD-15 is the near-domain test supplied
-deliberately** — a live-stream gift double-charge is the simulated WaveCast tenant's subject matter,
-and refusing it is correct behaviour, not a miss.
+**Totals: 3 answerable (OD-02, OD-04, OD-05) · 11 out_of_scope · 1 undecided (OD-13).** 3 + 11 + 1 = 15.
 
-**The four medium-confidence labels are the ones to look at hardest.** OD-03 and OD-12 describe a
-code sent to a *phone*; T04 documents *email* verification, so the channel may not match. OD-07 asks
-for a language option the invoice document does not mention. OD-09 asks to "reset" where the corpus
-documents *deleting*.
+**Eleven of fifteen resolve to `out_of_scope`, and that is the corpus-fit limit, not a labelling
+failure.** T04 is GitHub's own account and billing documentation; the questions describe a consumer
+service with phone verification and policy bans. See `docs/KNOWN_ISSUES.md` §10.

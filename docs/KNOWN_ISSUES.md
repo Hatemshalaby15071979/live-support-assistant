@@ -112,3 +112,37 @@ desktop shell, and every `apps/*/src` / `packages/*/src` import, so it is off th
 ticket-processing and credential path. Review by 2026-10-30; re-check with
 `pnpm why node-forge` and `pnpm audit --prod`, and the accepted id stays in
 `tooling/audit-baseline.json` so the gate stays green without hiding new advisories.
+
+## 10. T04 cannot answer generic consumer scenarios — corpus-fit limit
+
+**T04 is strictly GitHub technical/billing documentation. It lacks material for generic consumer
+scenarios (bans, phone OTPs, live streams). User-voiced queries for these topics must correctly
+resolve to `out_of_scope`.**
+
+This is a limit of the **corpus**, not of the retriever or the gate, and it is a property of the
+source rather than a defect to be fixed by tuning. GitHub Docs documents GitHub's own account and
+billing surface; a customer asking about a phone verification code or a policy ban is describing a
+consumer service that this corpus is not about.
+
+**Established by measurement, not by impression.** Commands and N at commit `bab7bf4`,
+`data_mode: web-sourced`, tenant T04, 136 documents:
+
+| Vocabulary | Command | Documents found |
+| --- | --- | --- |
+| `banned`, `appeal`, `reinstate`, `blacklist`, `abuse` | `node -e "…includes(w)…"` over T04 | **0** each |
+| `ban` (raw substring) | same | 16 — all **banner, bandwidth, bank, banks** |
+| `sms`, `text message`, `phone number`, `authenticator` | same | **0** each |
+| `translation`, `localis`, `localiz`, `currency` | same | **0** each |
+
+**What it cost, concretely.** Of 15 owner-supplied user-voiced questions, **11 resolved to
+`out_of_scope`** and only 3 to an answering document. Every one of the eleven failed for the same
+reason: the topic is a generic consumer scenario with no counterpart in GitHub's own documentation.
+
+**Why it matters beyond bookkeeping.** A retriever that answers these questions anyway is not being
+helpful, it is guessing — and a *phone OTP* question answered with an *email verification* document
+is the failure mode this limit predicts. The correct behaviour is a refusal, and the gold set
+records those refusals as first-class rows so that refusing is measured rather than assumed.
+
+**Not a claim that the fleet is unusable.** T01 (platform-operations) and T05 (policy) have their own
+coverage; this limit is stated for T04 and applies to the question classes named above. Any headline
+drawn from T04 must say which classes it covers.

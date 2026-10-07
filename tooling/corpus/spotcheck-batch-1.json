@@ -8,59 +8,13 @@
   "accept_threshold": 0.85,
   "rows": [
     {
-      "id": "OD-07",
-      "question": "can i get my invoice in another language or as a pdf",
+      "id": "OD-13",
+      "question": "added a new card but it still charges the old one",
       "tenant": "T04-customer-support-style",
       "slice": "B",
       "proposed_label": "answerable",
       "proposed_documents": [
-        "content/billing/how-tos/set-up-payment/manage-enterprise-invoice.md"
-      ],
-      "confidence": "medium",
-      "label_source": "agent-single",
-      "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
-    },
-    {
-      "id": "OD-09",
-      "question": "how do i reset everything on my account and start from zero",
-      "tenant": "T04-customer-support-style",
-      "slice": "B",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md"
-      ],
-      "confidence": "medium",
-      "label_source": "agent-single",
-      "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
-    },
-    {
-      "id": "OD-03",
-      "question": "i never got the OTP code to verify my account. tried 3 times",
-      "tenant": "T04-customer-support-style",
-      "slice": "B",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
-        "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md"
-      ],
-      "confidence": "medium",
-      "label_source": "agent-agreed",
-      "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
-    },
-    {
-      "id": "OD-11",
-      "question": "why did you ban my account?? I did nothing wrong. how do I appeal",
-      "tenant": "T04-customer-support-style",
-      "slice": "B",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/billing/how-tos/troubleshooting/locked-account.md"
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
       "confidence": "medium",
       "label_source": "agent-agreed",
@@ -69,31 +23,14 @@
       "your_note": ""
     },
     {
-      "id": "OD-12",
-      "question": "verification code never arrives on my phone and resend doesnt work",
-      "tenant": "T04-customer-support-style",
-      "slice": "B",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md"
-      ],
-      "confidence": "medium",
-      "label_source": "agent-agreed",
-      "split": "calibration",
-      "your_verdict": "",
-      "your_note": ""
-    },
-    {
       "id": "OD-01",
       "question": "why is my account blacklisted?? i cant log in and nobody told me anything",
       "tenant": "T04-customer-support-style",
       "slice": "B",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/billing/how-tos/troubleshooting/locked-account.md"
-      ],
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
       "confidence": "high",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
       "split": "held-out",
       "your_verdict": "",
       "your_note": ""
@@ -109,7 +46,20 @@
         "content/account-and-profile/concepts/username-changes.md"
       ],
       "confidence": "high",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-03",
+      "question": "i never got the OTP code to verify my account. tried 3 times",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "confidence": "high",
+      "label_source": "owner",
       "split": "calibration",
       "your_verdict": "",
       "your_note": ""
@@ -124,7 +74,7 @@
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
       "confidence": "high",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
       "split": "calibration",
       "your_verdict": "",
       "your_note": ""
@@ -139,7 +89,7 @@
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
       "confidence": "high",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
       "split": "calibration",
       "your_verdict": "",
       "your_note": ""
@@ -152,7 +102,20 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-07",
+      "question": "can i get my invoice in another language or as a pdf",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "confidence": "high",
+      "label_source": "owner",
       "split": "calibration",
       "your_verdict": "",
       "your_note": ""
@@ -165,7 +128,20 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
+      "split": "calibration",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-09",
+      "question": "how do i reset everything on my account and start from zero",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "confidence": "high",
+      "label_source": "owner",
       "split": "calibration",
       "your_verdict": "",
       "your_note": ""
@@ -178,23 +154,34 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
       "split": "calibration",
       "your_verdict": "",
       "your_note": ""
     },
     {
-      "id": "OD-13",
-      "question": "added a new card but it still charges the old one",
+      "id": "OD-11",
+      "question": "why did you ban my account?? I did nothing wrong. how do I appeal",
       "tenant": "T04-customer-support-style",
       "slice": "B",
-      "proposed_label": "answerable",
-      "proposed_documents": [
-        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
-      ],
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
       "confidence": "high",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
       "split": "held-out",
+      "your_verdict": "",
+      "your_note": ""
+    },
+    {
+      "id": "OD-12",
+      "question": "verification code never arrives on my phone and resend doesnt work",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "confidence": "high",
+      "label_source": "owner",
+      "split": "calibration",
       "your_verdict": "",
       "your_note": ""
     },
@@ -206,7 +193,7 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
       "split": "calibration",
       "your_verdict": "",
       "your_note": ""
@@ -219,7 +206,7 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
       "split": "calibration",
       "your_verdict": "",
       "your_note": ""

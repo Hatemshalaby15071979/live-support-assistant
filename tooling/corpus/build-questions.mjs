@@ -65,10 +65,18 @@ for (const row of ownerRows.rows) {
     origin: 'owner-directed-draft',
     data_mode: 'simulated',
     label_source: label.label_source,
+    // How the label was arrived at, which is not the same as who signed it off.
+    // The owner decided these labels on the agent's evidence packet; the owner
+    // did not inspect the documents directly. Both facts travel with the row so
+    // neither can be assumed from the other.
+    label_basis: labels.label_basis,
     label: label.label,
     confidence: label.confidence,
     acceptable_documents: label.documents,
     reasoning: label.reasoning,
+    // Present only on a row the owner has not decided. A row without a decision
+    // must not be silently counted as decided.
+    ...(label.status === undefined ? {} : { status: label.status, decided: false }),
     split: unitHash(`${SEED}:${row.id}`) < SPLIT_CALIBRATION ? 'calibration' : 'held-out',
   });
 }
