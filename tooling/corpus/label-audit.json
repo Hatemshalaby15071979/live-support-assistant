@@ -1,0 +1,847 @@
+{
+  "note": "AUTOMATED evidence audit. This is NOT an owner spot-check and does not validate a label. It confirms that a document contains the answer, not that a human would agree it is the right document. Labels are unchanged and no row is excluded.",
+  "generated_at": "2026-10-07T07:45:02.489Z",
+  "tenant": "T04-customer-support-style",
+  "data_mode": "simulated",
+  "match_floor": 0.34,
+  "competitor_ratio": 0.8,
+  "counts": {
+    "supported": 2,
+    "not_supported": 9,
+    "ambiguous": 4
+  },
+  "rows": [
+    {
+      "id": "OD-01",
+      "question": "why is my account blacklisted?? i cant log in and nobody told me anything",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/troubleshooting/locked-account.md"
+      ],
+      "strategies": [
+        {
+          "terms": [
+            "blacklist",
+            "blacklisted",
+            "banned",
+            "suspended",
+            "locked",
+            "disabled",
+            "restricted"
+          ],
+          "best_score": 0.202,
+          "best_document": "content/billing/how-tos/set-up-budgets.md"
+        },
+        {
+          "terms": [
+            "log",
+            "login",
+            "sign",
+            "access",
+            "account",
+            "unlock"
+          ],
+          "best_score": 0.646,
+          "best_document": "content/account-and-profile/how-tos/account-management/creating-an-account-on-github.md"
+        }
+      ],
+      "best_overall": 0.646,
+      "proposed_score": 0.429,
+      "evidence_document": "content/billing/how-tos/troubleshooting/locked-account.md",
+      "evidence_excerpt": "You can unlock and access your account by updating your account's payment method and resuming paid status You can unlock and access your account by updating your account's payment method and",
+      "competitors": [
+        {
+          "path": "content/account-and-profile/how-tos/account-management/creating-an-account-on-github.md",
+          "score": 0.646,
+          "excerpt": "Later, you can explore the different types of accounts that {% data variables Later, you can explore the different types of accounts that {%"
+        },
+        {
+          "path": "content/billing/how-tos/set-up-payment/set-up-vs-subscription.md",
+          "score": 0.522,
+          "excerpt": "ch a user to their {% data variables.product.prodname_vs %} account, click {% octicon \"kebab-horizontal\" aria-label=\"More options\" %}, then "
+        },
+        {
+          "path": "content/billing/reference/license-reports.md",
+          "score": 0.522,
+          "excerpt": "(part 4) Field Description ------- ------------- GitHub com login The username for the user's GHEC account GitHub com name The display name "
+        }
+      ],
+      "verdict": "NOT SUPPORTED",
+      "confidence": "high",
+      "reason": "A competing document scores 0.65 against the proposed document's 0.43, so the labelled document is not the best match in the corpus.",
+      "partial_match": true
+    },
+    {
+      "id": "OD-02",
+      "question": "I want to change my username but it won't let me. why?",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/account-and-profile/how-tos/account-management/changing-your-username.md",
+        "content/account-and-profile/concepts/username-changes.md"
+      ],
+      "strategies": [
+        {
+          "terms": [
+            "username",
+            "change",
+            "rename",
+            "available"
+          ],
+          "best_score": 0.808,
+          "best_document": "content/account-and-profile/how-tos/account-management/moving-your-work-to-an-organization.md"
+        },
+        {
+          "terms": [
+            "username",
+            "reference",
+            "profile"
+          ],
+          "best_score": 1,
+          "best_document": "content/account-and-profile/concepts/username-changes.md"
+        }
+      ],
+      "best_overall": 1,
+      "proposed_score": 0.681,
+      "evidence_document": "content/account-and-profile/how-tos/account-management/changing-your-username.md",
+      "evidence_excerpt": "changing your username (part 1) Prerequisites Before changing your username, you should be aware of potential impacts on your account and activity. For more information, see AUTOTITLE. Chang",
+      "competitors": [
+        {
+          "path": "content/account-and-profile/how-tos/account-management/moving-your-work-to-an-organization.md",
+          "score": 0.808,
+          "excerpt": "moving your work to an organization (part 1) Keeping your username for the organization If you want your new organization to use your curren"
+        },
+        {
+          "path": "content/account-and-profile/reference/username-reference.md",
+          "score": 0.808,
+          "excerpt": "f %} {% ifversion fpt or ghec %} {% data reusables.accounts.rename-account-repo-namespace-retirement %} If you try to create a repository us"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/organization-membership/publicizing-or-hiding-organization-membership.md",
+          "score": 0.688,
+          "excerpt": "{% data reusables {% data reusables.profile.access_org %} {% data reusables.user-settings.access_org %} {% data reusables.organizations.peop"
+        }
+      ],
+      "verdict": "NOT SUPPORTED",
+      "confidence": "medium",
+      "reason": "A competing document scores 0.81 against the proposed document's 0.68, so the labelled document is not the best match in the corpus.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-03",
+      "question": "i never got the OTP code to verify my account. tried 3 times",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+        "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md"
+      ],
+      "strategies": [
+        {
+          "terms": [
+            "verification",
+            "verify",
+            "code",
+            "otp",
+            "one",
+            "time",
+            "password"
+          ],
+          "best_score": 0.405,
+          "best_document": "content/account-and-profile/how-tos/account-settings/prepare-for-job-change.md"
+        },
+        {
+          "terms": [
+            "email",
+            "address",
+            "verify",
+            "verification",
+            "send"
+          ],
+          "best_score": 1,
+          "best_document": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md"
+        }
+      ],
+      "best_overall": 1,
+      "proposed_score": 1,
+      "evidence_document": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+      "evidence_excerpt": "Unable to send verification email {% data reusables Unable to send verification email {% data reusables.user-settings.no-verification-disposable-emails %} {% ifversion fpt or ghec %} Account",
+      "competitors": [
+        {
+          "path": "content/account-and-profile/concepts/email-addresses.md",
+          "score": 0.762,
+          "excerpt": "You can verify your email address after signing up for a new account, or when you add a new email address You can verify your email address "
+        },
+        {
+          "path": "content/account-and-profile/reference/email-addresses-reference.md",
+          "score": 0.762,
+          "excerpt": "Email verification restrictions {% data reusables Email verification restrictions {% data reusables.user-settings.no-verification-disposable"
+        },
+        {
+          "path": "content/billing/how-tos/troubleshooting/declined-card.md",
+          "score": 0.572,
+          "excerpt": "**If your card is declined, we'll send you an email about why the payment was declined **If your card is declined, we'll send you an email a"
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "confidence": "high",
+      "reason": "The proposed document reaches 1.00 and no competing document comes within 20% of it.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-04",
+      "question": "how do i change my payment method? my old card was replaced",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "strategies": [
+        {
+          "terms": [
+            "payment",
+            "method",
+            "card",
+            "update",
+            "change",
+            "replace"
+          ],
+          "best_score": 0.743,
+          "best_document": "content/billing/how-tos/troubleshooting/declined-card.md"
+        },
+        {
+          "terms": [
+            "billing",
+            "payment",
+            "info",
+            "credit",
+            "card"
+          ],
+          "best_score": 1,
+          "best_document": "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md"
+        }
+      ],
+      "best_overall": 1,
+      "proposed_score": 1,
+      "evidence_document": "content/billing/how-tos/set-up-payment/manage-payment-info.md",
+      "evidence_excerpt": "manage payment info (part 2) 1. Display the **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing & Licensing** pages. 1. Click **Payment history** to show detail",
+      "competitors": [
+        {
+          "path": "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md",
+          "score": 1,
+          "excerpt": "ess_settings %} 1. In the left sidebar, click **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing & Licensing*"
+        },
+        {
+          "path": "content/billing/how-tos/set-up-payment/manage-enterprise-invoice.md",
+          "score": 1,
+          "excerpt": "est invoice\" section, click **Pay now** to display a secure payment dialog. 1. Type your credit card information in the secure form, then cl"
+        },
+        {
+          "path": "content/billing/how-tos/products/estimate-spending.md",
+          "score": 0.785,
+          "excerpt": "The new billing platform provides a high-level view of your spending trends based on the usage across products The new billing platform prov"
+        }
+      ],
+      "verdict": "AMBIGUOUS",
+      "confidence": "medium",
+      "reason": "The proposed document reaches 1.00 and a competing document reaches 1.00, within 20% of it. Both are plausible answers and the label picks one.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-05",
+      "question": "How can I delete an expired card from my account?",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "strategies": [
+        {
+          "terms": [
+            "card",
+            "delete",
+            "remove",
+            "expired",
+            "expire"
+          ],
+          "best_score": 0.688,
+          "best_document": "content/billing/how-tos/troubleshooting/declined-card.md"
+        },
+        {
+          "terms": [
+            "payment",
+            "method",
+            "card",
+            "remove"
+          ],
+          "best_score": 1,
+          "best_document": "content/billing/how-tos/manage-for-client/create-client-enterprise.md"
+        }
+      ],
+      "best_overall": 1,
+      "proposed_score": 0.765,
+      "evidence_document": "content/billing/how-tos/set-up-payment/manage-payment-info.md",
+      "evidence_excerpt": "manage payment info (part 3) 1. Display the **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing & Licensing** page for the organization. 1. Click **Additional b",
+      "competitors": [
+        {
+          "path": "content/billing/how-tos/manage-for-client/create-client-enterprise.md",
+          "score": 1,
+          "excerpt": "ent's paid subscription will automatically renew unless you remove your company's payment method from the enterprise, see AUTOTITLE. 1. If y"
+        },
+        {
+          "path": "content/billing/how-tos/manage-for-client/create-client-org.md",
+          "score": 1,
+          "excerpt": "ent's paid subscription will automatically renew unless you remove your company's payment method from the organization. See AUTOTITLE. 1. If"
+        },
+        {
+          "path": "content/billing/concepts/enterprise-billing/usage-based-licenses.md",
+          "score": 0.768,
+          "excerpt": "o view your license usage and history, see AUTOTITLE. Which payment methods can I use? You can use the following payment methods for usage-b"
+        }
+      ],
+      "verdict": "NOT SUPPORTED",
+      "confidence": "high",
+      "reason": "A competing document scores 1.00 against the proposed document's 0.77, so the labelled document is not the best match in the corpus.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-06",
+      "question": "stop sending me marketing sms and emails. how do i turn them off",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "strategies": [
+        {
+          "terms": [
+            "marketing",
+            "unsubscribe",
+            "opt",
+            "out",
+            "notification",
+            "preferences"
+          ],
+          "best_score": 0.483,
+          "best_document": "content/account-and-profile/how-tos/account-settings/manage-cookie-preferences.md"
+        },
+        {
+          "terms": [
+            "sms",
+            "text",
+            "message",
+            "email",
+            "marketing"
+          ],
+          "best_score": 0.272,
+          "best_document": "content/account-and-profile/how-tos/email-preferences/troubleshooting-adding-an-email.md"
+        }
+      ],
+      "best_overall": 0.483,
+      "proposed_score": 0,
+      "evidence_document": null,
+      "evidence_excerpt": null,
+      "competitors": [
+        {
+          "path": "content/account-and-profile/how-tos/account-settings/manage-cookie-preferences.md",
+          "score": 0.483,
+          "excerpt": "Changing your cookie preferences You can customize how non-essential cookies behave on any {% data variables Changing your cookie preference"
+        }
+      ],
+      "verdict": "NOT SUPPORTED",
+      "confidence": "high",
+      "reason": "A document reaches 0.48 against the floor of 0.34, so the corpus does contain relevant material and the out_of_scope label does not hold.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-07",
+      "question": "can i get my invoice in another language or as a pdf",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/set-up-payment/manage-enterprise-invoice.md"
+      ],
+      "strategies": [
+        {
+          "terms": [
+            "invoice",
+            "pdf",
+            "download",
+            "language",
+            "receipt"
+          ],
+          "best_score": 0.512,
+          "best_document": "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+        },
+        {
+          "terms": [
+            "billing",
+            "invoice",
+            "report",
+            "document"
+          ],
+          "best_score": 0.736,
+          "best_document": "content/billing/tutorials/automate-usage-reporting.md"
+        }
+      ],
+      "best_overall": 0.736,
+      "proposed_score": 0.45,
+      "evidence_document": "content/billing/how-tos/set-up-payment/manage-enterprise-invoice.md",
+      "evidence_excerpt": "{% data variables {% data variables.product.github %} bills invoiced {% data variables.product.prodname_enterprise %} customers through an enterprise account on {% data variables.product.pro",
+      "competitors": [
+        {
+          "path": "content/billing/tutorials/automate-usage-reporting.md",
+          "score": 0.736,
+          "excerpt": "automate usage reporting (part 1) After you transition to metered billing, you may want to automatically track usage and costs for paid {% d"
+        },
+        {
+          "path": "content/billing/how-tos/products/download-license-use.md",
+          "score": 0.697,
+          "excerpt": "For details of the fields included in the report, see AUTOTITLE For details of the fields included in the report, see AUTOTITLE. Using the R"
+        },
+        {
+          "path": "content/billing/reference/azure-subscription.md",
+          "score": 0.566,
+          "excerpt": "ITLE in the {% data variables.product.prodname_ghe_cloud %} documentation{% endif %}. Azure invoices"
+        }
+      ],
+      "verdict": "NOT SUPPORTED",
+      "confidence": "high",
+      "reason": "A competing document scores 0.74 against the proposed document's 0.45, so the labelled document is not the best match in the corpus.",
+      "partial_match": true
+    },
+    {
+      "id": "OD-08",
+      "question": "can I pay only part of my invoice now and the rest later?",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "strategies": [
+        {
+          "terms": [
+            "partial",
+            "payment",
+            "instalment",
+            "installment",
+            "split",
+            "invoice"
+          ],
+          "best_score": 0.191,
+          "best_document": "content/billing/concepts/enterprise-billing/billing-for-enterprises.md"
+        },
+        {
+          "terms": [
+            "pay",
+            "part",
+            "later",
+            "invoice",
+            "due"
+          ],
+          "best_score": 0.695,
+          "best_document": "content/billing/how-tos/set-up-payment/india-one-time-payments.md"
+        }
+      ],
+      "best_overall": 0.695,
+      "proposed_score": 0,
+      "evidence_document": null,
+      "evidence_excerpt": null,
+      "competitors": [
+        {
+          "path": "content/billing/how-tos/set-up-payment/india-one-time-payments.md",
+          "score": 0.695,
+          "excerpt": "Making a one-time payment for a {% data variables Making a one-time payment for a {% data variables.product.github %} subscription [!NOTE] I"
+        },
+        {
+          "path": "content/billing/how-tos/set-up-payment/manage-enterprise-invoice.md",
+          "score": 0.639,
+          "excerpt": "To understand the components of your invoice, see AUTOTITLE and AUTOTITLE To understand the components of your invoice, see AUTOTITLE and AU"
+        },
+        {
+          "path": "content/billing/how-tos/products/estimate-spending.md",
+          "score": 0.514,
+          "excerpt": "estimate spending (part 3) Additionally, you can change your plan by clicking **Upgrade to Pro** or **Downgrade to Free** in the \"Current pl"
+        }
+      ],
+      "verdict": "NOT SUPPORTED",
+      "confidence": "high",
+      "reason": "A document reaches 0.70 against the floor of 0.34, so the corpus does contain relevant material and the out_of_scope label does not hold.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-09",
+      "question": "how do i reset everything on my account and start from zero",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md"
+      ],
+      "strategies": [
+        {
+          "terms": [
+            "reset",
+            "delete",
+            "close",
+            "account",
+            "over",
+            "zero"
+          ],
+          "best_score": 0.695,
+          "best_document": "content/billing/concepts/product-billing/git-lfs.md"
+        },
+        {
+          "terms": [
+            "delete",
+            "personal",
+            "account",
+            "data"
+          ],
+          "best_score": 1,
+          "best_document": "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md"
+        }
+      ],
+      "best_overall": 1,
+      "proposed_score": 1,
+      "evidence_document": "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md",
+      "evidence_excerpt": "% ifversion ghec %} [!NOTE] If your enterprise manages your account and you sign into {% data variables.product.github %} through your company's identity provider (IdP), you cannot delete yo",
+      "competitors": [
+        {
+          "path": "content/account-and-profile/reference/personal-account-reference.md",
+          "score": 1,
+          "excerpt": "personal account reference (part 1) Side effects of account deletion {% ifversion fpt or ghec %} All repositories, forks of private reposito"
+        },
+        {
+          "path": "content/billing/how-tos/set-up-budgets.md",
+          "score": 1,
+          "excerpt": "set up budgets (part 7) To edit or delete a budget, on the \"Budget and alerts\" page, click **Edit** or **Delete** next to the budget you wan"
+        },
+        {
+          "path": "content/account-and-profile/concepts/account-management.md",
+          "score": 0.858,
+          "excerpt": "account management (part 2) You can move repositories and projects from your personal account to an organization while keeping your personal"
+        }
+      ],
+      "verdict": "AMBIGUOUS",
+      "confidence": "medium",
+      "reason": "The proposed document reaches 1.00 and a competing document reaches 1.00, within 20% of it. Both are plausible answers and the label picks one.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-10",
+      "question": "I want to freeze my account for a few months, not delete it. is that possible?",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "strategies": [
+        {
+          "terms": [
+            "freeze",
+            "suspend",
+            "deactivate",
+            "pause",
+            "temporarily",
+            "account"
+          ],
+          "best_score": 0.22,
+          "best_document": "content/billing/reference/github-license-users.md"
+        },
+        {
+          "terms": [
+            "close",
+            "account",
+            "delete",
+            "downgrade"
+          ],
+          "best_score": 1,
+          "best_document": "content/billing/how-tos/manage-plan-and-licenses/downgrade-plan.md"
+        }
+      ],
+      "best_overall": 1,
+      "proposed_score": 0,
+      "evidence_document": null,
+      "evidence_excerpt": null,
+      "competitors": [
+        {
+          "path": "content/billing/how-tos/manage-plan-and-licenses/downgrade-plan.md",
+          "score": 1,
+          "excerpt": "downgrade plan (part 5) 1. Remove or delete all organizations from the enterprise. Removing an organization from an enterprise automatically"
+        },
+        {
+          "path": "content/billing/reference/billing-reports.md",
+          "score": 0.472,
+          "excerpt": "ss associated with your {% data variables.product.github %} account. You can only request one usage report per account at a time. Metered us"
+        },
+        {
+          "path": "content/billing/concepts/product-billing/github-copilot-licenses.md",
+          "score": 0.383,
+          "excerpt": "Personal accounts Upgrades take effect immediately Personal accounts Upgrades take effect immediately. You are charged the full price of the"
+        }
+      ],
+      "verdict": "NOT SUPPORTED",
+      "confidence": "high",
+      "reason": "A document reaches 1.00 against the floor of 0.34, so the corpus does contain relevant material and the out_of_scope label does not hold.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-11",
+      "question": "why did you ban my account?? I did nothing wrong. how do I appeal",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/troubleshooting/locked-account.md"
+      ],
+      "strategies": [
+        {
+          "terms": [
+            "ban",
+            "banned",
+            "appeal",
+            "reinstate",
+            "suspended",
+            "appeals"
+          ],
+          "best_score": 0.163,
+          "best_document": "content/billing/reference/github-license-users.md"
+        },
+        {
+          "terms": [
+            "locked",
+            "account",
+            "unlock",
+            "restricted"
+          ],
+          "best_score": 0.634,
+          "best_document": "content/billing/how-tos/troubleshooting/locked-account.md"
+        }
+      ],
+      "best_overall": 0.634,
+      "proposed_score": 0.634,
+      "evidence_document": "content/billing/how-tos/troubleshooting/locked-account.md",
+      "evidence_excerpt": "You can unlock and access your account by updating your account's payment method and resuming paid status You can unlock and access your account by updating your account's payment method and",
+      "competitors": [
+        {
+          "path": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+          "score": 0.453,
+          "excerpt": "rification-disposable-emails %} {% ifversion fpt or ghec %} Account is restricted until you change your email address If your account is res"
+        }
+      ],
+      "verdict": "SUPPORTED",
+      "confidence": "high",
+      "reason": "The proposed document reaches 0.63 and no competing document comes within 20% of it.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-12",
+      "question": "verification code never arrives on my phone and resend doesnt work",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md"
+      ],
+      "strategies": [
+        {
+          "terms": [
+            "verification",
+            "code",
+            "resend",
+            "sms",
+            "phone",
+            "arrives"
+          ],
+          "best_score": 0.324,
+          "best_document": "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md"
+        },
+        {
+          "terms": [
+            "email",
+            "verification",
+            "troubleshooting",
+            "send"
+          ],
+          "best_score": 0.733,
+          "best_document": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md"
+        }
+      ],
+      "best_overall": 0.733,
+      "proposed_score": 0.733,
+      "evidence_document": "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+      "evidence_excerpt": "troubleshooting email verification (part 2) Using a noreply email address can help protect your commit privacy, but it does not replace the need for a valid account email address. For more i",
+      "competitors": [
+        {
+          "path": "content/billing/reference/enterprise-license-troubleshooting.md",
+          "score": 0.733,
+          "excerpt": "enterprise license troubleshooting (part 5) If there is no match with a SAML or SCIM attribute, or if SAML authentication or SCIM provisioni"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md",
+          "score": 0.726,
+          "excerpt": "Verifying your email address {% data reusables Verifying your email address {% data reusables.user-settings.access_settings %} {% data reusa"
+        },
+        {
+          "path": "content/account-and-profile/concepts/email-addresses.md",
+          "score": 0.459,
+          "excerpt": "Adding an email address to your {% data variables Adding an email address to your {% data variables.product.github %} account {% data variab"
+        }
+      ],
+      "verdict": "AMBIGUOUS",
+      "confidence": "medium",
+      "reason": "The proposed document reaches 0.73 and a competing document reaches 0.73, within 20% of it. Both are plausible answers and the label picks one.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-13",
+      "question": "added a new card but it still charges the old one",
+      "proposed_label": "answerable",
+      "proposed_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "strategies": [
+        {
+          "terms": [
+            "card",
+            "charge",
+            "charged",
+            "payment",
+            "method",
+            "new",
+            "old"
+          ],
+          "best_score": 0.828,
+          "best_document": "content/billing/how-tos/manage-for-client/create-client-enterprise.md"
+        },
+        {
+          "terms": [
+            "billing",
+            "payment",
+            "info",
+            "card"
+          ],
+          "best_score": 1,
+          "best_document": "content/billing/get-started/how-billing-works.md"
+        }
+      ],
+      "best_overall": 1,
+      "proposed_score": 1,
+      "evidence_document": "content/billing/how-tos/set-up-payment/manage-payment-info.md",
+      "evidence_excerpt": "manage payment info (part 2) 1. Display the **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing & Licensing** pages. 1. Click **Payment history** to show detail",
+      "competitors": [
+        {
+          "path": "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md",
+          "score": 1,
+          "excerpt": "tings %} 1. In the left sidebar, click **{% octicon \"credit-card\" aria-hidden=\"true\" aria-label=\"credit-card\" %} Billing & Licensing**, then"
+        },
+        {
+          "path": "content/billing/how-tos/set-up-payment/manage-enterprise-invoice.md",
+          "score": 1,
+          "excerpt": "est invoice\" section, click **Pay now** to display a secure payment dialog. 1. Type your credit card information in the secure form, then cl"
+        },
+        {
+          "path": "content/billing/how-tos/manage-for-client/create-client-enterprise.md",
+          "score": 0.828,
+          "excerpt": "o be a billing manager for the enterprise so that you can renew or make changes to your client's subscription in the future. See AUTOTITLE. "
+        }
+      ],
+      "verdict": "AMBIGUOUS",
+      "confidence": "medium",
+      "reason": "The proposed document reaches 1.00 and a competing document reaches 1.00, within 20% of it. Both are plausible answers and the label picks one.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-14",
+      "question": "too many emails from you!! unsubscribe me from everything",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "strategies": [
+        {
+          "terms": [
+            "unsubscribe",
+            "email",
+            "notification",
+            "opt",
+            "out",
+            "marketing"
+          ],
+          "best_score": 0.445,
+          "best_document": "content/billing/concepts/budgets-and-alerts.md"
+        },
+        {
+          "terms": [
+            "email",
+            "preferences",
+            "notification"
+          ],
+          "best_score": 0.648,
+          "best_document": "content/account-and-profile/concepts/email-addresses.md"
+        }
+      ],
+      "best_overall": 0.648,
+      "proposed_score": 0,
+      "evidence_document": null,
+      "evidence_excerpt": null,
+      "competitors": [
+        {
+          "path": "content/account-and-profile/concepts/email-addresses.md",
+          "score": 0.648,
+          "excerpt": "ts you push from the command line that expose your personal email address You can also choose to block commits you push from the command lin"
+        },
+        {
+          "path": "content/account-and-profile/how-tos/email-preferences/remembering-your-github-username-or-email.md",
+          "score": 0.648,
+          "excerpt": " users {% mac %} 1. In the **GitHub Desktop** menu, click **Preferences**. 1. In the Preferences window, verify the following: To view your "
+        },
+        {
+          "path": "content/account-and-profile/reference/email-addresses-reference.md",
+          "score": 0.564,
+          "excerpt": "Email verification restrictions {% data reusables Email verification restrictions {% data reusables.user-settings.no-verification-disposable"
+        }
+      ],
+      "verdict": "NOT SUPPORTED",
+      "confidence": "high",
+      "reason": "A document reaches 0.65 against the floor of 0.34, so the corpus does contain relevant material and the out_of_scope label does not hold.",
+      "partial_match": false
+    },
+    {
+      "id": "OD-15",
+      "question": "I was charged twice for a gift during a live stream last week. can I get a refund",
+      "proposed_label": "out_of_scope",
+      "proposed_documents": [],
+      "strategies": [
+        {
+          "terms": [
+            "refund",
+            "charged",
+            "twice",
+            "double",
+            "gift",
+            "stream",
+            "live"
+          ],
+          "best_score": 0.245,
+          "best_document": "content/billing/concepts/third-party-payments/github-marketplace-apps.md"
+        },
+        {
+          "terms": [
+            "refund",
+            "payment",
+            "duplicate",
+            "charge",
+            "billing"
+          ],
+          "best_score": 0.519,
+          "best_document": "content/billing/how-tos/pay-third-parties/cancel-sponsorship.md"
+        }
+      ],
+      "best_overall": 0.519,
+      "proposed_score": 0,
+      "evidence_document": null,
+      "evidence_excerpt": null,
+      "competitors": [
+        {
+          "path": "content/billing/how-tos/pay-third-parties/cancel-sponsorship.md",
+          "score": 0.519,
+          "excerpt": " sponsorship, the change will become effective on your next billing date** **When you cancel a sponsorship, the change will become effective"
+        },
+        {
+          "path": "content/billing/concepts/enterprise-billing/combined-enterprise-use.md",
+          "score": 0.432,
+          "excerpt": "prise's consumed Cloud license count on your enterprise's **Billing & Licensing > Licensing** page. Do **not** use the \"Total consumed\" lice"
+        },
+        {
+          "path": "content/billing/concepts/third-party-payments/github-marketplace-apps.md",
+          "score": 0.391,
+          "excerpt": "github marketplace apps (part 2) **If no payment method exists when you first choose a paid plan**: You must define a payment method for the"
+        }
+      ],
+      "verdict": "NOT SUPPORTED",
+      "confidence": "high",
+      "reason": "A document reaches 0.52 against the floor of 0.34, so the corpus does contain relevant material and the out_of_scope label does not hold.",
+      "partial_match": false
+    }
+  ]
+}
