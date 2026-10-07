@@ -79,13 +79,14 @@
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
       "label_source": "owner",
-      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label_basis": "Owner's separate relabel decision on 2026-10-07: chose [A], the corpus answers via manage-payment-info.md. Evidence was a full-text keyword search over the re-fetched T04 corpus. Separate from the OQ-002 7/14 spot-check verdict; does not change that tally.",
+      "label_evidence": "full-text-keyword-search",
       "label": "answerable",
       "confidence": "high",
       "acceptable_documents": [
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
-      "reasoning": "The payment-information and payment-troubleshooting sections directly cover adding and replacing a card. The competing upgrade-plan.md is about changing a plan, not a card.",
+      "reasoning": "Owner confirmed on 2026-10-07 full-text evidence: manage-payment-info.md answers. Its core managing-payment content resolves via the reusable include {% data reusables.billing.manage-payment-info %} (the same Update payment method click-path declined-card.md spells out step by step).",
       "split": "calibration"
     },
     {
