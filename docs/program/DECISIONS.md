@@ -4,6 +4,48 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-07 — The agent skill was installed in the wrong repository first, and is now installed here
+
+**Zone.** G (owner-instructed; a cross-repository incident).
+
+**What happened.** A skill-enforcement side task — install `Hatem_specific.md` as a permanent agent
+skill, wire it into the gate, add the standing line to `AGENTS.md` — was executed against
+**`E:\Helix-Prime`** instead of this repository. The work itself was done correctly and is committed
+there on `prog/skill-install` (`42f2113`) and merged to that repository's `prog/main` (`e0b3d8a`).
+
+**Why it is an incident rather than a misfiling.** During the Helix-Prime run the named branch
+`prog/main` did not exist at the moment it was needed, and the agent substituted local `main` rather
+than creating it — putting two commits on `main` and diverging it from `origin/main` by two commits.
+No push occurred, and Helix-Prime's `main` was restored to `origin/main`. That slip is logged in
+**Helix-Prime's** `DECISIONS.md`, where it belongs, and is not restated as a live issue here.
+
+**The two repositories are independent and commits do not cross.** `2fcfdf7` and `42f2113` are
+Helix-Prime objects; `e5d992b` and `3bab890` are this repository's. A missing commit hash means the
+wrong repository was queried, not that work was lost.
+
+**What is installed here, and what is deliberately not.** Copied **files only, read-only** from
+Helix-Prime's `prog/skill-install`:
+
+| File | Status here |
+| --- | --- |
+| `Hatem_specific.md` | installed (236 lines) |
+| `tooling/verify-agent-skill.mjs` | installed (124 lines) |
+
+Not copied, because the owner scoped the instruction to those two files: `Hatem_specific.old.md`,
+and the `.github/copilot-instructions.md` / `.github/workflows/ci.yml` / `.pre-commit-config.yaml`
+wiring that Helix-Prime carries. If this repository should also carry that wiring, it is a separate
+instruction.
+
+**`00_CONSTITUTION.md` does not exist in this repository, and none was created.** The `AGENTS.md`
+line names it, and `Hatem_specific.md:18` refers to it conditionally — "governance files **if they
+exist**" — so the absence is tolerated by the skill rather than silently papered over. Creating one
+would have invented a governance document the owner has not written. **Reported, not filled in.**
+
+**Branch discipline, per the standing rule.** `prog/skill-install` was cut from `prog/main` and
+merged back into `prog/main`. `main` was not touched. Nothing was pushed.
+
+---
+
 ## 2026-10-07 — P0 follow-up 4: the publisher refuses to sign a bundle for another model
 
 **Zone.** G (bug fix backed by a failing test; owner-instructed follow-up).
