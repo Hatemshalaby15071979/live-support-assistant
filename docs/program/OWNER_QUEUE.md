@@ -62,7 +62,7 @@ label on the agent's evidence packet; it does **not** mean the owner inspected t
 
 | # | ID | Label | Document | Conf | Split |
 | --- | --- | --- | --- | --- | --- |
-| 1 | **OD-13** | **answerable — NOT DECIDED** | `billing/…/manage-payment-info.md` | medium | held-out |
+| 1 | **OD-13** | **out_of_scope** (owner, OQ-008 2026-10-07) | — | medium | held-out |
 | 2 | OD-01 | out_of_scope | — | high | held-out |
 | 3 | OD-02 | answerable | `…/changing-your-username.md` + `concepts/username-changes.md` | high | calibration |
 | 4 | OD-03 | out_of_scope | — | high | calibration |
@@ -78,7 +78,9 @@ label on the agent's evidence packet; it does **not** mean the owner inspected t
 | 14 | OD-14 | out_of_scope | — | high | calibration |
 | 15 | OD-15 | out_of_scope | — | high | calibration |
 
-**Totals: 3 answerable (OD-02, OD-04, OD-05) · 11 out_of_scope · 1 undecided (OD-13).** 3 + 11 + 1 = 15.
+**Totals: 3 answerable (OD-02, OD-04, OD-05) · 12 out_of_scope (incl. OD-13, owner OQ-008) · 0 undecided.** 3 + 12 = 15.
+
+> **OD-13 reconciliation (2026-10-07):** the OQ-002 table previously read "answerable — NOT DECIDED". Owner resolved OD-13 as `out_of_scope` via OQ-008 — the document explains how to add or update payment methods but not why a stale card is still charged, nor how default payment selection works. The OQ-002 independent 15-row spot-check remains NOT DONE / UNVERIFIED; OD-13's resolution is a separate targeted owner decision and is excluded from the not-done batch count.
 
 **Eleven of fifteen resolve to `out_of_scope`, and that is the corpus-fit limit, not a labelling
 failure.** T04 is GitHub's own account and billing documentation; the questions describe a consumer
