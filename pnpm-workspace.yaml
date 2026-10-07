@@ -1,5 +1,17 @@
 packages:
   - "apps/*"
+  # @sop/mobile is excluded from the workspace install, not deleted.
+  #
+  # The shell stays in the repository for a future mobile phase; what is withdrawn
+  # is its membership of the dependency graph. Every advisory the repository still
+  # carried after the 2026-10-06 dependency pass arrived through this package's
+  # Expo toolchain (node-forge, braces, sprintf-js — all with no published fix),
+  # and nothing that ships imports it: apps/web, packages/*, tooling and supabase
+  # have no reference to it, and CI mentions it only in a comment.
+  #
+  # Excluding it removes the subtree from the lockfile, so the advisories leave the
+  # audit rather than being tolerated in a baseline. Reverting is this one line.
+  - "!apps/mobile"
   - "packages/*"
 
 # source-map-js 1.2.1 is vulnerable to an event-loop denial of service through
@@ -42,6 +54,22 @@ overrides:
   send: 0.19.2
   tar: 7.5.21
   uuid: 11.1.1
+
+  # Advisory-driven dependency floor, 2026-10-07.
+  #
+  # sharp 0.35.4 -> 0.35.5. GHSA-wq5f-xc86-pv6w (high, CWE-416) was published to
+  # the GitHub Advisory Database on 2026-10-06, after the dependency pass above,
+  # which is why it was not in that pass's baseline: the lockfile did not change,
+  # the advisory database did. It is a use-after-free in sharp's bundled librsvg,
+  # reachable by decoding SVG on glibc Linux under a non-PIE node.
+  #
+  # This product embeds text and never calls sharp — it arrives transitively as a
+  # dependency of @huggingface/transformers, which uses it for image processing.
+  # Unlike the three entries in the baseline, this one HAS a published patch, and
+  # that patch is inside the range transformers already declares (^0.35.4), so
+  # this is a patch bump rather than a tolerance. Verified against the registry
+  # before writing it: sharp@0.35.5 resolves.
+  sharp: 0.35.5
 
 # onnxruntime-node downloads its native binaries in a postinstall script;
 # protobufjs is pulled in by the ONNX toolchain. Both must be allowed to build.
