@@ -24,7 +24,17 @@
  */
 
 import { PLANTED, REQUIRED_CATEGORIES, REQUIRED_LANGUAGES } from './corpus/planted-pii.mjs';
+import { HELDOUT } from './corpus/planted-pii-heldout.mjs';
+import { acceptedPatternsFor } from './corpus/pii-categories.mjs';
 import { scanForPii } from './corpus/pii-gate.mjs';
+
+/**
+ * The regression suite is the union of every set the rules have been tuned
+ * against. A string that has been seen stops being a measurement and becomes a
+ * guard — the held-out 60 were promoted here the moment they were used to fix
+ * the gate, which is why the held-out harness now points at a fresh set.
+ */
+const REGRESSION = [...PLANTED, ...HELDOUT];
 
 /** The bar the owner set. Below this, the gate is fixed before anything moves on. */
 const RECALL_FLOOR = 0.95;
@@ -36,21 +46,21 @@ const RECALL_FLOOR = 0.95;
 
 const problems = [];
 
-if (PLANTED.length < 30) {
-  problems.push(`only ${PLANTED.length} planted strings; the floor is 30`);
+if (REGRESSION.length < 30) {
+  problems.push(`only ${REGRESSION.length} planted strings; the floor is 30`);
 }
 
-const coveredCategories = new Set(PLANTED.map((entry) => entry.category));
+const coveredCategories = new Set(REGRESSION.map((entry) => entry.category));
 for (const category of REQUIRED_CATEGORIES) {
   if (!coveredCategories.has(category)) problems.push(`no planted string for category ${category}`);
 }
 
-const coveredLanguages = new Set(PLANTED.map((entry) => entry.language));
+const coveredLanguages = new Set(REGRESSION.map((entry) => entry.language));
 for (const language of REQUIRED_LANGUAGES) {
   if (!coveredLanguages.has(language)) problems.push(`no planted string for language ${language}`);
 }
 
-const duplicateIds = PLANTED.map((entry) => entry.id);
+const duplicateIds = REGRESSION.map((entry) => entry.id);
 if (new Set(duplicateIds).size !== duplicateIds.length) problems.push('planted ids are not unique');
 
 // ---------------------------------------------------------------------------
@@ -59,7 +69,7 @@ if (new Set(duplicateIds).size !== duplicateIds.length) problems.push('planted i
 
 const results = [];
 
-for (const planted of PLANTED) {
+for (const planted of REGRESSION) {
   // The carrier is the document. A bare string is a pattern-matching exercise;
   // the gate has to work on prose.
   const document = planted.carrier;
@@ -68,7 +78,7 @@ for (const planted of PLANTED) {
 
   results.push({
     ...planted,
-    caught: fired.includes(planted.category),
+    caught: fired.some((pattern) => acceptedPatternsFor(planted.category).includes(pattern)),
     fired,
   });
 }

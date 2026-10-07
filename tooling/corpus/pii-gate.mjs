@@ -210,6 +210,58 @@ const HIGH_SEVERITY_RULES = [
     pattern: /[\p{L}\p{N}._%+-]+@[\p{L}\p{N}.-]+\.[\p{L}]{2,}/gu,
   },
   {
+    name: 'email-obfuscated',
+    // Addresses written to defeat scrapers. The held-out set found this: a
+    // documentation corpus writes `jane [dot] smith [at] acme [dot] com` in the
+    // same paragraph as the real address, and a rule that only knows `@` misses
+    // it entirely.
+    pattern: /[\p{L}\p{N}._%+-]+\s*\[(?:at|dot)\]\s*[\p{L}\p{N}._%+-]+(?:\s*\[(?:at|dot)\]\s*[\p{L}\p{N}._%+-]+)+/giu,
+  },
+  {
+    name: 'national-id',
+    // Government identity numbers. The held-out set scored this at 20% because
+    // there was no rule at all — only the US SSN shape was covered, inside a rule
+    // named for it. A Spanish DNI, a Brazilian CPF and a French NIR are all
+    // personal data of the most consequential kind.
+    pattern: new RegExp(
+      [
+        // Spanish DNI: eight digits and a check letter.
+        '\\b\\d{8}[A-HJ-NP-TV-Z]\\b',
+        // Spanish NIF for a legal entity.
+        '\\b[ABCDEFGHJKLMNPQRSUVW]\\d{7}[0-9A-J]\\b',
+        // Brazilian CPF, punctuated.
+        '\\b\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}\\b',
+        // French NIR: 13 digits, usually spaced, sex digit first.
+        '\\b[12]\\s?\\d{2}\\s?\\d{2}\\s?\\d{2}\\s?\\d{3}\\s?\\d{3}\\s?\\d{2}\\b',
+      ].join('|'),
+      'gu',
+    ),
+  },
+  {
+    name: 'bank-identifier',
+    // IBAN, UK sort code, French RIB. The held-out set scored this at 0% — no
+    // rule existed. A bank identifier is not a name, but it is directly
+    // identifying and directly abusable, which is what this gate is for.
+    pattern: new RegExp(
+      [
+        // IBAN: two letters, two check digits, then groups of up to four.
+        '\\b[A-Z]{2}\\d{2}(?:\\s?[A-Z0-9]{1,4}){3,9}\\b',
+        // UK sort code.
+        '\\b\\d{2}-\\d{2}-\\d{2}\\b',
+        // French RIB: 5-5-11-2.
+        '\\b\\d{5}\\s\\d{5}\\s\\d{11}\\s\\d{2}\\b',
+      ].join('|'),
+      'gu',
+    ),
+    validate: (value) => {
+      // The IBAN branch is greedy enough to swallow ordinary uppercase prose.
+      // A real IBAN is 15-34 alphanumerics; anything shorter is a word pair.
+      const compact = value.replace(/\s/g, '');
+      if (/^[A-Z]{2}\d{2}/.test(compact)) return compact.length >= 15 && compact.length <= 34;
+      return true;
+    },
+  },
+  {
     name: 'phone-international',
     pattern: /\+\d{1,3}[\s.-]?\(?\d{1,4}\)?[\s.-]?\d{2,4}[\p{Zs}.-]?\d{2,4}(?:[\s.-]?\d{2,4})?/gu,
   },
@@ -247,6 +299,14 @@ const HIGH_SEVERITY_RULES = [
         return true;
       }
 
+      // French national numbers are five groups of two — `04 78 55 01 42`,
+      // `01.45.67.89.01`. The shape is as distinctive as 3-3-4 and, like it,
+      // needs no cue. The held-out set found this: the carrier was "Le bureau de
+      // Lyon est joignable au 04 78 55 01 42", and `joignable` was not a cue.
+      if (separatorIsUniform && groups.length === 5 && groups.every((group) => group.length === 2)) {
+        return true;
+      }
+
       // Otherwise the prose has to say so. A cue within 40 characters before the
       // candidate, which covers "Call +44 ...", "Llama al 912 ...", "our line is
       // 555 ...". Without this, every pair of numbers in a configuration example
@@ -266,12 +326,13 @@ const HIGH_SEVERITY_RULES = [
     // Kubernetes documents as account identifiers. A preposition is not a label.
     pattern: new RegExp(
       `\\b(?:${caseInsensitiveLiterals([
-        'account', 'customer', 'case', 'ticket', 'invoice', 'order', 'reference',
-        'referencia', 'referência', 'référence', 'número', 'numero', 'caso',
-        'pedido', 'factura', 'cliente', 'client', 'conta', 'cuenta',
-      ])})\\b` +
-        `(?:\\s+(?:${caseInsensitiveLiterals(['de', 'da', 'do', 'del', 'id', 'no', 'number', 'num'])})?\\b)*` +
-        `\\s*[:#-]?\\s*[A-Z]{0,4}[-_]?\\d{5,}\\b`,
+        'account', 'customer', 'case', 'ticket', 'invoice', 'order', 'reference', 'policy',
+        'claim', 'contract', 'membership', 'referencia', 'referência', 'référence', 'número',
+        'numero', 'nº', 'n°', 'caso', 'pedido', 'factura', 'cliente', 'client', 'conta',
+        'cuenta', 'socio', 'expediente', 'matrícula', 'dossier', 'contrat',
+      ])})` +
+        `(?:\\s+(?:${caseInsensitiveLiterals(['de', 'da', 'do', 'del', 'id', 'no', 'number', 'num'])})?)*` +
+        `\\s*[:#-]?\\s*[A-Z]{0,4}[-_/]?\\d{4,}(?:[-_/]\\d{2,})?`,
       'gu',
     ),
   },
@@ -289,6 +350,10 @@ const HIGH_SEVERITY_RULES = [
         `\\b\\d{1,5}[A-Za-z]?\\s+[A-Z][\\p{L}'-]+(?:\\s+[A-Z][\\p{L}'-]+)*\\s+(?:${STREET_TYPE_ALTERNATION})\\b\\.?`,
         `\\b(?:${STREET_TYPE_ALTERNATION})\\s+[A-Z\\p{L}][\\p{L}'-]*(?:\\s+[\\p{L}'-]+)*\\s+\\d{1,5}\\b`,
         `\\b\\d{1,5}\\s+(?:${STREET_TYPE_ALTERNATION})\\s+[\\p{L}][\\p{L}'-]*(?:\\s+[\\p{L}'-]+)*`,
+        // Post-office boxes carry no street type and no name, so none of the
+        // three orderings above can see one. The held-out set found `P.O. Box
+        // 4471` scored as nothing.
+        `\\bP\\.?\\s?O\\.?\\s+Box\\s+\\d{1,6}\\b`,
       ].join('|'),
       'gu',
     ),
@@ -308,7 +373,10 @@ const REVIEW_SEVERITY_RULES = [
     // `Mme Claire Dubois` are ordinary ways to name someone in a document, and
     // none of them matched.
     pattern: new RegExp(
-      `\\b(?:${caseInsensitiveLiterals(['Mrs', 'Miss', 'Mr', 'Ms', 'Dr', 'Prof', 'Sir', 'Dame', 'Mx', 'Srta', 'Sra', 'Sr', 'Doña', 'Don', 'Mme', 'Mlle'])})[.]?\\s+[A-Z][\\p{L}'-]+(?:\\s+[A-Z][\\p{L}'-]+)?`,
+      `\\b(?:${caseInsensitiveLiterals([
+        'Mrs', 'Miss', 'Mr', 'Ms', 'Dr', 'Prof', 'Sir', 'Dame', 'Mx',
+        'Srta', 'Sra', 'Sr', 'Dra', 'Dña', 'Doña', 'Don', 'Mme', 'Mlle', 'Me', 'M',
+      ])})[.]?\\s+[A-Z](?:[.]\\s*)?[\\p{L}'-]*(?:\\s+[A-Z][\\p{L}'-]+)?`,
       'gu',
     ),
     validate: (value) => endsInPersonName(value),
@@ -325,7 +393,12 @@ const REVIEW_SEVERITY_RULES = [
     // quarantining whole Kubernetes documents. The two-word forms are the ones
     // that actually announce a name.
     pattern: new RegExp(
-      `\\b(?:${caseInsensitiveLiterals(['contacto', 'contato', 'contact', 'written by', 'escrito por', 'posted by', 'publicado por', 'signed by', 'firmado por', 'assinado por', 'cordialement', 'author', 'autor', 'regards', 'saludos', 'thanks', 'gracias', 'obrigado'])})\\s*[:,]?\\s*[A-Z][\\p{L}'-]+\\s+[A-Z][\\p{L}'-]+\\b`,
+      `\\b(?:${caseInsensitiveLiterals([
+        'contacto', 'contato', 'contact', 'escalation owner', 'responsable', 'responsável',
+        'written by', 'escrito por', 'posted by', 'publicado por', 'signed by', 'firmado por',
+        'assinado por', 'rédigé par', 'cordialement', 'author', 'autor', 'regards', 'saludos',
+        'thanks', 'gracias', 'obrigado',
+      ])})\\s*[:,]?\\s*[A-Z][\\p{L}'-]+[,\\s]+[A-Z][\\p{L}'-]+\\b`,
       'gu',
     ),
     validate: (value) => endsInPersonName(value),
