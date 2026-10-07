@@ -3,14 +3,7 @@
   "tenant": "T04-customer-support-style",
   "protocol": "Two agent passes produced the first labels. An automated evidence audit then surfaced competing documents, and a human-review packet read the actual documents for seven of them. The owner reviewed that packet and issued the final labels on 2026-10-07.",
   "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
-  "pending": {
-    "id": "OD-13",
-    "status": "NOT DECIDED — omitted from the owner's final label list",
-    "current_label": "answerable",
-    "current_document": "content/billing/how-tos/set-up-payment/manage-payment-info.md",
-    "packet_verdict": "NEEDS HUMAN DECISION",
-    "note": "The owner's instruction listed 14 rows; OD-13 was not among them. It has been left at its original label rather than guessed, and is flagged in OWNER_QUEUE as OQ-008."
-  },
+  "pending": null,
   "rows": [
     {
       "id": "OD-01",
@@ -45,7 +38,9 @@
     {
       "id": "OD-04",
       "label": "answerable",
-      "documents": ["content/billing/how-tos/set-up-payment/manage-payment-info.md"],
+      "documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
       "confidence": "high",
       "label_source": "owner",
       "packet_verdict": "ACCEPT",
@@ -54,7 +49,9 @@
     {
       "id": "OD-05",
       "label": "answerable",
-      "documents": ["content/billing/how-tos/set-up-payment/manage-payment-info.md"],
+      "documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
       "confidence": "high",
       "label_source": "owner",
       "packet_verdict": "CLEAR_ROWS",
@@ -125,13 +122,12 @@
     },
     {
       "id": "OD-13",
-      "label": "answerable",
-      "documents": ["content/billing/how-tos/set-up-payment/manage-payment-info.md"],
-      "confidence": "medium",
-      "label_source": "agent-agreed",
+      "label": "out_of_scope",
+      "documents": [],
+      "confidence": "high",
+      "label_source": "owner",
       "packet_verdict": "NEEDS HUMAN DECISION",
-      "status": "PENDING OWNER DECISION — omitted from the owner's final label list. Left at its original label rather than guessed.",
-      "reasoning": "UNCHANGED FROM THE ORIGINAL PROPOSAL. The document explains how to add or update a card but never states which card is charged when several exist, which is the question being asked. The owner's instruction listed 14 rows and this was not among them."
+      "reasoning": "Owner decision 2026-10-07: the document explains how to add or update payment methods but does not answer why a stale or old card is being charged, or how default payment selection works."
     },
     {
       "id": "OD-14",
@@ -154,9 +150,9 @@
   ],
   "summary": {
     "answerable": 3,
-    "out_of_scope": 11,
-    "pending_owner_decision": 1,
+    "out_of_scope": 12,
+    "pending_owner_decision": 0,
     "total": 15,
-    "note": "3 + 11 + 1 = 15. The owner's final list covered 14 rows; OD-13 remains at its original answerable label and is not counted as decided."
+    "note": "3 + 12 = 15. All 15 rows now decided by the owner."
   }
 }

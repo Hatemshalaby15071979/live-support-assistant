@@ -1,0 +1,54 @@
+{
+  "seed": 20261007,
+  "rungs": [
+    40,
+    500
+  ],
+  "report": [
+    {
+      "tenant": "T01-platform-operations-style",
+      "rung": 40,
+      "built": false,
+      "gold_procedures": 123,
+      "reason": "gold exceeds rung size"
+    },
+    {
+      "tenant": "T01-platform-operations-style",
+      "rung": 500,
+      "built": true,
+      "gold_procedures": 123,
+      "distractors": 377,
+      "file": "rungs/T01-platform-operations-style-500.json"
+    },
+    {
+      "tenant": "T04-customer-support-style",
+      "rung": 40,
+      "built": false,
+      "gold_procedures": 57,
+      "reason": "gold exceeds rung size"
+    },
+    {
+      "tenant": "T04-customer-support-style",
+      "rung": 500,
+      "built": true,
+      "gold_procedures": 57,
+      "distractors": 443,
+      "file": "rungs/T04-customer-support-style-500.json"
+    },
+    {
+      "tenant": "T05-policy-style",
+      "rung": 40,
+      "built": false,
+      "gold_procedures": 123,
+      "reason": "gold exceeds rung size"
+    },
+    {
+      "tenant": "T05-policy-style",
+      "rung": 500,
+      "built": true,
+      "gold_procedures": 123,
+      "distractors": 377,
+      "file": "rungs/T05-policy-style-500.json"
+    }
+  ]
+}

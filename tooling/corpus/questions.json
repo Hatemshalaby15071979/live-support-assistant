@@ -1,16 +1,23 @@
 {
-  "note": "Gold set. Every row carries origin, label_source, data_mode and slice. Labels are at DOCUMENT level: acceptable_documents names the source document(s) that contain the answer, and a hit is a retrieved procedure belonging to one of them. The split is a fixed-seed hash of the row id, not a PRNG, so adding a row never re-splits the others.",
+  "note": "Gold set. Every row carries origin, label_source, data_mode and slice. Labels are at DOCUMENT level. Slice A rows are corpus-voiced and carry a computed 3-gram leakage figure that is REPORTED, not applied — a question in the document's register is the one that echoes the title. Slice A rows are never used in a headline.",
   "seed": 20261007,
   "calibration_fraction": 0.7,
+  "leakage_limit": 0.3,
   "owner_wording_note": "The OD- rows are owner-directed drafts: topics chosen by the owner, wording drafted by Claude. They are NOT real customer questions and must never be described as such.",
   "counts": {
-    "total": 15,
-    "answerable": 4,
-    "out_of_scope": 11,
-    "calibration": 12,
-    "held_out": 3,
-    "agent_agreed": 1,
-    "agent_single": 0
+    "total": 95,
+    "slice_a": 60,
+    "slice_b": 35,
+    "answerable": 83,
+    "out_of_scope": 12,
+    "calibration": 62,
+    "held_out": 33,
+    "title_echo": 17
+  },
+  "by_tenant": {
+    "T04-customer-support-style": 52,
+    "T05-policy-style": 23,
+    "T01-platform-operations-style": 20
   },
   "questions": [
     {
@@ -207,16 +214,12 @@
       "slice": "B",
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
-      "label_source": "agent-agreed",
+      "label_source": "owner",
       "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
-      "label": "answerable",
-      "confidence": "medium",
-      "acceptable_documents": [
-        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
-      ],
-      "reasoning": "UNCHANGED FROM THE ORIGINAL PROPOSAL. The document explains how to add or update a card but never states which card is charged when several exist, which is the question being asked. The owner's instruction listed 14 rows and this was not among them.",
-      "status": "PENDING OWNER DECISION — omitted from the owner's final label list. Left at its original label rather than guessed.",
-      "decided": false,
+      "label": "out_of_scope",
+      "confidence": "high",
+      "acceptable_documents": [],
+      "reasoning": "Owner decision 2026-10-07: the document explains how to add or update payment methods but does not answer why a stale or old card is being charged, or how default payment selection works.",
       "split": "held-out"
     },
     {
@@ -248,6 +251,1491 @@
       "acceptable_documents": [],
       "reasoning": "A live-stream gift double-charge is the simulated WaveCast tenant's subject matter. The nearest match, cancel-sponsorship.md, is about sponsorships.",
       "split": "calibration"
+    },
+    {
+      "id": "SB-01",
+      "text": "how do i change my username? will my old one be free for someone else to take",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/changing-your-username.md",
+        "content/account-and-profile/concepts/username-changes.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-02",
+      "text": "someone has taken my name as their username and is pretending to be me, is that allowed",
+      "tenant": "T05-policy-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "medium",
+      "acceptable_documents": [
+        "content/site-policy/other-site-policies/github-username-policy.md",
+        "content/site-policy/acceptable-use-policies/github-impersonation.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "held-out"
+    },
+    {
+      "id": "SB-03",
+      "text": "the card on my account expired last month, how do i put a new one on",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "held-out"
+    },
+    {
+      "id": "SB-04",
+      "text": "where can i find my old receipts, i need one from a few months back",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-05",
+      "text": "the verification email never turns up, can i get another one sent",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md",
+        "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "held-out"
+    },
+    {
+      "id": "SB-06",
+      "text": "how do i add a second email address to my account",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/adding-an-email-address-to-your-github-account.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-07",
+      "text": "can i change which email address is my main one",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/changing-your-primary-email-address.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-08",
+      "text": "i want a backup email on file in case i lose access to my main one",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/setting-a-backup-email-address.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "held-out"
+    },
+    {
+      "id": "SB-09",
+      "text": "my commits show my personal email address, how do i stop that",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address.md",
+        "content/account-and-profile/how-tos/email-preferences/blocking-command-line-pushes-that-expose-your-personal-email-address.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-10",
+      "text": "i have a work account and a personal one, can i switch between them easily",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/managing-multiple-accounts.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-11",
+      "text": "i accidentally made two accounts years ago, can i combine them into one",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/merging-multiple-personal-accounts.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-12",
+      "text": "how do i permanently close my account and what happens to my repositories",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md",
+        "content/account-and-profile/reference/personal-account-reference.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-13",
+      "text": "i lost my phone and i cant get past the two factor screen, what are my options",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "medium",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/unlinking-your-email-address-from-a-locked-account.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "held-out"
+    },
+    {
+      "id": "SB-14",
+      "text": "how do i leave an organisation that someone added me to",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/organization-membership/removing-yourself-from-an-organization.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-15",
+      "text": "how do i put a readme on my profile page",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/profile-customization/managing-your-profile-readme.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "held-out"
+    },
+    {
+      "id": "SB-16",
+      "text": "can i make my profile private so it stops showing up when people search for me",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/profile-customization/setting-your-profile-to-private.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-17",
+      "text": "what do i actually get if i move from the free plan to the paid one",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-18",
+      "text": "if i go back down to the free plan what do i lose",
+      "tenant": "T04-customer-support-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/manage-plan-and-licenses/downgrade-plan.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-19",
+      "text": "someone posted my personal information on a public repo, how do i get it taken down",
+      "tenant": "T05-policy-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/content-removal-policies/github-private-information-removal-policy.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "calibration"
+    },
+    {
+      "id": "SB-20",
+      "text": "my account was suspended and i think it was a mistake, how do i appeal",
+      "tenant": "T05-policy-style",
+      "slice": "B",
+      "origin": "derived-style",
+      "data_mode": "simulated",
+      "label_source": "agent-agreed",
+      "label_basis": "agent, two passes. Pass A matched the question's topic to a document path; pass B read the named document and confirmed it contains the answer. Both were run by the same agent, so this is agreement between two METHODS, not independent labelling, and it is not owner validation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/acceptable-use-policies/github-appeal-and-reinstatement.md"
+      ],
+      "reasoning": "Authored against the named document, which was verified to exist before the row was written.",
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T01-01",
+      "text": "how do i configure dns for a cluster",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/access-application-cluster/configure-dns-cluster.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T01-02",
+      "text": "how do i change the default storage class",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/administer-cluster/change-default-storage-class.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.5,
+      "title_echo": true,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T01-03",
+      "text": "how do i declare a network policy",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/administer-cluster/declare-network-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T01-04",
+      "text": "how do i create an external load balancer",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/access-application-cluster/create-external-load-balancer.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.1667,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T01-05",
+      "text": "how do i use port forwarding to access an application in a cluster",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/access-application-cluster/port-forward-access-application-cluster.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T01-06",
+      "text": "how do i manage certificates for a cluster",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/administer-cluster/certificates.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T01-07",
+      "text": "how do i upgrade a cluster",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/administer-cluster/cluster-upgrade.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T01-08",
+      "text": "how do i configure feature gates",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/administer-cluster/configure-feature-gates.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.25,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T01-09",
+      "text": "how do i configure cpu management policies",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/administer-cluster/cpu-management-policies.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.2,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T01-10",
+      "text": "how do i decrypt data at rest",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/administer-cluster/decrypt-data.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T01-11",
+      "text": "how do i configure access to multiple clusters",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/access-application-cluster/configure-access-multiple-clusters.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T01-12",
+      "text": "how do i use a service to access an application in a cluster",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/access-application-cluster/service-access-application-cluster.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T01-13",
+      "text": "how do i access the cluster api",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/administer-cluster/access-cluster-api.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T01-14",
+      "text": "how do i deploy the web ui dashboard",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/access-application-cluster/web-ui-dashboard.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T01-15",
+      "text": "how do i list all running container images",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/access-application-cluster/list-all-running-container-images.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.5,
+      "title_echo": true,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T01-16",
+      "text": "how do i connect a frontend to a backend",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/access-application-cluster/connecting-frontend-backend.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T01-17",
+      "text": "how do i configure and upgrade etcd",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/administer-cluster/configure-upgrade-etcd.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T01-18",
+      "text": "how do i use coredns for service discovery",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/administer-cluster/coredns.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T01-19",
+      "text": "how do i change the persistent volume reclaim policy",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/administer-cluster/change-pv-reclaim-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T01-20",
+      "text": "how do containers in the same pod communicate using a shared volume",
+      "tenant": "T01-platform-operations-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/en/docs/tasks/access-application-cluster/communicate-containers-same-pod-shared-volume.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-01",
+      "text": "how do i change my username",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/changing-your-username.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-02",
+      "text": "what should i know about username changes",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/concepts/username-changes.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.2,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-03",
+      "text": "how do i manage my payment information",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T04-04",
+      "text": "troubleshooting payment method issues",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-05",
+      "text": "unable to send verification email",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/troubleshooting-email-verification.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-06",
+      "text": "how do i verify my email address",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/verifying-your-email-address.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T04-07",
+      "text": "how do i add an email address to my account",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/adding-an-email-address-to-your-github-account.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-08",
+      "text": "how do i change my primary email address",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/changing-your-primary-email-address.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.1667,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-09",
+      "text": "how do i set a backup email address",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/setting-a-backup-email-address.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.1667,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T04-10",
+      "text": "how do i set my commit email address",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/email-preferences/setting-your-commit-email-address.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.1667,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-11",
+      "text": "how do i manage multiple accounts",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/managing-multiple-accounts.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-12",
+      "text": "how do i merge multiple personal accounts",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/merging-multiple-personal-accounts.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-13",
+      "text": "how do i delete my personal account",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/deleting-your-personal-account.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-14",
+      "text": "how do i unlink my email address from a locked account",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/account-management/unlinking-your-email-address-from-a-locked-account.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.4444,
+      "title_echo": true,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-15",
+      "text": "how do i remove myself from an organization",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/organization-membership/removing-yourself-from-an-organization.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T04-16",
+      "text": "how do i manage my profile readme",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/profile-customization/managing-your-profile-readme.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-17",
+      "text": "how do i set my profile to private",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/account-and-profile/how-tos/profile-customization/setting-your-profile-to-private.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-18",
+      "text": "how do i upgrade my plan",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/manage-plan-and-licenses/upgrade-plan.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T04-19",
+      "text": "how do i downgrade my plan",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/manage-plan-and-licenses/downgrade-plan.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T04-20",
+      "text": "unlocking an account due to a declined payment",
+      "tenant": "T04-customer-support-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/billing/how-tos/troubleshooting/locked-account.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05-01",
+      "text": "github username policy",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/other-site-policies/github-username-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05-02",
+      "text": "github account recovery policy",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/other-site-policies/github-account-recovery-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05-03",
+      "text": "github deceased user policy",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/other-site-policies/github-deceased-user-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05-04",
+      "text": "github cookies",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/privacy-policies/github-cookies.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05-05",
+      "text": "github subprocessors",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/privacy-policies/github-subprocessors.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05-06",
+      "text": "guide to submitting a dmca takedown notice",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/content-removal-policies/guide-to-submitting-a-dmca-takedown-notice.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.2,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05-07",
+      "text": "guide to submitting a dmca counter notice",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/content-removal-policies/guide-to-submitting-a-dmca-counter-notice.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05-08",
+      "text": "github private information removal policy",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/content-removal-policies/github-private-information-removal-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05-09",
+      "text": "github trademark policy",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/content-removal-policies/github-trademark-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05-10",
+      "text": "submitting content removal requests",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/content-removal-policies/submitting-content-removal-requests.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05-11",
+      "text": "github appeal and reinstatement",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/acceptable-use-policies/github-appeal-and-reinstatement.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05-12",
+      "text": "github acceptable use policies",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/acceptable-use-policies/github-acceptable-use-policies.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05-13",
+      "text": "github impersonation policy",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/acceptable-use-policies/github-impersonation.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05-14",
+      "text": "github doxxing and invasion of privacy",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/acceptable-use-policies/github-doxxing-and-invasion-of-privacy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05-15",
+      "text": "github hate speech and discrimination policy",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/acceptable-use-policies/github-hate-speech-and-discrimination.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0.75,
+      "title_echo": true,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05-16",
+      "text": "github threats of violence and gratuitously violent content",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/acceptable-use-policies/github-threats-of-violence-and-gratuitously-violent-content.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05-17",
+      "text": "github government takedown policy",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/other-site-policies/github-government-takedown-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05-18",
+      "text": "github logo policy",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/other-site-policies/github-logo-policy.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "calibration"
+    },
+    {
+      "id": "SA-T05-19",
+      "text": "coordinated disclosure of security vulnerabilities",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/security-policies/coordinated-disclosure-of-security-vulnerabilities.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 0,
+      "title_echo": false,
+      "split": "held-out"
+    },
+    {
+      "id": "SA-T05-20",
+      "text": "github bug bounty program legal safe harbor",
+      "tenant": "T05-policy-style",
+      "slice": "A",
+      "origin": "derived-paraphrase",
+      "data_mode": "web-sourced",
+      "label_source": "agent-single",
+      "label_basis": "agent, single pass. The question was written against a named document and the document is the answer by construction; there is no second pass to agree with, so these are `agent-single` and carry no independent confirmation.",
+      "label": "answerable",
+      "confidence": "high",
+      "acceptable_documents": [
+        "content/site-policy/security-policies/github-bug-bounty-program-legal-safe-harbor.md"
+      ],
+      "reasoning": "Written against this document; the document is the answer by construction.",
+      "leakage_3gram": 1,
+      "title_echo": true,
+      "split": "held-out"
     }
   ]
 }

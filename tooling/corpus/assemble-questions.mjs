@@ -1,0 +1,229 @@
+#!/usr/bin/env node
+/**
+ * Assemble `questions.json` from every question source.
+ *
+ * Sources, in the order they appear in the output:
+ *   - `slice-b-owner-rows.json` + `slice-b-owner-labels.json` — the 15 owner-supplied rows
+ *   - `slice-b-expansion.json` — 20 agent-authored user-voiced rows
+ *   - `slice-a.json` — 60 authored corpus-voiced rows across T01, T04 and T05
+ *
+ * ## What it refuses to do
+ *
+ * **It verifies every document path against the tenant corpus and fails on a
+ * miss.** A label naming a document that does not exist is worse than no label:
+ * it makes the row unscoreable while looking complete, and the retrieval run
+ * would report a miss that is really a typo.
+ *
+ * ## Leakage
+ *
+ * Slice A rows carry a computed 3-gram overlap with the document's title and
+ * first sentence. It is **reported, not applied** — see `slice-a.json` for why it
+ * cannot be a filter.
+ *
+ * Usage:
+ *     node tooling/corpus/assemble-questions.mjs
+ */
+
+import { createHash } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const here = dirname(fileURLToPath(import.meta.url));
+
+const SEED = 20261007;
+const CALIBRATION_FRACTION = 0.7;
+const LEAKAGE_LIMIT = 0.30;
+
+const read = (name) => JSON.parse(readFileSync(resolve(here, name), 'utf8'));
+
+const ownerRows = read('slice-b-owner-rows.json');
+const ownerLabels = read('slice-b-owner-labels.json');
+const expansion = read('slice-b-expansion.json');
+const sliceA = read('slice-a.json');
+
+/** Every document path per tenant, for verification. */
+const tenantDocuments = new Map();
+for (const tenant of ['T01-platform-operations-style', 'T04-customer-support-style', 'T05-policy-style']) {
+  const corpus = read(`tenants/${tenant}.json`);
+  tenantDocuments.set(tenant, new Set(corpus.sops.map((sop) => sop.source_path)));
+}
+
+/** Document text per (tenant, path), for the leakage reference. */
+const tenantText = new Map();
+for (const tenant of ['T01-platform-operations-style', 'T04-customer-support-style', 'T05-policy-style']) {
+  const corpus = read(`tenants/${tenant}.json`);
+  const map = new Map();
+  for (const sop of corpus.sops) {
+    const existing = map.get(sop.source_path) ?? { title: sop.title, first: sop.summary.split('\n\n')[0] };
+    map.set(sop.source_path, existing);
+  }
+  tenantText.set(tenant, map);
+}
+
+// ---------------------------------------------------------------------------
+
+function trigrams(text) {
+  const words = text.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter((w) => w !== '');
+  const out = new Set();
+  for (let i = 0; i + 2 < words.length; i += 1) out.add(`${words[i]} ${words[i + 1]} ${words[i + 2]}`);
+  return out;
+}
+
+function leakage(question, reference) {
+  const q = trigrams(question);
+  if (q.size === 0) return 1;
+  const r = trigrams(reference);
+  let shared = 0;
+  for (const gram of q) if (r.has(gram)) shared += 1;
+  return shared / q.size;
+}
+
+function unitHash(value) {
+  return createHash('sha256').update(value, 'utf8').digest().readUInt32BE(0) / 0x100000000;
+}
+
+const splitFor = (id) => (unitHash(`${SEED}:${id}`) < CALIBRATION_FRACTION ? 'calibration' : 'held-out');
+
+// ---------------------------------------------------------------------------
+// Verify every path. Fail loudly on a miss.
+// ---------------------------------------------------------------------------
+
+const missing = [];
+function verifyDocuments(tenant, documents) {
+  const known = tenantDocuments.get(tenant);
+  if (known === undefined) {
+    missing.push(`unknown tenant ${tenant}`);
+    return;
+  }
+  for (const document of documents) {
+    if (!known.has(document)) missing.push(`${tenant}: ${document}`);
+  }
+}
+
+const ownerLabelById = new Map(ownerLabels.rows.map((row) => [row.id, row]));
+const questions = [];
+
+for (const row of ownerRows.rows) {
+  const label = ownerLabelById.get(row.id);
+  verifyDocuments(ownerRows.tenant, label.documents);
+  questions.push({
+    id: row.id,
+    text: row.text,
+    tenant: ownerRows.tenant,
+    slice: 'B',
+    origin: 'owner-directed-draft',
+    data_mode: 'simulated',
+    label_source: label.label_source,
+    label_basis: ownerLabels.label_basis,
+    label: label.label,
+    confidence: label.confidence,
+    acceptable_documents: label.documents,
+    reasoning: label.reasoning,
+    split: splitFor(row.id),
+  });
+}
+
+for (const row of expansion.rows) {
+  verifyDocuments(row.tenant, row.documents);
+  questions.push({
+    id: row.id,
+    text: row.text,
+    tenant: row.tenant,
+    slice: 'B',
+    origin: expansion.origin,
+    data_mode: expansion.data_mode,
+    label_source: 'agent-agreed',
+    label_basis: expansion.label_basis,
+    label: row.label,
+    confidence: row.confidence,
+    acceptable_documents: row.documents,
+    reasoning: 'Authored against the named document, which was verified to exist before the row was written.',
+    split: splitFor(row.id),
+  });
+}
+
+for (const row of sliceA.rows) {
+  verifyDocuments(row.tenant, row.documents);
+  const reference = tenantText.get(row.tenant).get(row.documents[0]);
+  const score = leakage(row.text, `${reference.title} ${reference.first}`);
+  questions.push({
+    id: row.id,
+    text: row.text,
+    tenant: row.tenant,
+    slice: 'A',
+    origin: sliceA.origin,
+    data_mode: sliceA.data_mode,
+    label_source: 'agent-single',
+    label_basis: sliceA.label_basis,
+    label: 'answerable',
+    confidence: 'high',
+    acceptable_documents: row.documents,
+    reasoning: 'Written against this document; the document is the answer by construction.',
+    leakage_3gram: Number(score.toFixed(4)),
+    title_echo: score > LEAKAGE_LIMIT,
+    split: splitFor(row.id),
+  });
+}
+
+if (missing.length > 0) {
+  console.error('');
+  console.error(`REFUSING TO WRITE: ${missing.length} document path(s) do not exist in the corpus.`);
+  for (const entry of missing.slice(0, 12)) console.error(`  ${entry}`);
+  console.error('');
+  process.exit(4);
+}
+
+// ---------------------------------------------------------------------------
+
+const counts = {
+  total: questions.length,
+  slice_a: questions.filter((q) => q.slice === 'A').length,
+  slice_b: questions.filter((q) => q.slice === 'B').length,
+  answerable: questions.filter((q) => q.label === 'answerable').length,
+  out_of_scope: questions.filter((q) => q.label === 'out_of_scope').length,
+  calibration: questions.filter((q) => q.split === 'calibration').length,
+  held_out: questions.filter((q) => q.split === 'held-out').length,
+  title_echo: questions.filter((q) => q.title_echo === true).length,
+};
+
+const byTenant = {};
+for (const q of questions) byTenant[q.tenant] = (byTenant[q.tenant] ?? 0) + 1;
+
+const output = {
+  note:
+    'Gold set. Every row carries origin, label_source, data_mode and slice. Labels are at DOCUMENT ' +
+    'level. Slice A rows are corpus-voiced and carry a computed 3-gram leakage figure that is REPORTED, ' +
+    'not applied — a question in the document\'s register is the one that echoes the title. Slice A ' +
+    'rows are never used in a headline.',
+  seed: SEED,
+  calibration_fraction: CALIBRATION_FRACTION,
+  leakage_limit: LEAKAGE_LIMIT,
+  owner_wording_note:
+    'The OD- rows are owner-directed drafts: topics chosen by the owner, wording drafted by Claude. ' +
+    'They are NOT real customer questions and must never be described as such.',
+  counts,
+  by_tenant: byTenant,
+  questions,
+};
+
+writeFileSync(resolve(here, 'questions.json'), `${JSON.stringify(output, null, 2)}\n`, 'utf8');
+
+const echoScores = questions.filter((q) => q.slice === 'A').map((q) => q.leakage_3gram);
+
+console.log('');
+console.log('questions.json assembled');
+console.log('');
+console.log(`  total          ${counts.total}   (slice A ${counts.slice_a}, slice B ${counts.slice_b})`);
+console.log(`  answerable     ${counts.answerable}`);
+console.log(`  out_of_scope   ${counts.out_of_scope}`);
+console.log(`  calibration    ${counts.calibration}`);
+console.log(`  held-out       ${counts.held_out}`);
+console.log('');
+console.log(`  slice A title-echo above ${LEAKAGE_LIMIT}: ${counts.title_echo} of ${counts.slice_a}`);
+console.log(`  slice A leakage mean ${(echoScores.reduce((s, v) => s + v, 0) / (echoScores.length || 1)).toFixed(4)}, max ${Math.max(...echoScores).toFixed(4)}`);
+console.log('');
+for (const [tenant, n] of Object.entries(byTenant)) console.log(`  ${tenant.padEnd(32)} ${n}`);
+console.log('');
+console.log(`  all ${counts.total} document paths verified against the corpus`);
+console.log('');
