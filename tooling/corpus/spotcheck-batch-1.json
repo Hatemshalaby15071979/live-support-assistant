@@ -209,7 +209,7 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
+      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). RELABEL DECISION (separate record): owner chose [B] — corpus does NOT answer; label=out_of_scope CONFIRMED, label_source=owner, evidence=full-text-keyword-search. The 7/14 tally is unchanged."
     }
   ],
   "relabel_decisions": {
@@ -278,6 +278,14 @@
       "evidence": "full-text-keyword-search",
       "recorded_at": "2026-10-07",
       "note": "Owner chose [B]: the corpus does NOT answer — out_of_scope CONFIRMED on full-text evidence. Across all 136 T04 documents the regex ban/banned/suspended/suspension/reinstate/appeal hits exactly one file (github-license-users.md), a billing fact about license consumption, not an appeal process. The answering document (github-appeal-and-reinstatement.md) is T05, a different tenant, so it cannot enter T04's acceptable set (owner OD-02 ruling). Mirrors the SB-20 tenant-scoping finding. SEPARATE record; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
+    },
+    "OD-15": {
+      "choice": "B",
+      "label": "out_of_scope (CONFIRMED)",
+      "label_source": "owner",
+      "evidence": "full-text-keyword-search",
+      "recorded_at": "2026-10-07",
+      "note": "Owner chose [B]: the corpus does NOT answer — out_of_scope CONFIRMED on full-text evidence. 0 of 136 T04 documents mention gift/live stream; the only 'charged twice' passage is a Marketplace org-transfer note; 'refund' appears in 4 docs, none a duplicate-charge refund path; the closest gift analogue (GitHub Sponsors) carries an explicit no-refunds include. SEPARATE record; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
     }
   }
 }

@@ -252,11 +252,12 @@
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
       "label_source": "owner",
-      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label_basis": "Owner's separate relabel decision on 2026-10-07: chose [B], the corpus does NOT answer — out_of_scope CONFIRMED on full-text keyword-search evidence over the re-fetched T04 corpus. Separate from the OQ-002 7/14 spot-check verdict; does not change that tally.",
+      "label_evidence": "full-text-keyword-search",
       "label": "out_of_scope",
       "confidence": "high",
       "acceptable_documents": [],
-      "reasoning": "A live-stream gift double-charge is the simulated WaveCast tenant's subject matter. The nearest match, cancel-sponsorship.md, is about sponsorships.",
+      "reasoning": "Owner confirmed on 2026-10-07 full-text evidence: 0 of 136 T04 documents mention gift, live stream or livestream; the only 'charged twice' passage is a Marketplace org-transfer note (you will NOT be charged twice); 'refund' appears in 4 docs (nonprofit discount, sponsorship no-refunds notice, sponsorship downgrade, coupon terms) — none is a duplicate-charge refund path. The closest gift analogue (GitHub Sponsors) carries an explicit no-refunds include.",
       "split": "calibration"
     },
     {
