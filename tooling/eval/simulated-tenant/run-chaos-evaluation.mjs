@@ -8,6 +8,9 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
 
+import { gitProvenance, provenanceLine } from '../provenance.mjs';
+import { requireChrome } from '../../browser/find-chrome.mjs';
+
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 const evaluationDir = resolve(root, 'tooling/eval/simulated-tenant');
 const runnerUrl = resolve(evaluationDir, 'chaos-runner.html');
@@ -34,14 +37,7 @@ const markdownPath = resolve(evaluationDir, `${runLabel}.md`);
 if (existsSync(reportPath) || existsSync(markdownPath)) {
   throw new Error(`refusing to overwrite an existing evaluation report for run label ${runLabel}`);
 }
-const chromeCandidates = [
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-  `${process.env.LOCALAPPDATA ?? ''}\\Google\\Chrome\\Application\\chrome.exe`,
-];
-const chromePath = chromeCandidates.find((candidate) => existsSync(candidate));
-
-if (chromePath === undefined) throw new Error('Chrome is required for the browser-local evaluation');
+const chromePath = requireChrome();
 for (const path of [
   batchPath,
   corpusPath,
@@ -202,6 +198,10 @@ try {
   const report = await evaluate('window.__SIMULATION_RESULT__');
   if (report === undefined || report === null) throw new Error('browser completed without returning the evaluation report');
   report.runLabel = runLabel;
+  // Which revision produced these numbers. Without it a headline result cannot be
+  // traced to the code that measured it, which is the reproducibility gap both
+  // recorded deployed runs carry.
+  report.git = await gitProvenance(root);
   report.batchSha256 = createHash('sha256').update(readFileSync(batchPath)).digest('hex');
   report.corpusSha256 = createHash('sha256')
     .update(readFileSync(corpusPath))
@@ -222,6 +222,9 @@ try {
     `# ${runLabel} — simulated chaos-batch evaluation`,
     '',
     '**data_mode: "simulated" — all tickets, corpus content, and outcomes in this report are fictional.**',
+    '',
+    provenanceLine(report.git),
+    `Batch \`${batchName}\` sha256 \`${report.batchSha256}\`; corpus \`${corpusName}\` sha256 \`${report.corpusSha256}\`.`,
     '',
     `Evaluated ${report.batch.tickets} synthetic tickets (${report.batch.chaosTickets} flagged, ${report.batch.chaosRateActual * 100}% chaos) using seed ${report.batch.seed}.`,
     `Query text: ${report.queryInputMode}.`,

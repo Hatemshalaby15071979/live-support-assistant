@@ -15,10 +15,52 @@ OUTDIR = os.path.join(HERE, "titles")
 os.makedirs(OUTDIR, exist_ok=True)
 
 W, H = 1280, 720
-FONT_TITLE = ImageFont.truetype(r"C:\Windows\Fonts\arialbd.ttf", 48)
-FONT_ACTION = ImageFont.truetype(r"C:\Windows\Fonts\arial.ttf", 28)
-FONT_NUM = ImageFont.truetype(r"C:\Windows\Fonts\arialbd.ttf", 24)
-FONT_POS = ImageFont.truetype(r"C:\Windows\Fonts\ariali.ttf", 22)
+
+# Font resolution, cross-platform.
+#
+# This used to load four files from C:\Windows\Fonts directly, which is why the
+# walkthrough could only be re-rendered on Windows (docs/KNOWN_ISSUES.md §8).
+# Windows ships Arial; macOS and most Linux distributions ship DejaVu or
+# Liberation instead. The first file that exists wins, and PIL's bundled default
+# is the last resort so a bare host degrades in appearance rather than failing.
+#
+# SOP_TITLE_FONT_DIR overrides the search entirely, so a host with fonts somewhere
+# unusual is an environment variable rather than a code change.
+FONT_DIRS = [
+    os.environ.get("SOP_TITLE_FONT_DIR", ""),
+    r"C:\Windows\Fonts",
+    "/System/Library/Fonts",
+    "/System/Library/Fonts/Supplemental",
+    "/Library/Fonts",
+    "/usr/share/fonts/truetype/dejavu",
+    "/usr/share/fonts/truetype/liberation",
+    "/usr/share/fonts/truetype/liberation2",
+    "/usr/share/fonts",
+]
+
+FONT_FILES = {
+    "bold": ("arialbd.ttf", "Arial Bold.ttf", "DejaVuSans-Bold.ttf", "LiberationSans-Bold.ttf"),
+    "regular": ("arial.ttf", "Arial.ttf", "DejaVuSans.ttf", "LiberationSans-Regular.ttf"),
+    "italic": ("ariali.ttf", "Arial Italic.ttf", "DejaVuSans-Oblique.ttf", "LiberationSans-Italic.ttf"),
+}
+
+
+def load_font(role, size):
+    """Return the first font that exists for a role, else PIL's bundled default."""
+    for directory in FONT_DIRS:
+        if not directory:
+            continue
+        for name in FONT_FILES[role]:
+            path = os.path.join(directory, name)
+            if os.path.exists(path):
+                return ImageFont.truetype(path, size)
+    return ImageFont.load_default()
+
+
+FONT_TITLE = load_font("bold", 48)
+FONT_ACTION = load_font("regular", 28)
+FONT_NUM = load_font("bold", 24)
+FONT_POS = load_font("italic", 22)
 
 ACCENT = (0x4A, 0x90, 0xE2)
 BG_TOP = (0x0F, 0x0F, 0x1A)

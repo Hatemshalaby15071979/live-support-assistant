@@ -6,16 +6,14 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { requireChrome } from '../browser/find-chrome.mjs';
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../..');
 const SIMULATED = join(ROOT, 'tooling/eval/simulated-tenant');
 const FRAMES = join(HERE, 'frames');
 const AUDIO = join(HERE, 'audio');
 const VITE = join(ROOT, 'apps/web/node_modules/vite/bin/vite.js');
-const CHROME_CANDIDATES = [
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-];
 const TICKET_IDS = [
   'SIM-TICKET-00002',
   'SIM-TICKET-00123',
@@ -300,8 +298,7 @@ async function main() {
   requireFile(join(SIMULATED, 'corpus.json'));
   requireFile(join(SIMULATED, BENCHMARK_FILE));
   requireFile(join(SIMULATED, HOLDOUT_FILE));
-  const chromePath = CHROME_CANDIDATES.find(existsSync);
-  if (!chromePath) throw new Error('Google Chrome was not found in either standard Windows install path.');
+  const chromePath = requireChrome();
 
   const benchmark = JSON.parse(await readFile(join(SIMULATED, BENCHMARK_FILE), 'utf8'));
   const holdout = JSON.parse(await readFile(join(SIMULATED, HOLDOUT_FILE), 'utf8'));

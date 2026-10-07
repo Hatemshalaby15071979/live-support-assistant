@@ -16,6 +16,9 @@ import { spawn } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { setTimeout as sleep } from 'node:timers/promises';
 
+import { gitProvenance, provenanceLine } from '../eval/provenance.mjs';
+import { requireChrome } from './find-chrome.mjs';
+
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const dataDir = resolve(root, 'tooling/eval/simulated-tenant');
 const target = process.env.TARGET_URL ?? 'https://dist-omega-black-31.vercel.app/';
@@ -123,13 +126,7 @@ async function waitForRecordingEnter(message) {
   await new Promise((resolveInput) => process.stdin.once('data', resolveInput));
 }
 
-const chromeCandidates = [
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-  `${process.env.LOCALAPPDATA ?? ''}\\Google\\Chrome\\Application\\chrome.exe`,
-];
-const chromePath = chromeCandidates.find((candidate) => existsSync(candidate));
-if (chromePath === undefined) throw new Error('Chrome is required for deployed-path validation');
+const chromePath = requireChrome();
 
 const adminHeaders = {
   apikey: secretKey,
@@ -1102,6 +1099,9 @@ const report = {
 };
 
 report.failureRateIsLowOrStable = false;
+// Which revision produced these numbers. Both previously recorded deployed runs
+// omit the build SHA, so neither could be tied back to the code that measured it.
+report.git = await gitProvenance(root);
 report.limitations = [
   'This is a deployed-path validation using the public static Vercel app and the development Supabase project, not a real production customer deployment.',
   'Both isolated tenants, users, synthetic SOPs, query telemetry, and escalation evidence remain in the development database and are visibly tagged data_mode: simulated.',
@@ -1116,6 +1116,8 @@ const markdown = [
   `# ${reportBase} — SIMULATED DATA deployed-path evaluation`,
   '',
   `**data_mode: "simulated" throughout.** The ${report.totals.tickets} WaveCast Creator Care ticket(s), their expected decisions, and isolated policy tenant(s) are fictional evaluation data.`,
+  '',
+  provenanceLine(report.git),
   '',
   `This ran through the public app at ${report.target}, backed by Supabase project ${projectRef}, which is the development database. It is deployed-path evidence, not production customer or adoption evidence.`,
   '',
