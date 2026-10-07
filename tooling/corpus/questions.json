@@ -97,13 +97,14 @@
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
       "label_source": "owner",
-      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label_basis": "Owner's separate relabel decision on 2026-10-07: chose [A], the corpus answers via declined-card.md. Evidence was a full-text keyword search over the re-fetched T04 corpus. The originally proposed document (manage-payment-info.md) named a different page; the owner designated declined-card.md as the answering document. Separate from the OQ-002 7/14 spot-check verdict; does not change that tally.",
+      "label_evidence": "full-text-keyword-search",
       "label": "answerable",
       "confidence": "high",
       "acceptable_documents": [
-        "content/billing/how-tos/set-up-payment/manage-payment-info.md"
+        "content/billing/how-tos/troubleshooting/declined-card.md"
       ],
-      "reasoning": "Managing and removing a payment method is this document. Confirmed in the human-review packet.",
+      "reasoning": "Owner confirmed on 2026-10-07 full-text evidence: declined-card.md answers — it carries the only passage that addresses an expired card directly (check expiration, Update payment method, if saved card has expired click Edit, enter new card details).",
       "split": "calibration"
     },
     {
