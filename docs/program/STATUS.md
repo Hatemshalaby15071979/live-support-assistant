@@ -4,7 +4,7 @@ One row per phase. Updated at every phase end. Values: `done` | `in progress` | 
 
 | Phase | Scope | Status | Gate | Report |
 | --- | --- | --- | --- | --- |
-| P0 | Integrity and baseline | **done** | `pnpm run verify` 8/8; ticket validator OK; D7 red-then-green; `docs/BASELINE.md` complete. SQL suites `not re-run` (host sandbox). | `docs/program/phase-0-report.md` |
+| P0 | Integrity and baseline | **done** | `pnpm run verify` 10/10; ticket validator OK; D7 red-then-green (client and server); `docs/BASELINE.md` complete. SQL suites `not re-run` (host sandbox). | `docs/program/phase-0-report.md` |
 | P1 | Licensed corpus and gold set | not started | `tooling/corpus/verify-corpus.mjs` exits 0 | — |
 | P2 | Market Twin (smoke + standard) | not started | `run-market.mjs --seed 20261006 --rung smoke` exits 0 | — |
 | P3 | Retrieval at 500 | not started | per-rung/per-language tables; D3/D4 reported honestly | — |
@@ -28,9 +28,14 @@ _(none yet)_
 
 | Item | Why it is open | Where |
 | --- | --- | --- |
-| SQL suites not re-run | Host sandbox blocks the Docker binary; four counts remain carried from 2026-09-27 | `docs/BASELINE.md` §6 |
+| SQL suites not re-run | Host sandbox blocks the Docker binary; four counts remain carried from 2026-09-27. **Owner will run `verify:db` outside the sandbox and paste the verdict.** | `docs/BASELINE.md` §6 |
 | Deployed path not re-run | Needs the hosted project and public deployment — Zone R | `docs/BASELINE.md` §6 |
-| Deployed/local divergence not reproduced | Needs the deployed path. P0 removed the mechanism, not the reproduction | `docs/program/phase-0-report.md` |
+| Deployed/local divergence not reproduced | Needs the deployed path. P0 removed the mechanism, not the reproduction. Tracked as probe **MC-09** in P5 | `docs/program/P5_PROBES.md` |
+
+## Owner follow-ups after P0
+
+Completed 2026-10-07, recorded in `docs/program/DECISIONS.md`: sharp provenance reconciled ·
+dependency-gate negative controls · guard-bypass logging rule · server half of D7.
 
 ## Branch map
 

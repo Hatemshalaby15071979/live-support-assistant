@@ -99,6 +99,18 @@ const SUITES = [
     script: 'tooling/conflicts/verify-publish-conflict-block.mjs',
     verdict: 'PUBLISH CONFLICT BLOCK OK',
   },
+  {
+    key: 'audit-gate',
+    name: 'dependency gate negative controls',
+    script: 'tooling/verify-audit-gate.mjs',
+    verdict: 'AUDIT GATE VERIFICATION OK',
+  },
+  {
+    key: 'publish-model',
+    name: 'publish-path model policy (server half of D7)',
+    script: 'tooling/verify-publish-model-policy.mjs',
+    verdict: 'PUBLISH MODEL POLICY OK',
+  },
 ];
 
 const requested = process.argv.slice(2);

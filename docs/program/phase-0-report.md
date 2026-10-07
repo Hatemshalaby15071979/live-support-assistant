@@ -14,12 +14,16 @@ itself as a caveat.
 
 | Gate command | Result |
 | --- | --- |
-| `pnpm run verify` | **8 of 8 suites passed** |
+| `pnpm run verify` | **10 of 10 suites passed** (8 at the P0 measurement; 2 added by the follow-ups below) |
 | `node tooling/sync/verify-sync.mjs` | **37 checks, 0 failures** (was 31) |
+| `node tooling/verify-audit-gate.mjs` | **10 checks, 0 failures** |
+| `node tooling/verify-publish-model-policy.mjs` | **24 checks, 0 failures** |
 | `node tooling/eval/simulated-tenant/verify-tickets.mjs …/chaos-500.json` | **`SIMULATED DATA VALIDATION OK`** |
 | `pnpm run audit` | **0 advisories**, empty baseline, gate passes |
-| D7 test, before the fix | **FAILED — 4 failures** |
-| D7 test, after the fix | **PASSED — 37 checks, 0 failures** |
+| D7 client test, before the fix | **FAILED — 4 failures** |
+| D7 client test, after the fix | **PASSED — 37 checks, 0 failures** |
+| D7 server test, before the fix | **FAILED — 3 failures** |
+| D7 server test, after the fix | **PASSED — 24 checks, 0 failures** |
 | `pnpm run verify:db` | **NOT RE-RUN** — host sandbox blocks the Docker binary |
 
 ## What changed

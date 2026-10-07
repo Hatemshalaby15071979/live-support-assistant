@@ -34,16 +34,38 @@ preserve the baseline note across `--update`.
 | Package builds | `pnpm -r --filter='!@sop/desktop' run build` | Green: `@sop/core`, `@sop/embedder`, `@sop/sync`, `@sop/vector-store`. |
 | Web build | `pnpm --filter @sop/web run build` | Green after clearing `apps/web/dist` — see §5. |
 | Web typecheck | `pnpm --filter @sop/web run typecheck` | Exit 0. |
-| **JS verification gate** | `pnpm run verify` | **8 of 8 suites passed.** |
+| **JS verification gate** | `pnpm run verify` | **10 of 10 suites passed.** (8 at the P0 measurement; 2 added by the follow-ups below.) |
 | Sync suite detail | `node tooling/sync/verify-sync.mjs` | **37 checks, 0 failures** (was 31 — the 6 added checks are D7's). |
+| Dependency-gate negative controls | `node tooling/verify-audit-gate.mjs` | **10 checks, 0 failures** |
+| Publish model policy | `node tooling/verify-publish-model-policy.mjs` | **24 checks, 0 failures** |
+| Edge-function syntax | `ts.transpileModule` over both functions | 0 syntax errors. **Syntax only — Deno is not installed on this host, so there is no typecheck.** |
 | **Dependency gate** | `pnpm run audit` | **0 production advisories.** Gate passes against an empty baseline. |
 | Pinned batch integrity | `node tooling/eval/simulated-tenant/verify-tickets.mjs …/chaos-500.json` | **`SIMULATED DATA VALIDATION OK`** |
 | Batch SHA-256 | (computed) | `717c40dcc7d1f31b51ea32b0b1bfa4bf418699167a5c5c7e2736cbea90191d96` — matches the pinned `717c40dc…`. The batch was not modified. |
 | SQL verification suites | `pnpm run verify:db` | **NOT RE-RUN** — see §6. |
 
-The eight JS suites, individually: legacy parity (keyword rule) · encrypted sync protocol ·
+The ten JS suites, individually: legacy parity (keyword rule) · encrypted sync protocol ·
 persistence adapters · key rotation and revocation · confidence gate and manual review ·
-telemetry queue · conflicting-procedure lint · publish-path conflict block (option a).
+telemetry queue · conflicting-procedure lint · publish-path conflict block (option a) ·
+dependency gate negative controls · publish-path model policy (server half of D7).
+
+### 2.1 Owner follow-ups, 2026-10-07
+
+Four follow-ups were completed after the P0 measurement. They are recorded in
+`docs/program/DECISIONS.md`; in brief:
+
+1. **`sharp` provenance reconciled.** `pnpm why sharp` → `0.35.5`. Pre-change (`origin/main`)
+   was `0.35.4`; `@huggingface/transformers` is `4.3.0` in both. The G9 commit's phrase "the
+   lockfile did not change" was imprecise — the lockfile changed by 867 packages; what did not
+   change was sharp's *resolved version*. The move to 0.35.5 was the separate, deliberate
+   override in `82cd4d8`.
+2. **Dependency-gate negative controls.** New harness; injected advisory must fail, empty
+   baseline must pass. 10 checks.
+3. **Standing rule: guard bypasses are logged before the command.** The P0 pass's bypasses are
+   logged retroactively, with the reason each is not a real bypass of the protection it clears.
+4. **Server half of D7.** The publisher no longer spreads `body.model`; a contradicting model is
+   refused with HTTP 400. 24 checks, red then green. A model-confusion category (MC-01…MC-09) is
+   added to `docs/program/P5_PROBES.md`.
 
 ---
 
