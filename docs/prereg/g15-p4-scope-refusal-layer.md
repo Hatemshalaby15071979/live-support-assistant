@@ -106,3 +106,27 @@ wording above is unchanged; this amendment supplies the floor it deferred.
   `GATE_SPLIT=calibration|held-out node tooling/corpus/calibrate-gate.mjs` at the `GATE_CONFIGS`
   thresholds (unchanged). Labels are agent-produced and UNVERIFIED; g15 results are
   agent-label-relative and establish no owner-backed D3 claim.
+
+---
+
+## Closure — 2026-10-07: **NEGATIVE RESULT — CLOSED — NOT ADOPTED**
+
+Owner decision (Hatem). The original preregistration and its R3 amendment above are preserved verbatim;
+nothing is rewritten. Final results: `tooling/refusal/g15-results.json` (run-time HEAD `f4745060`,
+model `Xenova/all-MiniLM-L6-v2`, A4 no-content assertion OK; reproduced deterministically from the
+committed harness at `2175879` — every metric byte-identical).
+
+- **T01 (recorded separately so it is never read as a safety win):** R3 **PASS** — the selected
+  configuration (t=0.66, m=0.10, both seeds) reduced wrong-proc (2→0 on calibration) with 8.33 pp /
+  1-question recall loss on calibration and 0 pp / 0 questions on held-out. **Not adopted**: it
+  provides no unsafe reduction (unsafe 1→1 on calibration, 0→0 on held-out) and adds refusal
+  complexity for no safety gain.
+- **T04: R3 NOT MET** — no qualifying configuration; minimum recall loss across the whole sweep
+  29.63 pp (data_mode: calibration, ans N=27, OOS N=75).
+- **T05: R3 NOT MET** — no qualifying configuration; minimum recall loss 14.29 pp (2 questions of 14):
+  every served-answerable margin is < 0.10, so the margin signal has no headroom on this tenant.
+- **Conclusion:** no fleet-useful operating point within the R3 guard. The experiment is closed
+  negative; retrieval quality is the current limiting factor; any retrieval change requires its own
+  preregistered experiment (RX-03 draft: `docs/prereg/rx03-retrieval-quality.md`). All conclusions are
+  agent-label-relative; no owner-backed D3 claim is made. The T01 configuration is NOT wired into any
+  shipped code path.

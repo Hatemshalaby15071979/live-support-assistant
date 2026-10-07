@@ -4,6 +4,32 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-07 (latest) — g15 CLOSED as a negative experiment; NOT ADOPTED; RX-03 drafted
+
+**Zone.** Y (governance). **Owner decision (Hatem): CLOSE g15 as a negative experiment. Do NOT adopt
+the T01 configuration.**
+
+"g15 P4 scope/refusal layer was evaluated under preregistered conditions. No fleet-useful operating
+point was found within the R3 recall-loss guard. T01 had one qualifying configuration but reduced
+wrong-proc without reducing unsafe and was not adopted. T04 and T05 had no qualifying configuration.
+The experiment is closed negative. Retrieval quality is the current limiting factor; any retrieval
+change requires its own preregistered experiment."
+
+- Result frozen: `tooling/refusal/g15-results.json` (run-time HEAD `f4745060`, model
+  `Xenova/all-MiniLM-L6-v2`, data_mode calibration/held-out, A4 no-content OK). Reproduced
+  deterministically from the committed harness at HEAD `2175879` — every metric byte-identical; only
+  the run-provenance fields (`commit`, `generated_at`) differ on regeneration.
+- T01 recorded separately so it is never read as a safety win: R3 PASS, unsafe unchanged, wrong-proc
+  reduced, **not adopted** (no unsafe reduction; adds refusal complexity).
+- T04 and T05: **R3 NOT MET** (no qualifying configuration; min sweep loss 29.63 / 14.29 pp).
+- Closure recorded in: `KNOWN_ISSUES.md` §14, `docs/prereg/rejected-experiments.md` (G15 row +
+  RX-03 disposition), and the prereg's closure amendment. Historical run not rewritten.
+- All conclusions are agent-label-relative (0 `label_source=owner` rows); no owner-backed D3 claim.
+- **RX-03** (retrieval quality only) now has a DRAFT prereg: `docs/prereg/rx03-retrieval-quality.md`.
+  It is **NOT RUN**; g15 is closed and cannot be silently combined with it.
+
+---
+
 ## 2026-10-07 (latest) — Corpus verifier went red on expanded gold set; historical "exit gate 0" claims qualified; repaired at `938ca32`
 
 **Zone.** Y (governance). **This note is a historical correction only** — it does not rewrite old

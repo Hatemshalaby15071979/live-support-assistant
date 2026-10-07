@@ -409,3 +409,20 @@ T05 stays `calibration_status=failed-heldout`, **D1 NOT MET**, until the new hel
 unsafe at its operating threshold. The bi-encoder validation on the new split is pending (heavy compute;
 run in background). Until that run reports, no production claim is made for any tenant and the thresholds
 remain provisional per `DECISIONS.md`.
+
+### g15 closure (2026-10-07) — P4 scope/refusal layer: CLOSED NEGATIVE, NOT ADOPTED
+
+g15 P4 scope/refusal layer was evaluated under preregistered conditions
+(`docs/prereg/g15-p4-scope-refusal-layer.md` + the 2026-10-07 R3 amendment; harness
+`tooling/refusal/run-g15.mjs`, results `tooling/refusal/g15-results.json`, model
+`Xenova/all-MiniLM-L6-v2`, run-time HEAD `f4745060`). No fleet-useful operating point was found within
+the R3 recall-loss guard (≤10 pp answerable-recall loss vs the gate-alone baseline, per tenant, on
+both calibration and held-out; lost-question count printed beside the pp figure). T01 had one
+qualifying configuration (t=0.66/m=0.10, both seeds) but it reduced wrong-proc (2→0) without reducing
+unsafe (1→1) and was **not adopted**. T04 and T05 had no qualifying configuration (minimum recall loss
+across the whole sweep: T04 29.63 pp, T05 14.29 pp — on T05 every served-answerable margin is < 0.10).
+**The experiment is closed negative.** Retrieval quality is the current limiting factor; any retrieval
+change requires its own preregistered experiment (RX-03 draft: `docs/prereg/rx03-retrieval-quality.md`).
+All g15 conclusions are agent-label-relative (0 `label_source=owner` rows); no owner-backed D3 claim
+is made. Data: `data_mode=calibration` (ans N 12/27/14, OOS N 75/75/81) and `data_mode=held-out`
+(ans N 6/11/11, OOS N 33/30/25); held-out validated exactly once after calibration selection.
