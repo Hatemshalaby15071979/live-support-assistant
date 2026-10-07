@@ -1,0 +1,114 @@
+{
+  "note": "Licences a corpus source may carry. Anything not listed here is excluded, including every licence whose id is absent rather than merely unlisted. V2 §5 P1 fixes the shape of this list: public domain and CC0, CC-BY, CC-BY-SA, MIT/Apache/BSD-licensed documentation, and government works whose terms permit reuse. NonCommercial and NoDerivatives are excluded outright — not downgraded, not flagged, excluded — because a corpus that cannot be reused commercially cannot back a commercial product, and a corpus that cannot be derived from cannot be turned into procedures.",
+  "excluded_ids": [
+    "CC-BY-NC-4.0",
+    "CC-BY-NC-3.0",
+    "CC-BY-NC-2.5",
+    "CC-BY-NC-SA-4.0",
+    "CC-BY-NC-ND-4.0",
+    "CC-BY-ND-4.0",
+    "CC-BY-ND-3.0",
+    "CC-BY-NC-ND-3.0",
+    "proprietary",
+    "all-rights-reserved",
+    "unlicensed"
+  ],
+  "excluded_by_policy": [
+    {
+      "match": "NonCommercial",
+      "reason": "The product is commercial. A corpus carrying NC terms cannot back it, and the restriction survives every downstream copy."
+    },
+    {
+      "match": "NoDerivatives",
+      "reason": "A procedure corpus is a derivative work by construction: documents are split into passages, summarised, and paired with suggested replies. ND forbids exactly that."
+    },
+    {
+      "match": "unclear or unstated",
+      "reason": "An unstated licence is not a permissive one. Absence of terms is treated as all rights reserved, which is the default in copyright."
+    }
+  ],
+  "allowed": {
+    "CC0-1.0": {
+      "name": "Creative Commons Zero 1.0 Universal",
+      "redistribute": true,
+      "attribution_required": false,
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "public-domain": {
+      "name": "Public domain",
+      "redistribute": true,
+      "attribution_required": false,
+      "note": "Includes works of the US federal government under 17 U.S.C. §105."
+    },
+    "CC-BY-4.0": {
+      "name": "Creative Commons Attribution 4.0 International",
+      "redistribute": true,
+      "attribution_required": true,
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "CC-BY-3.0": {
+      "name": "Creative Commons Attribution 3.0 Unported",
+      "redistribute": true,
+      "attribution_required": true,
+      "url": "https://creativecommons.org/licenses/by/3.0/"
+    },
+    "CC-BY-2.5": {
+      "name": "Creative Commons Attribution 2.5 Generic",
+      "redistribute": true,
+      "attribution_required": true,
+      "url": "https://creativecommons.org/licenses/by/2.5/"
+    },
+    "CC-BY-SA-4.0": {
+      "name": "Creative Commons Attribution-ShareAlike 4.0 International",
+      "redistribute": true,
+      "attribution_required": true,
+      "share_alike": true,
+      "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "note": "ShareAlike propagates to derived corpora. A corpus built from a CC-BY-SA source must itself carry CC-BY-SA, which is recorded in its attribution file."
+    },
+    "CC-BY-SA-2.5": {
+      "name": "Creative Commons Attribution-ShareAlike 2.5 Generic",
+      "redistribute": true,
+      "attribution_required": true,
+      "share_alike": true,
+      "url": "https://creativecommons.org/licenses/by-sa/2.5/"
+    },
+    "MIT": {
+      "name": "MIT License",
+      "redistribute": true,
+      "attribution_required": true,
+      "url": "https://opensource.org/license/mit"
+    },
+    "Apache-2.0": {
+      "name": "Apache License 2.0",
+      "redistribute": true,
+      "attribution_required": true,
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "BSD-3-Clause": {
+      "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+      "redistribute": true,
+      "attribution_required": true,
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "BSD-2-Clause": {
+      "name": "BSD 2-Clause \"Simplified\" License",
+      "redistribute": true,
+      "attribution_required": true,
+      "url": "https://opensource.org/license/bsd-2-clause"
+    },
+    "PSF-2.0": {
+      "name": "Python Software Foundation License 2.0",
+      "redistribute": true,
+      "attribution_required": true,
+      "url": "https://opensource.org/license/python-2.0"
+    },
+    "OGL-3.0": {
+      "name": "Open Government Licence v3.0",
+      "redistribute": true,
+      "attribution_required": true,
+      "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+      "note": "Crown copyright. Attribution statement required; the attribution file carries the exact wording the licence prescribes."
+    }
+  }
+}
