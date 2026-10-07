@@ -36,7 +36,15 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const baselinePath = resolve(root, 'tooling/audit-baseline.json');
+/**
+ * The tolerance list.
+ *
+ * `SOP_AUDIT_BASELINE` overrides the path so the negative-control harness can
+ * exercise pass and fail cases without touching the committed baseline. Same
+ * reasoning as `SOP_AUDIT_JSON` below: a gate that can only be tested by editing
+ * the file it protects is a gate that gets tested rarely. CI never sets either.
+ */
+const baselinePath = process.env.SOP_AUDIT_BASELINE ?? resolve(root, 'tooling/audit-baseline.json');
 const update = process.argv.includes('--update');
 
 const SEVERITY_RANK = { info: 0, low: 1, moderate: 2, high: 3, critical: 4 };
