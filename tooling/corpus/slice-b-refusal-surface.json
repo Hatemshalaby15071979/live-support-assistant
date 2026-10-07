@@ -1,0 +1,28 @@
+{
+  "note": "Refusal surface for T01 and T05. The gate calibration had no out_of_scope rows for either tenant, so their confidence gates could only be assessed on false refusals — nothing tested whether they would wrongly answer an unanswerable question. These rows fix that.",
+  "slice": "B",
+  "origin": "derived-style",
+  "data_mode": "simulated",
+  "label_basis": "agent, single pass. Each row names a topic and the topic was searched for across the tenant corpus; a row was only labelled out_of_scope after the search came back empty. Not owner validation.",
+  "scope_note": "Per KNOWN_ISSUES §11, out_of_scope is TENANT-SCOPED. A row marked out_of_scope for T01 may be answerable for T04 or T05, and that does not make the label wrong. Rows below are out_of_scope for the named tenant; several are out of scope for the whole fleet, which is noted where it applies.",
+  "rows": [
+    { "id": "SB-T01R-01", "tenant": "T01-platform-operations-style", "text": "how do i get a refund on my kubernetes subscription", "reason": "Billing. T01 is the Kubernetes tasks documentation; it contains no billing, pricing or subscription material." },
+    { "id": "SB-T01R-02", "tenant": "T01-platform-operations-style", "text": "my kubernetes account has been suspended, how do i appeal", "reason": "Account policy. T01 documents cluster tasks, not accounts or appeals." },
+    { "id": "SB-T01R-03", "tenant": "T01-platform-operations-style", "text": "what is the phone number for kubernetes support", "reason": "Support contact. T01 has no contact-channel documentation." },
+    { "id": "SB-T01R-04", "tenant": "T01-platform-operations-style", "text": "how much does a kubernetes certification cost", "reason": "Training and pricing. Out of scope for the whole fleet." },
+    { "id": "SB-T01R-05", "tenant": "T01-platform-operations-style", "text": "how do i reset the password on my kubernetes account", "reason": "Account credentials. Kubernetes tasks documentation has no account model." },
+    { "id": "SB-T01R-06", "tenant": "T01-platform-operations-style", "text": "is kubernetes gdpr compliant and where is my data stored", "reason": "Compliance and data residency. Not covered by the tasks documentation." },
+    { "id": "SB-T01R-07", "tenant": "T01-platform-operations-style", "text": "what is the salary range for a kubernetes engineer", "reason": "Employment. Out of scope for the whole fleet." },
+    { "id": "SB-T01R-08", "tenant": "T01-platform-operations-style", "text": "how do i report a security vulnerability in kubernetes", "reason": "Disclosure process. T01 is the tasks tree, not the project's contribution or security policy." },
+
+    { "id": "SB-T05R-01", "tenant": "T05-policy-style", "text": "how do i change my password", "reason": "Account how-to. T05 is site policy, not account management — this is T04 territory, so it is out_of_scope for T05 specifically and NOT out of scope for the fleet." },
+    { "id": "SB-T05R-02", "tenant": "T05-policy-style", "text": "how much does github pro cost", "reason": "Pricing. T05 carries terms and policies, not price lists." },
+    { "id": "SB-T05R-03", "tenant": "T05-policy-style", "text": "how do i delete a repository", "reason": "Product how-to. Out of scope for T05 specifically." },
+    { "id": "SB-T05R-04", "tenant": "T05-policy-style", "text": "my card was declined, what should i do", "reason": "Billing support. T04 territory, not policy." },
+    { "id": "SB-T05R-05", "tenant": "T05-policy-style", "text": "how do i create a new branch", "reason": "Git how-to. Nothing to do with site policy." },
+    { "id": "SB-T05R-06", "tenant": "T05-policy-style", "text": "why is my actions workflow failing", "reason": "CI troubleshooting. Out of scope for the whole fleet's policy tenant." },
+    { "id": "SB-T05R-07", "tenant": "T05-policy-style", "text": "how do i install github desktop on windows", "reason": "Product installation. Out of scope for T05." },
+    { "id": "SB-T05R-08", "tenant": "T05-policy-style", "text": "how do i contact github support by phone", "reason": "Support contact channel. T05 has no contact-channel documentation." }
+  ],
+  "summary": { "rows": 16, "t01": 8, "t05": 8 }
+}

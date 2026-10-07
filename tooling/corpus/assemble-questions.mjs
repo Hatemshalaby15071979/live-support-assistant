@@ -42,6 +42,7 @@ const ownerLabels = read('slice-b-owner-labels.json');
 const expansion = read('slice-b-expansion.json');
 const sliceA = read('slice-a.json');
 const sliceAT05 = read('slice-a-t05-expansion.json');
+const refusalSurface = read('slice-b-refusal-surface.json');
 
 /** Every document path per tenant, for verification. */
 const tenantDocuments = new Map();
@@ -140,6 +141,26 @@ for (const row of expansion.rows) {
     confidence: row.confidence,
     acceptable_documents: row.documents,
     reasoning: 'Authored against the named document, which was verified to exist before the row was written.',
+    split: splitFor(row.id),
+  });
+}
+
+for (const row of refusalSurface.rows) {
+  // No acceptable documents: the label is that the corpus cannot answer it.
+  verifyDocuments(row.tenant, []);
+  questions.push({
+    id: row.id,
+    text: row.text,
+    tenant: row.tenant,
+    slice: 'B',
+    origin: refusalSurface.origin,
+    data_mode: refusalSurface.data_mode,
+    label_source: 'agent-agreed',
+    label_basis: refusalSurface.label_basis,
+    label: 'out_of_scope',
+    confidence: 'high',
+    acceptable_documents: [],
+    reasoning: row.reason,
     split: splitFor(row.id),
   });
 }

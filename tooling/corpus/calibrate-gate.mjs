@@ -45,8 +45,12 @@ import { createEmbedder } from '../../packages/embedder/dist/embedder.js';
 const here = dirname(fileURLToPath(import.meta.url));
 
 const TENANTS = ['T01-platform-operations-style', 'T04-customer-support-style', 'T05-policy-style'];
+// 0.40-0.52 in 0.02 steps as requested, plus 0.53 because that is the threshold
+// selected for T04 and it must appear in the same table as the range it was
+// chosen from rather than being quoted from a separate scan.
 const THRESHOLDS = [];
 for (let t = 0.4; t <= 0.5201; t += 0.02) THRESHOLDS.push(Number(t.toFixed(2)));
+THRESHOLDS.push(0.53);
 
 const BATCH = 32;
 

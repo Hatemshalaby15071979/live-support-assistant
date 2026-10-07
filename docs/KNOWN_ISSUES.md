@@ -176,3 +176,60 @@ tenant's corpus answers it."**
 twelve `out_of_scope` rows have a mean top-1 similarity of **0.375** at the MVR and **0.413** at the
 500-rung, against **0.513** and **0.537** for the twenty answerable rows. The two groups separate, and
 the separation is the signal a confidence gate would act on.
+
+## 12. T04's confidence gate is set at 0.53, and it buys safety with a large refusal cost
+
+**T04's confidence-gate threshold is 0.53**, chosen to enforce zero unsafe answers.
+
+`tooling/corpus/calibrate-gate.mjs`, calibration split, 500-rung, model `Xenova/all-MiniLM-L6-v2`.
+
+**At threshold 0.53, T04 measures:**
+
+| Metric | Value |
+| --- | --- |
+| **Unsafe answers** (an `out_of_scope` question served) | **0** |
+| Precision | **50.0%** |
+| Recall | **37.0%** |
+| False-refusal rate | **25.9%** (7 of 27 answerable questions refused) |
+
+**A correction to the figure this was specified with.** The instruction recorded "~43.5% precision";
+the measured precision **at 0.53 is 50.0%**. 43.5% is the value at **0.52**, one step below. The
+difference is the threshold, not a disagreement — both are in `gate-calibration.json`.
+
+**The cause is dense-retrieval quality, not the gate.** T04's precision is 37.5% at 0.40 and 50.0% at
+0.53 — **more than half of served answers name the wrong document across the whole range**. A
+threshold cannot fix that: raising it refuses more traffic without making the served answers correct.
+The gate is doing its job; the retriever underneath it is the limit. `MiniLM-L6-v2` at 500-procedure
+scale does not separate T04's account-and-billing procedures well enough for a higher precision.
+
+**The cost is real and should be quoted with the number.** At 0.53, **one answerable question in four
+is refused**. That is the price of zero-unsafe, and it is a product decision, not a technical one.
+
+## 13. 0.53 is a T04 threshold, not a fleet threshold
+
+**The same threshold does not give zero-unsafe answers for T01 or T05, and the difference is large.**
+
+Every tenant's zero-unsafe threshold, measured on the calibration split at the 500-rung:
+
+| Tenant | answerable | out_of_scope | unsafe **at 0.53** | zero-unsafe at | cost at its own threshold |
+| --- | ---: | ---: | ---: | ---: | --- |
+| T01 | 12 | 6 | **3** | **0.68** | 1 false refusal of 12 |
+| T04 | 27 | 9 | **0** | **0.53** | 7 of 27 (25.9%) |
+| T05 | 14 | 6 | **1** | **0.61** | 8 of 14 (57.1%) |
+
+**A single fleet-wide 0.53 would leave unsafe answers in two of three tenants.** The zero-unsafe
+thresholds span **0.53 to 0.68** — a 0.15 spread — because the three corpora sit on different
+similarity scales. T01's most confidently-answered unanswerable question scores **0.6731**; T05's
+scores **0.6020**.
+
+**This is why V2 P3 requires per-tenant thresholds, and the measurement now shows how far apart they
+have to be.** Pooling the tenants and picking one number would either serve unsafe answers in T01 and
+T05, or refuse most of T05's traffic for no benefit to T04.
+
+**T05's cost is the worst of the three** — 57.1% false refusals at its own zero-unsafe threshold, on
+only 14 answerable questions. That is a small sample and the figure will move; it is recorded as
+measured rather than smoothed.
+
+**Every tenant now has a refusal surface**, so no gate is being assessed on answerable questions
+alone. Before this, T01 and T05 had zero `out_of_scope` rows in the calibration split and their gates
+could only be assessed on false refusals.
