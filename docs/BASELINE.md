@@ -42,7 +42,7 @@ preserve the baseline note across `--update`.
 | **Dependency gate** | `pnpm run audit` | **0 production advisories.** Gate passes against an empty baseline. |
 | Pinned batch integrity | `node tooling/eval/simulated-tenant/verify-tickets.mjs …/chaos-500.json` | **`SIMULATED DATA VALIDATION OK`** |
 | Batch SHA-256 | (computed) | `717c40dcc7d1f31b51ea32b0b1bfa4bf418699167a5c5c7e2736cbea90191d96` — matches the pinned `717c40dc…`. The batch was not modified. |
-| SQL verification suites | `pnpm run verify:db` | **NOT RE-RUN** — see §6. |
+| SQL verification suites | `pnpm run verify:db` | **All four suites OK** — executed by the owner outside the sandbox, 2026-10-07. See §6. |
 
 The ten JS suites, individually: legacy parity (keyword rule) · encrypted sync protocol ·
 persistence adapters · key rotation and revocation · confidence gate and manual review ·
@@ -81,7 +81,7 @@ The carried figures in V2 §8 are the ones this pass was required to re-measure.
 | 48-procedure recall: 84/302 (27.8%) at 0.18; en 62.1% vs es 32.0% / pt 31.0% | Not re-run. This is P3's measurement, on the `evidence/scale-rung` corpus. |
 | 6 of 52 out-of-scope public questions falsely accepted at 0.18 | Not re-run. P4's target. |
 | Evidence base: 47 distinct messages across 7 procedures | Not re-run. P1 replaces this base. |
-| Suites: gate 10/10, sync 31/0, persistence 33/0, rotation 13/0, queue 35/0, RBAC 99/0, ingest 27/0, RLS bypass 40/0, retention 16/0 | JS suites re-run green (§2). **Sync is now 37/0, not 31/0** — six checks were added by D7. The SQL suites could not be re-run (§6), so RBAC 99/0, ingest 27/0, RLS bypass 40/0 and retention 16/0 remain **carried, not re-measured**. |
+| Suites: gate 10/10, sync 31/0, persistence 33/0, rotation 13/0, queue 35/0, RBAC 99/0, ingest 27/0, RLS bypass 40/0, retention 16/0 | JS suites re-run green (§2). **Sync is now 37/0, not 31/0** — six checks were added by D7. **The SQL suites were re-run by the owner** (§6) and reproduce their carried counts exactly: RBAC 99/99, telemetry ingest 27/27, RLS bypass 40/40, retention OK. |
 
 **No carried figure was contradicted by a re-measurement.** The one change is the sync check
 count, and it moved for a stated reason.
@@ -115,28 +115,39 @@ session does not re-diagnose it.
 | Vite cannot empty `dist` | `rmSync` blocked by the host's safe-delete shim inside `prepareOutDir` | `rm -rf apps/web/dist` first, then build. Build itself is green. |
 | pnpm store cleanup blocked | `[safe-delete][SAFE_DELETE_BULK_GUARD_ERROR] state lock timeout` | `NODE_OPTIONS=""` for the install, which drops the shim preload. |
 | **`spawnSync` fails for any child** | `EBUSY` spawning `node.exe` **and** `cmd.exe` | `tooling/audit-gate.mjs` now accepts its input via `SOP_AUDIT_JSON`. See §8. |
-| Sandbox blocks forking a shell | `dofork: child -1 - CreateProcessW failed … errno 13` | Not worked around — see §6. |
+| Sandbox blocks forking a shell | `dofork: child -1 - CreateProcessW failed … errno 13` | Not worked around — see §6. The owner ran `verify:db` outside the sandbox instead. |
+| Sandbox blocks the Docker binary | Security Center read rule on `…\Docker\resources\bin\docker`; `/usr/bin/env: bad interpreter: Permission denied` | None available in-sandbox. `verify:db` must be run outside it. |
 
 ---
 
-## 6. Not re-run, and why
+## 6. The SQL suites — re-run by the owner, 2026-10-07
 
-**The three SQL suites did not run.** `pnpm run verify:db` applies all migrations and runs
-`rbac_matrix.sql`, `phase5_telemetry.sql`, `rls_bypass.sql` and `phase8_retention.sql`.
+**Executed by the owner outside the sandbox; the output is recorded here as pasted.** I could
+not run them: the host's sandbox blocks the Docker binary (see §5). No substitute database was
+used, and none is proposed — the run is PostgreSQL via the repository's own
+`tooling/db/verify-phase7.sh`.
 
-- Docker is running and the `sop-pg-test` container was reused; the server accepted connections
-  and migrations began applying.
-- The script then failed invoking the Docker binary: `/usr/bin/env: bad interpreter: Permission
-  denied`, and the host's Security Center reports a read rule on
-  `C:\Program Files\Docker\Docker\resources\bin\docker`.
+**Result: all four suites reported OK.**
 
-The cause is host sandbox policy, not a database defect. Per the V2 failure playbook this is
-recorded as **`not re-run`** rather than omitted or asserted. The SQL suites therefore last
-passed on **2026-09-27** (recorded in `AGENTS.md`) and those four counts are carried, not
-re-measured, in §3.
+| Suite | Probes | Verdict |
+| --- | --- | --- |
+| `phase2_rbac` — RBAC matrix | **99/99** | `RBAC matrix OK — 99/99 probes passed` |
+| `phase5_telemetry` — telemetry ingest matrix | **27/27** | `Telemetry ingest matrix OK — 27/27 probes passed` |
+| `phase7_rls_bypass` — RLS bypass matrix | **40/40** | `RLS bypass matrix OK — 40/40 probes passed` |
+| `phase8_retention` — retention | passed | section 1 reported; the run closes with `Phase 7 verification complete: all four suites reported OK` |
 
-**The deployed path was not re-run.** It requires the hosted Supabase project and the public
-deployment — Zone R. The G11 commit-SHA work (§7) makes the next deployed run traceable.
+**What this changes.** Four counts that were carried from 2026-09-27 are now re-measured, and
+they reproduce **exactly** — 99, 27 and 40 unchanged. No drift. The RBAC sections break down as
+bundle publish path 4/4, bundle publishing 4/4, device enrolment 2/2, escalations 13/13,
+privilege audit 34/34, SOP content roles 10/10, telemetry append-only 10/10, telemetry
+idempotency 5/5, tenant isolation 12/12, threshold audit 5/5 — summing to 99.
+
+**One honest gap in the record.** The pasted output shows the retention suite's section 1 and its
+verdict line, but not its per-check count. Retention is therefore **verified OK with its count
+carried at 16**, not re-measured at 16. Recording the distinction costs nothing and is the
+difference between a measurement and an assumption.
+
+**The deployed path was re-run separately** — see §7.2.
 
 ---
 
@@ -195,6 +206,39 @@ historical deployed runs remain untraceable and are recorded as such in `docs/EV
 **A note on 0.** `0 unsafe` here means *0 observed in 500 tickets, 47 distinct messages*. The
 rule-of-three 95% upper bound is ≈ 3/47 ≈ 6.4% at the distinct-message level (≈ 0.6% at the
 ticket level). Printing a bare "0 unsafe" without the denominator is the defect V2 §3.6 names.
+
+### 7.2 The deployed path — `verify:deployed`, 2026-10-07
+
+**19 of 19 checks passed. `DEPLOYED STRANGER PATH OK`.**
+
+Executed by the owner's instruction against the development project, free tier only. Target:
+`https://dist-omega-black-31.vercel.app/`. **Commit `3bab89075ecefa6ff5f26aaf2cc2c4c547878e12`,
+branch `prog/p1-corpus`** — the first deployed run in this repository that can be tied to a
+revision, which is what G11 was for. The two historical deployed runs still cannot be.
+
+What the run proves, in order: the public URL opens with a sign-in form; a stranger sees no query
+box; a wrong password is refused and the stranger stays signed out; the demo password signs in and
+the **server**-reported tenant and role are what the page shows; a fresh device is told no bundle
+is serving rather than being served something; a bundle is published through the edge function
+(bundle 11, 17 procedures); the app serves it and the served count matches the server's; a query
+produces a **content-free escalation**; the escalation **reaches the hosted runtime**; sign-out
+returns to the form and the pre-sign-out refresh token is revoked server-side; zero console errors.
+
+**One line deserves reading carefully.** The fresh device reported:
+
+> No bundle is serving: the server's bundle was refused: `key_unwrap_failed`
+
+That is the *correct* pre-publish state and it is the client refusing rather than silently serving
+— the behaviour `bundle-client.ts` documents. It is recorded here because a reader skimming the
+output could mistake it for a failure.
+
+**Limits of this evidence, stated plainly.** It is one authenticated journey, on one tenant, with
+one synthetic corpus, on the development project. It is not an accuracy measure, not a load
+measure, and not production-customer evidence. What it establishes is that the hosted path is
+wired end to end and that a stranger can complete it.
+
+**Re-measured:** `pnpm run verify:deployed` → 19/19 (was 19/19 in the P0-era record; the path is
+unchanged and now carries a SHA).
 
 ---
 

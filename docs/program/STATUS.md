@@ -28,9 +28,9 @@ _(none yet)_
 
 | Item | Why it is open | Where |
 | --- | --- | --- |
-| SQL suites not re-run | Host sandbox blocks the Docker binary; four counts remain carried from 2026-09-27. **Owner will run `verify:db` outside the sandbox and paste the verdict.** | `docs/BASELINE.md` §6 |
-| Deployed path not re-run | Needs the hosted project and public deployment — Zone R | `docs/BASELINE.md` §6 |
-| Deployed/local divergence not reproduced | Needs the deployed path. P0 removed the mechanism, not the reproduction. Tracked as probe **MC-09** in P5 | `docs/program/P5_PROBES.md` |
+| ~~SQL suites not re-run~~ **CLOSED 2026-10-07** | Owner ran `verify:db` outside the sandbox: all four suites OK, counts reproduce exactly (99/27/40, retention OK) | `docs/BASELINE.md` §6 |
+| ~~Deployed path not re-run~~ **CLOSED 2026-10-07** | Owner authorized `verify:deployed` against the dev project: **19/19, `DEPLOYED STRANGER PATH OK`**, commit `3bab890` | `docs/BASELINE.md` §7.2 |
+| Deployed/local divergence not reproduced | P0 removed the mechanism, not the reproduction. Tracked as probe **MC-09** in P5 | `docs/program/P5_PROBES.md` |
 
 ## Owner follow-ups after P0
 
