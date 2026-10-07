@@ -115,11 +115,12 @@
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
       "label_source": "owner",
-      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label_basis": "Owner relabel review 2026-10-07 chose [C] — can't tell from the full-text evidence. The label remains the earlier owner packet decision (out_of_scope) but is UNRESOLVED: not owner-confirmed either way on full-text evidence, so it does not qualify as a verified row for recall/D3 claims.",
+      "label_evidence": "full-text-keyword-search-choice-c-unresolved",
       "label": "out_of_scope",
       "confidence": "high",
       "acceptable_documents": [],
-      "reasoning": "No marketing or SMS opt-out document exists. The nearest match, manage-cookie-preferences.md, is about cookies.",
+      "reasoning": "No marketing or SMS opt-out document exists. The nearest match, manage-cookie-preferences.md, is about cookies. Full-text re-check 2026-10-07: 0 T04 documents contain sms/text message; no notification-settings page in the harvested corpus (GitHub's content/notifications tree was not harvested).",
       "split": "calibration"
     },
     {

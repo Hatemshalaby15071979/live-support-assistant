@@ -105,7 +105,7 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
+      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). RELABEL DECISION (separate record): owner chose [C] — can't tell from the full-text evidence. Label stays out_of_scope (earlier owner packet decision) but UNRESOLVED, not owner-confirmed either way. The 7/14 tally is unchanged."
     },
     {
       "id": "OD-07",
@@ -262,6 +262,14 @@
         "content/billing/how-tos/troubleshooting/declined-card.md"
       ],
       "note": "Owner chose [A]: the corpus DOES answer via declined-card.md — the only passage that addresses an expired card directly (check expiration, Update payment method, if saved card has expired click Edit, enter new card details). The originally proposed manage-payment-info.md named a different page; that page itself has 0 hits for delete/expired in full text. SEPARATE record from the OQ-002 spot-check; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
+    },
+    "OD-06": {
+      "choice": "C",
+      "label": "out_of_scope (unchanged, UNRESOLVED)",
+      "label_source": "owner",
+      "evidence": "full-text-keyword-search-choice-c-unresolved",
+      "recorded_at": "2026-10-07",
+      "note": "Owner chose [C]: can't tell from the full-text evidence. Systematic re-check shown to the owner: 0 T04 documents contain sms/text message; no notification-settings page exists in the harvested corpus (GitHub's content/notifications tree was not harvested); only T04 'marketing' hit is manage-cookie-preferences.md (cookies, not emails). Label stays out_of_scope (earlier owner packet decision) but is UNRESOLVED — not owner-confirmed either way, so it does not qualify as a verified row for recall/D3 claims. SEPARATE record; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
     }
   }
 }
