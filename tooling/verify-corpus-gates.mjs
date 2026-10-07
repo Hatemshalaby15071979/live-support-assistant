@@ -39,7 +39,9 @@ function expectTrue(name, condition, detail = '') {
 // ===========================================================================
 
 const PII_CASES = [
-  ['email in prose', 'Write to support@example.com for help.', 'email'],
+  // Deliberately not example.com: a reserved domain is not a finding, so using
+  // one here would test the exclusion rather than the rule.
+  ['email in prose', 'Write to support@acme-helpdesk.co.uk for help.', 'email'],
   ['email with plus addressing', 'Reach jane.doe+support@example.co.uk today.', 'email'],
   ['international phone', 'Call +44 20 7946 0958 between 9 and 5.', 'phone-international'],
   ['national phone', 'Ring (555) 123-4567 to confirm.', 'phone-national'],
@@ -69,11 +71,57 @@ const CLEAN_CASES = [
   ['a time range', 'Available between 09:00 and 17:00, Monday to Friday.'],
   ['a price', 'The fee is 12.99 for the first month.'],
   ['a percentage', 'Roughly 45% of requests escalate on the first pass.'],
+  // These three are taken verbatim from CPython's FAQ, where the first real
+  // harvest quarantined 100% of the source. The `i` flag on the contact rule had
+  // turned `[A-Z]` into "any letter", so a common preposition followed by two
+  // ordinary words read as a person's name.
+  ['"from working with" is not a name', 'much of it from working with the community.'],
+  ['"from the Bourne" is not a name', 'This is a phrase from the Bourne shell documentation.'],
+  ['"from colleagues made" is not a name', 'Suggestions from colleagues made the design better.'],
+  ['a capitalised trigger with lowercase words is not a name', 'Contact the support team for details.'],
+  // RFC 2606 / 6761 reserved domains are not personal data. Without this,
+  // documentation is quarantined for using a correct example address.
+  ['a reserved example.com address is not personal data', 'Send mail to receiver@example.com and wait.'],
+  ['a reserved .invalid domain is not personal data', 'Write to nobody@host.invalid for a bounce.'],
+  ['a reserved .test domain is not personal data', 'Mail admin@mail.test in the fixture.'],
 ];
+
+// The reserved-domain rule must not swallow real addresses.
+{
+  const real = scanForPii('Contact security@djangoproject.com about it.');
+  expectTrue(
+    'a real domain is still caught',
+    real.findings.some((finding) => finding.pattern === 'email'),
+    real.findings.map((finding) => finding.pattern).join(', ') || 'none',
+  );
+
+  const lookalike = scanForPii('Mail a@example.com.evil.test-host.io now.');
+  expectTrue(
+    'a lookalike of a reserved domain is still caught',
+    lookalike.findings.some((finding) => finding.pattern === 'email'),
+    lookalike.findings.map((finding) => finding.pattern).join(', ') || 'none',
+  );
+}
 
 for (const [label, text] of CLEAN_CASES) {
   const result = scanForPii(text);
   expectTrue(label, result.clean === true, `matched: ${result.findings.map((finding) => finding.pattern).join(', ')}`);
+}
+
+// The contact rule must still fire on a genuine labelled name, or the fix would
+// have traded a false positive for a false negative.
+for (const [label, text] of [
+  ['Contact: Jane Smith', 'Contact: Jane Smith for escalation.'],
+  ['Written by Jane Smith', 'Written by Jane Smith and reviewed.'],
+  ['Author: Jane Smith', 'Author: Jane Smith, 2026.'],
+  ['a lowercase trigger still fires', 'contact: Jane Smith today.'],
+]) {
+  const result = scanForPii(text);
+  expectTrue(
+    `${label} is caught`,
+    result.findings.some((finding) => finding.pattern === 'labelled-contact-name'),
+    `patterns: ${result.findings.map((finding) => finding.pattern).join(', ') || 'none'}`,
+  );
 }
 
 // A bare ten-digit run must not be read as a phone number. It is deliberately

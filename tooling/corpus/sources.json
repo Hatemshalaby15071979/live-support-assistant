@@ -1,0 +1,115 @@
+{
+  "note": "The licensed sources a tenant corpus may be built from. Every entry names a licence, the URL the licence was read from, when it was read, and what the file actually said — because a licence claim that was assumed rather than fetched is the one thing this pipeline exists to prevent. Revisions are pinned to a commit sha, not a branch: a branch would silently re-pin the corpus under a manifest that still claims the old one. Extensions are declared per source: these projects publish in different formats (Kubernetes .md, Django .txt, CPython .rst), and a hardcoded extension filter harvests nothing from two of them while reporting success.",
+  "tenants_note": "Tenants are named as domain analogues, never as a real company's help centre. The source is real and attributed; the tenant is a shape. That distinction is what keeps the corpus honest about what it is: a real document set standing in for a tenant that does not exist yet.",
+  "sources": [
+    {
+      "id": "k8s-tasks-en",
+      "tenant": "T01-platform-operations-style",
+      "domain_analogue": "platform-operations-style",
+      "language": "en",
+      "repo": "kubernetes/website",
+      "ref": "edd46bd284c85b1c0dbb5a0b67e77354bd8a31e4",
+      "path": "content/en/docs/tasks/",
+      "kind": "github-contents",
+      "licence": "CC-BY-4.0",
+      "licence_url": "https://github.com/kubernetes/website/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "licence_evidence": "LICENSE fetched at raw.githubusercontent.com; the first non-empty line reads 'Attribution 4.0 International' and the body is the Creative Commons Attribution 4.0 legal code.",
+      "attribution": "Kubernetes documentation, © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
+      "extensions": [
+        ".md"
+      ]
+    },
+    {
+      "id": "k8s-tasks-es",
+      "tenant": "T01-platform-operations-style",
+      "domain_analogue": "platform-operations-style",
+      "language": "es",
+      "repo": "kubernetes/website",
+      "ref": "edd46bd284c85b1c0dbb5a0b67e77354bd8a31e4",
+      "path": "content/es/docs/tasks/",
+      "kind": "github-contents",
+      "licence": "CC-BY-4.0",
+      "licence_url": "https://github.com/kubernetes/website/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "licence_evidence": "Same repository and same LICENSE file as k8s-tasks-en; the localised content lives under content/<lang>/ in the same CC BY 4.0 repository.",
+      "attribution": "Kubernetes documentation (Spanish), © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
+      "extensions": [
+        ".md"
+      ]
+    },
+    {
+      "id": "k8s-tasks-pt-br",
+      "tenant": "T01-platform-operations-style",
+      "domain_analogue": "platform-operations-style",
+      "language": "pt-BR",
+      "repo": "kubernetes/website",
+      "ref": "edd46bd284c85b1c0dbb5a0b67e77354bd8a31e4",
+      "path": "content/pt-br/docs/tasks/",
+      "kind": "github-contents",
+      "licence": "CC-BY-4.0",
+      "licence_url": "https://github.com/kubernetes/website/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "licence_evidence": "Same repository and same LICENSE file as k8s-tasks-en.",
+      "attribution": "Kubernetes documentation (Portuguese, Brazil), © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
+      "extensions": [
+        ".md"
+      ]
+    },
+    {
+      "id": "k8s-tasks-fr",
+      "tenant": "T01-platform-operations-style",
+      "domain_analogue": "platform-operations-style",
+      "language": "fr",
+      "repo": "kubernetes/website",
+      "ref": "edd46bd284c85b1c0dbb5a0b67e77354bd8a31e4",
+      "path": "content/fr/docs/tasks/",
+      "kind": "github-contents",
+      "licence": "CC-BY-4.0",
+      "licence_url": "https://github.com/kubernetes/website/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "licence_evidence": "Same repository and same LICENSE file as k8s-tasks-en.",
+      "attribution": "Kubernetes documentation (French), © The Kubernetes Authors, licensed under CC BY 4.0. https://github.com/kubernetes/website",
+      "extensions": [
+        ".md"
+      ]
+    },
+    {
+      "id": "django-faq-en",
+      "tenant": "T02-framework-support-style",
+      "domain_analogue": "framework-support-style",
+      "language": "en",
+      "repo": "django/django",
+      "ref": "135d7c606fc66a9f47f690e5f242ced386524954",
+      "path": "docs/faq/",
+      "kind": "github-contents",
+      "licence": "BSD-3-Clause",
+      "licence_url": "https://github.com/django/django/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "licence_evidence": "LICENSE fetched; 'Copyright (c) Django Software Foundation and individual contributors. All rights reserved. Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met' — the three-clause BSD shape.",
+      "attribution": "Django documentation, © Django Software Foundation and individual contributors, licensed under BSD 3-Clause. https://github.com/django/django",
+      "extensions": [
+        ".txt"
+      ]
+    },
+    {
+      "id": "cpython-faq-en",
+      "tenant": "T03-language-tooling-style",
+      "domain_analogue": "language-tooling-style",
+      "language": "en",
+      "repo": "python/cpython",
+      "ref": "2639fd65ff8e0c1949c480a8e670fe9c2467a1f8",
+      "path": "Doc/faq/",
+      "kind": "github-contents",
+      "licence": "PSF-2.0",
+      "licence_url": "https://github.com/python/cpython/blob/main/LICENSE",
+      "licence_read_at": "2026-10-07",
+      "licence_evidence": "LICENSE fetched; it opens with the PSF licence history and grants use under the Python Software Foundation License Version 2. Permissive, attribution required, no NC or ND term.",
+      "attribution": "Python documentation, © Python Software Foundation, licensed under the PSF License Version 2. https://github.com/python/cpython",
+      "extensions": [
+        ".rst"
+      ]
+    }
+  ],
+  "fleet_note": "Three tenants across three domains, four languages on the primary tenant. V2 asked for four tenants and two non-English languages. The non-English requirement is met with real licensed localised documents rather than translations, which V2 permitted as a fallback only if no licensed non-English source existed — it does, so no translated corpus is built and nothing here is tagged origin: translated."
+}

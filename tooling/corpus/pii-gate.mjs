@@ -77,6 +77,31 @@ const HIGH_SEVERITY_RULES = [
 ];
 
 /**
+ * Build a case-insensitive alternation for literal trigger words, without the
+ * `i` flag.
+ *
+ * The `i` flag cannot be used on the contact rule, and this is the bug that made
+ * the first real harvest useless. `i` applies to the whole pattern, so it turns
+ * `[A-Z]` into "any letter" — and the entire point of the rule is that the name
+ * parts are capitalised. With `i` set, `from working with`, `from the Bourne` and
+ * `from colleagues made` all matched as people's names, and every document in
+ * CPython's FAQ was quarantined by it: a 100% rate that reads like a privacy
+ * emergency and was a regex defect.
+ *
+ * The unit tests did not catch it because they only ever fed the rule text where
+ * a name really was present. Real documents found it in one run.
+ */
+function caseInsensitiveLiterals(words) {
+  return words
+    .map((word) =>
+      [...word]
+        .map((character) => (/[a-z]/i.test(character) ? `[${character.toLowerCase()}${character.toUpperCase()}]` : character))
+        .join(''),
+    )
+    .join('|');
+}
+
+/**
  * Shapes that need a human. These are the cases where the text itself marks a
  * name — an honorific, a signature, a contact line — which is the only name
  * detection this module claims.
@@ -88,12 +113,13 @@ const REVIEW_SEVERITY_RULES = [
   },
   {
     name: 'labelled-contact-name',
-    // The `u` flag is load-bearing and was missing when this rule was first
-    // written: without it `\p{L}` is not a property escape at all, the class
-    // degrades to the literal characters `p { L }`, and the rule silently never
-    // matches. It passed review because a rule that finds nothing looks exactly
-    // like a rule with nothing to find.
-    pattern: /\b(?:contact|author|written by|posted by|signed|regards|thanks|from)\s*[:,]?\s*[A-Z][\p{L}'-]+\s+[A-Z][\p{L}'-]+\b/giu,
+    // No `i` flag, deliberately. The trigger words carry their own case
+    // alternation so the name parts can stay strictly capitalised. See
+    // `caseInsensitiveLiterals`.
+    pattern: new RegExp(
+      `\\b(?:${caseInsensitiveLiterals(['contact', 'author', 'written by', 'posted by', 'signed', 'regards', 'thanks', 'from'])})\\s*[:,]?\\s*[A-Z][\\p{L}'-]+\\s+[A-Z][\\p{L}'-]+\\b`,
+      'gu',
+    ),
   },
   {
     name: 'national-insurance-or-ssn-shaped',
@@ -109,6 +135,44 @@ const RULES = [
 /** Keep a finding readable and short; a finding is not a copy of the document. */
 function excerpt(match) {
   return match.length <= 60 ? match : `${match.slice(0, 57)}...`;
+}
+
+/**
+ * Domains that cannot identify anyone, by definition.
+ *
+ * RFC 2606 and RFC 6761 reserve these for documentation and testing, precisely so
+ * that examples never point at a real mailbox. An address at `example.com` is not
+ * personal data — it is the internet's agreed way of writing an address that is
+ * not one — and treating it as a finding quarantines documentation for the sin of
+ * using a correct example.
+ *
+ * This is a correctness rule, not a relaxation: it removes matches that were
+ * never personal data, and it does not touch any address that could reach a
+ * person.
+ */
+const RESERVED_DOMAINS = new Set([
+  'example.com',
+  'example.net',
+  'example.org',
+  'example.edu',
+  'localhost',
+  'localhost.localdomain',
+  'invalid',
+  'test',
+]);
+
+const RESERVED_SUFFIXES = ['.example', '.invalid', '.test', '.localhost', '.local'];
+
+/** @param {string} address */
+function isReservedAddress(address) {
+  const at = address.lastIndexOf('@');
+  if (at === -1) return false;
+
+  const domain = address.slice(at + 1).toLowerCase();
+
+  if (RESERVED_DOMAINS.has(domain)) return true;
+
+  return RESERVED_SUFFIXES.some((suffix) => domain.endsWith(suffix));
 }
 
 /**
@@ -134,6 +198,12 @@ export function scanForPii(text) {
     const scanner = new RegExp(rule.pattern.source, rule.pattern.flags);
     for (const match of text.matchAll(scanner)) {
       const value = match[0];
+
+      // A reserved example domain is not a personal identifier. Dropped here
+      // rather than in the pattern, so the reasoning is visible and the email
+      // rule keeps matching everything it should.
+      if (rule.name === 'email' && isReservedAddress(value)) continue;
+
       const key = `${rule.name}\u0000${value}`;
       if (seen.has(key)) continue;
       seen.add(key);

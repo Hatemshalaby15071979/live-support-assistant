@@ -111,6 +111,12 @@ const SUITES = [
     script: 'tooling/verify-publish-model-policy.mjs',
     verdict: 'PUBLISH MODEL POLICY OK',
   },
+  {
+    key: 'corpus-gates',
+    name: 'corpus licence and privacy gates',
+    script: 'tooling/verify-corpus-gates.mjs',
+    verdict: 'CORPUS GATE VERIFICATION OK',
+  },
 ];
 
 const requested = process.argv.slice(2);

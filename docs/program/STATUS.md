@@ -5,7 +5,7 @@ One row per phase. Updated at every phase end. Values: `done` | `in progress` | 
 | Phase | Scope | Status | Gate | Report |
 | --- | --- | --- | --- | --- |
 | P0 | Integrity and baseline | **done** | `pnpm run verify` 10/10; ticket validator OK; D7 red-then-green (client and server); `docs/BASELINE.md` complete. SQL suites `not re-run` (host sandbox). | `docs/program/phase-0-report.md` |
-| P1 | Licensed corpus and gold set | not started | `tooling/corpus/verify-corpus.mjs` exits 0 | — |
+| P1 | Licensed corpus and gold set | in progress | Harvesting works: 345 items, 4 languages, 1 tenant. `verify-corpus.mjs` **fails** on the missing gold set. One source-level threshold question is parked. | `docs/CORPUS_PROVENANCE.md` |
 | P2 | Market Twin (smoke + standard) | not started | `run-market.mjs --seed 20261006 --rung smoke` exits 0 | — |
 | P3 | Retrieval at 500 | not started | per-rung/per-language tables; D3/D4 reported honestly | — |
 | P4 | Gate and safety hardening | not started | D1, D2, D5, D7 reported honestly | — |
