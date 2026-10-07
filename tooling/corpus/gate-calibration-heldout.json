@@ -1,0 +1,335 @@
+{
+  "model": "Xenova/all-MiniLM-L6-v2",
+  "split": "held-out",
+  "data_mode": "held-out",
+  "thresholds": [
+    0.4,
+    0.42,
+    0.44,
+    0.46,
+    0.48,
+    0.5,
+    0.52,
+    0.53
+  ],
+  "tenants": {
+    "T01-platform-operations-style": {
+      "rung": 500,
+      "split": "held-out",
+      "answerable": 6,
+      "out_of_scope": 2,
+      "operatingThreshold": 0.68,
+      "operatingPoint": {
+        "threshold": 0.68,
+        "tp": 2,
+        "fp": 0,
+        "fn": 4,
+        "unsafe_answers": 0,
+        "precision": 1,
+        "recall": 0.3333333333333333,
+        "false_refusal_rate": 0.6666666666666666
+      },
+      "table": [
+        {
+          "threshold": 0.4,
+          "tp": 3,
+          "fp": 4,
+          "fn": 1,
+          "unsafe_answers": 2,
+          "precision": 0.42857142857142855,
+          "recall": 0.5,
+          "false_refusal_rate": 0.16666666666666666
+        },
+        {
+          "threshold": 0.42,
+          "tp": 3,
+          "fp": 4,
+          "fn": 1,
+          "unsafe_answers": 2,
+          "precision": 0.42857142857142855,
+          "recall": 0.5,
+          "false_refusal_rate": 0.16666666666666666
+        },
+        {
+          "threshold": 0.44,
+          "tp": 3,
+          "fp": 4,
+          "fn": 1,
+          "unsafe_answers": 2,
+          "precision": 0.42857142857142855,
+          "recall": 0.5,
+          "false_refusal_rate": 0.16666666666666666
+        },
+        {
+          "threshold": 0.46,
+          "tp": 3,
+          "fp": 4,
+          "fn": 1,
+          "unsafe_answers": 2,
+          "precision": 0.42857142857142855,
+          "recall": 0.5,
+          "false_refusal_rate": 0.16666666666666666
+        },
+        {
+          "threshold": 0.48,
+          "tp": 3,
+          "fp": 4,
+          "fn": 1,
+          "unsafe_answers": 2,
+          "precision": 0.42857142857142855,
+          "recall": 0.5,
+          "false_refusal_rate": 0.16666666666666666
+        },
+        {
+          "threshold": 0.5,
+          "tp": 3,
+          "fp": 4,
+          "fn": 1,
+          "unsafe_answers": 2,
+          "precision": 0.42857142857142855,
+          "recall": 0.5,
+          "false_refusal_rate": 0.16666666666666666
+        },
+        {
+          "threshold": 0.52,
+          "tp": 3,
+          "fp": 3,
+          "fn": 1,
+          "unsafe_answers": 1,
+          "precision": 0.5,
+          "recall": 0.5,
+          "false_refusal_rate": 0.16666666666666666
+        },
+        {
+          "threshold": 0.53,
+          "tp": 3,
+          "fp": 3,
+          "fn": 1,
+          "unsafe_answers": 1,
+          "precision": 0.5,
+          "recall": 0.5,
+          "false_refusal_rate": 0.16666666666666666
+        }
+      ],
+      "zero_unsafe_threshold": {
+        "threshold": 0.58,
+        "unsafe": 0,
+        "false_refusals": 4
+      },
+      "in_range_zero_unsafe": false,
+      "max_out_of_scope_top1": 0.5719872430513062
+    },
+    "T04-customer-support-style": {
+      "rung": 500,
+      "split": "held-out",
+      "answerable": 11,
+      "out_of_scope": 3,
+      "operatingThreshold": 0.53,
+      "operatingPoint": {
+        "threshold": 0.53,
+        "tp": 6,
+        "fp": 2,
+        "fn": 3,
+        "unsafe_answers": 0,
+        "precision": 0.75,
+        "recall": 0.5454545454545454,
+        "false_refusal_rate": 0.2727272727272727
+      },
+      "table": [
+        {
+          "threshold": 0.4,
+          "tp": 7,
+          "fp": 4,
+          "fn": 1,
+          "unsafe_answers": 1,
+          "precision": 0.6363636363636364,
+          "recall": 0.6363636363636364,
+          "false_refusal_rate": 0.09090909090909091
+        },
+        {
+          "threshold": 0.42,
+          "tp": 7,
+          "fp": 4,
+          "fn": 1,
+          "unsafe_answers": 1,
+          "precision": 0.6363636363636364,
+          "recall": 0.6363636363636364,
+          "false_refusal_rate": 0.09090909090909091
+        },
+        {
+          "threshold": 0.44,
+          "tp": 7,
+          "fp": 2,
+          "fn": 2,
+          "unsafe_answers": 0,
+          "precision": 0.7777777777777778,
+          "recall": 0.6363636363636364,
+          "false_refusal_rate": 0.18181818181818182
+        },
+        {
+          "threshold": 0.46,
+          "tp": 6,
+          "fp": 2,
+          "fn": 3,
+          "unsafe_answers": 0,
+          "precision": 0.75,
+          "recall": 0.5454545454545454,
+          "false_refusal_rate": 0.2727272727272727
+        },
+        {
+          "threshold": 0.48,
+          "tp": 6,
+          "fp": 2,
+          "fn": 3,
+          "unsafe_answers": 0,
+          "precision": 0.75,
+          "recall": 0.5454545454545454,
+          "false_refusal_rate": 0.2727272727272727
+        },
+        {
+          "threshold": 0.5,
+          "tp": 6,
+          "fp": 2,
+          "fn": 3,
+          "unsafe_answers": 0,
+          "precision": 0.75,
+          "recall": 0.5454545454545454,
+          "false_refusal_rate": 0.2727272727272727
+        },
+        {
+          "threshold": 0.52,
+          "tp": 6,
+          "fp": 2,
+          "fn": 3,
+          "unsafe_answers": 0,
+          "precision": 0.75,
+          "recall": 0.5454545454545454,
+          "false_refusal_rate": 0.2727272727272727
+        },
+        {
+          "threshold": 0.53,
+          "tp": 6,
+          "fp": 2,
+          "fn": 3,
+          "unsafe_answers": 0,
+          "precision": 0.75,
+          "recall": 0.5454545454545454,
+          "false_refusal_rate": 0.2727272727272727
+        }
+      ],
+      "zero_unsafe_threshold": {
+        "threshold": 0.43,
+        "unsafe": 0,
+        "false_refusals": 2
+      },
+      "in_range_zero_unsafe": true,
+      "max_out_of_scope_top1": 0.429792368484196
+    },
+    "T05-policy-style": {
+      "rung": 500,
+      "split": "held-out",
+      "answerable": 11,
+      "out_of_scope": 2,
+      "operatingThreshold": 0.61,
+      "operatingPoint": {
+        "threshold": 0.61,
+        "tp": 1,
+        "fp": 3,
+        "fn": 8,
+        "unsafe_answers": 1,
+        "precision": 0.25,
+        "recall": 0.09090909090909091,
+        "false_refusal_rate": 0.7272727272727273
+      },
+      "table": [
+        {
+          "threshold": 0.4,
+          "tp": 8,
+          "fp": 5,
+          "fn": 0,
+          "unsafe_answers": 2,
+          "precision": 0.6153846153846154,
+          "recall": 0.7272727272727273,
+          "false_refusal_rate": 0
+        },
+        {
+          "threshold": 0.42,
+          "tp": 8,
+          "fp": 4,
+          "fn": 0,
+          "unsafe_answers": 1,
+          "precision": 0.6666666666666666,
+          "recall": 0.7272727272727273,
+          "false_refusal_rate": 0
+        },
+        {
+          "threshold": 0.44,
+          "tp": 7,
+          "fp": 4,
+          "fn": 1,
+          "unsafe_answers": 1,
+          "precision": 0.6363636363636364,
+          "recall": 0.6363636363636364,
+          "false_refusal_rate": 0.09090909090909091
+        },
+        {
+          "threshold": 0.46,
+          "tp": 6,
+          "fp": 4,
+          "fn": 2,
+          "unsafe_answers": 1,
+          "precision": 0.6,
+          "recall": 0.5454545454545454,
+          "false_refusal_rate": 0.18181818181818182
+        },
+        {
+          "threshold": 0.48,
+          "tp": 5,
+          "fp": 4,
+          "fn": 3,
+          "unsafe_answers": 1,
+          "precision": 0.5555555555555556,
+          "recall": 0.45454545454545453,
+          "false_refusal_rate": 0.2727272727272727
+        },
+        {
+          "threshold": 0.5,
+          "tp": 4,
+          "fp": 4,
+          "fn": 4,
+          "unsafe_answers": 1,
+          "precision": 0.5,
+          "recall": 0.36363636363636365,
+          "false_refusal_rate": 0.36363636363636365
+        },
+        {
+          "threshold": 0.52,
+          "tp": 3,
+          "fp": 4,
+          "fn": 5,
+          "unsafe_answers": 1,
+          "precision": 0.42857142857142855,
+          "recall": 0.2727272727272727,
+          "false_refusal_rate": 0.45454545454545453
+        },
+        {
+          "threshold": 0.53,
+          "tp": 3,
+          "fp": 4,
+          "fn": 5,
+          "unsafe_answers": 1,
+          "precision": 0.42857142857142855,
+          "recall": 0.2727272727272727,
+          "false_refusal_rate": 0.45454545454545453
+        }
+      ],
+      "zero_unsafe_threshold": {
+        "threshold": 0.69,
+        "unsafe": 0,
+        "false_refusals": 10
+      },
+      "in_range_zero_unsafe": false,
+      "max_out_of_scope_top1": 0.6860924343973
+    }
+  }
+}

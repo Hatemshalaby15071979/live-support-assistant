@@ -87,6 +87,8 @@ function messageFor(reason: EscalationReason): string {
       return 'Two or more procedures matched equally closely, so no single answer can be justified. Escalated for human handling.';
     case 'invalid_candidate':
       return 'The retrieval result failed validation. Escalated rather than answered.';
+    case 'unknown_tenant':
+      return 'No gate configuration is defined for this tenant. Escalated for human handling.';
     case 'bundle_inconsistent':
       return 'The policy set is internally inconsistent. Escalated rather than answered.';
     case 'manual_review_required':

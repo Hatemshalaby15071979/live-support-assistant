@@ -233,3 +233,36 @@ measured rather than smoothed.
 **Every tenant now has a refusal surface**, so no gate is being assessed on answerable questions
 alone. Before this, T01 and T05 had zero `out_of_scope` rows in the calibration split and their gates
 could only be assessed on false refusals.
+
+## 14. Held-out validation (V2 D1): 0 unsafe met for T01/T04, **not** for T05
+
+**V2 D1 requires 0 unsafe answers on the held-out split.** The operating point is read from
+`GATE_CONFIGS` (`packages/core/src/types.ts`) — never re-derived from held-out — so this is a
+pass/fail check, not tuning. Measured on the held-out split, 500-rung, model
+`Xenova/all-MiniLM-L6-v2`, `tooling/corpus/gate-calibration-heldout.json` (`data_mode: held-out`).
+
+| Tenant | answerable | out_of_scope | operating @ | TP | FP | FN | **unsafe** | precision | recall | false-refusal |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| T01 | 6 | 2 | 0.68 | 2 | 0 | 4 | **0** | 100.0% | 33.3% | 66.7% |
+| T04 | 11 | 3 | 0.53 | 6 | 2 | 3 | **0** | 75.0% | 54.5% | 27.3% |
+| T05 | 11 | 2 | 0.61 | 1 | 3 | 8 | **1** | 25.0% | 9.1% | 72.7% |
+
+**Result: V2 D1 passes for T01 and T04, fails for T05.** T05 still serves **1 `out_of_scope`** at its
+calibrated 0.61, so the 0-unsafe property that holds on the calibration split does **not** transfer to
+held-out.
+
+**Why T05 fails on held-out but not calibration.** The calibrated 0.61 was the first zero-unsafe
+threshold on the calibration split; on held-out the first zero-unsafe point moves to **~0.69**, which
+would refuse **10 of 11** answerable questions. The discrepancy is driven by only **2 `out_of_scope`**
+rows in T05's held-out slice — a single such question crossing the threshold flips the pass/fail verdict.
+The held-out measurement is therefore high-variance for T05 and should be read as "threshold unproven",
+not "threshold proven safe at 0.61".
+
+**T01 and T04 are genuinely zero-unsafe on held-out** (0 `out_of_scope` served), but their verdicts rest
+on small held-out `out_of_scope` counts too (2 and 3 respectively). The recall cost is large in all
+three (T01 33.3%, T04 54.5%, T05 9.1%) — the gate protects safety at the expense of serving answerable
+traffic, which is the agreed V2 trade.
+
+**Decision pending (NOT resolved in this commit):** raise T05 to its held-out zero-unsafe point (~0.69,
+at 10/11 false refusals — near-total refusal), or accept 1 unsafe on held-out, or expand T05's
+`out_of_scope` coverage and re-evaluate. The choice is a product/safety call, not a code change.

@@ -61,12 +61,26 @@ export interface MatchCandidate {
  * same queries cleanly. Both signals are therefore part of the gate.
  *
  * `topK` bounds the evidence returned with every decision, accepted or blocked.
+ *
+ * Calibrated per-tenant values live in `GATE_CONFIGS`; this interface is the
+ * shape of one tenant's entry.
  */
 export interface ConfidenceGateConfig {
   readonly thresholdAccept: number;
   readonly minMargin: number;
   readonly topK: number;
 }
+
+/**
+ * Per-tenant gate configuration: tenant id → that tenant's
+ * {@link ConfidenceGateConfig}.
+ *
+ * This is the single source of truth for calibrated thresholds (V2 P3). The gate
+ * resolves a tenant's config from this map; a tenant absent here fails closed
+ * rather than borrowing another tenant's threshold, so a calibrated value can
+ * never be silently overridden by a fallback.
+ */
+export type PerTenantGateConfig = Readonly<Record<string, ConfidenceGateConfig>>;
 
 /**
  * Prototype starting configuration, measured on the current five-procedure corpus
@@ -80,6 +94,25 @@ export const DEFAULT_GATE_CONFIG: ConfidenceGateConfig = {
   thresholdAccept: 0,
   minMargin: 0.18,
   topK: 5,
+};
+
+/**
+ * Calibrated per-tenant gate thresholds (V2 P3).
+ *
+ * T01 0.68, T04 0.53, T05 0.61 were chosen on the 500-rung calibration split to
+ * reach zero unsafe answers; `minMargin` and `topK` are held at the shipped
+ * default because calibration addressed `thresholdAccept` only.
+ *
+ * There is deliberately no global entry other than `simulated`: a tenant absent
+ * from this map fails closed in `evaluateGate` rather than borrowing another
+ * tenant's threshold. Calibrated values therefore cannot be overridden by a
+ * fallback.
+ */
+export const GATE_CONFIGS: PerTenantGateConfig = {
+  simulated: DEFAULT_GATE_CONFIG,
+  'T01-platform-operations-style': { thresholdAccept: 0.68, minMargin: 0.18, topK: 5 },
+  'T04-customer-support-style': { thresholdAccept: 0.53, minMargin: 0.18, topK: 5 },
+  'T05-policy-style': { thresholdAccept: 0.61, minMargin: 0.18, topK: 5 },
 };
 
 /**
@@ -113,7 +146,8 @@ export type GateBlockReason =
   | 'no_candidates'
   | 'below_threshold'
   | 'insufficient_margin'
-  | 'invalid_candidate';
+  | 'invalid_candidate'
+  | 'unknown_tenant';
 
 /** The gate matched a procedure above the acceptance bar. */
 export interface GateAccepted {

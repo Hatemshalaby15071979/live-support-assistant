@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Confidence-gate calibration on the calibration split.
+ * Confidence-gate calibration on a chosen split.
  *
  * The gate decides whether a retrieved answer is served or refused. Its input is
  * the top-1 cosine similarity: above the threshold the answer is served, below it
@@ -26,13 +26,16 @@
  * have different similarity scales — T05's policy documents score systematically
  * higher than T04's.
  *
- * ## Calibration split only
+ * ## Split selection
  *
- * The held-out split is not read by this script. Tuning a threshold on held-out
- * data is how a held-out figure stops meaning anything.
+ * The split is chosen by the `GATE_SPLIT` environment variable: `calibration`
+ * (default) for tuning, `held-out` for the V2 D1 validation. Tuning on held-out
+ * would make the held-out figure meaningless, so the operating point is read from
+ * `GATE_CONFIGS`, never re-derived here.
  *
  * Usage:
- *     node tooling/corpus/calibrate-gate.mjs
+ *     node tooling/corpus/calibrate-gate.mjs                # calibration split
+ *     GATE_SPLIT=held-out node tooling/corpus/calibrate-gate.mjs
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -41,10 +44,13 @@ import { fileURLToPath } from 'node:url';
 
 import { cosineSimilarity } from '../../packages/vector-store/dist/cosine.js';
 import { createEmbedder } from '../../packages/embedder/dist/embedder.js';
+import { GATE_CONFIGS } from '../../packages/core/dist/index.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
 const TENANTS = ['T01-platform-operations-style', 'T04-customer-support-style', 'T05-policy-style'];
+const SPLIT = process.env.GATE_SPLIT === 'held-out' ? 'held-out' : 'calibration';
+
 // 0.40-0.52 in 0.02 steps as requested, plus 0.53 because that is the threshold
 // selected for T04 and it must appear in the same table as the range it was
 // chosen from rather than being quoted from a separate scan.
@@ -58,7 +64,7 @@ const all = JSON.parse(readFileSync(resolve(here, 'questions.json'), 'utf8')).qu
 // Headline standard: clean Slice A and answerable Slice B only. Title-echo rows
 // are excluded because they are easy by construction and would flatter the gate.
 const questions = all.filter(
-  (q) => q.split === 'calibration' && (q.slice === 'B' || q.title_echo !== true),
+  (q) => q.split === SPLIT && (q.slice === 'B' || q.title_echo !== true),
 );
 
 const embedder = await createEmbedder();
@@ -71,7 +77,33 @@ async function embedPassages(texts) {
   return out;
 }
 
-const report = { model: embedder.modelId, split: 'calibration', thresholds: THRESHOLDS, tenants: {} };
+/** Per-threshold metrics for a tenant, using top-1 >= threshold as the served test. */
+function metricsAt(answerable, outOfScope, threshold) {
+  const served = (row) => row.top1 >= threshold;
+  const tp = answerable.filter((r) => served(r) && r.hit).length;
+  const wrongServed = answerable.filter((r) => served(r) && !r.hit).length;
+  const refused = answerable.filter((r) => !served(r)).length;
+  const unsafe = outOfScope.filter((r) => served(r)).length;
+  const fp = wrongServed + unsafe;
+  return {
+    threshold,
+    tp,
+    fp,
+    fn: refused,
+    unsafe_answers: unsafe,
+    precision: tp + fp === 0 ? null : tp / (tp + fp),
+    recall: answerable.length === 0 ? null : tp / answerable.length,
+    false_refusal_rate: answerable.length === 0 ? null : refused / answerable.length,
+  };
+}
+
+const report = {
+  model: embedder.modelId,
+  split: SPLIT,
+  data_mode: SPLIT,
+  thresholds: THRESHOLDS,
+  tenants: {},
+};
 
 for (const tenant of TENANTS) {
   const rung = JSON.parse(readFileSync(resolve(here, `rungs/${tenant}-500.json`), 'utf8'));
@@ -99,41 +131,26 @@ for (const tenant of TENANTS) {
   const answerable = rows.filter((r) => r.label === 'answerable');
   const outOfScope = rows.filter((r) => r.label === 'out_of_scope');
 
-  const table = THRESHOLDS.map((threshold) => {
-    const served = (row) => row.top1 >= threshold;
+  const table = THRESHOLDS.map((threshold) => metricsAt(answerable, outOfScope, threshold));
 
-    const tp = answerable.filter((r) => served(r) && r.hit).length;
-    const wrongServed = answerable.filter((r) => served(r) && !r.hit).length;
-    const refused = answerable.filter((r) => !served(r)).length;
-    const unsafe = outOfScope.filter((r) => served(r)).length;
-    const correctRefusal = outOfScope.filter((r) => !served(r)).length;
-
-    const fp = wrongServed + unsafe;
-    return {
-      threshold,
-      tp,
-      fp,
-      false_refusals: refused,
-      unsafe_answers: unsafe,
-      correct_refusals: correctRefusal,
-      precision: tp + fp === 0 ? null : tp / (tp + fp),
-      recall: answerable.length === 0 ? null : tp / answerable.length,
-      false_refusal_rate: answerable.length === 0 ? null : refused / answerable.length,
-      refusal_accuracy: outOfScope.length === 0 ? null : correctRefusal / outOfScope.length,
-    };
-  });
+  // Operating point at the tenant's calibrated threshold (read from GATE_CONFIGS,
+  // never derived here — that is the whole point of held-out validation).
+  const opThreshold = GATE_CONFIGS[tenant].thresholdAccept;
+  const operatingPoint = metricsAt(answerable, outOfScope, opThreshold);
 
   report.tenants[tenant] = {
     rung: 500,
+    split: SPLIT,
     answerable: answerable.length,
     out_of_scope: outOfScope.length,
+    operatingThreshold: opThreshold,
+    operatingPoint,
     table,
   };
 
-  // The requested range is 0.40-0.52. If no threshold in it reaches zero unsafe
-  // answers — V2 D1's requirement — the honest report is to say so AND to find
-  // where zero-unsafe actually is, so the reader knows the distance rather than
-  // only the failure.
+  // The requested range is 0.40-0.52 (the explicit 0.53 is reported separately,
+  // not as part of the range). The label must reflect only that range, otherwise
+  // it reads "YES" while the printed 0.52 row still shows unsafe > 0.
   if (outOfScope.length > 0) {
     const extended = [];
     for (let t = 0.4; t <= 0.9001; t += 0.01) {
@@ -144,29 +161,39 @@ for (const tenant of TENANTS) {
     }
     const zeroUnsafe = extended.find((entry) => entry.unsafe === 0);
     report.tenants[tenant].zero_unsafe_threshold = zeroUnsafe ?? null;
-    report.tenants[tenant].in_range_zero_unsafe = table.some((row) => row.unsafe_answers === 0);
+    report.tenants[tenant].in_range_zero_unsafe = table
+      .filter((row) => row.threshold <= 0.52)
+      .some((row) => row.unsafe_answers === 0);
     report.tenants[tenant].max_out_of_scope_top1 = Math.max(...outOfScope.map((r) => r.top1));
   }
 
   const pct = (v) => (v === null ? '   n/a' : `${(v * 100).toFixed(1)}%`.padStart(6));
   console.log('');
-  console.log(`  ${tenant}  500-rung  calibration split`);
+  console.log(`  ${tenant}  500-rung  ${SPLIT} split (data_mode=${SPLIT})`);
   console.log(`    answerable ${answerable.length}   out_of_scope ${outOfScope.length}`);
   console.log(`    ${'thr'.padStart(5)} ${'TP'.padStart(3)} ${'FP'.padStart(3)} ${'FN'.padStart(3)} ${'unsafe'.padStart(6)}  ${'prec'.padStart(6)} ${'recall'.padStart(6)} ${'falseRef'.padStart(8)}`);
   for (const row of table) {
     console.log(
       `    ${row.threshold.toFixed(2).padStart(5)} ${String(row.tp).padStart(3)} ${String(row.fp).padStart(3)} ` +
-        `${String(row.false_refusals).padStart(3)} ${String(row.unsafe_answers).padStart(6)}  ` +
+        `${String(row.fn).padStart(3)} ${String(row.unsafe_answers).padStart(6)}  ` +
         `${pct(row.precision)} ${pct(row.recall)} ${pct(row.false_refusal_rate)}`,
     );
   }
 
+  console.log('');
+  console.log(`    operating point @ ${opThreshold.toFixed(2)} (GATE_CONFIGS[${tenant}])`);
+  console.log(
+    `      TP ${operatingPoint.tp}  FP ${operatingPoint.fp}  FN ${operatingPoint.fn}  ` +
+      `unsafe ${operatingPoint.unsafe_answers}  prec ${pct(operatingPoint.precision)}  ` +
+      `recall ${pct(operatingPoint.recall)}  falseRef ${pct(operatingPoint.false_refusal_rate)}`,
+  );
+
   if (outOfScope.length > 0) {
-    const z = report.tenants[tenant].zero_unsafe_threshold;
     const inRange = report.tenants[tenant].in_range_zero_unsafe;
     console.log('');
     console.log(`    zero-unsafe in 0.40-0.52? ${inRange ? 'YES' : 'NO'}`);
     console.log(`    highest out_of_scope top-1 ${report.tenants[tenant].max_out_of_scope_top1.toFixed(4)}`);
+    const z = report.tenants[tenant].zero_unsafe_threshold;
     console.log(
       z === null
         ? '    no threshold up to 0.90 reaches zero unsafe answers'
@@ -175,7 +202,8 @@ for (const tenant of TENANTS) {
   }
 }
 
-writeFileSync(resolve(here, 'gate-calibration.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+const outFile = SPLIT === 'held-out' ? 'gate-calibration-heldout.json' : 'gate-calibration.json';
+writeFileSync(resolve(here, outFile), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
 console.log('');
-console.log(`model ${embedder.modelId} — wrote gate-calibration.json`);
+console.log(`model ${embedder.modelId} — wrote ${outFile} (split=${SPLIT})`);
 console.log('');

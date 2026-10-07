@@ -27,7 +27,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
-  DEFAULT_GATE_CONFIG,
+  GATE_CONFIGS,
   buildAgentView,
   buildEscalationRecord,
   evaluateGate,
@@ -51,8 +51,9 @@ const corpus = JSON.parse(
 const passages = buildCorpusPassages(corpus);
 const cacheDir = resolve(root, '.cache/transformers');
 
-/** The audited prototype configuration; tenant calibration is not connected. */
-const GATE = DEFAULT_GATE_CONFIG;
+/** The audited prototype configuration, resolved through the per-tenant map. */
+const CONFIGS = GATE_CONFIGS;
+const TENANT = 'simulated';
 
 const checks = [];
 
@@ -95,7 +96,7 @@ async function buildIndex() {
     async retrieve(query) {
       const vector = await embedder.embedQuery(query);
 
-      return searchTopK(vector, entries, GATE.topK);
+      return searchTopK(vector, entries, CONFIGS[TENANT].topK);
     },
   };
 }
@@ -136,7 +137,7 @@ const blockedKeysExpected = ['bundleVersion', 'escalationId', 'kind', 'message',
 
 for (const [index, item] of allQueries.entries()) {
   const candidates = await primary.retrieve(item.query);
-  const decision = evaluateGate(candidates, GATE);
+  const decision = evaluateGate(candidates, CONFIGS, TENANT);
   const escalationId = uuid(index);
 
   const agentView = buildAgentView(decision, corpus, 1, escalationId);
@@ -207,7 +208,7 @@ for (const [index, item] of allQueries.entries()) {
     bundleVersion: 1,
     modelId: EMBEDDING_MODEL.id,
     modelRevision: EMBEDDING_MODEL.revision,
-    parameters: GATE,
+    parameters: CONFIGS[TENANT],
   });
 
   if (decision.evidence.length > 0 && record.evidence.candidates.length === 0) {
@@ -240,8 +241,8 @@ for (const item of determinismSample) {
     }
   }
 
-  const firstDecision = evaluateGate(first, GATE);
-  const secondDecision = evaluateGate(second, GATE);
+  const firstDecision = evaluateGate(first, CONFIGS, TENANT);
+  const secondDecision = evaluateGate(second, CONFIGS, TENANT);
 
   if (firstDecision.outcome !== secondDecision.outcome) {
     determinismMismatches += 1;
@@ -250,7 +251,8 @@ for (const item of determinismSample) {
 
 const invalidDecision = evaluateGate(
   [{ sopId: 'invalid', score: Number.NaN, evidence: ['invalid'] }],
-  GATE,
+  CONFIGS,
+  TENANT,
 );
 
 // ---------------------------------------------------------------------------

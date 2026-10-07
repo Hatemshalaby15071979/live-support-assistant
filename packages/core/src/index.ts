@@ -8,6 +8,7 @@
 
 export {
   DEFAULT_GATE_CONFIG,
+  GATE_CONFIGS,
   LEGACY_GATE_CONFIG,
   LEGACY_REQUIRED_MATCHES,
 } from './types.js';
@@ -20,6 +21,7 @@ export type {
   GateDecision,
   GateParameters,
   MatchCandidate,
+  PerTenantGateConfig,
   SopDocument,
 } from './types.js';
 
