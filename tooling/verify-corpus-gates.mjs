@@ -17,6 +17,8 @@
  *     node tooling/verify-corpus-gates.mjs
  */
 
+import { readFileSync } from 'node:fs';
+
 import { checkLicence, loadAllowlist, redistributionPolicy } from './corpus/licence-gate.mjs';
 import { SOURCE_QUARANTINE_LIMIT, quarantineRate, scanForPii } from './corpus/pii-gate.mjs';
 
@@ -215,6 +217,45 @@ for (const [label, text] of ROLE_ADDRESSES) {
     person.findings.some((finding) => finding.pattern === 'email'),
     person.findings.map((finding) => finding.pattern).join(', ') || 'none',
   );
+}
+
+// ---------------------------------------------------------------------------
+// Structural guard: `\p{...}` in a regex without the `u` flag is not a property
+// escape, it is a character class containing the literal characters.
+//
+// This defect has now appeared THREE times in pii-gate.mjs — in the
+// `labelled-contact-name` rule, and in the shape-first validator — and every
+// time it looked implemented while detecting nothing, because a rule that
+// matches nothing is indistinguishable from a rule with nothing to match. A
+// behaviour test only catches it if someone happens to write a case for the
+// exact rule that is broken. This catches the whole class, statically.
+// ---------------------------------------------------------------------------
+{
+  const source = readFileSync(new URL('./corpus/pii-gate.mjs', import.meta.url), 'utf8');
+  // Regex literals only. A `\p{` inside a string or a comment is not a regex.
+  const literals = source.match(/\/(?:\\.|\[(?:\\.|[^\]\\])*\]|[^/\\\n])+\/[a-z]*/g) ?? [];
+
+  let offenders = 0;
+  let checked = 0;
+  for (const literal of literals) {
+    if (!literal.includes('\\p{')) continue;
+    checked += 1;
+    const flags = /\/[a-z]*$/.exec(literal);
+    const flagText = flags === null ? '' : flags[0].slice(1);
+    if (!flagText.includes('u')) {
+      offenders += 1;
+      if (offenders <= 3) {
+        fail(`pii-gate.mjs: a regex uses \\p{...} without the u flag — ${literal.slice(0, 70)}`);
+      }
+    }
+  }
+
+  expectTrue(
+    'every \\p{...} regex in pii-gate.mjs carries the u flag',
+    offenders === 0,
+    `${offenders} offender(s) of ${checked} checked`,
+  );
+  expectTrue('the structural guard found regexes to check', checked > 0, `checked ${checked}`);
 }
 
 for (const [label, text] of CLEAN_CASES) {

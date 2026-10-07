@@ -224,6 +224,94 @@ function looksLikeDate(value) {
 }
 
 /**
+ * Words that precede a number in technical prose without labelling it.
+ *
+ * **This list is the inversion.** Under prereg `g13`, the account-identifier
+ * rule matches *any* label-like token followed by a long identifier and rejects
+ * against this closed list — rather than matching a known label and missing
+ * every word nobody listed. Three held-out sets showed the enumerated approach
+ * cannot reach 95% on unseen vocabulary: `protocolo`, `Acct.`, `Réf.`,
+ * `póliza`, `matrícula`, `dossier`, `contrat` were all invisible because nobody
+ * had written them down.
+ *
+ * The list is closed. A word not on it is treated as a label, which is the
+ * conservative default for a privacy gate: a false positive costs one quarantined
+ * document, a false negative costs a customer identifier in a customer-facing
+ * corpus.
+ */
+const NON_LABEL_WORDS = new Set([
+  // document structure
+  'chapter', 'section', 'part', 'page', 'line', 'figure', 'table', 'example', 'step', 'steps',
+  'appendix', 'note', 'item', 'entry', 'row', 'column', 'list', 'index', 'paragraph',
+  // versioning and source control
+  'version', 'release', 'build', 'revision', 'rev', 'commit', 'sha', 'tag', 'branch', 'patch',
+  // quantities and units
+  'port', 'size', 'limit', 'count', 'total', 'timeout', 'interval', 'bytes', 'byte', 'memory',
+  'cpu', 'replicas', 'nodes', 'milliseconds', 'millisecond', 'seconds', 'second', 'minutes',
+  'minute', 'hours', 'hour', 'days', 'day', 'year', 'month', 'weeks', 'week', 'percent',
+  'min', 'max', 'default', 'minimum', 'maximum', 'average', 'mean', 'median', 'sum', 'rate',
+  // approximators and connectives
+  'above', 'below', 'since', 'after', 'before', 'about', 'around', 'roughly', 'approximately',
+  'at', 'least', 'most', 'more', 'less', 'than', 'over', 'under', 'up', 'to', 'only', 'first',
+  'second', 'third', 'next', 'last', 'each', 'every', 'some', 'any', 'all', 'both', 'other',
+  'another', 'such', 'same', 'new', 'old', 'current', 'previous', 'following', 'given', 'shown',
+  'listed', 'using', 'use', 'uses', 'with', 'without', 'from', 'into', 'onto', 'and', 'or',
+  // articles and prepositions, in the four corpus languages
+  'the', 'a', 'an', 'of', 'for', 'in', 'on', 'by', 'as', 'is', 'are', 'was', 'were',
+  'de', 'da', 'do', 'del', 'dos', 'das', 'le', 'la', 'les', 'un', 'une', 'des', 'du',
+  'el', 'los', 'las', 'una', 'unos', 'il', 'lo', 'der', 'die', 'das', 'een', 'het', 'van',
+  // network and protocol vocabulary
+  'http', 'https', 'tcp', 'udp', 'ip', 'dns', 'url', 'uri', 'epoch', 'unix', 'utc',
+  'gmt', 'iso', 'ascii', 'utf',
+  // Romance-language function words and common verbs. Without these, French,
+  // Spanish and Portuguese prose passes the "is this a label" test on words like
+  // `moins` and `faut` — "il faut au moins de 10000 objets" was accepted as an
+  // account identifier.
+  'au', 'aux', 'moins', 'plus', 'environ', 'vers', 'selon', 'sous', 'sur', 'dans',
+  'par', 'pour', 'avec', 'sans', 'faut', 'falloir', 'peut', 'doit', 'etre', 'être',
+  'avoir', 'faire', 'est', 'sont', 'sera', 'seront', 'etait', 'était', 'etait',
+  'menos', 'mas', 'cerca', 'sobre', 'entre', 'hasta', 'desde', 'para', 'por', 'con',
+  'sin', 'hay', 'tem', 'há', 'sao', 'são', 'estao', 'estão', 'ate', 'até', 'mais',
+  // "value" and its cognates — the word that produced "la valeur\n 31568 est trop
+  // grande" as an account identifier.
+  'value', 'values', 'valeur', 'valeurs', 'valor', 'valores', 'valore', 'wert',
+]);
+
+/** @param {string} value */
+function isNonLabelWord(value) {
+  return NON_LABEL_WORDS.has(value.toLowerCase());
+}
+
+/**
+ * IBAN check digits, ISO 13616 — the mod-97 test.
+ *
+ * Structure-driven rather than label-driven, per prereg `g13`: an IBAN is
+ * identifiable by its own shape and check digits, so it does not need the
+ * document to say "IBAN" first.
+ *
+ * @param {string} value
+ */
+function isValidIban(value) {
+  const compact = value.replace(/\s/g, '').toUpperCase();
+  if (!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(compact)) return false;
+
+  // Move the first four characters to the end, map letters to numbers, mod 97.
+  const rearranged = compact.slice(4) + compact.slice(0, 4);
+  const expanded = rearranged.replace(/[A-Z]/g, (letter) => String(letter.charCodeAt(0) - 55));
+
+  let remainder = 0;
+  for (const character of expanded) {
+    remainder = (remainder * 10 + Number(character)) % 97;
+  }
+  return remainder === 1;
+}
+
+/** BIC / SWIFT: four letters, two letters, two alphanumerics, optional branch. */
+function isValidBic(value) {
+  return /^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}(?:[A-Z0-9]{3})?$/.test(value.replace(/\s/g, '').toUpperCase());
+}
+
+/**
  * Direct identifiers. A match here is always high severity: these are things
  * that identify a person on their own.
  */
@@ -273,33 +361,30 @@ const HIGH_SEVERITY_RULES = [
   },
   {
     name: 'bank-identifier',
-    // IBAN, UK sort code, French RIB. The held-out set scored this at 0% — no
-    // rule existed. A bank identifier is not a name, but it is directly
-    // identifying and directly abusable, which is what this gate is for.
+    // IBAN is shape-driven and self-validating: ISO 13616 defines its length and
+    // its mod-97 check digits, so it needs no label and cannot be confused with
+    // an ordinary token.
+    //
+    // **BIC deliberately stays label-driven, and that is a deviation from the
+    // prereg worth stating.** A BIC carries no check digit, and its shape — four
+    // letters, two letters, two alphanumerics — is exactly the shape of any
+    // eight-letter uppercase word. `EXTERNAL` validates as a BIC. A shape-only
+    // BIC rule would fire on every acronym in a technical corpus, which is a
+    // precision collapse, not a detection gain.
     pattern: new RegExp(
       [
-        // IBAN: two letters, two check digits, then groups of up to four.
         '\\b[A-Z]{2}\\d{2}(?:\\s?[A-Z0-9]{1,4}){3,9}\\b',
-        // UK sort code.
         '\\b\\d{2}-\\d{2}-\\d{2}\\b',
-        // French RIB: 5-5-11-2.
         '\\b\\d{5}\\s\\d{5}\\s\\d{11}\\s\\d{2}\\b',
-        // BIC / SWIFT, label-driven. Eight or eleven uppercase alphanumerics is
-        // too weak a shape to match blind.
         `\\b(?:${caseInsensitiveLiterals(['BIC', 'SWIFT'])})\\s*[:#-]?\\s*[A-Z]{6}[A-Z0-9]{2}(?:[A-Z0-9]{3})?\\b`,
       ].join('|'),
-      // No `i` flag, and this one was a real defect: with `i` the IBAN branch's
-      // `[A-Z0-9]` matched lowercase, so `ES91 2100 0418 4502 0005 1332 aparece
-      // en el` matched as one token, the length validator rejected it as too
-      // long, and a real IBAN scored as nothing. The label carries its own case
-      // alternation instead.
       'gu',
     ),
     validate: (value) => {
-      // The IBAN branch is greedy enough to swallow ordinary uppercase prose.
-      // A real IBAN is 15-34 alphanumerics; anything shorter is a word pair.
       const compact = value.replace(/\s/g, '');
-      if (/^[A-Z]{2}\d{2}/.test(compact)) return compact.length >= 15 && compact.length <= 34;
+      // The IBAN branch is greedy enough to swallow uppercase prose; the mod-97
+      // test is what makes it a check rather than a guess.
+      if (/^[A-Z]{2}\d{2}/.test(compact)) return isValidIban(value);
       return true;
     },
   },
@@ -359,27 +444,63 @@ const HIGH_SEVERITY_RULES = [
   },
   {
     name: 'account-identifier',
-    // Trigger vocabulary in the four corpus languages.
+    // HYBRID, and the history matters. Three approaches have now been measured
+    // on the real corpus:
     //
-    // The sequence must *start* with a noun, and connectors are allowed only in
-    // the middle. The first version allowed `de`, `da`, `do` and `del` to start a
-    // match, and the real corpus showed the cost immediately: French prose is
-    // full of "de 10000" and "de 31568", and both were quarantining whole
-    // Kubernetes documents as account identifiers. A preposition is not a label.
+    //   1. Enumerated vocabulary (~30 nouns). Precision fine, recall 60% on
+    //      unseen vocabulary — it misses every word nobody wrote down.
+    //   2. Shape-first default: any label-like word + a long number. Recall up,
+    //      **precision collapsed**: every source but one would drop, because in
+    //      technical prose every noun before a number looks like a label
+    //      (`requests: 2000 4096`, `limits are 1000 2000`). 28.6% on French.
+    //   3. Shape-first restricted to a genuinely long identifier. Better, still
+    //      four sources over the limit.
+    //
+    // So this rule keeps the **enumerated** vocabulary, where precision is
+    // known, and `account-identifier-shape` below carries the shape-first case
+    // at a length technical prose does not produce. The trade-off is real and is
+    // reported rather than tuned away.
     pattern: new RegExp(
       `\\b(?:${caseInsensitiveLiterals([
         'account', 'customer', 'case', 'ticket', 'invoice', 'order', 'reference', 'policy',
         'claim', 'contract', 'membership', 'referencia', 'referência', 'référence', 'número',
         'numero', 'nº', 'n°', 'caso', 'pedido', 'factura', 'cliente', 'client', 'conta',
         'cuenta', 'socio', 'expediente', 'matrícula', 'dossier', 'contrat',
-        // Abbreviations and vocabulary the first held-out pass found missing.
-        // `A/C`, `Acct.`, `Réf.`, `póliza` and `protocolo` all scored as nothing.
         'a/c', 'acct', 'réf', 'ref', 'póliza', 'poliza', 'protocolo', 'protocol',
       ])})[.]?` +
         `(?:\\s+(?:${caseInsensitiveLiterals(['de', 'da', 'do', 'del', 'id', 'no', 'number', 'num'])})[.]?)*` +
         `\\s*[:#-]?\\s*[A-Z]{0,4}[-_/]?\\d{4,}(?:[-_/]\\d{2,})?`,
       'gu',
     ),
+  },
+  {
+    name: 'account-identifier-shape',
+    // The shape-first case, at a length technical prose does not produce.
+    //
+    // A technical corpus is full of `<noun>: <small number>` — timeouts, ports,
+    // replica counts, memory sizes. What it does **not** contain is a long
+    // identifier with a separator structure, which is what a real account or
+    // reference number looks like. Requiring eight or more digits, or a
+    // separator-joined pair, separates the two without needing to enumerate the
+    // nouns, which is what the previous three attempts got wrong.
+    pattern: /\b[\p{L}][\p{L}'/.\-°º]{1,19}[.]?(?:\s+[\p{L}][\p{L}'/.\-°º]{0,19}[.]?){0,2}\s*[:#-]?\s*[A-Z]{0,4}[-_/]?(?:\d{8,}|\d{4,}[-_/]\d{3,})\b/gu,
+    validate: (value) => {
+      const words = value.match(/[\p{L}][\p{L}'/.\-]*/gu) ?? [];
+      if (words.length === 0) return false;
+
+      // A hyphen-joined name with no whitespace before the digits is a resource
+      // identifier, not an account number: `nginx-deployment-1370807587` is a
+      // Kubernetes pod, and it was quarantining three Spanish and Portuguese
+      // documents. A short prefix like `AC-` or `PL-` is still accepted, because
+      // that is what a real reference looks like.
+      const beforeDigits = value.replace(/\d[\d\-_/]*$/, '');
+      if (/\S/.test(beforeDigits) && beforeDigits.includes('-') && !/[\s:]/.test(beforeDigits)) {
+        const label = beforeDigits.replace(/-$/, '');
+        if (label.length > 4) return false;
+      }
+
+      return words.some((word) => !isNonLabelWord(word.replace(/[.]$/, '')));
+    },
   },
   {
     name: 'postal-address',
@@ -423,7 +544,7 @@ const REVIEW_SEVERITY_RULES = [
     pattern: new RegExp(
       `\\b(?:${caseInsensitiveLiterals([
         'Mrs', 'Miss', 'Mr', 'Ms', 'Dr', 'Prof', 'Sir', 'Dame', 'Mx',
-        'Srta', 'Sra', 'Sr', 'Dra', 'Dña', 'Doña', 'Don', 'Mme', 'Mlle', 'Me', 'M', 'Rev', 'Fr', 'Ilma', 'Ilmo',
+        'Srta', 'Sra', 'Sr', 'Dra', 'Dña', 'Doña', 'Don', 'Mme', 'Mlle', 'Rev', 'Fr', 'Ilma', 'Ilmo',
       ])})[.]?\\s+[A-Z](?:[.]\\s*)?[\\p{L}'-]*(?:\\s+[A-Z][\\p{L}'-]+)?`,
       'gu',
     ),

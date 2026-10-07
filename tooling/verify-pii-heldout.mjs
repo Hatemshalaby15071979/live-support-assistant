@@ -21,7 +21,7 @@
  *     node tooling/verify-pii-heldout.mjs
  */
 
-import { HELDOUT_FINAL, HELDOUT_CATEGORIES, HELDOUT_LANGUAGES } from './corpus/planted-pii-heldout-final.mjs';
+import { HELDOUT_G13, HELDOUT_CATEGORIES, HELDOUT_LANGUAGES } from './corpus/planted-pii-heldout-g13.mjs';
 import { acceptedPatternsFor } from './corpus/pii-categories.mjs';
 import { scanForPii } from './corpus/pii-gate.mjs';
 
@@ -49,17 +49,17 @@ const ACCEPTED_PATTERNS = {
 
 const problems = [];
 
-if (HELDOUT_FINAL.length < 30) problems.push(`only ${HELDOUT_FINAL.length} held-out strings; 30 were required`);
+if (HELDOUT_G13.length < 30) problems.push(`only ${HELDOUT_G13.length} held-out strings; 30 were required`);
 for (const category of HELDOUT_CATEGORIES) {
-  if (!HELDOUT_FINAL.some((entry) => entry.category === category)) problems.push(`no held-out string for ${category}`);
+  if (!HELDOUT_G13.some((entry) => entry.category === category)) problems.push(`no held-out string for ${category}`);
 }
 for (const language of HELDOUT_LANGUAGES) {
-  if (!HELDOUT_FINAL.some((entry) => entry.language === language)) problems.push(`no held-out string for ${language}`);
+  if (!HELDOUT_G13.some((entry) => entry.language === language)) problems.push(`no held-out string for ${language}`);
 }
 
 // ---------------------------------------------------------------------------
 
-const results = HELDOUT_FINAL.map((planted) => {
+const results = HELDOUT_G13.map((planted) => {
   const scan = scanForPii(planted.carrier);
   const fired = scan.findings.map((finding) => finding.pattern);
   const accepted = acceptedPatternsFor(planted.category);
