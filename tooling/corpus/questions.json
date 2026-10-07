@@ -44,14 +44,16 @@
       "origin": "owner-directed-draft",
       "data_mode": "simulated",
       "label_source": "owner",
-      "label_basis": "owner decision on the agent evidence packet, 2026-10-07. The owner decided; the documents were read by the agent and quoted in the packet rather than inspected by the owner directly. This is an owner DECISION, which is authoritative, and it is not the same thing as an owner document inspection.",
+      "label_basis": "Owner's separate relabel decision on 2026-10-07: chose [A], the corpus answers. Evidence was a full-text keyword search over the re-fetched T04 corpus. The owner's acceptable document set also includes username-reference.md (managed accounts / SSO / LDAP limitations), which the original agent label omitted; counted as an agent label miss, not a change to the OQ-002 7/14 tally.",
+      "label_evidence": "full-text-keyword-search",
       "label": "answerable",
       "confidence": "high",
       "acceptable_documents": [
-        "content/account-and-profile/how-tos/account-management/changing-your-username.md",
-        "content/account-and-profile/concepts/username-changes.md"
+        "content/account-and-profile/concepts/username-changes.md",
+        "content/account-and-profile/reference/username-reference.md",
+        "content/account-and-profile/how-tos/account-management/changing-your-username.md"
       ],
-      "reasoning": "The how-to covers the change; the concept page covers why a name is refused. Confirmed in the human-review packet.",
+      "reasoning": "The how-to covers the change; the concept page covers why a name is refused; the reference page covers managed-account/SSO/LDAP limitations. Confirmed by the owner on full-text evidence 2026-10-07.",
       "split": "calibration"
     },
     {
