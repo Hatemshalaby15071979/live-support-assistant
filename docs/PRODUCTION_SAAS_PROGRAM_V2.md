@@ -125,8 +125,15 @@ Do not start a phase whose prerequisite gate has not passed, except where Sectio
    zero-unsafe operating point.
 6. **Zero means "zero observed in N".** Always print N and the 95% upper bound (rule of three:
    about 3/N when 0 events are observed). Never print bare "0 unsafe".
-7. **Label provenance:** every label carries `label_source: owner | agent-agreed | agent-single`.
-   Headline recall and safety claims use `owner` and spot-check-verified `agent-agreed` rows only.
+7. **Label provenance:** every label carries a `label_source` recording how it was produced:
+   `owner | agent-agreed | agent-single | agent | agent-full-text | construction`. Provenance and
+   evidence authority are separate properties.
+   - `owner` means owner-produced or owner-confirmed provenance.
+   - `agent-agreed` may support recall/D3 headlines ONLY after the required spot-check verification
+     has actually occurred and is recorded; until then such rows are `unverified`.
+   - `agent-single`, `agent`, `agent-full-text`, and `construction` are NOT owner-validated and carry
+     NO D3/recall headline authority; they are refusal/robustness evidence only.
+   - Adding a value to this vocabulary does NOT grant it evidence authority.
    `agent-single` rows never count toward a headline.
 8. **Calibrate on one split, report on another.** A number reported on the data its margin was tuned
    on is labeled `in-sample` and never used for D1, D2 or D3.

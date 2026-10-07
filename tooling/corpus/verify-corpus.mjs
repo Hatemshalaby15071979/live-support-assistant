@@ -221,7 +221,10 @@ if (!existsSync(questionsPath)) {
   // `derived-style` means the row was written in the style of the owner's
   // queries without being one.
   const ORIGINS = ['owner', 'public', 'derived-paraphrase', 'owner-directed-draft', 'derived-style'];
-  const LABEL_SOURCES = ['owner', 'agent-agreed', 'agent-single'];
+  // Provenance vocabulary = how the label was produced (V2 rule 7). This is an integrity check,
+  // not an authority check: accepting a value grants no evidence authority. Authority semantics
+  // live in PRODUCTION_SAAS_PROGRAM_V2.md rule 7.
+  const LABEL_SOURCES = ['owner', 'agent-full-text', 'agent-agreed', 'agent', 'agent-single', 'construction'];
 
   for (const [index, row] of rows.entries()) {
     if (!ORIGINS.includes(row.origin)) {
