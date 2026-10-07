@@ -4,29 +4,33 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
-## 2026-10-07 (later) — OQ-002 batch-1 spot-check FAILED; agent labels discarded for recall; owner-only rule
+## 2026-10-07 (later) — OQ-002: owner spot-check NOT DONE / NOT OWNER-VALIDATED; provisional relay preserved; agent full-text relabel layer recorded
 
-**Zone.** Y (governance).
+**Zone.** Y (governance). **Provenance ruling (owner, 2026-10-07):** Hatem did **not** independently
+inspect the 15 source documents. **No OQ-002 record may be described as an independent owner check or
+owner validation.** The earlier wording "OWNER REVIEW DONE — FAILED (7/14 = 50%)" is RETRACTED as an
+owner-validation claim.
 
-### Tally
-Owner completed the OQ-002 batch-1 review on 2026-10-07 (continuation): **7 AGREE / 7 DISAGREE of 14
-countable rows = 50%, below the 85% acceptance bar → FAIL.** Third consecutive below-bar spot-check
-(prior 5/15, 8/15; this 7/14). OD-13 is excluded (owner OQ-008, `out_of_scope`) and is **not** counted
-as AGREE.
+### Historical context — the provisional 7/14 relay (preserved, NOT a validation)
+A provisional interaction on 2026-10-07 recorded **7 AGREE / 7 DISAGREE of 14 countable rows = 50%**
+against the 85% acceptance bar (earlier provisional tallies 5/15, 8/15; OD-13 excluded per OQ-008). It
+was conducted on **150-character agent-presented fragments**; the owner did not inspect documents.
+PRESERVED AS HISTORICAL CONTEXT ONLY — **not a completed independent owner check**, and not an
+acceptance decision.
 
-### Per protocol: agent labels DISCARDED for recall
-Because the bar was missed, agent-produced labels carry no recall/D3 weight. The 7 DISAGREE rows are
-under active relabel review (step 3 of the owner instruction); their final `label_source` is not yet
-settled.
+### Label-source taxonomy correction (2026-10-07)
+The 15 OD rows carried `label_source: "owner"` — retracted: those were **owner provisional choices on
+agent-produced evidence packets**, not owner document inspection or validation. Corrected values in
+`questions.json`: `agent-full-text` ×7 (the relabel layer below) and `agent-agreed` ×8 (packet labels +
+provisional relay). **`label_source=owner` rows fleet-wide: 0** (417-row gold set).
 
 ### New rule (until further notice)
 - **Recall and D3 claims use ONLY `label_source=owner` rows.**
-- Agent-agreed rows stay refusal/robustness-only, tagged `unverified`.
-- Owner rows available: **15 total, all T04, all calibration** (12 `out_of_scope`, 3 `answerable`).
-  T01 = 0, T05 = 0, held-out = 0.
-- Consequence: **recall and D3 are NOT MEASURABLE at claimed N for T01 and T05** (zero owner rows).
-  T04's answerable owner rows are 3 (calibration only); any T04 recall/D3 claim would rest on 3 rows
-  → **NOT MEASURABLE at any claimed N**, and held-out-based recall has 0 owner rows.
+- **Zero `label_source=owner` rows exist** → **recall and D3 are NOT MEASURABLE at any claimed N, for
+  every tenant, including T04.**
+- Agent rows (`agent-full-text`, `agent-agreed`, `agent`, `agent-single`, `construction`) stay
+  refusal/robustness-only, tagged `unverified`. `agent-full-text` is the strongest layer available and is
+  still not owner validation.
 
 ### Step-4 impact (unsafe answers by row type, thresholds unchanged)
 Using the live embedder, every `out_of_scope`-served ("unsafe") answer was attributed to its row type:
@@ -41,48 +45,44 @@ Using the live embedder, every `out_of_scope`-served ("unsafe") answer was attri
 | T05 | held-out | 1 | 0 | 1 | 0 | 0 | 0 |
 
 Total: 20 unsafe — **14 on near-domain (agent) OOS rows, 6 on construction (cross-tenant) rows, 0 on
-owner/od-batch OOS rows.** Restricting OOS to construction-only drops unsafe 20 → 6 (all in T04; T01 and
-T05 reach 0). Restricting to construction + owner-verified rows leaves it at 6 (od-batch/owner OOS
-contributed **0** unsafe). Note T05 cal runs at 0.69 (post-`bbe60e1` recalibration), not the stale
+owner-batch (OD) OOS rows.** Restricting OOS to construction-only drops unsafe 20 → 6 (all in T04; T01 and
+T05 reach 0). Restricting to construction + owner-batch rows leaves it at 6 (od-batch OOS contributed
+**0** unsafe). Note T05 cal runs at 0.69 (post-`bbe60e1` recalibration), not the stale
 0.61 in the gate-thresholds entry; the stored `gate-calibration.json` cal=3 for T05 was at 0.61.
 
-### Note on evidence quality
-The owner's review was conducted on 150-character excerpt fragments that did not show the answer
-("WEAK EVIDENCE" in the report); the DISAGREEs may partly reflect that weakness. The relabel exercise
-(step 3) supplies full procedure summaries so the owner can decide on the actual corpus text.
+### Agent full-text relabel layer (separate provenance layer — kept, NOT owner validation)
+The 7 DISAGREE rows were re-labelled by **agent** inspection of the re-fetched pinned corpus
+(SHA-256-verified; embedding top-3 + keyword search over all 193 T04/T05 documents). The owner replied
+with **provisional [A]/[B]/[C] choices on agent-presented evidence**. Recorded in
+`spotcheck-batch-1.json` → `relabel_decisions` with `label_source: agent-full-text`. These are **agent
+evidence review / agent full-text relabel** results — useful evidence, **not owner decisions**.
 
-### Relabel outcomes (step 3 complete, 2026-10-07)
-All 7 DISAGREE rows were relabelled against full-source text (re-fetched pinned corpus, verified
-SHA-256; embedding top-3 + keyword search over all 193 T04/T05 documents). Recorded as separate
-records in `spotcheck-batch-1.json` → `relabel_decisions`; the 7/14 tally stands.
-
-| Row | Choice | Outcome | Effect on gold set |
+| Row | Provisional reply | Agent full-text outcome | Effect on gold set |
 | --- | --- | --- | --- |
-| OD-01 | [B] | out_of_scope CONFIRMED | none |
+| OD-01 | [B] | out_of_scope stands (agent full-text) | none |
 | OD-02 | [A] | answerable | acceptable set + `username-reference.md` (agent label miss: the managed-account/SSO/LDAP reason) |
 | OD-04 | [A] | answerable | none (manage-payment-info.md stands) |
-| OD-05 | [A] | answerable | **acceptable document changed** to `declined-card.md` (the only passage addressing an expired card; manage-payment-info.md has 0 hits for delete/expired) |
-| OD-06 | [C] | UNRESOLVED — stays out_of_scope, not owner-confirmed either way | excluded from verified rows for recall/D3 claims |
-| OD-11 | [B] | out_of_scope CONFIRMED | none (the answering appeal doc is T05 — tenant-scoped, per SB-20) |
-| OD-15 | [B] | out_of_scope CONFIRMED | none |
+| OD-05 | [A] | answerable | **acceptable document changed** to `declined-card.md` (agent finding: the only passage addressing an expired card; manage-payment-info.md has 0 hits for delete/expired) |
+| OD-06 | [C] | UNRESOLVED — stays out_of_scope, unvalidated either way | excluded from verified rows for recall/D3 claims |
+| OD-11 | [B] | out_of_scope stands (agent full-text; the answering appeal doc is T05 — tenant-scoped, per SB-20) | none |
+| OD-15 | [B] | out_of_scope stands (agent full-text) | none |
 
-Net: **no OOS/answerable flips.** Owner rows remain 15 (all T04, all calibration; 12 OOS, 3
-answerable). Full-text-verified owner rows: **6 CONFIRMED + 1 UNRESOLVED**; the 7 spot-check AGREE
-rows remain fragment-based owner agreements (not re-verified against full text). The "recall/D3 use
-only owner rows" rule now has full-text evidence behind 14 of 15 owner rows' labels (OD-06 excepted),
-but the row COUNTS are unchanged → T01/T05 still 0 owner rows, T04 still 3 answerable owner rows →
-**recall/D3 remain NOT MEASURABLE at claimed N**.
+Net: **no OOS/answerable flips.**
 
-### Step-4 impact re-run after relabels (thresholds unchanged)
+### Step-4 impact re-run after the relabel layer (thresholds unchanged)
 `calibrate-tagged.mjs` re-run on current HEAD post-relabel: **identical** to the pre-relabel run —
 total unsafe 20 (T01 cal 1 · T04 cal 9 · T04 held-out 9 · T05 held-out 1); 14 near-domain (agent) OOS,
-6 construction (cross-tenant), **0 owner/od-batch**. (i) construction-only = 6 (all T04);
-(ii) construction+owner = 6. Expected: relabels changed only answerable-row acceptable sets and
-confirmed OOS labels — no threshold or label-composition change. Output: `calibrate-tagged-output.json`.
+6 construction (cross-tenant), **0 owner-batch (OD)**. (i) construction-only = 6 (all T04);
+(ii) construction + owner-batch = 6. Expected: the relabel layer changed only answerable-row acceptable
+sets and re-stated OOS labels — no threshold or label-composition change. Output:
+`calibrate-tagged-output.json`.
 
 ### g15 experiment status (owner ruling, 2026-10-07)
-g15 (P4 scope/refusal layer) **remains PAUSED** until all OQ-002 relabel choices are recorded and the step-4
-unsafe-by-type impact tables are re-run. It was not run during this session.
+g15 (P4 scope/refusal layer; prereg `docs/prereg/g15-p4-scope-refusal-layer.md`) **remains NOT RUN**. The
+prereg was reviewed on 2026-10-07 for label provenance: it does not name owner-verified labels as a
+prerequisite, so it can run on the current agent-labelled gold set — but every result it produces is
+**agent-label-relative** and cannot clear an owner-evidence bar for recall/D3. Its reject rule R3 still
+requires an owner-set recall floor before any run.
 
 ---
 
@@ -105,7 +105,7 @@ labelling. The V2 contract treats a *threshold* change as lower-risk than a *rul
 ### Provisional status (owner ruling, this review)
 All three thresholds are **provisional**:
 - chosen on the **calibration** split (never re-tuned on held-out),
-- on **agent-agreed, UNVERIFIED** gold labels (OQ-002 spot-check now DONE — FAILED 7/14, 2026-10-07 continuation),
+- on **agent-labelled, UNVERIFIED** gold labels (OQ-002 owner spot-check NOT DONE / NOT OWNER-VALIDATED; a provisional 7/14 agent-relay interaction is preserved as historical context only),
 - at **tiny held-out OOS N** (T01 2, T04 3, T05 2; prereg floor is 300 per tenant).
 
 `calibration_status` per tenant:

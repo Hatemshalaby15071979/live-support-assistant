@@ -1,6 +1,6 @@
 {
-  "review_status": "REVIEWED-BELOW-BAR-7-OF-14-FAIL",
-  "evidence_note": "Owner completed the OQ-002 batch-1 review on 2026-10-07 (continuation): 7 AGREE / 7 DISAGREE of 14 countable rows = 50%, below the 85% acceptance bar. FAIL. Third consecutive below-bar spot-check (prior 5/15, 8/15; this 7/14). OD-13 is excluded (owner OQ-008, out_of_scope) and is NOT counted as AGREE. Per protocol, agent-produced labels are DISCARDED for recall and D3 claims. The 7 DISAGREE rows are under active relabel review (step 3); their final owner label_source is not yet settled. The excerpts shown at review time were 150-char fragments insufficient to support a judgement (see WEAK EVIDENCE in the report).",
+  "review_status": "NOT-DONE-NOT-OWNER-VALIDATED",
+  "evidence_note": "PROVENANCE CORRECTION (owner ruling, 2026-10-07): Hatem did NOT independently inspect the 15 source documents. The earlier status \"REVIEWED-BELOW-BAR-7-OF-14-FAIL\" is RETRACTED as an owner-validation claim. A provisional 2026-10-07 interaction recorded 7 AGREE / 7 DISAGREE of 14 countable rows (50% vs the 85% bar) on 150-character agent-presented fragments — PRESERVED AS HISTORICAL CONTEXT ONLY, not a completed independent owner check. The 7 DISAGREE rows were subsequently re-labelled by AGENT full-text inspection (re-fetched pinned corpus, SHA-256-verified); the owner's [A]/[B]/[C] replies are provisional choices on agent-presented evidence, recorded in relabel_decisions as a SEPARATE provenance layer (agent full-text relabel — NOT owner validation). After this correction no label_source=owner rows exist in the gold set; recall/D3 claims are NOT MEASURABLE at any claimed N.",
   "note": "Owner spot-check batch. For each row: is the label right, and if the row is answerable, is the named document the one that answers it? Mark AGREE or DISAGREE. A disagreement is the most valuable output of this batch — it is the only thing that can find a wrong label.",
   "batch": 1,
   "batch_size": 15,
@@ -33,7 +33,7 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). Under relabel review (step 3) — final label_source pending owner choice."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [B] on agent-presented evidence (top-3 retrieval only); out_of_scope stands. NOT owner validation."
     },
     {
       "id": "OD-02",
@@ -49,7 +49,7 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). RELABEL DECISION (separate record): owner chose [A] — corpus answers; label=answerable, label_source=owner, evidence=full-text-keyword-search. Acceptable set: username-changes.md, username-reference.md (added by owner; agent label miss), changing-your-username.md. T05 github-username-policy.md excluded (different tenant). The original agent label omitting username-reference.md is counted as an agent label miss, not a change to the 7/14 tally."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [A] on agent-presented evidence; answerable; acceptable set +username-reference.md (agent label miss). T05 github-username-policy.md excluded (different tenant). The 7/14 tally is historical context only."
     },
     {
       "id": "OD-03",
@@ -77,7 +77,7 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). RELABEL DECISION (separate record): owner chose [A] — corpus answers via content/billing/how-tos/set-up-payment/manage-payment-info.md; label=answerable, label_source=owner, evidence=full-text-keyword-search. The 7/14 tally is unchanged."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [A] on agent-presented evidence; answerable via content/billing/how-tos/set-up-payment/manage-payment-info.md (core content resolves via the reusable include — the same Update payment method click-path declined-card.md spells out)."
     },
     {
       "id": "OD-05",
@@ -92,7 +92,7 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). RELABEL DECISION (separate record): owner chose [A] — corpus answers via content/billing/how-tos/troubleshooting/declined-card.md; label=answerable, label_source=owner, evidence=full-text-keyword-search. The originally proposed manage-payment-info.md named a different page. The 7/14 tally is unchanged."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [A] on agent-presented evidence; answerable via content/billing/how-tos/troubleshooting/declined-card.md (the only passage addressing an expired card directly). The originally proposed manage-payment-info.md named a different page (agent finding)."
     },
     {
       "id": "OD-06",
@@ -105,7 +105,7 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). RELABEL DECISION (separate record): owner chose [C] — can't tell from the full-text evidence. Label stays out_of_scope (earlier owner packet decision) but UNRESOLVED, not owner-confirmed either way. The 7/14 tally is unchanged."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [C] — cannot determine from agent-presented evidence. Label stays out_of_scope, UNRESOLVED — not validated either way; excluded from verified rows for recall/D3 claims."
     },
     {
       "id": "OD-07",
@@ -170,7 +170,7 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). RELABEL DECISION (separate record): owner chose [B] — corpus does NOT answer; label=out_of_scope CONFIRMED, label_source=owner, evidence=full-text-keyword-search. The 7/14 tally is unchanged."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [B] on agent-presented evidence; out_of_scope stands — the only T04 regex hit is a billing fact about license consumption; the answering appeal document is T05 (different tenant; SB-20 tenant-scoping)."
     },
     {
       "id": "OD-12",
@@ -209,22 +209,22 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Owner DISAGREE (OQ-002 batch 1, 7/14). RELABEL DECISION (separate record): owner chose [B] — corpus does NOT answer; label=out_of_scope CONFIRMED, label_source=owner, evidence=full-text-keyword-search. The 7/14 tally is unchanged."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [B] on agent-presented evidence; out_of_scope stands — no T04 document mentions gift/live stream; the only charged-twice passage is a Marketplace org-transfer note; no duplicate-charge refund path exists."
     }
   ],
   "relabel_decisions": {
     "OD-01": {
       "choice": "B",
       "label_stands": "out_of_scope",
-      "label_source": "owner",
+      "label_source": "agent-full-text",
       "evidence": "top3-retrieval-only",
       "recorded_at": "2026-10-07",
-      "note": "Owner chose [B]: corpus does NOT answer the question (out_of_scope stands). SEPARATE record from the OQ-002 spot-check: it does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
+      "note": "Provisional owner reply [B] on agent-presented evidence (top-3 retrieval only); out_of_scope stands. AGENT full-text relabel — NOT owner validation. Separate record; does not alter the provisional 7/14 tally (historical context only)."
     },
     "OD-02": {
       "choice": "A",
       "label": "answerable",
-      "label_source": "owner",
+      "label_source": "agent-full-text",
       "evidence": "full-text-keyword-search",
       "recorded_at": "2026-10-07",
       "acceptable_documents": [
@@ -238,54 +238,54 @@
           "reason": "different tenant; not part of T04's acceptable set"
         }
       ],
-      "agent_label_miss": "The original agent label omitted username-reference.md (the managed-account / SSO / LDAP reason a username cannot be changed). Counted as an agent label miss, not a change to the 7/14 tally.",
-      "note": "Owner chose [A]: the corpus DOES answer. SEPARATE record from the OQ-002 spot-check; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
+      "agent_label_miss": "The original agent label omitted username-reference.md (the managed-account / SSO / LDAP reason a username cannot be changed). Recorded as an agent label miss.",
+      "note": "Provisional owner reply [A] on agent-presented evidence; answerable. AGENT full-text relabel — NOT owner validation. Acceptable set +username-reference.md is an agent label miss; T05 policy excluded (different tenant). Separate record."
     },
     "OD-04": {
       "choice": "A",
       "label": "answerable",
-      "label_source": "owner",
+      "label_source": "agent-full-text",
       "evidence": "full-text-keyword-search",
       "recorded_at": "2026-10-07",
       "acceptable_documents": [
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
-      "note": "Owner chose [A]: the corpus DOES answer via manage-payment-info.md. Its core managing-payment content resolves via the reusable include {% data reusables.billing.manage-payment-info %} — the same Update payment method click-path declined-card.md spells out step by step. SEPARATE record from the OQ-002 spot-check; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
+      "note": "Provisional owner reply [A] on agent-presented evidence; answerable via manage-payment-info.md. AGENT full-text relabel — NOT owner validation. Separate record."
     },
     "OD-05": {
       "choice": "A",
       "label": "answerable",
-      "label_source": "owner",
+      "label_source": "agent-full-text",
       "evidence": "full-text-keyword-search",
       "recorded_at": "2026-10-07",
       "acceptable_documents": [
         "content/billing/how-tos/troubleshooting/declined-card.md"
       ],
-      "note": "Owner chose [A]: the corpus DOES answer via declined-card.md — the only passage that addresses an expired card directly (check expiration, Update payment method, if saved card has expired click Edit, enter new card details). The originally proposed manage-payment-info.md named a different page; that page itself has 0 hits for delete/expired in full text. SEPARATE record from the OQ-002 spot-check; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
+      "note": "Provisional owner reply [A] on agent-presented evidence; answerable via declined-card.md (agent finding; the only passage addressing an expired card; manage-payment-info.md has 0 hits for delete/expired). AGENT full-text relabel — NOT owner validation. Separate record."
     },
     "OD-06": {
       "choice": "C",
       "label": "out_of_scope (unchanged, UNRESOLVED)",
-      "label_source": "owner",
+      "label_source": "agent-full-text",
       "evidence": "full-text-keyword-search-choice-c-unresolved",
       "recorded_at": "2026-10-07",
-      "note": "Owner chose [C]: can't tell from the full-text evidence. Systematic re-check shown to the owner: 0 T04 documents contain sms/text message; no notification-settings page exists in the harvested corpus (GitHub's content/notifications tree was not harvested); only T04 'marketing' hit is manage-cookie-preferences.md (cookies, not emails). Label stays out_of_scope (earlier owner packet decision) but is UNRESOLVED — not owner-confirmed either way, so it does not qualify as a verified row for recall/D3 claims. SEPARATE record; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
+      "note": "Provisional owner reply [C] — cannot determine from agent-presented evidence. Label stays out_of_scope, UNRESOLVED — not validated either way; excluded from verified rows for recall/D3 claims. AGENT full-text relabel — NOT owner validation. Separate record."
     },
     "OD-11": {
       "choice": "B",
       "label": "out_of_scope (CONFIRMED)",
-      "label_source": "owner",
+      "label_source": "agent-full-text",
       "evidence": "full-text-keyword-search",
       "recorded_at": "2026-10-07",
-      "note": "Owner chose [B]: the corpus does NOT answer — out_of_scope CONFIRMED on full-text evidence. Across all 136 T04 documents the regex ban/banned/suspended/suspension/reinstate/appeal hits exactly one file (github-license-users.md), a billing fact about license consumption, not an appeal process. The answering document (github-appeal-and-reinstatement.md) is T05, a different tenant, so it cannot enter T04's acceptable set (owner OD-02 ruling). Mirrors the SB-20 tenant-scoping finding. SEPARATE record; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
+      "note": "Provisional owner reply [B] on agent-presented evidence; out_of_scope stands (agent full-text: only T04 hit is a billing license-consumption fact; answering appeal doc is T05 — different tenant, SB-20). AGENT full-text relabel — NOT owner validation. Separate record."
     },
     "OD-15": {
       "choice": "B",
       "label": "out_of_scope (CONFIRMED)",
-      "label_source": "owner",
+      "label_source": "agent-full-text",
       "evidence": "full-text-keyword-search",
       "recorded_at": "2026-10-07",
-      "note": "Owner chose [B]: the corpus does NOT answer — out_of_scope CONFIRMED on full-text evidence. 0 of 136 T04 documents mention gift/live stream; the only 'charged twice' passage is a Marketplace org-transfer note; 'refund' appears in 4 docs, none a duplicate-charge refund path; the closest gift analogue (GitHub Sponsors) carries an explicit no-refunds include. SEPARATE record; does not alter review_status (REVIEWED-BELOW-BAR-7-OF-14-FAIL) and is not counted in the 7/14."
+      "note": "Provisional owner reply [B] on agent-presented evidence; out_of_scope stands (agent full-text: no gift/live-stream material; no duplicate-charge refund path; closest analogue carries a no-refunds include). AGENT full-text relabel — NOT owner validation. Separate record."
     }
   }
 }

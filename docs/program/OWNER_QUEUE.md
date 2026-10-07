@@ -6,7 +6,7 @@ Each entry carries the default that is **in effect right now**, so the program n
 | id | What | Why it is Zone R | Default in effect | To review | Owner minutes |
 | --- | --- | --- | --- | --- | --- |
 | OQ-001 | Push `prog/main` and the phase branches to `origin` | Anything that leaves this machine | Stay local; branches exist only on this host | `git push -u origin prog/main` | 1 |
-| OQ-002 | **Label spot-check batch 1 — 15 rows, all owner-supplied. OWNER REVIEW DONE — FAILED (7/14 = 50%, below 85% bar). RELABEL COMPLETE (7/7 decisions, full-text evidence).** | Label provenance: only `owner` rows may carry a recall/D3 headline; agent labels DISCARDED for recall | 7 relabel decisions recorded (5 CONFIRMED, 1 label-stands on weaker evidence, 1 UNRESOLVED); no OOS/answerable flips; impact tables re-run unchanged; g15 pause conditions now met — lift on owner word | `node tooling/corpus/spotcheck.mjs --batch 1` | **15** |
+| OQ-002 | **Label spot-check batch 1 — 15 rows, all owner-supplied. OWNER SPOT-CHECK NOT DONE / NOT OWNER-VALIDATED** (provenance corrected 2026-10-07: Hatem did not independently inspect the documents). | Label provenance: only `owner` rows may carry a recall/D3 headline — **zero exist**; recall/D3 NOT MEASURABLE at any claimed N, every tenant | A provisional 7/14 agent-relay interaction is preserved as historical context only; the 7-row AGENT full-text relabel layer is kept separately (not owner validation); no OOS/answerable flips; g15 prereg reviewed, NOT run | `node tooling/corpus/spotcheck.mjs --batch 1` | **15** |
 | OQ-003 | Confirm the NC/ND licence exclusion list before P1 harvest | Licence compliance; a wrong call is a legal exposure, not an engineering one | NC/ND and unclear-terms sources are excluded automatically | `tooling/corpus/licence-allowlist.json` | 5 |
 | OQ-004 | Release tag and public deployment at the end of P8 | Public action | Prepare the exact command; do not run it | — | 2 |
 | OQ-006 | Whether organisational role addresses (`copyright@`, `privacy@`, `dpo@`, `legal-support@`, `events@`, `secret-scanning@`) count as personal data | All 12 findings that drop GitHub's 72-document site-policy tree are role addresses published so anyone can contact the organisation. GDPR argues a role mailbox does not identify a natural person; the counter is that it can still reach one. **My recommendation: exclude a defined role set — it would recover the whole policy tree and make T05-policy-style a real tenant.** It is a threshold change and needs a prereg. | Site-policy stays dropped; T05-policy-style stays empty | `docs/CORPUS_PROVENANCE.md` §5 | 3 |
@@ -17,36 +17,31 @@ Each entry carries the default that is **in effect right now**, so the program n
 
 | id | Closed | How |
 | --- | --- | --- |
-| OQ-008 | 2026-10-07 | **Closed.** OD-13 labelled `out_of_scope` by the owner: the document explains how to add or update payment methods but does not answer why a stale card is charged, or how default payment selection works. The `decided: false` flag is gone and all 15 OD rows are decided. |
+| OQ-008 | 2026-10-07 | **Closed.** OD-13 labelled `out_of_scope` by the owner: the document explains how to add or update payment methods but does not answer why a stale card is charged, or how default payment selection works. The `decided: false` flag is gone and all 15 OD rows are decided. (Provenance corrected 2026-10-07: provisional owner choice on agent-presented evidence — not owner document inspection or validation.) |
 | OQ-005 | 2026-10-07 | `@sop/mobile` excluded from the workspace (prereg `g9-drop-mobile`). node-forge, braces and sprintf-js left the lockfile with it; `sharp` was patched. `pnpm audit --prod` reports zero. |
 
 ---
 
 ## OQ-002 in detail — the batch that is ready now
 
-> ### ⚠️ OWNER REVIEW: DONE — FAILED (7/14 = 50% < 85%)
+> ### ⚠️ OWNER SPOT-CHECK: NOT DONE / NOT OWNER-VALIDATED (provenance corrected 2026-10-07)
 >
-> The owner completed OQ-002 batch 1 on **2026-10-07** (continuation): explicit AGREE/DISAGREE verdicts
-> on all 14 countable rows — **7 AGREE / 7 DISAGREE = 50%**, below the 85% acceptance bar → **FAIL.**
-> This is the **third consecutive** below-bar spot-check (prior 5/15, 8/15; this 7/14).
+> **Hatem did NOT independently inspect the 15 source documents.** No OQ-002 record is an independent
+> owner check or owner validation.
 >
-> Binding consequences:
->
-> 1. Agent-produced labels are **DISCARDED for recall and D3 claims** (per the new rule, step 5).
-> 2. The 7 DISAGREE rows went through **full-text relabel review — COMPLETE 2026-10-07**:
->    OD-01 [B] out_of_scope CONFIRMED · OD-02 [A] answerable (acceptable set +username-reference.md,
->    an agent label miss) · OD-04 [A] answerable (manage-payment-info.md) · OD-05 [A] answerable
->    (acceptable document changed to declined-card.md) · OD-06 [C] UNRESOLVED (stays out_of_scope,
->    not owner-confirmed either way) · OD-11 [B] out_of_scope CONFIRMED · OD-15 [B] out_of_scope
->    CONFIRMED. Decisions are separate records in `spotcheck-batch-1.json` → `relabel_decisions`;
->    they do not alter the 7/14 tally. Net effect on the gold set: no OOS/answerable flips;
->    OD-02's and OD-05's acceptable documents were corrected.
-> 3. OD-13 is excluded (owner OQ-008, `out_of_scope`); it is **not** counted as AGREE.
-> 4. The excerpts shown at review time were 150-char fragments insufficient to support a judgement
->    (see WEAK EVIDENCE in the report); the DISAGREEs may partly reflect that weakness, not the labels.
->
-> **Every answerability label below remains agent-produced pending relabel; recall/D3 claims are NOT
-> MEASURABLE from owner rows (see DECISIONS.md).**
+> 1. **Historical context only:** a provisional 2026-10-07 interaction recorded 7 AGREE / 7 DISAGREE of
+>    14 countable rows (50% vs the 85% bar) on 150-char agent-presented fragments. Preserved as history —
+>    **not a completed independent owner check**. OD-13 excluded (provisional choice via OQ-008).
+> 2. **Agent full-text relabel layer (kept, separate provenance):** the 7 DISAGREE rows were re-labelled
+>    by AGENT inspection of the re-fetched pinned corpus; the owner's replies were provisional choices on
+>    agent-presented evidence — OD-01 [B] out_of_scope stands · OD-02 [A] answerable (acceptable set
+>    +username-reference.md, an agent label miss) · OD-04 [A] answerable (manage-payment-info.md) ·
+>    OD-05 [A] answerable (acceptable document changed to declined-card.md) · OD-06 [C] UNRESOLVED
+>    (stays out_of_scope, unvalidated either way) · OD-11 [B] out_of_scope stands (answering appeal doc
+>    is T05 — tenant-scoped) · OD-15 [B] out_of_scope stands. No OOS/answerable flips.
+> 3. `label_source=owner` rows fleet-wide: **0**. Agent rows stay refusal/robustness-only, tagged
+>    `unverified`.
+> 4. **Recall/D3 claims are NOT MEASURABLE at any claimed N, for every tenant** (see DECISIONS.md).
 
 **Run `node tooling/corpus/spotcheck.mjs --batch 1`.** It prints 15 rows and writes
 `tooling/corpus/spotcheck-batch-1.json`.

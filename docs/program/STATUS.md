@@ -37,7 +37,7 @@ sources will be added.**
 | ~~SQL suites not re-run~~ **CLOSED 2026-10-07** | Owner ran `verify:db` outside the sandbox: all four suites OK, counts reproduce exactly (99/27/40, retention OK) | `docs/BASELINE.md` §6 |
 | ~~Deployed path not re-run~~ **CLOSED 2026-10-07** | Owner authorized `verify:deployed` against the dev project: **19/19, `DEPLOYED STRANGER PATH OK`**, commit `3bab890` | `docs/BASELINE.md` §7.2 |
 | Deployed/local divergence not reproduced | P0 removed the mechanism, not the reproduction. Tracked as probe **MC-09** in P5 | `docs/program/P5_PROBES.md` |
-| OQ-002 batch-1 spot-check **FAILED** (7/14 = 50% < 85%); agent labels **DISCARDED** for recall/D3; 7 DISAGREE rows in relabel review (step 3) | Label quality below acceptance; recall/D3 claims now rest only on `label_source=owner` rows (15, all T04 calibration) → NOT MEASURABLE for T01/T05 at claimed N | `docs/program/OWNER_QUEUE.md`, `tooling/corpus/spotcheck-batch-1.json`, `docs/program/DECISIONS.md` |
+| OQ-002 owner spot-check **NOT DONE / NOT OWNER-VALIDATED** (provenance corrected 2026-10-07; the provisional 7/14 agent-relay interaction is historical context only); agent full-text relabel layer kept separately, **not owner validation**; `label_source=owner` rows = 0 | **Recall/D3 claims NOT MEASURABLE at any claimed N, every tenant**; agent rows refusal/robustness-only, tagged unverified | `docs/program/OWNER_QUEUE.md`, `tooling/corpus/spotcheck-batch-1.json`, `docs/program/DECISIONS.md` |
 
 ## Owner follow-ups after P0
 
