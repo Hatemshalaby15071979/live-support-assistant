@@ -1,9 +1,7 @@
 # RX-03 — Retrieval quality (bi-encoder replacement) — DRAFT PREREG
 
-**Zone.** Y (governance). **Status.** DRAFT — prepared 2026-10-07, **NOT RUN**. Requires the owner's
-ratification of the frozen selection rules below before any execution. Register: **RX-03**
-(`docs/prereg/rejected-experiments.md`), which g15's R4 requires every retrieval change to pass through
-before any code is written.
+**Zone.** Y (governance). **Status.** Scope ratified as drafted by the owner (2026-10-07); **candidate
+FROZEN 2026-10-07** (see `Candidate freeze` below); **NOT RUN**. Any execution awaits the owner's go.
 
 ## Purpose
 
@@ -11,6 +9,46 @@ Retrieval quality only. g15 (P4 scope/refusal layer) is **CLOSED — NEGATIVE RE
 established that the margin signal has no headroom at current retrieval quality: the binding constraint
 is the encoder, not the gate. RX-03 tests whether one candidate bi-encoder improves retrieval quality
 on the **existing** rungs and **existing** gold set.
+
+## Candidate freeze — 2026-10-07 (owner decision)
+
+The candidate is **frozen**. No embeddings have been generated; no retrieval code changed; the
+incumbent remains the shipped model.
+
+| Field | Value | Source |
+| --- | --- | --- |
+| Candidate ID (load pin) | `Xenova/multilingual-e5-small` | HF registry (VERIFIED, fetched) |
+| Candidate revision | `761b726dd34fb83930e26aab4e9ac3899aa1fa78` | HF registry (VERIFIED, fetched) |
+| Upstream ID | `intfloat/multilingual-e5-small` | VERIFIED |
+| Upstream revision | `614241f622f53c4eeff9890bdc4f31cfecc418b3` | VERIFIED (HF revision endpoint, fetched 2026-10-07) |
+| Licence | **MIT** | HF listing; externally verified by the owner (in-session registry fetches for the upstream repo returned empty across 6 attempts — recorded, not hidden) |
+| Dimensions | 384 | `config.json` `hidden_size` (VERIFIED, fetched) |
+| Pooling | mean | model card usage (VERIFIED) |
+| Normalize | true | model card usage (VERIFIED) |
+| queryPrefix | `query: ` | model card FAQ (VERIFIED — omitting them "will see a performance degradation") |
+| passagePrefix | `passage: ` | model card FAQ (VERIFIED) |
+| Quantization | `q8` (`onnx/model_quantized.onnx` present) | HF registry siblings (VERIFIED) |
+| Artifact checksum | **none recorded by the project** — immutability is carried by the two pinned revisions; a checksum can be recorded at first download if desired | repo grep: no checksum mechanism in `packages/embedder/src/` or `packages/core/src/` |
+
+**Language qualification (exact):** the upstream model states coverage of the XLM-R multilingual
+language set, and XLM-R explicitly includes: **en, fr, es, pt**. For the T01 pt-BR arm:
+*"Portuguese coverage is supported; the model registry does not identify pt-BR as a separate locale
+tag. RX-03 therefore tests Brazilian-Portuguese retrieval empirically rather than treating pt-BR
+performance as proven."* (Language-set membership per the owner's external verification of the XLM-R
+registry; the in-session fetch of that list failed — the chain is recorded rather than papered over.
+`en` is additionally VERIFIED by the card's Mr.TyDi table, MRR@10 66.3.)
+
+**Why C2 over C1** (`Xenova/paraphrase-multilingual-MiniLM-L12-v2`, Apache-2.0, verified in-session):
+the owner selected C2 for its retrieval-trained multilingual objective (contrastive pre-training +
+MS MARCO/Mr.TyDi/MIRACL fine-tuning) and the XLM-R language set, versus C1's paraphrase/STS objective.
+The existing `EmbeddingModelSpec` interface already carries per-model query/passage prefixes, so C2's
+prefix requirement is declared, not discovered. Recorded honestly: C1's licence was verified in-session
+while C2's MIT rests on the owner's external verification; C1 remains the fallback only if a material
+incompatibility emerges.
+
+**Not changed by this freeze:** the incumbent `Xenova/all-MiniLM-L6-v2` stays the shipped model
+(`EMBEDDING_MODEL`); no embeddings generated; no thresholds touched; held-out untouched; g15 stays
+CLOSED.
 
 ## Explicit separations
 

@@ -92,6 +92,33 @@ export const E5_SMALL_V2: EmbeddingModelSpec = {
   note: 'retrieval-trained, requires query:/passage: prefixes',
 };
 
+/**
+ * RX-03 candidate; do not use as shipped model until RX-03 acceptance.
+ *
+ * Upstream: intfloat/multilingual-e5-small, revision
+ * 614241f622f53c4eeff9890bdc4f31cfecc418b3 (MIT), initialized from
+ * microsoft/Multilingual-MiniLM-L12-H384 and continually trained for multilingual
+ * retrieval — the query:/passage: prefixes are load-bearing (card FAQ: omitting
+ * them degrades performance). Language qualification: the upstream model states
+ * coverage of the XLM-R multilingual language set (en, fr, es, pt included);
+ * pt-BR is not a separate locale tag in the registry — RX-03 tests
+ * Brazilian-Portuguese retrieval empirically rather than treating it as proven.
+ * Selected over paraphrase-multilingual-MiniLM-L12-v2 for the retrieval-trained
+ * multilingual training objective and the XLM-R language set; see
+ * docs/prereg/rx03-retrieval-quality.md for the frozen candidate record.
+ */
+export const E5_SMALL_MULTILINGUAL: EmbeddingModelSpec = {
+  id: 'Xenova/multilingual-e5-small',
+  revision: '761b726dd34fb83930e26aab4e9ac3899aa1fa78',
+  dtype: 'q8',
+  dimensions: 384,
+  pooling: 'mean',
+  normalize: true,
+  queryPrefix: 'query: ',
+  passagePrefix: 'passage: ',
+  note: 'RX-03 candidate; multilingual retrieval-trained; prefixes load-bearing; upstream intfloat/multilingual-e5-small@614241f622f53c4eeff9890bdc4f31cfecc418b3',
+};
+
 /** MS MARCO passage-ranking cross-encoder, used to rerank retrieved candidates. */
 export const CROSS_ENCODER_RERANKER: RerankerSpec = {
   id: 'Xenova/ms-marco-MiniLM-L-6-v2',
@@ -105,6 +132,7 @@ export const EMBEDDING_MODELS: readonly EmbeddingModelSpec[] = [
   MINILM_L6_V2,
   BGE_SMALL_EN_V1_5,
   E5_SMALL_V2,
+  E5_SMALL_MULTILINGUAL,
 ];
 
 /**
