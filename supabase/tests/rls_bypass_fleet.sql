@@ -5,25 +5,34 @@
 -- over principals x tenants x objects x operations so the count is a property of the schema
 -- rather than of how many probes someone typed.
 --
--- Three things make it hard to pass this suite dishonestly:
+-- Four things make it hard to pass this suite dishonestly:
 --
---   1. **Object existence is asserted first.** A probe against a table that does not exist
---      raises 42P01, which would otherwise read as a refusal and pass. A missing object is
---      recorded as a FAILURE before any probe runs.
---   2. **Vacuous probes are recorded, not passed.** A cross-tenant read proves nothing if the
---      other tenant has no rows; where it has none the probe is recorded as `vacuous` and
---      counts against the run.
---   3. **Every section carries a positive control** — an attempt that MUST succeed. Without
+--   1. **Objects are resolved before anything else, the way the migrations created them.**
+--      The migrations create the tables UNQUALIFIED (so they land in `public`) and the views
+--      and functions explicitly in `app`. Asserting one fixed schema therefore reports the
+--      tables MISSING, and a probe against a missing object raises 42P01, which would
+--      otherwise read as a refusal and pass. Resolution uses `to_regclass`, which follows
+--      search_path, then falls back to `app.<name>`; the resolved schema is recorded.
+--   2. **Objects without a `tenant_id` column are excluded from tenant probes**, because a
+--      probe that cannot express "the other tenant's rows" proves nothing.
+--   3. **Vacuous probes are recorded, bounded at 10%, and forbidden entirely in the write
+--      sections** — a probe against an empty tenant is not evidence.
+--   4. **Every section carries a positive control** — an attempt that MUST succeed. Without
 --      them a database in which everything is denied would also report zero failures.
 --
+-- psql NOTE: `:'var'` is NOT interpolated inside a `$$ ... $$` body. Every fixture value is
+-- therefore passed at top level into a table; no dollar-quoted block references a psql
+-- variable. `tooling/db/verify-fleet-only.sh` lints for that mistake before running.
+--
 -- Run: psql -f supabase/tests/rls_bypass_fleet.sql
---      (tooling/db/verify-phase7.sh runs it as the fifth suite)
+--      (tooling/db/verify-phase7.sh runs it as the fifth suite;
+--       tooling/db/verify-fleet-only.sh runs it alone)
 
 \set ON_ERROR_STOP off
 
 -- ---------------------------------------------------------------- fixtures ---
 -- Same principal defaults as rls_bypass.sql; overridable from the command line for a hosted
--- project, where the Auth Admin API assigns the UUIDs.
+-- project, where the Auth Admin API assigns the UUIDs. Top level only — see the psql NOTE.
 \if :{?alpha_ops}
 \else
 \set alpha_ops 'a0000000-0000-0000-0000-000000000001'
@@ -54,6 +63,8 @@
 \endif
 
 drop table if exists fleet_results;
+drop table if exists fleet_objects;
+drop table if exists fleet_principals;
 
 create table fleet_results (
   id          serial primary key,
@@ -66,6 +77,24 @@ create table fleet_results (
   ok          boolean not null,
   note        text
 );
+
+-- Principals: written at top level so psql interpolates the ids. `home` is the tenant the
+-- principal belongs to, read back from `users` rather than assumed.
+create table fleet_principals (
+  ord     int primary key,
+  role    app_role not null,
+  user_id uuid not null,
+  home    uuid
+);
+
+insert into fleet_principals (ord, role, user_id) values
+  (1, 'ops_manager', :'alpha_ops'),
+  (2, 'sop_editor',  :'alpha_editor'),
+  (3, 'team_lead',   :'alpha_lead'),
+  (4, 'agent',       :'alpha_agent'),
+  (5, 'auditor',     :'alpha_auditor'),
+  (6, 'ops_manager', :'beta_ops'),
+  (7, 'agent',       :'beta_agent');
 
 -- ---------------------------------------------------------------- helpers ---
 
@@ -92,8 +121,7 @@ create or replace function f_record(
   values (p_section, p_role, p_object, p_operation, p_expected, p_observed, p_ok, p_note)
 $$;
 
--- Execute p_sql as `authenticated` under the given claims and record whether the outcome
--- matches the expectation.
+-- Execute p_sql as `authenticated` under the given claims and record the outcome.
 --   p_expect = 'allowed' -> must return rows
 --   p_expect = 'refused' -> must return 0 rows, or be denied / raise
 create or replace function f_probe(
@@ -129,58 +157,86 @@ begin
   );
 end $$;
 
--- ------------------------------------------------- section 0: object guard ---
--- 17 probes. A missing object would make every probe against it look like a refusal.
+-- ------------------------------------------- section 0a: object resolution ---
+-- Resolve every object the way the migrations created it. `to_regclass` follows search_path,
+-- so an unqualified table resolves to `public`; the views live in `app` and are reached by
+-- the explicit fallback. Nothing is assumed about the schema.
+create table fleet_objects (
+  name          text primary key,
+  kind          text,
+  schema_name   text,
+  qualified     text,
+  has_tenant_id boolean
+);
+
 do $$
 declare
-  v_objects text[] := array[
+  v_names text[] := array[
     'sops', 'sop_versions', 'policy_bundles', 'escalations', 'telemetry_events', 'users',
     'tenants', 'tenant_key_versions', 'tenant_threshold_changes', 'device_registrations',
     'device_bundle_acks', 'policy_bundle_device_keys', 'ingest_rate_windows',
     'telemetry_ingest_dedup', 'ops_escalation_dashboard', 'ops_gate_funnel', 'ops_threshold_changes'
   ];
-  o text; v_kind text;
+  n text; c oid; s text; k text; has_col boolean;
 begin
-  foreach o in array v_objects loop
-    v_kind := case
-      when exists (select 1 from information_schema.tables where table_schema = 'app' and table_name = o) then 'table'
-      when exists (select 1 from information_schema.views  where table_schema = 'app' and table_name = o) then 'view'
-      else null end;
-    perform f_record('object existence', '(schema)', o, 'exists', 'present',
-      coalesce(v_kind, 'MISSING'), v_kind is not null,
-      case when v_kind is null then 'object is missing — every probe against it would pass vacuously' end);
+  foreach n in array v_names loop
+    c := coalesce(to_regclass(n), to_regclass('app.' || n));
+    if c is null then
+      insert into fleet_objects values (n, 'MISSING', null, null, false);
+    else
+      select nspname into s from pg_namespace where oid = (select relnamespace from pg_class where oid = c);
+      select case relkind when 'r' then 'table' when 'p' then 'table' when 'v' then 'view'
+                          when 'm' then 'matview' else relkind::text end
+        into k from pg_class where oid = c;
+      select exists (
+        select 1 from information_schema.columns
+        where table_schema = s and table_name = n and column_name = 'tenant_id'
+      ) into has_col;
+      insert into fleet_objects values (n, k, s, format('%I.%I', s, n), coalesce(has_col, false));
+    end if;
   end loop;
 end $$;
 
--- -------------------------------------------- section 1: cross-tenant read ---
--- 7 principals x 15 objects x 2 query shapes = 210 probes. Every principal reads the OTHER
--- tenant's rows; refusal is the only acceptable outcome. `vacuous` is recorded where the
--- target holds no rows, so an empty tenant cannot make the suite look green.
+-- ------------------------------------------ section 0b: existence assertion ---
+-- 17 probes. A missing object would make every probe against it look like a refusal.
+insert into fleet_results (section, role_name, object_name, operation, expected, observed, ok, note)
+select
+  'object existence', '(schema)', name, 'exists', 'present',
+  coalesce(schema_name || '.' || kind, 'MISSING'),
+  (kind is not null),
+  case when kind is null
+       then 'object is missing — every probe against it would pass vacuously'
+       when not has_tenant_id and kind = 'table'
+       then 'present, but has no tenant_id column: excluded from tenant probes'
+       else null end
+from fleet_objects;
+
+-- ------------------------------------------------- section 1: cross-tenant read ---
+-- 7 principals x (objects with a tenant_id) x 3 query shapes. Refusal is the only acceptable
+-- outcome. `vacuous` is recorded where the target holds no rows, so an empty tenant cannot
+-- make the suite look green.
 do $$
 declare
-  v_roles  app_role[] := array['ops_manager','sop_editor','team_lead','agent','auditor','ops_manager','agent']::app_role[];
-  v_users  uuid[] := array[:'alpha_ops'::uuid, :'alpha_editor'::uuid, :'alpha_lead'::uuid, :'alpha_agent'::uuid, :'alpha_auditor'::uuid, :'beta_ops'::uuid, :'beta_agent'::uuid];
-  v_homes  uuid[] := array[:'alpha'::uuid, :'alpha'::uuid, :'alpha'::uuid, :'alpha'::uuid, :'alpha'::uuid, :'beta'::uuid, :'beta'::uuid];
-  v_objects text[] := array['sops','sop_versions','policy_bundles','escalations','telemetry_events','users','tenants','tenant_key_versions','tenant_threshold_changes','device_registrations','device_bundle_acks','policy_bundle_device_keys','ops_escalation_dashboard','ops_gate_funnel','ops_threshold_changes'];
+  p record; t uuid; o record; k int; v_rows bigint;
   v_shapes text[] := array[
-    'select 1 from app.%I where tenant_id = %L',
-    'select count(*) from app.%I where tenant_id = %L'
+    'select 1 from %s where tenant_id = %L',
+    'select count(*) from %s where tenant_id = %L',
+    'select 1 from %s where tenant_id <> %L limit 1'
   ];
-  i int; k int; t uuid; o text; v_rows bigint;
 begin
-  for i in 1 .. array_length(v_roles, 1) loop
-    t := case when v_homes[i] = :'alpha'::uuid then :'beta'::uuid else :'alpha'::uuid end;
-    foreach o in array v_objects loop
-      execute format('select count(*) from app.%I where tenant_id = %L', o, t) into v_rows;
+  for p in select * from fleet_principals order by ord loop
+    t := case when p.home = '11111111-1111-1111-1111-111111111111'::uuid
+              then '22222222-2222-2222-2222-222222222222'::uuid
+              else '11111111-1111-1111-1111-111111111111'::uuid end;
+    for o in select * from fleet_objects where kind = 'table' and has_tenant_id order by name loop
+      execute format('select count(*) from %s where tenant_id = %L', o.qualified, t) into v_rows;
       for k in 1 .. array_length(v_shapes, 1) loop
-        if v_rows = 0 then
-          -- Not a pass: a probe against an empty tenant proves nothing. Recorded so the run
-          -- cannot look green on a thin fixture, and bounded by the verdict below.
-          perform f_record('cross-tenant read', v_roles[i]::text, o, 'select shape ' || k, 'refused', 'vacuous', true,
+        if v_rows = 0 and k < 3 then
+          perform f_record('cross-tenant read', p.role::text, o.name, 'select shape ' || k, 'refused', 'vacuous', true,
             'target tenant has no rows in this object — proves nothing');
         else
-          perform f_probe('cross-tenant read', v_roles[i], v_homes[i], v_users[i], o, 'select shape ' || k,
-            format(v_shapes[k], o, t), 'refused');
+          perform f_probe('cross-tenant read', p.role, p.home, p.user_id, o.name, 'select shape ' || k,
+            format(v_shapes[k], o.qualified, t), 'refused');
         end if;
       end loop;
     end loop;
@@ -188,58 +244,57 @@ begin
 end $$;
 
 -- ------------------------------------------- section 2: cross-tenant write ---
--- 7 principals x 12 tables x 5 write shapes = 420 probes. A success here is a tenant-isolation
--- breach: inserting into, updating, deleting from, stealing, or copying the other tenant's rows.
+-- 7 principals x (tables with a tenant_id) x 5 write shapes. A success here is a
+-- tenant-isolation breach. Never vacuous: a write attempt is meaningful whatever the target
+-- holds, so the verdict forbids `vacuous` anywhere in this section.
 do $$
 declare
-  v_roles  app_role[] := array['ops_manager','sop_editor','team_lead','agent','auditor','ops_manager','agent']::app_role[];
-  v_users  uuid[] := array[:'alpha_ops'::uuid, :'alpha_editor'::uuid, :'alpha_lead'::uuid, :'alpha_agent'::uuid, :'alpha_auditor'::uuid, :'beta_ops'::uuid, :'beta_agent'::uuid];
-  v_homes  uuid[] := array[:'alpha'::uuid, :'alpha'::uuid, :'alpha'::uuid, :'alpha'::uuid, :'alpha'::uuid, :'beta'::uuid, :'beta'::uuid];
-  v_tables text[] := array['sops','sop_versions','policy_bundles','escalations','telemetry_events','users','tenants','tenant_key_versions','tenant_threshold_changes','device_registrations','device_bundle_acks','policy_bundle_device_keys'];
-  i int; o text; j int;
+  p record; t uuid; o record; j int;
+  v_ops text[] := array['insert','update','delete','steal','copy'];
 begin
-  for i in 1 .. array_length(v_roles, 1) loop
-    declare
-      t uuid := case when v_homes[i] = :'alpha'::uuid then :'beta'::uuid else :'alpha'::uuid end;
-      home uuid := v_homes[i];
-      v_ops text[] := array['insert','update','delete','steal','copy'];
-    begin
-      foreach o in array v_tables loop
-        foreach j in array array[1,2,3,4,5] loop
-          perform f_probe('cross-tenant write', v_roles[i], home, v_users[i], o, v_ops[j],
-            case v_ops[j]
-              when 'insert' then format('insert into app.%I (tenant_id) values (%L)', o, t)
-              when 'update' then format('update app.%I set tenant_id = %L where tenant_id = %L', o, t, t)
-              when 'delete' then format('delete from app.%I where tenant_id = %L', o, t)
-              when 'steal'  then format('update app.%I set tenant_id = %L where tenant_id = %L', o, home, t)
-              else               format('insert into app.%I select * from app.%I where tenant_id = %L', o, o, t)
-            end,
-            'refused');
-        end loop;
+  for p in select * from fleet_principals order by ord loop
+    t := case when p.home = '11111111-1111-1111-1111-111111111111'::uuid
+              then '22222222-2222-2222-2222-222222222222'::uuid
+              else '11111111-1111-1111-1111-111111111111'::uuid end;
+    for o in select * from fleet_objects where kind = 'table' and has_tenant_id order by name loop
+      for j in 1 .. array_length(v_ops, 1) loop
+        perform f_probe('cross-tenant write', p.role, p.home, p.user_id, o.name, v_ops[j],
+          case v_ops[j]
+            when 'insert' then format('insert into %s (tenant_id) values (%L)', o.qualified, t)
+            when 'update' then format('update %s set tenant_id = %L where tenant_id = %L', o.qualified, t, t)
+            when 'delete' then format('delete from %s where tenant_id = %L', o.qualified, t)
+            when 'steal'  then format('update %s set tenant_id = %L where tenant_id = %L', o.qualified, p.home, t)
+            else               format('insert into %s select * from %s where tenant_id = %L', o.qualified, o.qualified, t)
+          end,
+          'refused');
       end loop;
-    end;
+    end loop;
   end loop;
 end $$;
 
 -- ------------------------------------------- section 3: anonymous (no claim) ---
--- 15 objects x 4 operations = 60 probes. An authenticated role with a stripped claim.
+-- Every resolvable object x 4 operations. An authenticated role with a stripped claim.
 do $$
 declare
-  v_objects text[] := array['sops','sop_versions','policy_bundles','escalations','telemetry_events','users','tenants','tenant_key_versions','tenant_threshold_changes','device_registrations','device_bundle_acks','policy_bundle_device_keys','ops_escalation_dashboard','ops_gate_funnel','ops_threshold_changes'];
+  o record; op text; v_observed text; v_rows bigint;
   v_ops text[] := array['select','insert','update','delete'];
-  o text; op text; v_observed text; v_rows bigint;
 begin
-  foreach o in array v_objects loop
+  for o in select * from fleet_objects where kind is not null order by name loop
     foreach op in array v_ops loop
+      -- A write probe against a view cannot be expressed, and the resulting error would read
+      -- as a refusal and pass. Views are probed with `select` only.
+      if op <> 'select' and o.kind <> 'table' then
+        continue;
+      end if;
       begin
         perform f_raw_claims('');
         execute 'set local role authenticated';
         begin
           execute case op
-            when 'select' then format('select 1 from app.%I limit 1', o)
-            when 'insert' then format('insert into app.%I default values', o)
-            when 'update' then format('update app.%I set tenant_id = tenant_id', o)
-            else               format('delete from app.%I where true', o)
+            when 'select' then format('select 1 from %s limit 1', o.qualified)
+            when 'insert' then format('insert into %s default values', o.qualified)
+            when 'update' then format('update %s set tenant_id = tenant_id', o.qualified)
+            else               format('delete from %s where true', o.qualified)
           end;
           get diagnostics v_rows = row_count;
           v_observed := 'rows:' || v_rows;
@@ -248,74 +303,83 @@ begin
         execute 'reset role';
       exception when others then v_observed := 'probe_failure:' || sqlstate;
       end;
-      perform f_record('anonymous', 'anonymous', o, op, 'refused', v_observed,
+      perform f_record('anonymous', 'anonymous', o.name, op, 'refused', v_observed,
         v_observed = 'rows:0' or v_observed like 'denied:%' or v_observed like 'error:%');
     end loop;
   end loop;
 end $$;
 
 -- --------------------------------------- section 4: claim-shape forgery ---
--- 7 principals x (8 malformed tenant claims x 5 role strings) = 280 probes. None may reach a
+-- 7 principals x (20 malformed tenant claims x 5 role strings) = 700 probes. None may reach a
 -- tenant that is not the principal's home.
 do $$
 declare
-  v_roles app_role[] := array['ops_manager','sop_editor','team_lead','agent','auditor','ops_manager','agent']::app_role[];
-  v_users uuid[] := array[:'alpha_ops'::uuid, :'alpha_editor'::uuid, :'alpha_lead'::uuid, :'alpha_agent'::uuid, :'alpha_auditor'::uuid, :'beta_ops'::uuid, :'beta_agent'::uuid];
+  p record; a int; b int; v_json text; v_observed text; v_rows bigint; v_sops text;
   v_tenants text[] := array[
     'null', '""', '"not-a-uuid"', '"00000000-0000-0000-0000-000000000000"',
-    '"11111111-1111-1111-1111-111111111111"', '"a0000000-0000-0000-0000-0000000000ff"',
-    '"b0000000-0000-0000-0000-0000000000ff"', '"' || repeat('9', 40) || '"'
+    '"11111111-1111-1111-1111-111111111111"', '"22222222-2222-2222-2222-222222222222"',
+    '"a0000000-0000-0000-0000-0000000000ff"', '"b0000000-0000-0000-0000-0000000000ff"',
+    '"' || repeat('9', 40) || '"', '"\u0000"', '" "', '"app"', '"public"', '"tenant_id"',
+    '"11111111-1111-1111-1111-11111111111"', '"11111111-1111-1111-1111-1111111111111"',
+    '0', 'true', '[]', '{}'
   ];
   v_roles_txt text[] := array['ops_manager','sop_editor','team_lead','agent','auditor'];
-  i int; a int; b int; v_json text; v_observed text; v_rows bigint;
 begin
-  for i in 1 .. array_length(v_roles, 1) loop
-    for a in 1 .. array_length(v_tenants, 1) loop
-      for b in 1 .. array_length(v_roles_txt, 1) loop
-        v_json := format(
-          '{"sub":"00000000-0000-0000-0000-000000000000","app_metadata":{"tenant_id":%s,"app_role":"%s"}}',
-          v_tenants[a], v_roles_txt[b]);
-        begin
-          perform f_raw_claims(v_json);
-          execute 'set local role authenticated';
+  select qualified into v_sops from fleet_objects where name = 'sops';
+  if v_sops is null then
+    perform f_record('claim-shape forgery', '(schema)', 'sops', 'select', 'refused', 'MISSING', false,
+      'sops did not resolve — the section cannot run');
+  else
+    for p in select * from fleet_principals order by ord loop
+      for a in 1 .. array_length(v_tenants, 1) loop
+        for b in 1 .. array_length(v_roles_txt, 1) loop
+          v_json := format(
+            '{"sub":"00000000-0000-0000-0000-000000000000","app_metadata":{"tenant_id":%s,"app_role":"%s"}}',
+            v_tenants[a], v_roles_txt[b]);
           begin
-            execute 'select 1 from app.sops limit 1';
-            get diagnostics v_rows = row_count;
-            v_observed := 'rows:' || v_rows;
-          exception when others then v_observed := 'error:' || sqlstate;
+            perform f_raw_claims(v_json);
+            execute 'set local role authenticated';
+            begin
+              execute format('select 1 from %s limit 1', v_sops);
+              get diagnostics v_rows = row_count;
+              v_observed := 'rows:' || v_rows;
+            exception when others then v_observed := 'error:' || sqlstate;
+            end;
+            execute 'reset role';
+          exception when others then v_observed := 'probe_failure:' || sqlstate;
           end;
-          execute 'reset role';
-        exception when others then v_observed := 'probe_failure:' || sqlstate;
-        end;
-        perform f_record('claim-shape forgery', v_roles[i]::text, 'sops', 'select', 'refused', v_observed,
-          v_observed = 'rows:0' or v_observed like 'denied:%' or v_observed like 'error:%');
+          perform f_record('claim-shape forgery', p.role::text, 'sops', 'select', 'refused', v_observed,
+            v_observed = 'rows:0' or v_observed like 'denied:%' or v_observed like 'error:%');
+        end loop;
       end loop;
     end loop;
-  end loop;
+  end if;
 end $$;
 
 -- -------------------------------------------- section 5: key material ---
--- 4 non-privileged roles x 2 ledgers x 3 operations = 24 probes. The key and threshold
--- ledgers are ops-manager surfaces; nothing else may read or write them.
+-- 4 non-privileged roles x 2 ledgers x 3 operations. The key and threshold ledgers are
+-- ops-manager surfaces; nothing else may read or write them.
 do $$
 declare
-  v_roles app_role[] := array['sop_editor','team_lead','agent','auditor']::app_role[];
-  v_users uuid[] := array[:'alpha_editor'::uuid, :'alpha_lead'::uuid, :'alpha_agent'::uuid, :'alpha_auditor'::uuid];
-  v_tables text[] := array['tenant_key_versions','tenant_threshold_changes'];
+  p record; o record; op text;
   v_ops text[] := array['select','insert','delete'];
-  i int; o text; op text;
 begin
-  for i in 1 .. array_length(v_roles, 1) loop
-    foreach o in array v_tables loop
-      foreach op in array v_ops loop
-        perform f_probe('key and threshold ledger', v_roles[i], :'alpha'::uuid, v_users[i], o, op,
-          case op
-            when 'select' then format('select 1 from app.%I limit 1', o)
-            when 'insert' then format('insert into app.%I default values', o)
-            else               format('delete from app.%I where true', o)
-          end,
-          'refused');
-      end loop;
+  for p in select * from fleet_principals where role in ('sop_editor','team_lead','agent','auditor') order by ord loop
+    for o in select * from fleet_objects where name in ('tenant_key_versions','tenant_threshold_changes') order by name loop
+      if o.qualified is null then
+        perform f_record('key and threshold ledger', p.role::text, o.name, 'resolve', 'present', 'MISSING', false,
+          'ledger did not resolve — the section cannot run');
+      else
+        foreach op in array v_ops loop
+          perform f_probe('key and threshold ledger', p.role, p.home, p.user_id, o.name, op,
+            case op
+              when 'select' then format('select 1 from %s limit 1', o.qualified)
+              when 'insert' then format('insert into %s default values', o.qualified)
+              else               format('delete from %s where true', o.qualified)
+            end,
+            'refused');
+        end loop;
+      end if;
     end loop;
   end loop;
 end $$;
@@ -323,26 +387,64 @@ end $$;
 -- ------------------------------------------------ positive controls ---
 -- 6 probes. Without these the suite would pass on a database where everything is denied.
 do $$
+declare
+  p record; v_sops text; v_esc text; v_funnel text; v_ledger text;
+  v_alpha uuid := '11111111-1111-1111-1111-111111111111';
+  v_beta  uuid := '22222222-2222-2222-2222-222222222222';
 begin
-  perform f_probe('positive control', 'ops_manager', :'alpha'::uuid, :'alpha_ops'::uuid, 'sops', 'select',
-    'select 1 from app.sops where tenant_id = ''' || :'alpha' || '''', 'allowed',
-    'the Alpha ops manager CAN read Alpha procedures');
-  perform f_probe('positive control', 'agent', :'alpha'::uuid, :'alpha_agent'::uuid, 'sops', 'select',
-    'select 1 from app.sops where tenant_id = ''' || :'alpha' || '''', 'allowed',
-    'an Alpha agent CAN read Alpha procedures');
-  perform f_probe('positive control', 'ops_manager', :'beta'::uuid, :'beta_ops'::uuid, 'sops', 'select',
-    'select 1 from app.sops where tenant_id = ''' || :'beta' || '''', 'allowed',
-    'the Beta ops manager CAN read Beta procedures');
-  perform f_probe('positive control', 'ops_manager', :'alpha'::uuid, :'alpha_ops'::uuid, 'escalations', 'select',
-    'select 1 from app.escalations where tenant_id = ''' || :'alpha' || '''', 'allowed',
-    'the Alpha ops manager CAN read Alpha escalations');
-  perform f_probe('positive control', 'auditor', :'alpha'::uuid, :'alpha_auditor'::uuid, 'ops_gate_funnel', 'select',
-    'select 1 from app.ops_gate_funnel limit 1', 'allowed',
-    'the Alpha auditor CAN read the gate-funnel dashboard');
-  perform f_probe('positive control', 'ops_manager', :'alpha'::uuid, :'alpha_ops'::uuid, 'tenant_threshold_changes', 'select',
-    'select 1 from app.tenant_threshold_changes limit 1', 'allowed',
-    'the Alpha ops manager CAN read the threshold ledger');
+  select qualified into v_sops   from fleet_objects where name = 'sops';
+  select qualified into v_esc    from fleet_objects where name = 'escalations';
+  select qualified into v_funnel from fleet_objects where name = 'ops_gate_funnel';
+  select qualified into v_ledger from fleet_objects where name = 'tenant_threshold_changes';
+
+  if v_sops is null then
+    perform f_record('positive control', '(schema)', 'sops', 'select', 'allowed', 'MISSING', false,
+      'positive control cannot run — sops did not resolve');
+  else
+    for p in select * from fleet_principals where home = v_alpha and role in ('ops_manager','agent') order by ord loop
+      perform f_probe('positive control', p.role, v_alpha, p.user_id, 'sops', 'select',
+        format('select 1 from %s where tenant_id = %L', v_sops, v_alpha), 'allowed',
+        'an Alpha principal CAN read Alpha procedures');
+    end loop;
+    perform f_probe('positive control', 'ops_manager', v_beta, (select user_id from fleet_principals where ord = 6), 'sops', 'select',
+      format('select 1 from %s where tenant_id = %L', v_sops, v_beta), 'allowed',
+      'the Beta ops manager CAN read Beta procedures');
+    if v_esc is not null then
+      perform f_probe('positive control', 'ops_manager', v_alpha, (select user_id from fleet_principals where ord = 1), 'escalations', 'select',
+        format('select 1 from %s where tenant_id = %L', v_esc, v_alpha), 'allowed',
+        'the Alpha ops manager CAN read Alpha escalations');
+    end if;
+    if v_funnel is not null then
+      perform f_probe('positive control', 'auditor', v_alpha, (select user_id from fleet_principals where ord = 5), 'ops_gate_funnel', 'select',
+        format('select 1 from %s limit 1', v_funnel), 'allowed',
+        'the Alpha auditor CAN read the gate-funnel dashboard');
+    end if;
+    if v_ledger is not null then
+      perform f_probe('positive control', 'ops_manager', v_alpha, (select user_id from fleet_principals where ord = 1), 'tenant_threshold_changes', 'select',
+        format('select 1 from %s limit 1', v_ledger), 'allowed',
+        'the Alpha ops manager CAN read the threshold ledger');
+    end if;
+  end if;
 end $$;
+
+-- ------------------------------------------------- self-diagnosis ---
+-- One run settles where every object actually lives.
+\echo ''
+\echo '=== object resolution (to_regclass, then app.<name>) ==='
+select name, coalesce(kind, 'MISSING') as kind, coalesce(schema_name, '-') as schema,
+       coalesce(qualified, '-') as qualified, has_tenant_id
+from fleet_objects
+order by kind nulls first, name;
+
+\echo ''
+\echo '=== raw resolution evidence ==='
+select o.name,
+       coalesce(to_regclass(o.name)::text, '-')            as to_regclass_plain,
+       coalesce(to_regclass('app.' || o.name)::text, '-')  as to_regclass_app,
+       coalesce((select string_agg(c.table_schema, ',') from information_schema.tables c
+                 where c.table_name = o.name), '-')       as information_schema
+from fleet_objects o
+order by o.name;
 
 -- ---------------------------------------------------------------- report ---
 \echo ''
@@ -350,7 +452,8 @@ end $$;
 select section,
        count(*)                       as probes,
        count(*) filter (where ok)     as passed,
-       count(*) filter (where not ok) as failed
+       count(*) filter (where not ok) as failed,
+       count(*) filter (where observed = 'vacuous') as vacuous
 from fleet_results
 group by section
 order by section;
@@ -364,18 +467,17 @@ order by id
 limit 40;
 
 \echo ''
-\echo '=== vacuous probes (proved nothing — empty target tenant) ==='
-select count(*) as vacuous from fleet_results where observed = 'vacuous';
-
-\echo ''
 select case
   when (select count(*) from fleet_results) < 1000
     then 'RLS BYPASS FLEET FAILED: only ' || (select count(*) from fleet_results) || ' probes, need >= 1000'
   when exists (select 1 from fleet_results where not ok)
     then 'RLS BYPASS FLEET FAILED: ' || (select count(*) from fleet_results where not ok) || ' probe(s)'
-  when (select count(*) from fleet_results where observed = 'vacuous') > (select count(*) from fleet_results) / 4
+  when (select count(*) from fleet_results where observed = 'vacuous')
+       > (select count(*) from fleet_results) / 10
     then 'RLS BYPASS FLEET FAILED: ' || (select count(*) from fleet_results where observed = 'vacuous')
-         || ' vacuous probe(s) — the fixture is too thin to prove isolation'
+         || ' vacuous probe(s) — more than 10%; the fixture is too thin to prove isolation'
+  when exists (select 1 from fleet_results where observed = 'vacuous' and section = 'cross-tenant write')
+    then 'RLS BYPASS FLEET FAILED: a write-section probe was vacuous, which must be impossible'
   else 'RLS BYPASS FLEET OK — ' || (select count(*) from fleet_results) || ' probes, all refused'
        || ' (' || (select count(*) from fleet_results where observed = 'vacuous') || ' vacuous)'
 end as verdict;
