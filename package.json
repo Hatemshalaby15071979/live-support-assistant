@@ -11,6 +11,7 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "build:node": "turbo run build --filter=!@sop/desktop",
+    "build:stamp": "node tooling/build-stamp.mjs",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test --filter=!@sop/desktop",
