@@ -2,6 +2,25 @@
 
 **Date.** 2026-10-07. **Status.** harvesting closed; this is the next step.
 
+> ## RESOLVED — 2026-10-08
+>
+> The blocking question in §4 is answered, and the plan is closed.
+>
+> - **Option chosen: C — both slices, reported separately.** Slice A (corpus-voiced) and Slice B
+>   (user-voiced) both exist in the frozen gold set and are reported as separate slices. No headline
+>   mixes them.
+> - **The 29 owner queries stay with the simulated tenant** as **phrasing examples**, evaluated against
+>   that tenant — **not** retargeted at the new corpus and **not** reused as gold labels (their
+>   `my_sop_id` values name procedures that do not exist in the new corpus). Any figure from that slice
+>   is labelled as belonging to the simulated tenant.
+> - **Label register confirmed.** New gold rows are user-voiced where the slice says so (Slice B) and
+>   corpus-voiced where it says so (Slice A); the `label_source` convention the owner's 29 rows
+>   demonstrated (`author-written, author-labeled` shape) is carried per row.
+> - **`derived-paraphrase` leakage control** is the held-out-from-source rule as written in §3.
+>
+> The gold set is **FROZEN** as it stands (2026-10-08) with its stated limits; no further label building.
+> See `docs/program/STATUS.md` and the `DECISIONS.md` freeze entry.
+
 ---
 
 ## 1. The 29 queries cannot label the new corpus

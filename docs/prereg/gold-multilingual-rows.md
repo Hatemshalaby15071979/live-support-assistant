@@ -1,8 +1,8 @@
 # Gold-set extension — multilingual T01 rows (es / fr / pt-BR) — PREREG
 
-**Zone.** Y (governance). **Status.** PREREG — written before any row is authored, per the same
-discipline as g14. **NOT BUILT**: `questions.json` is unchanged by this document; the build step is a
-separate, later change on top of a ratified prereg.
+**Zone.** Y (governance). **Status.** PREREG 2026-10-07; **BUILT 2026-10-07** (42 rows, commit
+`b28a1de`); **FROZEN 2026-10-08** with the limits recorded in the Result block below. Owner spot-check
+pending (OQ-010, bilingual presentation).
 
 ## Goal
 
@@ -11,6 +11,12 @@ untested: the gold set has no non-English rows and no language metadata, so per-
 (R@k per language, D3/D4-style) could not be computed. This extension adds per-language gold rows so
 that a future preregistered retrieval measurement can score each language separately — for the
 incumbent and for any future candidate — instead of being blocked by the gold set.
+
+**What this is not (owner correction 2026-10-08).** The rows are authored from T01's **technical
+documentation only** (the Kubernetes tasks tree) — not real support traffic. Every per-language figure
+from this arm is **anecdote-grade, technical docs only**, and must be printed with that label. The arm
+is good enough for a paired model comparison; it is not good enough for an absolute per-language
+headline, and it never produces one.
 
 ## Scope
 
@@ -37,10 +43,13 @@ incumbent and for any future candidate — instead of being blocked by the gold 
 - **Two independent agent passes**, run without shared context: pass A reads the localized document
   and drafts the question + acceptable set; pass B reads the document fresh and either confirms or
   rejects the pair. **Disagreements are excluded** — dropped, not adjudicated, not recorded as rows.
-- A row enters the gold set only when both passes agree. `label_source = agent-agreed` (two passes
-  agreeing is exactly the existing semantic; per V2 rule 7 it supports recall headlines **only after**
-  the owner spot-check below has actually occurred and is recorded — until then the rows are
-  `unverified`).
+- A row enters the gold set only when both passes agree. `label_source = agent-agreed`. **What two
+  passes agreeing means, and what it does not (owner correction 2026-10-08):** pass B re-found a source
+  that pass A had written the question from, inside a small pool (es 18 / fr 32 / pt-BR 39 documents).
+  Agreement therefore measures **source re-findability** — not label quality, not realism, and not
+  whether another document also answers the question. `origin = derived-paraphrase` means these rows
+  **never** carry a headline (V2 section 5 P1). A passed owner spot-check promotes them only to
+  **owner-verified derived-paraphrase, reported as their own slice** — still not a headline.
 - `origin = derived-paraphrase` (existing verifier-allowlisted value; the rows are authored
   paraphrase-style from a document, matching the 20 authored Slice A rows' origin).
 - `data_mode = simulated` (same as the rest of the gold set — these are authored questions, not real
@@ -68,10 +77,15 @@ Per language, independently:
 1. **N floor:** ≥ 10 two-pass-agree rows land in `questions.json`, every acceptable document path
    verified against the corpus by `assemble-questions.mjs` (exit 4 on a miss, as it already does),
    every row carrying `language`, `label_source`, `origin`, `data_mode`.
-2. **Owner spot-check bar:** the owner reviews **all** of a language's rows (N < 20, so the batch is
-   the language) — **≥ 85% AGREE**. Below the bar: that language's batch labels are **discarded for
-   headline use** (V2 P1 rule; rows survive only as unverified robustness evidence) and the language
-   is recorded as failed in this file's result block. Languages pass or fail independently.
+2. **Owner spot-check bar (bilingual — the owner may not read es/fr/pt-BR):** each row is presented with
+   its question in-language, a machine English translation flagged **"aid, not evidence"**, the verbatim
+   source passage, and a machine translation of that passage. The owner judges one thing in English:
+   *does this passage answer this question?* A native-speaker naturalness check is a **separate optional
+   item**. Batches are **6 rows per language**. **≥ 85% AGREE** required. Below the bar: that language's
+   labels are **discarded** (rows survive only as unverified robustness evidence) and the language is
+   recorded as failed in this file's result block. Passing promotes the rows to **owner-verified
+   derived-paraphrase — reported as their own slice, never a headline**. Languages pass or fail
+   independently.
 3. Leakage (3-gram overlap) is **computed and reported, not applied** — the same rule as Slice A.
 
 A language that passes both steps makes its arm measurable; a language that fails either step is
@@ -98,3 +112,33 @@ recorded as failed and excluded from per-language claims until a re-run under a 
    and per-language/per-split counts printed.
 3. The owner spot-check batch per language with verdicts recorded.
 4. A result block appended to this file (per language: N, pass/fail, spot-check tally).
+
+---
+
+## Result block — 2026-10-07 (built) / FROZEN 2026-10-08
+
+**Command:** `node tooling/corpus/assemble-questions.mjs` (exit 0), then
+`node tooling/corpus/verify-corpus.mjs --manifest tooling/corpus/manifest.json` (exit 0). Commit
+`b28a1de`. data_mode: simulated. Source: `tooling/corpus/slice-b-multilingual.json`.
+
+| Language | Authored | In gold set | Calibration | Held-out | Rung pool |
+| --- | ---: | ---: | ---: | ---: | --- |
+| es | 14 | 14 | 7 | 7 | 18 docs |
+| fr | 14 | 14 | 7 | 7 | 32 docs |
+| pt-BR | 14 | 14 | 9 | 5 | 39 docs |
+
+- **Two-pass agreement: 42/42, 0 disagreements, 0 exclusions.** This measures **source re-findability
+  only** — a blind reader re-found a source the question was written from, inside a small pool. It is
+  **not** evidence of label quality, not realism, and does not establish that no other document answers
+  the question.
+- **Provenance:** every row `label_source = agent-agreed`, `origin = derived-paraphrase`,
+  `data_mode = simulated`. **`derived-paraphrase` never carries a headline.** The owner spot-check
+  (OQ-010) is **NOT DONE**; until it passes, these rows are **unverified**.
+- **Language honesty:** T01 technical documentation only. Every per-language figure is
+  **anecdote-grade, technical docs only** (held-out N: es 7, fr 7, pt-BR 5).
+- **Status of each language: UNVERIFIED** (spot-check pending). A passed language becomes
+  **owner-verified derived-paraphrase** — its own slice, never a headline. A failed language is
+  discarded (unverified robustness evidence only).
+- **Frozen 2026-10-08.** No further label building on this arm. Any per-language retrieval measurement
+  over these rows is a separate preregistered run, calibration split only, labelled unverified and
+  exploratory.

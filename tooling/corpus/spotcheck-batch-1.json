@@ -1,6 +1,6 @@
 {
   "review_status": "NOT-DONE-NOT-OWNER-VALIDATED",
-  "evidence_note": "PROVENANCE CORRECTION (owner ruling, 2026-10-07): Hatem did NOT independently inspect the 15 source documents. The earlier status \"REVIEWED-BELOW-BAR-7-OF-14-FAIL\" is RETRACTED as an owner-validation claim. A provisional 2026-10-07 interaction recorded 7 AGREE / 7 DISAGREE of 14 countable rows (50% vs the 85% bar) on 150-character agent-presented fragments — PRESERVED AS HISTORICAL CONTEXT ONLY, not a completed independent owner check. The 7 DISAGREE rows were subsequently re-labelled by AGENT full-text inspection (re-fetched pinned corpus, SHA-256-verified); the owner's [A]/[B]/[C] replies are provisional choices on agent-presented evidence, recorded in relabel_decisions as a SEPARATE provenance layer (agent full-text relabel — NOT owner validation). After this correction no label_source=owner rows exist in the gold set; recall/D3 claims are NOT MEASURABLE at any claimed N.",
+  "evidence_note": "PROVENANCE (revised 2026-10-08): Hatem did not open the 15 source documents himself. Under the owner correction, a decision made on re-fetched, SHA-256-verified verbatim full-text passages counts as an owner row with evidence_basis=full-text-verbatim printed beside every figure (OD-02/04/05/11/15; OD-06 full-text but UNRESOLVED [C]); decisions made on 150-char fragments or top-3 retrieval are NOT owner and stay agent-agreed/unverified (evidence_basis=fragment-only). owner rows fleet-wide: 5 (3 answerable, all T04 calibration) -> recall/D3 still NOT MEASURABLE at the required N. The earlier \"owner rows fleet-wide: 0\" was the 2026-10-07 over-correction and is superseded. The provisional 7/14 agent-relay interaction remains historical context only.",
   "note": "Owner spot-check batch. For each row: is the label right, and if the row is answerable, is the named document the one that answers it? Mark AGREE or DISAGREE. A disagreement is the most valuable output of this batch — it is the only thing that can find a wrong label.",
   "batch": 1,
   "batch_size": 15,
@@ -17,10 +17,11 @@
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
       "confidence": "medium",
-      "label_source": "owner",
+      "label_source": "agent-agreed",
       "split": "held-out",
       "your_verdict": "",
-      "your_note": "Resolved by owner OQ-008 (2026-10-07) as out_of_scope — the document explains how to add or update payment methods but not why a stale card is still charged, nor how default-payment selection works. Excluded from the OQ-002 batch-1 count; NOT counted as AGREE."
+      "your_note": "Resolved by owner OQ-008 (2026-10-07) as out_of_scope — the document explains how to add or update payment methods but not why a stale card is still charged, nor how default-payment selection works. Excluded from the OQ-002 batch-1 count; NOT counted as AGREE.",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-01",
@@ -30,10 +31,11 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "owner",
+      "label_source": "agent-agreed",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [B] on agent-presented evidence (top-3 retrieval only); out_of_scope stands. NOT owner validation."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [B] on agent-presented evidence (top-3 retrieval only); out_of_scope stands. NOT owner validation.",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-02",
@@ -49,7 +51,8 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [A] on agent-presented evidence; answerable; acceptable set +username-reference.md (agent label miss). T05 github-username-policy.md excluded (different tenant). The 7/14 tally is historical context only."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [A] on agent-presented evidence; answerable; acceptable set +username-reference.md (agent label miss). T05 github-username-policy.md excluded (different tenant). The 7/14 tally is historical context only.",
+      "evidence_basis": "full-text-verbatim"
     },
     {
       "id": "OD-03",
@@ -59,10 +62,11 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "owner",
+      "label_source": "agent-agreed",
       "split": "calibration",
       "your_verdict": "AGREE",
-      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14).",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-04",
@@ -77,7 +81,8 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [A] on agent-presented evidence; answerable via content/billing/how-tos/set-up-payment/manage-payment-info.md (core content resolves via the reusable include — the same Update payment method click-path declined-card.md spells out)."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [A] on agent-presented evidence; answerable via content/billing/how-tos/set-up-payment/manage-payment-info.md (core content resolves via the reusable include — the same Update payment method click-path declined-card.md spells out).",
+      "evidence_basis": "full-text-verbatim"
     },
     {
       "id": "OD-05",
@@ -92,7 +97,8 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [A] on agent-presented evidence; answerable via content/billing/how-tos/troubleshooting/declined-card.md (the only passage addressing an expired card directly). The originally proposed manage-payment-info.md named a different page (agent finding)."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [A] on agent-presented evidence; answerable via content/billing/how-tos/troubleshooting/declined-card.md (the only passage addressing an expired card directly). The originally proposed manage-payment-info.md named a different page (agent finding).",
+      "evidence_basis": "full-text-verbatim"
     },
     {
       "id": "OD-06",
@@ -102,10 +108,11 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "owner",
+      "label_source": "agent-full-text",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [C] — cannot determine from agent-presented evidence. Label stays out_of_scope, UNRESOLVED — not validated either way; excluded from verified rows for recall/D3 claims."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [C] — cannot determine from agent-presented evidence. Label stays out_of_scope, UNRESOLVED — not validated either way; excluded from verified rows for recall/D3 claims.",
+      "evidence_basis": "full-text-verbatim"
     },
     {
       "id": "OD-07",
@@ -115,10 +122,11 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "owner",
+      "label_source": "agent-agreed",
       "split": "calibration",
       "your_verdict": "AGREE",
-      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14).",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-08",
@@ -128,10 +136,11 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "owner",
+      "label_source": "agent-agreed",
       "split": "calibration",
       "your_verdict": "AGREE",
-      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14).",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-09",
@@ -141,10 +150,11 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "owner",
+      "label_source": "agent-agreed",
       "split": "calibration",
       "your_verdict": "AGREE",
-      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14).",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-10",
@@ -154,10 +164,11 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "owner",
+      "label_source": "agent-agreed",
       "split": "calibration",
       "your_verdict": "AGREE",
-      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14).",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-11",
@@ -170,7 +181,8 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [B] on agent-presented evidence; out_of_scope stands — the only T04 regex hit is a billing fact about license consumption; the answering appeal document is T05 (different tenant; SB-20 tenant-scoping)."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [B] on agent-presented evidence; out_of_scope stands — the only T04 regex hit is a billing fact about license consumption; the answering appeal document is T05 (different tenant; SB-20 tenant-scoping).",
+      "evidence_basis": "full-text-verbatim"
     },
     {
       "id": "OD-12",
@@ -180,10 +192,11 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "owner",
+      "label_source": "agent-agreed",
       "split": "calibration",
       "your_verdict": "AGREE",
-      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14).",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-14",
@@ -193,10 +206,11 @@
       "proposed_label": "out_of_scope",
       "proposed_documents": [],
       "confidence": "high",
-      "label_source": "owner",
+      "label_source": "agent-agreed",
       "split": "calibration",
       "your_verdict": "AGREE",
-      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14)."
+      "your_note": "Owner AGREE (OQ-002 batch 1, 7/14).",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-15",
@@ -209,7 +223,8 @@
       "label_source": "owner",
       "split": "calibration",
       "your_verdict": "DISAGREE",
-      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [B] on agent-presented evidence; out_of_scope stands — no T04 document mentions gift/live stream; the only charged-twice passage is a Marketplace org-transfer note; no duplicate-charge refund path exists."
+      "your_note": "Provisional owner relay 7/14: DISAGREE. AGENT FULL-TEXT RELABEL (separate record): provisional owner reply [B] on agent-presented evidence; out_of_scope stands — no T04 document mentions gift/live stream; the only charged-twice passage is a Marketplace org-transfer note; no duplicate-charge refund path exists.",
+      "evidence_basis": "full-text-verbatim"
     }
   ],
   "relabel_decisions": {
@@ -219,7 +234,8 @@
       "label_source": "agent-full-text",
       "evidence": "top3-retrieval-only",
       "recorded_at": "2026-10-07",
-      "note": "Provisional owner reply [B] on agent-presented evidence (top-3 retrieval only); out_of_scope stands. AGENT full-text relabel — NOT owner validation. Separate record; does not alter the provisional 7/14 tally (historical context only)."
+      "note": "Provisional owner reply [B] on agent-presented evidence (top-3 retrieval only); out_of_scope stands. AGENT full-text relabel — NOT owner validation. Separate record; does not alter the provisional 7/14 tally (historical context only).",
+      "evidence_basis": "fragment-only"
     },
     "OD-02": {
       "choice": "A",
@@ -239,7 +255,8 @@
         }
       ],
       "agent_label_miss": "The original agent label omitted username-reference.md (the managed-account / SSO / LDAP reason a username cannot be changed). Recorded as an agent label miss.",
-      "note": "Provisional owner reply [A] on agent-presented evidence; answerable. AGENT full-text relabel — NOT owner validation. Acceptable set +username-reference.md is an agent label miss; T05 policy excluded (different tenant). Separate record."
+      "note": "Provisional owner reply [A] on agent-presented evidence; answerable. AGENT full-text relabel — NOT owner validation. Acceptable set +username-reference.md is an agent label miss; T05 policy excluded (different tenant). Separate record.",
+      "evidence_basis": "full-text-verbatim"
     },
     "OD-04": {
       "choice": "A",
@@ -250,7 +267,8 @@
       "acceptable_documents": [
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
-      "note": "Provisional owner reply [A] on agent-presented evidence; answerable via manage-payment-info.md. AGENT full-text relabel — NOT owner validation. Separate record."
+      "note": "Provisional owner reply [A] on agent-presented evidence; answerable via manage-payment-info.md. AGENT full-text relabel — NOT owner validation. Separate record.",
+      "evidence_basis": "full-text-verbatim"
     },
     "OD-05": {
       "choice": "A",
@@ -261,7 +279,8 @@
       "acceptable_documents": [
         "content/billing/how-tos/troubleshooting/declined-card.md"
       ],
-      "note": "Provisional owner reply [A] on agent-presented evidence; answerable via declined-card.md (agent finding; the only passage addressing an expired card; manage-payment-info.md has 0 hits for delete/expired). AGENT full-text relabel — NOT owner validation. Separate record."
+      "note": "Provisional owner reply [A] on agent-presented evidence; answerable via declined-card.md (agent finding; the only passage addressing an expired card; manage-payment-info.md has 0 hits for delete/expired). AGENT full-text relabel — NOT owner validation. Separate record.",
+      "evidence_basis": "full-text-verbatim"
     },
     "OD-06": {
       "choice": "C",
@@ -269,7 +288,8 @@
       "label_source": "agent-full-text",
       "evidence": "full-text-keyword-search-choice-c-unresolved",
       "recorded_at": "2026-10-07",
-      "note": "Provisional owner reply [C] — cannot determine from agent-presented evidence. Label stays out_of_scope, UNRESOLVED — not validated either way; excluded from verified rows for recall/D3 claims. AGENT full-text relabel — NOT owner validation. Separate record."
+      "note": "Provisional owner reply [C] — cannot determine from agent-presented evidence. Label stays out_of_scope, UNRESOLVED — not validated either way; excluded from verified rows for recall/D3 claims. AGENT full-text relabel — NOT owner validation. Separate record.",
+      "evidence_basis": "full-text-verbatim"
     },
     "OD-11": {
       "choice": "B",
@@ -277,7 +297,8 @@
       "label_source": "agent-full-text",
       "evidence": "full-text-keyword-search",
       "recorded_at": "2026-10-07",
-      "note": "Provisional owner reply [B] on agent-presented evidence; out_of_scope stands (agent full-text: only T04 hit is a billing license-consumption fact; answering appeal doc is T05 — different tenant, SB-20). AGENT full-text relabel — NOT owner validation. Separate record."
+      "note": "Provisional owner reply [B] on agent-presented evidence; out_of_scope stands (agent full-text: only T04 hit is a billing license-consumption fact; answering appeal doc is T05 — different tenant, SB-20). AGENT full-text relabel — NOT owner validation. Separate record.",
+      "evidence_basis": "full-text-verbatim"
     },
     "OD-15": {
       "choice": "B",
@@ -285,7 +306,36 @@
       "label_source": "agent-full-text",
       "evidence": "full-text-keyword-search",
       "recorded_at": "2026-10-07",
-      "note": "Provisional owner reply [B] on agent-presented evidence; out_of_scope stands (agent full-text: no gift/live-stream material; no duplicate-charge refund path; closest analogue carries a no-refunds include). AGENT full-text relabel — NOT owner validation. Separate record."
+      "note": "Provisional owner reply [B] on agent-presented evidence; out_of_scope stands (agent full-text: no gift/live-stream material; no duplicate-charge refund path; closest analogue carries a no-refunds include). AGENT full-text relabel — NOT owner validation. Separate record.",
+      "evidence_basis": "full-text-verbatim"
     }
+  },
+  "evidence_basis_summary": {
+    "full_text_verbatim": [
+      "OD-02",
+      "OD-04",
+      "OD-05",
+      "OD-06",
+      "OD-11",
+      "OD-15"
+    ],
+    "fragment_only": [
+      "OD-01",
+      "OD-03",
+      "OD-07",
+      "OD-08",
+      "OD-09",
+      "OD-10",
+      "OD-12",
+      "OD-13",
+      "OD-14"
+    ],
+    "source_opened": [],
+    "owner_recall_rows": [
+      "OD-02",
+      "OD-04",
+      "OD-05"
+    ],
+    "note": "Owner correction 2026-10-08. owner x5 (full-text-verbatim decisions: OD-02/04/05/11/15); OD-06 is full-text but UNRESOLVED [C] so it is agent-full-text, not an owner recall row; OD-01 is top-3-retrieval only and OD-13 a targeted packet decision, both fragment-grade. The 7 first-batch AGREE rows (OD-03/07/08/09/10/12/14) were judged on 150-char fragments and stay agent-agreed (unverified) — they are parked for a later full-text re-show (see OWNER_QUEUE)."
   }
 }

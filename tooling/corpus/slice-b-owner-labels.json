@@ -10,11 +10,12 @@
       "label": "out_of_scope",
       "documents": [],
       "confidence": "high",
-      "label_source": "agent-full-text",
+      "label_source": "agent-agreed",
       "packet_verdict": "NEEDS HUMAN DECISION",
       "reasoning": "T04 contains no ban material: zero documents for banned, appeal, reinstate or blacklist, and the 16 documents matching `ban` are substrings (banner, bandwidth, bank, banks). locked-account.md covers a BILLING lock, not a policy ban, so it does not answer why the account was actioned.",
-      "label_basis": "Agent full-text relabel, 2026-10-07: agent-performed inspection of the re-fetched pinned corpus (SHA-256-verified; embedding top-3 + keyword search over all 193 T04/T05 documents; top-3 retrieval only). The owner replied with a provisional [B] choice on agent-presented evidence and did NOT independently inspect the documents. NOT owner validation. Separate from the provisional 7/14 relay, which is preserved as historical context only.",
-      "label_evidence": "top3-retrieval-only"
+      "label_basis": "Agent label with a provisional owner relay on embedding top-3 retrieval excerpts only (no full-text keyword search), 2026-10-07. NOT owner validation, no headline authority. evidence_basis=fragment-only (top-3 retrieval grade).",
+      "label_evidence": "top3-retrieval-only",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-02",
@@ -25,11 +26,12 @@
         "content/account-and-profile/how-tos/account-management/changing-your-username.md"
       ],
       "confidence": "high",
-      "label_source": "agent-full-text",
+      "label_source": "owner",
       "packet_verdict": "CLEAR_ROWS",
       "reasoning": "The how-to covers the change; the concept page covers why a name is refused; the reference page covers managed-account/SSO/LDAP limitations. Confirmed by the owner on full-text evidence 2026-10-07.",
-      "label_basis": "Agent full-text relabel, 2026-10-07: agent-performed inspection of the re-fetched pinned corpus (SHA-256-verified; embedding top-3 + keyword search over all 193 T04/T05 documents; full-text keyword search). The owner replied with a provisional [A] choice on agent-presented evidence and did NOT independently inspect the documents. NOT owner validation. Separate from the provisional 7/14 relay, which is preserved as historical context only.",
-      "label_evidence": "full-text-keyword-search"
+      "label_basis": "Owner decision on agent-presented full-text-verbatim evidence, 2026-10-07/08: the passages shown were verbatim extracts of the re-fetched, SHA-256-verified corpus (embedding top-3 + keyword search over all 193 T04/T05 documents). The owner did NOT open the source documents himself; this is an owner DECISION on full-text-verbatim evidence (evidence_basis=full-text-verbatim), and that basis is printed beside every recall figure. Do not state it more strongly than that.",
+      "label_evidence": "full-text-keyword-search",
+      "evidence_basis": "full-text-verbatim"
     },
     {
       "id": "OD-03",
@@ -39,7 +41,8 @@
       "label_source": "agent-agreed",
       "packet_verdict": "NEEDS HUMAN DECISION",
       "reasoning": "The phone-versus-email mismatch is total. T04 has zero documents containing sms, text message, phone number or authenticator; every verification procedure is about an emailed link.",
-      "label_basis": "Agent packet label with provisional owner relay, 2026-10-07: the label was produced by the agent and the owner replied AGREE on agent-presented evidence without independently inspecting the documents. NOT owner validation; refusal/robustness use only."
+      "label_basis": "Agent label with a provisional owner relay on 150-character agent-presented fragments, 2026-10-07. The owner did NOT inspect the documents and the fragments were not the full text; NOT owner validation, no headline authority. evidence_basis=fragment-only.",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-04",
@@ -48,11 +51,12 @@
         "content/billing/how-tos/set-up-payment/manage-payment-info.md"
       ],
       "confidence": "high",
-      "label_source": "agent-full-text",
+      "label_source": "owner",
       "packet_verdict": "ACCEPT",
       "reasoning": "Owner confirmed on 2026-10-07 full-text evidence: manage-payment-info.md answers. Its core managing-payment content resolves via the reusable include {% data reusables.billing.manage-payment-info %} (the same Update payment method click-path declined-card.md spells out step by step).",
-      "label_basis": "Agent full-text relabel, 2026-10-07: agent-performed inspection of the re-fetched pinned corpus (SHA-256-verified; embedding top-3 + keyword search over all 193 T04/T05 documents; full-text keyword search). The owner replied with a provisional [A] choice on agent-presented evidence and did NOT independently inspect the documents. NOT owner validation. Separate from the provisional 7/14 relay, which is preserved as historical context only.",
-      "label_evidence": "full-text-keyword-search"
+      "label_basis": "Owner decision on agent-presented full-text-verbatim evidence, 2026-10-07/08: the passages shown were verbatim extracts of the re-fetched, SHA-256-verified corpus (embedding top-3 + keyword search over all 193 T04/T05 documents). The owner did NOT open the source documents himself; this is an owner DECISION on full-text-verbatim evidence (evidence_basis=full-text-verbatim), and that basis is printed beside every recall figure. Do not state it more strongly than that.",
+      "label_evidence": "full-text-keyword-search",
+      "evidence_basis": "full-text-verbatim"
     },
     {
       "id": "OD-05",
@@ -61,11 +65,12 @@
         "content/billing/how-tos/troubleshooting/declined-card.md"
       ],
       "confidence": "high",
-      "label_source": "agent-full-text",
+      "label_source": "owner",
       "packet_verdict": "CLEAR_ROWS",
       "reasoning": "Owner confirmed on 2026-10-07 full-text evidence: declined-card.md answers — it carries the only passage that addresses an expired card directly (check expiration, Update payment method, if saved card has expired click Edit, enter new card details).",
-      "label_basis": "Agent full-text relabel, 2026-10-07: agent-performed inspection of the re-fetched pinned corpus (SHA-256-verified; embedding top-3 + keyword search over all 193 T04/T05 documents; full-text keyword search). The owner replied with a provisional [A] choice on agent-presented evidence and did NOT independently inspect the documents. NOT owner validation. Separate from the provisional 7/14 relay, which is preserved as historical context only.",
-      "label_evidence": "full-text-keyword-search"
+      "label_basis": "Owner decision on agent-presented full-text-verbatim evidence, 2026-10-07/08: the passages shown were verbatim extracts of the re-fetched, SHA-256-verified corpus (embedding top-3 + keyword search over all 193 T04/T05 documents). The owner did NOT open the source documents himself; this is an owner DECISION on full-text-verbatim evidence (evidence_basis=full-text-verbatim), and that basis is printed beside every recall figure. Do not state it more strongly than that.",
+      "label_evidence": "full-text-keyword-search",
+      "evidence_basis": "full-text-verbatim"
     },
     {
       "id": "OD-06",
@@ -75,8 +80,9 @@
       "label_source": "agent-full-text",
       "packet_verdict": "CLEAR_ROWS",
       "reasoning": "No marketing or SMS opt-out document exists. The nearest match, manage-cookie-preferences.md, is about cookies. Full-text re-check 2026-10-07: 0 T04 documents contain sms/text message; no notification-settings page in the harvested corpus (GitHub's content/notifications tree was not harvested).",
-      "label_basis": "Agent full-text relabel, 2026-10-07: agent-performed inspection of the re-fetched pinned corpus (SHA-256-verified; embedding top-3 + keyword search over all 193 T04/T05 documents; full-text keyword search; provisional reply [C] (cannot determine from agent-presented evidence)). The owner replied with a provisional [C] choice on agent-presented evidence and did NOT independently inspect the documents. NOT owner validation. Separate from the provisional 7/14 relay, which is preserved as historical context only.",
-      "label_evidence": "full-text-keyword-search-choice-c-unresolved"
+      "label_basis": "Owner reply [C] (cannot determine) on agent-presented full-text-verbatim evidence, 2026-10-07. Label stays out_of_scope, UNRESOLVED; NOT counted as an owner recall row. evidence_basis=full-text-verbatim.",
+      "label_evidence": "full-text-keyword-search-choice-c-unresolved",
+      "evidence_basis": "full-text-verbatim"
     },
     {
       "id": "OD-07",
@@ -86,7 +92,8 @@
       "label_source": "agent-agreed",
       "packet_verdict": "NEEDS HUMAN DECISION",
       "reasoning": "Half the question is supported and half is not: PDF is explicit ('click View invoice to open a PDF of your latest invoice') but another language is absent — translation, localis, localiz and currency are all zero across T04, and the `language` hits are about programming languages. The owner resolved the split by ruling the row out of scope.",
-      "label_basis": "Agent packet label with provisional owner relay, 2026-10-07: the label was produced by the agent and the owner replied AGREE on agent-presented evidence without independently inspecting the documents. NOT owner validation; refusal/robustness use only."
+      "label_basis": "Agent label with a provisional owner relay on 150-character agent-presented fragments, 2026-10-07. The owner did NOT inspect the documents and the fragments were not the full text; NOT owner validation, no headline authority. evidence_basis=fragment-only.",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-08",
@@ -96,7 +103,8 @@
       "label_source": "agent-agreed",
       "packet_verdict": "CLEAR_ROWS",
       "reasoning": "No partial-payment or instalment document exists. The nearest match, india-one-time-payments.md, is about a one-time payment, which is a different thing.",
-      "label_basis": "Agent packet label with provisional owner relay, 2026-10-07: the label was produced by the agent and the owner replied AGREE on agent-presented evidence without independently inspecting the documents. NOT owner validation; refusal/robustness use only."
+      "label_basis": "Agent label with a provisional owner relay on 150-character agent-presented fragments, 2026-10-07. The owner did NOT inspect the documents and the fragments were not the full text; NOT owner validation, no headline authority. evidence_basis=fragment-only.",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-09",
@@ -106,7 +114,8 @@
       "label_source": "agent-agreed",
       "packet_verdict": "NEEDS HUMAN DECISION",
       "reasoning": "The corpus documents irreversible account deletion, not a reset. Deletion is a strictly larger act than the request, and there is no clear-my-data-and-keep-the-account procedure.",
-      "label_basis": "Agent packet label with provisional owner relay, 2026-10-07: the label was produced by the agent and the owner replied AGREE on agent-presented evidence without independently inspecting the documents. NOT owner validation; refusal/robustness use only."
+      "label_basis": "Agent label with a provisional owner relay on 150-character agent-presented fragments, 2026-10-07. The owner did NOT inspect the documents and the fragments were not the full text; NOT owner validation, no headline authority. evidence_basis=fragment-only.",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-10",
@@ -116,18 +125,20 @@
       "label_source": "agent-agreed",
       "packet_verdict": "CLEAR_ROWS",
       "reasoning": "No freeze or suspend document exists. The nearest match, downgrade-plan.md, is about plan changes.",
-      "label_basis": "Agent packet label with provisional owner relay, 2026-10-07: the label was produced by the agent and the owner replied AGREE on agent-presented evidence without independently inspecting the documents. NOT owner validation; refusal/robustness use only."
+      "label_basis": "Agent label with a provisional owner relay on 150-character agent-presented fragments, 2026-10-07. The owner did NOT inspect the documents and the fragments were not the full text; NOT owner validation, no headline authority. evidence_basis=fragment-only.",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-11",
       "label": "out_of_scope",
       "documents": [],
       "confidence": "high",
-      "label_source": "agent-full-text",
+      "label_source": "owner",
       "packet_verdict": "NOT IN CLEAR_ROWS — flagged by the agent",
       "reasoning": "Owner confirmed on 2026-10-07 full-text evidence: across all 136 T04 documents the regex ban/banned/suspended/suspension/reinstate/appeal hits exactly one file (github-license-users.md), a billing fact about license consumption — not an appeal process. The answering document (github-appeal-and-reinstatement.md) is T05, a different tenant, so it cannot enter T04's acceptable set (owner OD-02 ruling). Mirrors the SB-20 tenant-scoping finding: same question out_of_scope in T04, answerable in T05.",
-      "label_basis": "Agent full-text relabel, 2026-10-07: agent-performed inspection of the re-fetched pinned corpus (SHA-256-verified; embedding top-3 + keyword search over all 193 T04/T05 documents; full-text keyword search). The owner replied with a provisional [B] choice on agent-presented evidence and did NOT independently inspect the documents. NOT owner validation. Separate from the provisional 7/14 relay, which is preserved as historical context only.",
-      "label_evidence": "full-text-keyword-search"
+      "label_basis": "Owner decision on agent-presented full-text-verbatim evidence, 2026-10-07/08: the passages shown were verbatim extracts of the re-fetched, SHA-256-verified corpus (embedding top-3 + keyword search over all 193 T04/T05 documents). The owner did NOT open the source documents himself; this is an owner DECISION on full-text-verbatim evidence (evidence_basis=full-text-verbatim), and that basis is printed beside every recall figure. Do not state it more strongly than that.",
+      "label_evidence": "full-text-keyword-search",
+      "evidence_basis": "full-text-verbatim"
     },
     {
       "id": "OD-12",
@@ -137,7 +148,8 @@
       "label_source": "agent-agreed",
       "packet_verdict": "NEEDS HUMAN DECISION",
       "reasoning": "The corpus's resend mechanism is for emailed links and the question describes a phone code that never arrives. Zero SMS or phone-code material exists.",
-      "label_basis": "Agent packet label with provisional owner relay, 2026-10-07: the label was produced by the agent and the owner replied AGREE on agent-presented evidence without independently inspecting the documents. NOT owner validation; refusal/robustness use only."
+      "label_basis": "Agent label with a provisional owner relay on 150-character agent-presented fragments, 2026-10-07. The owner did NOT inspect the documents and the fragments were not the full text; NOT owner validation, no headline authority. evidence_basis=fragment-only.",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-13",
@@ -147,7 +159,8 @@
       "label_source": "agent-agreed",
       "packet_verdict": "NEEDS HUMAN DECISION",
       "reasoning": "Owner decision 2026-10-07: the document explains how to add or update payment methods but does not answer why a stale or old card is being charged, or how default payment selection works.",
-      "label_basis": "Agent packet label with provisional owner relay, 2026-10-07: the label was produced by the agent and the owner replied AGREE on agent-presented evidence without independently inspecting the documents (OD-13: provisional choice recorded via OQ-008 on the same basis). NOT owner validation; refusal/robustness use only."
+      "label_basis": "Agent label with a provisional owner relay on agent-presented packet evidence (targeted OQ-008 decision), 2026-10-07. The owner did NOT inspect the document; NOT owner validation, no headline authority. evidence_basis=fragment-only.",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-14",
@@ -157,18 +170,20 @@
       "label_source": "agent-agreed",
       "packet_verdict": "CLEAR_ROWS",
       "reasoning": "No unsubscribe document exists. The nearest match, email-addresses.md, is about blocking commits that expose your email.",
-      "label_basis": "Agent packet label with provisional owner relay, 2026-10-07: the label was produced by the agent and the owner replied AGREE on agent-presented evidence without independently inspecting the documents. NOT owner validation; refusal/robustness use only."
+      "label_basis": "Agent label with a provisional owner relay on 150-character agent-presented fragments, 2026-10-07. The owner did NOT inspect the documents and the fragments were not the full text; NOT owner validation, no headline authority. evidence_basis=fragment-only.",
+      "evidence_basis": "fragment-only"
     },
     {
       "id": "OD-15",
       "label": "out_of_scope",
       "documents": [],
       "confidence": "high",
-      "label_source": "agent-full-text",
+      "label_source": "owner",
       "packet_verdict": "CLEAR_ROWS",
       "reasoning": "Owner confirmed on 2026-10-07 full-text evidence: 0 of 136 T04 documents mention gift, live stream or livestream; the only 'charged twice' passage is a Marketplace org-transfer note (you will NOT be charged twice); 'refund' appears in 4 docs (nonprofit discount, sponsorship no-refunds notice, sponsorship downgrade, coupon terms) — none is a duplicate-charge refund path. The closest gift analogue (GitHub Sponsors) carries an explicit no-refunds include.",
-      "label_basis": "Agent full-text relabel, 2026-10-07: agent-performed inspection of the re-fetched pinned corpus (SHA-256-verified; embedding top-3 + keyword search over all 193 T04/T05 documents; full-text keyword search). The owner replied with a provisional [B] choice on agent-presented evidence and did NOT independently inspect the documents. NOT owner validation. Separate from the provisional 7/14 relay, which is preserved as historical context only.",
-      "label_evidence": "full-text-keyword-search"
+      "label_basis": "Owner decision on agent-presented full-text-verbatim evidence, 2026-10-07/08: the passages shown were verbatim extracts of the re-fetched, SHA-256-verified corpus (embedding top-3 + keyword search over all 193 T04/T05 documents). The owner did NOT open the source documents himself; this is an owner DECISION on full-text-verbatim evidence (evidence_basis=full-text-verbatim), and that basis is printed beside every recall figure. Do not state it more strongly than that.",
+      "label_evidence": "full-text-keyword-search",
+      "evidence_basis": "full-text-verbatim"
     }
   ],
   "summary": {
@@ -176,7 +191,7 @@
     "out_of_scope": 12,
     "pending_owner_decision": 0,
     "total": 15,
-    "note": "3 + 12 = 15. All 15 rows decided; provenance corrected 2026-10-07 (agent-full-text x7, agent-agreed x8) — see per-row label_basis. NOT owner validation."
+    "note": "3 answerable + 12 out_of_scope = 15. Re-tagged 2026-10-08 with evidence_basis (owner correction): label_source=owner for the 5 rows decided on full-text-verbatim evidence (OD-02, OD-04, OD-05, OD-11, OD-15) — owner DECISIONS on agent-presented hash-verified full text, NOT owner document inspections; OD-06 full-text but UNRESOLVED [C] (agent-full-text, not an owner recall row); the remaining rows are fragment-only and stay agent-agreed (unverified). Recall/D3 use the owner rows with the basis printed: 3 answerable owner rows (OD-02/04/05), all T04 calibration — still NOT MEASURABLE at the required N."
   },
-  "provenance_correction": "2026-10-07: the 15 rows previously carried label_source \"owner\" (owner provisional choices on agent evidence packets). Hatem did NOT independently inspect the source documents, so provenance was corrected at source: agent-full-text x7 (full-document relabel by the agent; owner replies provisional on agent-presented evidence) and agent-agreed x8 (agent packet labels with provisional owner relay). NOT owner validation; no D3/recall headline authority. The file-level label_basis below is retained as the historical fallback. Decisions: spotcheck-batch-1.json -> relabel_decisions."
+  "provenance_correction": "2026-10-07 (revised 2026-10-08): the 15 rows previously carried label_source \"owner\" (owner choices on agent evidence packets). The 2026-10-07 correction set every row to agent-* because Hatem did not independently inspect the source documents. The 2026-10-08 owner correction refines that: a decision on re-fetched, SHA-256-verified verbatim full-text passages is an owner row (evidence_basis=full-text-verbatim, basis printed beside every figure); a decision on 150-char fragments or top-3 retrieval is NOT owner and stays agent-agreed/unverified (evidence_basis=fragment-only). Result: owner x5 (OD-02/04/05/11/15), agent-full-text x1 (OD-06, unresolved), agent-agreed x9. source-opened: 0 rows (no source was opened by the owner). Decisions: spotcheck-batch-1.json -> relabel_decisions."
 }

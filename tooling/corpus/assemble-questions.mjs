@@ -137,6 +137,7 @@ for (const row of ownerRows.rows) {
     label_source: label.label_source,
     label_basis: label.label_basis ?? ownerLabels.label_basis,
     ...(label.label_evidence !== undefined ? { label_evidence: label.label_evidence } : {}),
+    ...(label.evidence_basis !== undefined ? { evidence_basis: label.evidence_basis } : {}),
     label: label.label,
     confidence: label.confidence,
     acceptable_documents: label.documents,

@@ -4,6 +4,52 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-08 — P1 gold set FROZEN; owner provenance refined (`evidence_basis`); g15/RX-03 status stated exactly
+
+**Zone.** Y (governance). Owner review of `b28a1de` (42 multilingual rows) — seven corrections applied.
+
+### P1 gold set — FROZEN 2026-10-08 (with stated limits)
+The gold set is frozen as it stands; **no further label building**. Contents: **459 rows**
+(`questions.json`, regenerated from source — `assemble-questions.mjs` exit 0; `verify-corpus.mjs`
+exit 0). Provenance counts (command: `node -e` over `questions.json`): **owner 5 · agent-agreed 87 ·
+agent-full-text 1 · construction 196 · agent 95 · agent-single 75**. Stated limits: (1) owner rows are
+5, of which **3 are answerable** (T04 calibration) → recall/D3 still **NOT MEASURABLE** at the required
+150–300/tenant/rung; (2) the 42 multilingual rows are **unverified `derived-paraphrase`** (never a
+headline) and **anecdote-grade, technical docs only**; (3) the 7 first-batch AGREE rows rest on
+150-char fragments (parked for a full-text re-show, OQ-011).
+
+### Owner provenance refined — per-row `evidence_basis` (owner correction)
+The 2026-10-07 over-correction set `label_source=owner` to 0, discarding real decisions made on
+re-fetched, SHA-256-verified verbatim full-text passages. Refined 2026-10-08 with a per-row
+`evidence_basis` ∈ {`full-text-verbatim`, `fragment-only`, `source-opened`}:
+- **owner ×5** (`full-text-verbatim`): **OD-02, OD-04, OD-05, OD-11, OD-15** — owner DECISIONS on
+  agent-presented hash-verified full text, **not** owner document inspections; the basis is printed
+  beside every figure.
+- **agent-full-text ×1**: **OD-06** (full-text but reply [C] — UNRESOLVED; not an owner recall row).
+- **agent-agreed ×9** (`fragment-only`): **OD-01** (top-3 retrieval only), **OD-03/07/08/09/10/12/13/14**
+  (150-char fragments).
+- **`source-opened`: 0** — no source document was opened by the owner.
+
+Owner rows for recall = **OD-02/04/05** (3 answerable, T04 calibration). Recorded at source in
+`slice-b-owner-labels.json` + `spotcheck-batch-1.json`; regenerated into `questions.json`.
+
+### g15 / RX-03 — exact status (replaces the vague "stay CLOSED")
+- **g15 (P4 scope/refusal layer) — CLOSED — NEGATIVE RESULT — NOT ADOPTED.** Evaluated under prereg;
+  no fleet-useful operating point within the R3 guard (≤10 pp recall loss). T01's one qualifying config
+  reduced wrong-proc (2→0) **without** reducing unsafe (1→1) and was **not adopted**; T04 and T05 had
+  no qualifying config (min sweep loss 29.63 / 14.29 pp). No code path wired. Result frozen at
+  `tooling/refusal/g15-results.json`.
+- **RX-03 (bi-encoder replacement) — CLOSED — REJECTED on judgment.** A1 met on calibration, but the
+  gain was R@1-only (T04 +3.7 pp, T05 +7.1 pp, T01 flat), R@3/R@5 regressed (T04 −14.8 pp;
+  T05 −7.1/−14.3 pp), the OOS top-1 max rose on every tenant, and the multilingual premise was
+  unmeasurable. Held-out never read; candidate embeddings/weights do not persist on disk; the frozen
+  spec entry stays as a record of the rejected candidate; `EMBEDDING_MODEL` unchanged.
+- **Nothing is currently paused.** The g15 pause was lifted by its closure. The next retrieval step is
+  a **new** preregistered per-language measurement (calibration split only, unverified/exploratory) —
+  **not** a resumption of g15 or RX-03, and neither may be silently combined with it.
+
+---
+
 ## 2026-10-07 (latest) — RX-03 calibration run: A1 MET on calibration; EMBEDDING_MODELS consumer correction
 
 **Zone.** Y (governance).
@@ -125,11 +171,14 @@ The 15 OD rows carried `label_source: "owner"` — retracted: those were **owner
 agent-produced evidence packets**, not owner document inspection or validation. Corrected values in
 `questions.json`: `agent-full-text` ×7 (the relabel layer below) and `agent-agreed` ×8 (packet labels +
 provisional relay). **`label_source=owner` rows fleet-wide: 0** (417-row gold set).
+**— SUPERSEDED 2026-10-08:** the "0" was an over-correction; the `evidence_basis` re-tag restores
+**owner ×5** (OD-02/04/05/11/15, full-text-verbatim decisions). See the 2026-10-08 entry at the top.
 
 ### New rule (until further notice)
 - **Recall and D3 claims use ONLY `label_source=owner` rows.**
 - **Zero `label_source=owner` rows exist** → **recall and D3 are NOT MEASURABLE at any claimed N, for
-  every tenant, including T04.**
+  every tenant, including T04.** — **SUPERSEDED 2026-10-08:** 5 owner rows now exist (3 answerable, T04
+  calibration); recall/D3 remain NOT MEASURABLE, but at the required 150–300/tenant/rung, not "any N".
 - Agent rows (`agent-full-text`, `agent-agreed`, `agent`, `agent-single`, `construction`) stay
   refusal/robustness-only, tagged `unverified`. `agent-full-text` is the strongest layer available and is
   still not owner validation.

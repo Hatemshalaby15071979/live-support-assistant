@@ -1,10 +1,11 @@
 {
-  "note": "Multilingual gold rows (T01 es/fr/pt-BR), authored per docs/prereg/gold-multilingual-rows.md. Each row is user-voiced, written in the document's language, grounded in a document that is already represented in the FROZEN 500-rung. Two independent agent passes: pass A authored the question from the document's rung text; pass B was a fresh-context agent, blind to pass A's pairing, that independently matched each question to a document in the pool (the pool file was its only input). Pass B agreed with pass A on all 42 rows (14 per language); no rows were excluded. label_source=agent-agreed: per V2 rule 7 these rows carry NO headline authority until the owner spot-check (>=85% per language) has actually occurred and is recorded.",
+  "note": "Multilingual gold rows (T01 es/fr/pt-BR), authored per docs/prereg/gold-multilingual-rows.md. Each row is user-voiced, written in the document's language, grounded in a document already represented in the FROZEN 500-rung. Two independent agent passes: pass A authored the question from the document's rung text; pass B was a fresh-context agent, blind to pass A's pairing, that independently matched each question to a document in the pool (the pool file was its only input). Pass B agreed with pass A on all 42 rows (14 per language); no rows were excluded. LIMIT (owner correction 2026-10-08): 42/42 agreement is NOT evidence of label quality. It measures only that a blind reader can RE-FIND the source inside a pool of 18/32/39 documents — and the questions were written FROM those documents. It does not measure realism (the questions are authored, not real traffic) and it does not establish that no OTHER document answers the question. origin=derived-paraphrase: these rows NEVER carry a headline. If the owner spot-check passes, they are promoted only to owner-verified derived-paraphrase, reported as their OWN slice — never a headline.",
   "tenant": "T01-platform-operations-style",
   "origin": "derived-paraphrase",
   "data_mode": "simulated",
-  "label_basis": "Two independent agent passes, 2026-10-07. Pass A authored each question in the document's language (es/fr/pt-BR) from the document's verbatim rung text; pass B was a fresh-context agent that read only the rung document pool and independently matched every question to a document, blind to pass A's pairing. All 42 pairings agreed; 0 disagreements; 0 exclusions. NOT owner validation; per V2 rule 7 no headline authority until the per-language owner spot-check (>=85%) passes and is recorded.",
-  "pending": "owner spot-check per language (OQ-010)",
+  "label_basis": "Two independent agent passes, 2026-10-07. Pass A authored each question in the document's language (es/fr/pt-BR) from the document's verbatim rung text; pass B was a fresh-context agent that read only the rung document pool and independently matched every question to a document, blind to pass A's pairing. All 42 pairings agreed; 0 disagreements; 0 exclusions. WHAT THIS DOES NOT MEASURE (owner correction 2026-10-08): pass B re-found a source the question was written from, inside a small pool (es 18 / fr 32 / pt-BR 39 documents) — so it measures source re-findability, not label quality, not realism, and not whether another document also answers. NOT owner validation; origin=derived-paraphrase means NEVER a headline (V2 section 5 P1).",
+  "language_limit": "T01 technical documentation only (Kubernetes tasks tree). Authored, in-language, from existing localized docs. Not a support benchmark and not real traffic. Every per-language figure is ANECDOTE-GRADE, TECHNICAL DOCS ONLY: per-language N is es 14 (cal 7 / held-out 7), fr 14 (cal 7 / held-out 7), pt-BR 14 (cal 9 / held-out 5). Held-out N is es 7 / fr 7 / pt-BR 5.",
+  "pending": "owner spot-check per language (OQ-010), bilingual format",
   "rows": [
     {
       "id": "ML-T01-es-01",
@@ -598,10 +599,11 @@
   "summary": {
     "total": 42,
     "by_language": { "es": 14, "fr": 14, "pt-BR": 14 },
+    "by_language_split": { "es": "7 cal / 7 held-out", "fr": "7 cal / 7 held-out", "pt-BR": "9 cal / 5 held-out" },
     "label": "answerable",
     "two_pass_agreements": 42,
     "two_pass_disagreements_excluded": 0,
     "pending_owner_decision": 0,
-    "note": "All 42 rows are two-pass agreements; 0 disagreements. label_source=agent-agreed (no headline authority until the per-language owner spot-check >=85% passes and is recorded)."
+    "note": "All 42 rows are two-pass agreements; 0 disagreements. 42/42 measures source re-findability only (a blind reader re-found a source the question was written from, inside a small pool) — NOT label quality, NOT realism, NOT that no other document answers. label_source=agent-agreed; origin=derived-paraphrase -> NEVER a headline. Owner spot-check, if passed, promotes these only to owner-verified derived-paraphrase, reported as their own slice. Per-language figures are ANECDOTE-GRADE, TECHNICAL DOCS ONLY (held-out N: es 7, fr 7, pt-BR 5)."
   }
 }

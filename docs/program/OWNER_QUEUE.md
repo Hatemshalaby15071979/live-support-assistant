@@ -6,13 +6,14 @@ Each entry carries the default that is **in effect right now**, so the program n
 | id | What | Why it is Zone R | Default in effect | To review | Owner minutes |
 | --- | --- | --- | --- | --- | --- |
 | OQ-001 | Push `prog/main` and the phase branches to `origin` | Anything that leaves this machine | Stay local; branches exist only on this host | `git push -u origin prog/main` | 1 |
-| OQ-002 | **Label spot-check batch 1 — 15 rows, all owner-supplied. OWNER SPOT-CHECK NOT DONE / NOT OWNER-VALIDATED** (provenance corrected 2026-10-07: Hatem did not independently inspect the documents). | Label provenance: only `owner` rows may carry a recall/D3 headline — **zero exist**; recall/D3 NOT MEASURABLE at any claimed N, every tenant | A provisional 7/14 agent-relay interaction is preserved as historical context only; the 7-row AGENT full-text relabel layer is kept separately (not owner validation); no OOS/answerable flips; g15 prereg reviewed, NOT run | `node tooling/corpus/spotcheck.mjs --batch 1` | **15** |
+| OQ-002 | **Label spot-check batch 1 — 15 rows, all owner-supplied. OWNER SPOT-CHECK NOT DONE / NOT OWNER-VALIDATED** (Hatem did not independently inspect the documents). Re-tagged 2026-10-08 with `evidence_basis`. | Label provenance: only `owner` rows may carry a recall/D3 headline — **5 exist (3 answerable, all T04 calibration)**; recall/D3 still NOT MEASURABLE at the required 150–300/tenant/rung | `evidence_basis`: full-text-verbatim ×6 (owner ×5: OD-02/04/05/11/15; OD-06 unresolved) · fragment-only ×9 · source-opened ×0. The 7 first-batch AGREE rows stay agent-agreed (unverified) and are parked for a full-text re-show (OQ-011). Provisional 7/14 interaction = historical context only | `node tooling/corpus/spotcheck.mjs --batch 1` | **15** |
 | OQ-003 | Confirm the NC/ND licence exclusion list before P1 harvest | Licence compliance; a wrong call is a legal exposure, not an engineering one | NC/ND and unclear-terms sources are excluded automatically | `tooling/corpus/licence-allowlist.json` | 5 |
 | OQ-004 | Release tag and public deployment at the end of P8 | Public action | Prepare the exact command; do not run it | — | 2 |
 | OQ-006 | Whether organisational role addresses (`copyright@`, `privacy@`, `dpo@`, `legal-support@`, `events@`, `secret-scanning@`) count as personal data | All 12 findings that drop GitHub's 72-document site-policy tree are role addresses published so anyone can contact the organisation. GDPR argues a role mailbox does not identify a natural person; the counter is that it can still reach one. **My recommendation: exclude a defined role set — it would recover the whole policy tree and make T05-policy-style a real tenant.** It is a threshold change and needs a prereg. | Site-policy stays dropped; T05-policy-style stays empty | `docs/CORPUS_PROVENANCE.md` §5 | 3 |
 | OQ-007 | The vendor delete-guard defect, for reporting upstream | Two independent failures on this host: the lock's `STALE_LOCK_MS` (5 min) is three orders of magnitude larger than `LOCK_TIMEOUT_MS` (2 s), so a process killed while holding it poisons bulk deletes for five minutes; and the `genie-trash` helper times out under `spawnSync`. Both are in `WorkBuddyAI/resources/…/shim/`, outside this repository. **Needed from you: accept the documented workaround, or report it.** | Workaround documented in `DECISIONS.md`: run long commands backgrounded; use `CODEBUDDY_SAFE_DELETE_ENABLED=0` rather than clearing `NODE_OPTIONS` | `docs/program/DECISIONS.md` | 2 |
 | OQ-009 | Retrieval baseline complete — review the numbers | The baseline is the first measurement of the built gold set and it is not a headline until reviewed | Baseline recorded in `tooling/corpus/baseline-results.json`; no claim published. **Review deferred until OQ-002 relabelling and the impact-table rerun are complete.** | `node tooling/corpus/run-baseline.mjs` | 10 |
-| OQ-010 | Owner spot-check — multilingual gold rows (T01 es/fr/pt-BR; 42 rows, 14 per language, per prereg `docs/prereg/gold-multilingual-rows.md`) | `label_source=agent-agreed` carries **no headline authority** until the per-language spot-check (≥85%) actually passes and is recorded (V2 rule 7) | Rows are **unverified** and excluded from headline/recall claims until each language batch passes; languages fail independently | Per language (swap the language code): `node -e "for (const x of require('./tooling/corpus/questions.json').questions.filter(q => q.language === 'es')) console.log(x.id, '|', x.text, '|', x.acceptable_documents[0]);"` with `'es'` → `'fr'` → `'pt-BR'` | **10–12 min per language** |
+| OQ-010 | Owner spot-check — multilingual gold rows (T01 es/fr/pt-BR; 42 rows, 14 per language, per prereg `docs/prereg/gold-multilingual-rows.md`) | Rows are `agent-agreed`, `origin=derived-paraphrase` — **never a headline**; passing promotes them only to **owner-verified derived-paraphrase** (their own slice) | Rows **unverified**; languages fail independently. **Bilingual presentation**: the owner may not read es/fr/pt-BR, so each row shows the question + a machine English translation flagged **"aid, not evidence"**, the verbatim source passage + a machine translation. Owner judges *"does this passage answer this question"* in English; a native-speaker naturalness check is a **separate optional item**. **Batches of 6 rows per language.** | Per language: `node -e "for (const x of require('./tooling/corpus/questions.json').questions.filter(q => q.language === 'es')) console.log(x.id,'|',x.text,'|',x.acceptable_documents[0]);"` (`'es'`→`'fr'`→`'pt-BR'`); the agent supplies the English aids when the batch is pulled | **6–8 min per batch of 6** |
+| OQ-011 | Re-show the 7 first-batch AGREE rows (OD-03, 07, 08, 09, 10, 12, 14) in the **full-text keyword format** | These 7 were judged on 150-char fragments (`evidence_basis=fragment-only`); the full text may change a verdict | Rows stay `agent-agreed` (unverified) until re-shown | One batch of 7, full-text passages + keyword hits (the `relabel-evidence.mjs` format) | **8–10 min** |
 
 ## Closed
 
@@ -40,9 +41,15 @@ Each entry carries the default that is **in effect right now**, so the program n
 >    OD-05 [A] answerable (acceptable document changed to declined-card.md) · OD-06 [C] UNRESOLVED
 >    (stays out_of_scope, unvalidated either way) · OD-11 [B] out_of_scope stands (answering appeal doc
 >    is T05 — tenant-scoped) · OD-15 [B] out_of_scope stands. No OOS/answerable flips.
-> 3. `label_source=owner` rows fleet-wide: **0**. Agent rows stay refusal/robustness-only, tagged
->    `unverified`.
-> 4. **Recall/D3 claims are NOT MEASURABLE at any claimed N, for every tenant** (see DECISIONS.md).
+> 3. **`evidence_basis` (owner correction 2026-10-08).** The 2026-10-07 "owner rows fleet-wide: 0" was
+>    an over-correction. Re-tagged: **owner ×5** on `full-text-verbatim` evidence (OD-02/04/05/11/15) —
+>    owner DECISIONS on agent-presented hash-verified full text, **not** document inspections; **OD-06**
+>    full-text but UNRESOLVED [C] (`agent-full-text`, not an owner recall row); **fragment-only ×9**
+>    (OD-01 top-3 retrieval; OD-03/07/08/09/10/12/13/14 150-char fragments) stay `agent-agreed`,
+>    `unverified`. **`source-opened`: 0.**
+> 4. **Recall/D3 claims are NOT MEASURABLE at the required N** — owner recall rows are 3 answerable
+>    (OD-02/04/05), all T04 calibration (see DECISIONS.md). The 7 first-batch AGREE rows are parked for
+>    a full-text re-show (OQ-011).
 
 **Run `node tooling/corpus/spotcheck.mjs --batch 1`.** It prints 15 rows and writes
 `tooling/corpus/spotcheck-batch-1.json`.
@@ -59,17 +66,19 @@ their agreement measures whether two *methods* agree, not whether the labels are
 
 **Acceptance: 85% AGREE.** Below that the labelling protocol is re-run.
 
-**The 15 labels as they now stand, in batch order.** `label_source: owner` means the owner decided the
-label on the agent's evidence packet; it does **not** mean the owner inspected the documents.
+**The 15 labels as they now stand, in batch order.** Under the 2026-10-08 `evidence_basis` re-tag,
+`owner` (OD-02/04/05/11/15) means the owner DECIDED the label on agent-presented **full-text-verbatim**
+(hash-verified) evidence — it does **not** mean the owner opened the documents. The remaining rows are
+`agent-agreed`/`agent-full-text` on `fragment-only` evidence and carry **no headline authority**.
 
 | # | ID | Label | Document | Conf | Split |
 | --- | --- | --- | --- | --- | --- |
 | 1 | **OD-13** | **out_of_scope** (owner, OQ-008 2026-10-07) | — | medium | held-out |
 | 2 | OD-01 | out_of_scope | — | high | calibration |
-| 3 | OD-02 | answerable | `…/changing-your-username.md` + `concepts/username-changes.md` | high | calibration |
+| 3 | OD-02 | answerable | `…/changing-your-username.md` + `concepts/username-changes.md` + `reference/username-reference.md` | high | calibration |
 | 4 | OD-03 | out_of_scope | — | high | calibration |
 | 5 | OD-04 | answerable | `billing/…/manage-payment-info.md` | high | calibration |
-| 6 | OD-05 | answerable | `billing/…/manage-payment-info.md` | high | calibration |
+| 6 | OD-05 | answerable | `billing/…/troubleshooting/declined-card.md` | high | calibration |
 | 7 | OD-06 | out_of_scope | — | high | calibration |
 | 8 | OD-07 | out_of_scope | — | high | calibration |
 | 9 | OD-08 | out_of_scope | — | high | calibration |
