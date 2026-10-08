@@ -4,6 +4,38 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-08 — Fleet-only vs verify:db seed drift: fixed; surface audit hardened; wired as suite 6
+
+**Zone.** Y (governance), with F-1 still open in Zone R.
+
+### The drift, and the cause
+Fleet-only reported **105 vacuous** and the positive control **3/4** (threshold ledger, `rows:0`);
+verify:db reported **21 vacuous** and **4/4**. Cause: the fleet suite derived vacuity from a **live row
+count**, so it inherited whatever rows suites 1–4 had left behind — and suite 2's threshold-audit probe
+writes a `tenant_threshold_changes` row, which is why the ledger control passed in the full run only.
+**My previous turn listed "leftover rows from suites 1–4" and dismissed it. That was wrong.**
+
+### The fix
+Vacuity is now a property of the fleet suite's **own** fixture: the seeding section creates a marker row
+per tenant per table, and a cross-tenant probe is vacuous only when the **target tenant's marker could
+not be created**. Both paths therefore see the same fixture. The two content-dependent controls (gate
+funnel, threshold ledger) now use a new `permitted` expectation — the role must not be denied, without
+asserting the object has rows — so a control cannot flip between paths. The `sops` and `escalations`
+controls keep the stronger `allowed` expectation, because those tables are populated.
+
+### Surface audit hardened
+`has_function_privilege` raises 42704 for a role that does not exist, and the local stack has **no
+`anon` role** — which is what produced the two `ERROR role "anon" does not exist` lines. Every privilege
+check is now wrapped in an explicit `CASE … WHEN EXISTS (pg_roles …)`, not an `and` (PostgreSQL does not
+promise short-circuit evaluation of `and`). The audit now reports role coverage, and its verdict says
+**`anon` coverage UNPROVEN LOCALLY** until a hosted run shows it. An absent `authenticated` role makes
+the verdict `SURFACE AUDIT INCOMPLETE` rather than a pass.
+
+### Wiring
+`rls_surface_audit.sql` is now the **sixth** suite in `verify-phase7.sh`.
+
+---
+
 ## 2026-10-08 — SECURITY FINDING F-1: an `authenticated` role can re-point its own tenant claim (OPEN)
 
 **Zone.** R (owner decides). **Status.** OPEN — not fixed, not accepted, not merged. Branch

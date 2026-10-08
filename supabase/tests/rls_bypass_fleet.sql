@@ -158,6 +158,10 @@ begin
     p_section, coalesce(p_role::text, 'anonymous'), p_object, p_operation, p_expect, v_observed,
     case
       when p_expect = 'allowed' then v_observed like 'rows:%' and v_observed <> 'rows:0'
+      -- 'permitted' asserts the role is not denied, without asserting the object has rows. Used
+      -- for controls over ledgers whose content is a fixture property, so the control cannot flip
+      -- between fleet-only and verify:db.
+      when p_expect = 'permitted' then v_observed like 'rows:%'
       else v_observed = 'rows:0' or v_observed like 'denied:%' or v_observed like 'error:%'
     end,
     p_note
@@ -290,7 +294,7 @@ end $$;
 -- make the suite look green.
 do $$
 declare
-  p record; t uuid; o record; k int; v_rows bigint;
+  p record; t uuid; o record; k int; v_rows bigint; v_seeded boolean;
   -- Every shape must be able to return ZERO rows, or it can never be refused.
   --   shape 2 previously read `select count(*) ...` — an aggregate ALWAYS returns one row, so
   --   `row_count` was 1 no matter what RLS did, and the probe reported a leak on every object.
@@ -308,11 +312,18 @@ begin
               then '22222222-2222-2222-2222-222222222222'::uuid
               else '11111111-1111-1111-1111-111111111111'::uuid end;
     for o in select * from fleet_objects where kind = 'table' and has_tenant_id order by name loop
-      execute format('select count(*) from %s where tenant_id = %L', o.qualified, t) into v_rows;
+      -- Vacuity is a property of THIS suite's own fixture, never of whatever ran before it.
+      -- Deriving it from a live row count made the two paths disagree: fleet-only reported 105
+      -- vacuous and verify:db 21, purely because suites 1-4 had left rows behind. The marker row
+      -- is created by the seeding section above, so both paths now see the same fixture.
+      select case when t = '11111111-1111-1111-1111-111111111111'::uuid
+                  then seeded_alpha else seeded_beta end
+        into v_seeded
+        from fleet_fixture where object_name = o.name;
       for k in 1 .. array_length(v_shapes, 1) loop
-        if v_rows = 0 then
+        if not coalesce(v_seeded, false) then
           perform f_record('cross-tenant read', p.role::text, o.name, 'select shape ' || k, 'refused', 'vacuous', true,
-            'target tenant has no rows in this object — proves nothing; seed: '
+            'the target tenant has no seeded row in this object — proves nothing; seed: '
             || coalesce((select coalesce(note, 'ok') from fleet_fixture where object_name = o.name), 'not seeded'));
         else
           perform f_probe('cross-tenant read', p.role, p.home, p.user_id, o.name, 'select shape ' || k,
@@ -525,13 +536,13 @@ begin
     end if;
     if v_funnel is not null then
       perform f_probe('positive control', 'auditor', v_alpha, (select user_id from fleet_principals where ord = 5), 'ops_gate_funnel', 'select',
-        format('select 1 from %s limit 1', v_funnel), 'allowed',
-        'the Alpha auditor CAN read the gate-funnel dashboard');
+        format('select 1 from %s limit 1', v_funnel), 'permitted',
+        'the Alpha auditor is PERMITTED to read the gate-funnel dashboard (a dashboard may be empty)');
     end if;
     if v_ledger is not null then
       perform f_probe('positive control', 'ops_manager', v_alpha, (select user_id from fleet_principals where ord = 1), 'tenant_threshold_changes', 'select',
-        format('select 1 from %s limit 1', v_ledger), 'allowed',
-        'the Alpha ops manager CAN read the threshold ledger');
+        format('select 1 from %s limit 1', v_ledger), 'permitted',
+        'the Alpha ops manager is PERMITTED to read the threshold ledger (the ledger may be empty)');
     end if;
   end if;
 end $$;

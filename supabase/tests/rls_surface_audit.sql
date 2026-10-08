@@ -59,8 +59,13 @@ join pg_namespace n on n.oid = p.pronamespace
 where n.nspname in ('public', 'app', 'graphql_public')
   and p.prokind in ('f', 'p')
   and (
-    has_function_privilege('authenticated', p.oid, 'EXECUTE')
-    or has_function_privilege('anon', p.oid, 'EXECUTE')
+    -- CASE, not `and`: PostgreSQL does not promise to short-circuit `and`, and
+    -- has_function_privilege raises 42704 when the role does not exist. The local stack has no
+    -- `anon` role, so the guard has to be explicit rather than incidental.
+    case when exists (select 1 from pg_roles where rolname = 'authenticated')
+         then has_function_privilege('authenticated', p.oid, 'EXECUTE') else false end
+    or case when exists (select 1 from pg_roles where rolname = 'anon')
+            then has_function_privilege('anon', p.oid, 'EXECUTE') else false end
   );
 
 -- `pg_catalog` is not an exposed schema, so a client cannot reach `pg_catalog.set_config`
@@ -82,20 +87,38 @@ from surface_audit
 order by dynamic_sql desc, set_config desc, fn;
 
 \echo ''
+\echo '=== role coverage (a missing role is unproven coverage, not a pass) ==='
+select r.rolname,
+       exists (select 1 from pg_roles where rolname = r.rolname) as present_locally,
+       case when exists (select 1 from pg_roles where rolname = r.rolname)
+            then 'checked'
+            else 'UNPROVEN LOCALLY — the role does not exist on this stack; coverage must be shown on a hosted run' end as coverage
+from (values ('authenticated'), ('anon')) as r(rolname);
+
+\echo ''
 \echo '=== functions NOT callable by a client role, for contrast ==='
 select count(*) as not_callable
 from pg_proc p
 join pg_namespace n on n.oid = p.pronamespace
 where n.nspname in ('public', 'app')
   and p.prokind = 'f'
-  and not has_function_privilege('authenticated', p.oid, 'EXECUTE')
-  and not has_function_privilege('anon', p.oid, 'EXECUTE');
+  and not (
+    case when exists (select 1 from pg_roles where rolname = 'authenticated')
+         then has_function_privilege('authenticated', p.oid, 'EXECUTE') else false end
+    or case when exists (select 1 from pg_roles where rolname = 'anon')
+            then has_function_privilege('anon', p.oid, 'EXECUTE') else false end
+  );
 
 \echo ''
 select case
+  when not exists (select 1 from pg_roles where rolname = 'authenticated')
+    then 'SURFACE AUDIT INCOMPLETE — no `authenticated` role on this stack; nothing was checked'
   when exists (select 1 from surface_audit where not ok)
     then 'SURFACE AUDIT FAILED: ' || (select count(*) from surface_audit where not ok)
          || ' callable function(s) contain dynamic SQL'
   else 'SURFACE AUDIT OK — ' || (select count(*) from surface_audit)
        || ' callable function(s), none builds SQL'
+       || case when exists (select 1 from pg_roles where rolname = 'anon')
+               then ''
+               else ' (anon coverage UNPROVEN LOCALLY — no `anon` role on this stack)' end
 end as verdict;
