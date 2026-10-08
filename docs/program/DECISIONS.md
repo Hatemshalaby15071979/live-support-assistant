@@ -4,6 +4,36 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-08 — OQ-012 CLOSED: hosted API callable surface has no detected dynamic SQL; auto-RLS event trigger preserved
+
+**Zone.** R (owner-approved hosted mutation + record). **Status.** **CLOSED — `OQ-012 CLOSED — hosted API callable surface contains no function with detected dynamic SQL, while automatic RLS event-trigger behavior remains proven.`**
+
+This closes condition 3 of the F-1 acceptance (anon coverage proven on a hosted run). The surface audit no longer fails.
+
+### Decision
+`public.rls_auto_enable()` is the **platform event-trigger function** referenced by `ensure_rls` (`ddl_command_end`, enabled `O`, owner `postgres`), **not an API capability**. Its body contains `execute` (internal dynamic SQL for `ALTER TABLE … ENABLE ROW LEVEL SECURITY` in the RLS-enable trigger) but it takes **no text parameters**, so caller-supplied text cannot reach the dynamic SQL. It is treated as platform behaviour, not an exposed ability, and the audit was **not** rewritten to special-case it.
+
+### Action taken (hosted, owner-approved)
+- `REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM anon, authenticated;` left anon/authenticated EXECUTE **unchanged**, because the effective grant flows through `PUBLIC`. Catalog ACL was `{=X/postgres, postgres=X/postgres, anon=X/postgres, authenticated=X/postgres, service_role=X/postgres}` — `PUBLIC` (`=X/postgres`) held the grant. Per the catalog-proven guard, `REVOKE … FROM PUBLIC` was **also** applied.
+- Resulting ACL: `{postgres=X/postgres, service_role=X/postgres}`. `anon` / `authenticated` / `PUBLIC` no longer hold EXECUTE; the **platform owner (`postgres`) retains it via ownership** and `service_role` via its explicit grant. Function body and definition **untouched**; the function was **not dropped**.
+
+### Proof the event trigger still works
+A disposable scratch table `public._oq012_scratch` was created inside a transaction; the catalog showed `relrowsecurity = t` (proving `ensure_rls` fired and enabled RLS); the transaction was rolled back and the scratch object is gone (`scratch_exists = 0`). No unrelated object/policy change. The revoke of API EXECUTE does **not** break the platform's auto-RLS behaviour — the trigger fires under the system/owner context, which retains EXECUTE via ownership.
+
+### Final surface audit (`supabase/tests/rls_surface_audit.sql`, unchanged)
+- Callable surface: **10** functions (`app.*` ×9, `graphql_public.graphql`); **`public.rls_auto_enable` ABSENT** from the API-callable surface.
+- `role coverage`: `authenticated | t | checked`, **`anon | t | checked`**.
+- **Verdict: `SURFACE AUDIT OK — 10 callable function(s), none builds SQL`.** No `anon coverage UNPROVEN LOCALLY`, no `SURFACE AUDIT FAILED`.
+- Independent re-check: `rls_auto_enable` still exists; `ensure_rls` still exists and enabled (`O`); the 7 removed test helpers did **not** reappear; `allowlisted_present = 0`, `allowlisted_callable = 0`, `unexpected_helpershaped = 0`.
+
+### Audit artifact note (separate cleanup item)
+The audit creates `public.surface_audit` (its result table) on each run and does not drop it. The instance on the hosted project is a **leftover artifact from the 2026-10-08 re-verification run**. It is **not** dropped in this change — the repository defines **no explicit cleanup procedure** for it. Recorded here as a **separate cleanup item**; removing it (`drop table if exists public.surface_audit;`) requires its own owner-approved hosted action.
+
+### Not done (deliberately)
+No application-policy change, no `auth.users` change, no migration / `db push`, no merge or push of `main`, no implementation of OQ-014 (`test_support`). The audit script was **not** modified to special-case the platform function.
+
+---
+
 ## 2026-10-08 — Hosted helper residue: CONTAINED AND REMOVED (Zone R external action, owner-authorized)
 
 **Zone.** R — an external action on the hosted project, explicitly authorized by the owner in the
