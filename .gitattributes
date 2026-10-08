@@ -23,3 +23,10 @@ tooling/corpus/translation-pairs.json text eol=lf
 # fixed, and the file is still pinned to LF so the parser is not the only thing
 # standing between a checkout and a red gate.
 Hatem_specific.md text eol=lf
+
+# Market Twin reports are reproducibility artifacts: the determinism proof compares them
+# byte-for-byte across runs. Automatic newline translation would make a checked-out copy differ
+# from a freshly generated one, which reads as "the run is not deterministic" when it is the
+# checkout that changed. Same reasoning as the corpus snapshots above.
+tooling/market/reports/*.json text eol=lf
+tooling/market/reports/*.md text eol=lf
