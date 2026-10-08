@@ -4,6 +4,20 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-08 — Push procedure: credential-manager override for the HTTPS remote
+
+**Zone.** Y (procedure). **Status.** RECORDED — standing push procedure for this host.
+
+The repository uses an HTTPS remote (`https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant.git`). PortableGit on this host ships `credential.helper=helper-selector`, which is **not present**, so a plain `git push`/`pull` fails with `could not read Username`. The working override (non-force, non-rejection) is:
+
+```
+GIT_TERMINAL_PROMPT=0 git -c "credential.helper=$(command -v git-credential-manager)" push origin <branch>
+```
+
+- Used for both `prog/main` pushes this session: `2f765a5` (initial publication of the integration branch — 184 commits from root) and `524e24a` (OQ-012 documentation closure — 1 commit). Both plain non-force pushes; both verified in sync afterwards (`prog/main...origin/prog/main = 0 0`).
+- This is the **standing push procedure** for this host. It must not be replaced by a force push, and no credential may be placed on a command line.
+- `main` is never pushed or merged from this host without explicit owner authorization; `main` is an ancestor of `prog/main`.
+
 ## 2026-10-08 — OQ-012 CLOSED: hosted API callable surface has no detected dynamic SQL; auto-RLS event trigger preserved
 
 **Zone.** R (owner-approved hosted mutation + record). **Status.** **CLOSED — `OQ-012 CLOSED — hosted API callable surface contains no function with detected dynamic SQL, while automatic RLS event-trigger behavior remains proven.`**
