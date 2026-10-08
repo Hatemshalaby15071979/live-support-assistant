@@ -25,6 +25,7 @@
     "probe:bundle": "node tooling/transport/probe-bundle.mjs",
     "probe:publish": "node tooling/transport/probe-publish.mjs",
     "probe:corpus": "node tooling/transport/probe-corpus.mjs",
+    "probe:mc": "node tooling/transport/probe-mc.mjs",
     "verify:signin": "node tooling/browser/verify-signin.mjs",
     "verify:deployed": "node tooling/browser/verify-deployed.mjs",
     "eval:simulated:deployed": "node tooling/browser/run-simulated-deployed-evaluation.mjs",
