@@ -27,3 +27,6 @@ tooling/video/out/
 tooling/video/demo.mp4
 tooling/video/demo-video.mp4
 
+
+# Local run logs — never committed (environment detail: target URL, demo email)
+deployed-run.txt

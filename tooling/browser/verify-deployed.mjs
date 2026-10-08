@@ -84,6 +84,31 @@ await provision(DEMO_EMAIL, DEMO_PASSWORD, TENANT, 'agent', 'Public demo agent')
 const publisher = await provision(`deploysh-pub-${marker}@alpha.example`, `Dp-${randomUUID()}`, TENANT, 'ops_manager', 'Deploy publisher');
 const editor = await provision(`deploysh-ed-${marker}@alpha.example`, `De-${randomUUID()}`, TENANT, 'sop_editor', 'Deploy editor');
 
+// ---- fixture hygiene: retire this harness's own previous probes --------------
+// Every run authors two probe procedures and never removed them, so the demo tenant's
+// bundle grew run over run (observed: bundle 12→13→14→15, 19→21→23→25 procedures). The
+// bodies are near-identical across runs, so the runner-up ties the intended procedure and
+// the gate refuses on `insufficient_margin` — a fixture defect that reads as a product
+// failure. Retiring this harness's own markers first makes each run score against exactly
+// the two procedures it authored. Scoped to the probe title prefixes, this tenant only.
+process.stdout.write("==> retiring this harness's previous probe procedures\n");
+let retired = 0;
+for (const prefix of ['Deployed refund ', 'Deployed scheduling ']) {
+  const list = await (await fetch(
+    `${supabaseUrl}/rest/v1/sops?select=id,title&tenant_id=eq.${TENANT}&title=like.${encodeURIComponent(`${prefix}*`)}`,
+    { headers: adminH },
+  )).json();
+  for (const row of Array.isArray(list) ? list : []) {
+    await fetch(`${supabaseUrl}/functions/v1/upsert-sop`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${editor.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sopId: row.id, title: row.title, status: 'retired', category: 'probe', summary: 'retired by deploy harness', suggestedReply: '-', escalationRequired: false, triggerKeywords: [] }),
+    });
+    retired += 1;
+  }
+}
+process.stdout.write(`  info  retired ${retired} stale probe procedure(s)\n`);
+
 // ---- CDP browser ----
 const CDP_PORT = 9333;
 const userDataDir = resolve(process.env.TEMP ?? '.', `sop-deploy-${randomUUID().slice(0, 8)}`);
