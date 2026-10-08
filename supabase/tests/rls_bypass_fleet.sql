@@ -157,6 +157,40 @@ begin
   );
 end $$;
 
+-- Capability probe: can an `authenticated` role RE-POINT ITS OWN CLAIM?
+-- This is the real forgery question. The section below it sets claims as the superuser before
+-- switching role, which proves only that RLS trusts the claim — not that a client can mint one.
+-- Here the override is attempted from inside the authenticated role, which is the attacker's move.
+create or replace function f_claim_override_probe(
+  p_section text, p_role app_role, p_home uuid, p_user uuid, p_target uuid, p_object text, p_qualified text
+) returns void language plpgsql as $$
+declare v_observed text; v_rows bigint; v_forged text;
+begin
+  begin
+    perform f_claims(p_role, p_home, p_user);
+    execute 'set local role authenticated';
+    begin
+      v_forged := json_build_object(
+        'sub', p_user::text,
+        'app_metadata', json_build_object('tenant_id', p_target::text, 'app_role', 'ops_manager')
+      )::text;
+      execute format('select set_config(''request.jwt.claims'', %L, true)', v_forged);
+      execute format('select 1 from %s where tenant_id = %L', p_qualified, p_target);
+      get diagnostics v_rows = row_count;
+      v_observed := 'rows:' || v_rows;
+    exception
+      when insufficient_privilege then v_observed := 'denied:privilege';
+      when others then v_observed := 'error:' || sqlstate;
+    end;
+    execute 'reset role';
+  exception when others then v_observed := 'probe_failure:' || sqlstate;
+  end;
+
+  perform f_record(p_section, p_role::text, p_object, 'override claim then read', 'refused', v_observed,
+    v_observed = 'rows:0' or v_observed like 'denied:%' or v_observed like 'error:%',
+    'an authenticated role must not be able to re-point its own tenant claim');
+end $$;
+
 -- ------------------------------------------- section 0a: object resolution ---
 -- Resolve every object the way the migrations created it. `to_regclass` follows search_path,
 -- so an unqualified table resolves to `public`; the views live in `app` and are reached by
@@ -211,6 +245,38 @@ select
        else null end
 from fleet_objects;
 
+-- ------------------------------------------ section 0c: fixture seeding ---
+-- A cross-tenant read is only evidence when the other tenant actually holds rows. Seed one row
+-- per tenant per probed table where the schema allows a bare `(tenant_id)` insert, and record
+-- every table that could not be seeded (NOT NULL columns without defaults) so the gap is visible
+-- rather than silent. Seeding runs as the superuser, before any probe.
+create table fleet_fixture (
+  object_name text primary key,
+  seeded_alpha boolean,
+  seeded_beta  boolean,
+  note         text
+);
+
+do $$
+declare
+  o record; a boolean; b boolean; v_note text;
+begin
+  for o in select * from fleet_objects where kind = 'table' and has_tenant_id order by name loop
+    a := false; b := false; v_note := null;
+    begin
+      execute format('insert into %s (tenant_id) values (%L)', o.qualified, '11111111-1111-1111-1111-111111111111');
+      a := true;
+    exception when others then v_note := 'alpha:' || sqlstate;
+    end;
+    begin
+      execute format('insert into %s (tenant_id) values (%L)', o.qualified, '22222222-2222-2222-2222-222222222222');
+      b := true;
+    exception when others then v_note := coalesce(v_note || ' ', '') || 'beta:' || sqlstate;
+    end;
+    insert into fleet_fixture values (o.name, a, b, v_note);
+  end loop;
+end $$;
+
 -- ------------------------------------------------- section 1: cross-tenant read ---
 -- 7 principals x (objects with a tenant_id) x 3 query shapes. Refusal is the only acceptable
 -- outcome. `vacuous` is recorded where the target holds no rows, so an empty tenant cannot
@@ -218,10 +284,16 @@ from fleet_objects;
 do $$
 declare
   p record; t uuid; o record; k int; v_rows bigint;
+  -- Every shape must be able to return ZERO rows, or it can never be refused.
+  --   shape 2 previously read `select count(*) ...` — an aggregate ALWAYS returns one row, so
+  --   `row_count` was 1 no matter what RLS did, and the probe reported a leak on every object.
+  --   `having count(*) > 0` makes the row disappear when the count is zero.
+  --   A `tenant_id <> <foreign>` shape was removed for the same reason in reverse: as the
+  --   caller, RLS legitimately shows the caller's OWN rows, which are `<> foreign`.
   v_shapes text[] := array[
     'select 1 from %s where tenant_id = %L',
-    'select count(*) from %s where tenant_id = %L',
-    'select 1 from %s where tenant_id <> %L limit 1'
+    'select count(*) from %s where tenant_id = %L having count(*) > 0',
+    'select 1 from %s where tenant_id = %L for update'
   ];
 begin
   for p in select * from fleet_principals order by ord loop
@@ -231,9 +303,10 @@ begin
     for o in select * from fleet_objects where kind = 'table' and has_tenant_id order by name loop
       execute format('select count(*) from %s where tenant_id = %L', o.qualified, t) into v_rows;
       for k in 1 .. array_length(v_shapes, 1) loop
-        if v_rows = 0 and k < 3 then
+        if v_rows = 0 then
           perform f_record('cross-tenant read', p.role::text, o.name, 'select shape ' || k, 'refused', 'vacuous', true,
-            'target tenant has no rows in this object — proves nothing');
+            'target tenant has no rows in this object — proves nothing; seed: '
+            || coalesce((select coalesce(note, 'ok') from fleet_fixture where object_name = o.name), 'not seeded'));
         else
           perform f_probe('cross-tenant read', p.role, p.home, p.user_id, o.name, 'select shape ' || k,
             format(v_shapes[k], o.qualified, t), 'refused');
@@ -310,14 +383,22 @@ begin
 end $$;
 
 -- --------------------------------------- section 4: claim-shape forgery ---
--- 7 principals x (20 malformed tenant claims x 5 role strings) = 700 probes. None may reach a
--- tenant that is not the principal's home.
+-- 7 principals x (18 malformed or non-existent tenant claims x 5 role strings) = 630 probes.
+-- These assert FAIL-CLOSED: a claim naming a tenant that does not exist, or not shaped like a
+-- uuid, must yield zero rows.
+--
+-- The two REAL tenant ids are deliberately NOT in this list. `sops_select` is
+--   using (tenant_id = app.current_tenant())
+-- and `app.current_tenant()` is `auth.jwt() -> 'app_metadata' ->> 'tenant_id'`, i.e. RLS trusts
+-- the claim by design — the claim's integrity is the platform's job (GoTrue signs the JWT,
+-- PostgREST sets the setting from the verified token). A probe that installs a real tenant id
+-- itself, as the superuser, is therefore testing the design, not forgery. The forgery question
+-- is asked properly in the capability section that follows.
 do $$
 declare
   p record; a int; b int; v_json text; v_observed text; v_rows bigint; v_sops text;
   v_tenants text[] := array[
     'null', '""', '"not-a-uuid"', '"00000000-0000-0000-0000-000000000000"',
-    '"11111111-1111-1111-1111-111111111111"', '"22222222-2222-2222-2222-222222222222"',
     '"a0000000-0000-0000-0000-0000000000ff"', '"b0000000-0000-0000-0000-0000000000ff"',
     '"' || repeat('9', 40) || '"', '"\u0000"', '" "', '"app"', '"public"', '"tenant_id"',
     '"11111111-1111-1111-1111-11111111111"', '"11111111-1111-1111-1111-1111111111111"',
@@ -352,6 +433,27 @@ begin
             v_observed = 'rows:0' or v_observed like 'denied:%' or v_observed like 'error:%');
         end loop;
       end loop;
+    end loop;
+  end if;
+end $$;
+
+-- ------------------------------------------- section 4b: claim override capability ---
+-- 7 principals x 1 foreign target. The ONLY version of "claim forgery" that tests a capability
+-- rather than the design: the override is attempted from inside the authenticated role.
+do $$
+declare
+  p record; t uuid; v_sops text;
+begin
+  select qualified into v_sops from fleet_objects where name = 'sops';
+  if v_sops is null then
+    perform f_record('claim override capability', '(schema)', 'sops', 'resolve', 'present', 'MISSING', false,
+      'sops did not resolve — the section cannot run');
+  else
+    for p in select * from fleet_principals order by ord loop
+      t := case when p.home = '11111111-1111-1111-1111-111111111111'::uuid
+                then '22222222-2222-2222-2222-222222222222'::uuid
+                else '11111111-1111-1111-1111-111111111111'::uuid end;
+      perform f_claim_override_probe('claim override capability', p.role, p.home, p.user_id, t, 'sops', v_sops);
     end loop;
   end if;
 end $$;

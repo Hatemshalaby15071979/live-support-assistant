@@ -84,7 +84,11 @@ run_suite() {
   suite_status=$?
   set -e
 
-  printf '%s\n' "$output" | awk '/=== .* ===/{show=1} show' | head -40
+  # Print every `=== section ===` block and its table, not just the first 40 lines: a suite whose
+  # diagnostics run long was being truncated mid-table, which read as a missing section. psql
+  # errors go to stderr so a parse failure is distinguishable from a failing assertion.
+  printf '%s\n' "$output" | awk '/=== .* ===/{show=1} show'
+  printf '%s\n' "$output" | grep -E '^(psql|ERROR)' >&2 || true
 
   if [ $suite_status -ne 0 ]; then
     echo "psql exited with status $suite_status for $file" >&2
@@ -92,10 +96,18 @@ run_suite() {
     return
   fi
 
-  if ! printf '%s' "$output" | grep -q "$verdict"; then
-    echo "$file DID NOT REPORT '$verdict'" >&2
-    status=1
+  if printf '%s' "$output" | grep -q "$verdict"; then
+    return
   fi
+
+  # Distinguish "the suite reported its opposite" from "the suite never reported at all".
+  local opposite="${verdict% OK} FAILED"
+  if printf '%s' "$output" | grep -q "$opposite"; then
+    echo "$file REPORTED FAILURE: '$opposite'" >&2
+  else
+    echo "$file DID NOT REPORT '$verdict' (and did not report '$opposite' either)" >&2
+  fi
+  status=1
 }
 
 run_suite supabase/tests/rbac_matrix.sql      "RBAC MATRIX OK"
