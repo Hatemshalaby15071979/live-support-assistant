@@ -30,6 +30,9 @@ GIT_TERMINAL_PROMPT=0 git -c "credential.helper=$(command -v git-credential-mana
 - This is the **standing push procedure** for this host. It must not be replaced by a force push, and no credential may be placed on a command line.
 - `main` is never pushed or merged from this host without explicit owner authorization; `main` is an ancestor of `prog/main`.
 
+### `main`-SHA discrepancy — CLOSED (2026-10-08, owner confirmation)
+The earlier-surfaced expectation that `origin/main` should equal `a2446b2` was an owner mistake: `a2446b2` belongs to a **different repository**. The cached remote-tracking ref `origin/main = c9de5a22` (the owner's 2026-10-06 dependency commit) is the **expected head** for this repository. No action is required on `main`; the discrepancy is closed. Live `git ls-remote` re-confirmation remains blocked by this host's HTTPS credential-manager issue, but the owner has confirmed `c9de5a22` as correct.
+
 ## 2026-10-08 — OQ-012 CLOSED: hosted API callable surface has no detected dynamic SQL; auto-RLS event trigger preserved
 
 **Zone.** R (owner-approved hosted mutation + record). **Status.** **CLOSED — `OQ-012 CLOSED — hosted API callable surface contains no function with detected dynamic SQL, while automatic RLS event-trigger behavior remains proven.`**
