@@ -4,6 +4,56 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-08 — XSS harness rebuilt: real client render path in headless Chrome
+
+**Zone.** Y (procedure). **Status.** REBUILT — branch `prog/xss-harness` now holds the V2-compliant harness (`7ab9c69`).
+
+The prior version (`a5455d2`) was a STATIC payload battery: it submitted payloads to the `upsert-sop` edge function and grep-checked the echoed value for raw tags. That does NOT satisfy V2/P5 (II-02, OS-01), which require rendering hostile payloads through the REAL client rendering path in a browser and asserting no execution or injection.
+
+**Action — rebuilt on prog/xss-harness (commit `7ab9c69`):**
+- Serves a CSP-protected page (`script-src 'self'`, no `unsafe-inline`) via a throwaway Node HTTP server.
+- Drives the installed Google Chrome headless over the DevTools Protocol using Node 22's global `WebSocket` — zero npm dependencies, no Chromium download.
+- **SAFE render** uses `el.textContent = payload`, the exact mechanism the web app uses (`App.tsx:714/716` React text children).
+- **UNSAFE render** (`innerHTML`) is a deliberate negative control: it MUST inject DOM, proving the harness can detect an unsafe renderer. A harness that could not tell the two apart would be inert.
+- 21 payloads across script tags, event handlers, `javascript:` URLs, SVG/img onerror, markdown links, HTML entities, template mixes — all render inert.
+- Asserts strict CSP is served and same-origin script runs while inline/handlers are blocked.
+
+**Run status.** Verified locally: 21/21 safe payloads pass, negative control live (unsafe renderer injects DOM), CSP enforced. Exit 0.
+
+## 2026-10-08 — Build identity wired into the app UI + version file
+
+**Zone.** Y (procedure). **Status.** WIRED — branch `prog/build-identity-stamp` now holds the full integration (`a5555b7`).
+
+The prior version (`39d8d83`) only generated `apps/web/public/build-identity.json` but never consumed it in the UI, so the stamp was dead on disk.
+
+**Action — rebuilt on prog/build-identity-stamp (commit `a5555b7`):**
+- `BuildIdentity.tsx` component fetches `/build-identity.json` and renders `shortSha`, `branch`, `builtAt` in the footer.
+- `App.tsx` imports and renders `<BuildIdentity />` — the stamp is now visible in the UI.
+- `window.__BUILD_IDENTITY` exposes the identity at runtime (version file accessible without re-fetching).
+- `apps/web/package.json` `dev` and `build` scripts prepend `node ../../tooling/build-stamp.mjs` so the stamp is always fresh before Vite/TypeScript.
+- Generated artifact `apps/web/public/build-identity.json` is gitignored; it is produced at build time, not committed.
+- `tooling/build-stamp.mjs` fixed to read `.git` correctly from linked worktrees (packed-refs + commondir support).
+- `tooling/verify-build-identity.mjs` is the 12-check gate: stamp shape, component existence, fetch wiring, App.tsx import/render, script integration. It fails when the wiring is absent ("failing test first") and passes after the fix.
+
+**Run status.** Gate passes (12/12). Vite build succeeds with the component. Verified on branch worktree; not merged to `prog/main`.
+
+## 2026-10-08 — prog/mc-probes misinterpreted: MC = model-confusion, not message/command
+
+**Zone.** Y (definition / procedure). **Status.** CORRECTED — prog/mc-probes rebuilt from P5 MC-01..MC-09; the wrong version is kept out of the branch.
+
+The prior `tooling/transport/probe-mc.mjs` (commit `e567d26`, branch `prog/mc-probes`) implemented "MC" as a **message/command channel** probe — a published-bundle / `upsert-sop` round-trip plus cross-tenant isolation. That interpretation was **wrong**. The owner clarified in the 10-point correction (2026-10-08) that in the program vocabulary "MC" is the **model-confusion** category of P5 (`docs/program/P5_PROBES.md`, Category 6, MC-01..MC-09).
+
+**Why it was wrong.** The old probe's own header carried the assumption *"MC = message/command channel … owner to confirm."* The confirmation came back negative: MC is model-confusion. The message/command transport surface is already covered elsewhere (`probe-bundle.mjs` covers publish→install; `probe-publish-conflict.mjs` covers the publish conflict block), so the message/command reading was both a mislabel and redundant.
+
+**Action — rebuilt on prog/mc-probes (commit `5f4e467`):**
+- **Server half:** `resolvePublishModel` refusals — MC-01 divergent id, MC-02 dimensions-only, MC-03 quantization-only, MC-04 branch revision, MC-05 restated-accepted, plus non-object 400. This is the exact logic the deployed `publish-bundle` edge function imports, so the deployed refusal is proven locally.
+- **Client half:** `installBundle` `model_mismatch` refusal at the model check (MC-06), prior bundle stays active (MC-06), foreign-tenant bundle refused on tenant not model (MC-07, `signature_invalid`), matching install as negative control (MC-08).
+- **MC-09:** the historical divergence (deployed **0.180757** vs local **0.167715** on `SIM-TICKET-00272`) recorded and left as an **UNPROVEN hypothesis** — reproduction blocked because (a) the local harness has a single embedding model, and (b) the deployed publish path now refuses the contradictory corpus at HTTP 422, so the deployed divergent margin cannot be replayed.
+
+**Run status.** Local halves (MC-01..MC-08) run with no stack; all **12 proven checks pass**, MC-09 flagged unproven. The optional `--remote` half (deployed `publish-bundle` edge function) was **not run** — hosted suites are stopped by standing rule and credentials are not required for the local proof.
+
+**Verdict.** Wrong version removed from the branch (replaced in full at `5f4e467`); not merged to `prog/main`. MC-01..MC-08 proven locally; MC-09 is an open P5 item.
+
 ## 2026-10-08 — public.surface_audit lockdown (Zone R hosted action, owner-authorized)
 
 **Zone.** R — hosted mutation, explicitly authorized by the owner in this request. **Target.** `public.surface_audit` on hosted project `lxlokqtowvaesxjishqz`.
