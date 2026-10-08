@@ -267,3 +267,28 @@ select case
 end as verdict
 from retention_results
 where not ok;
+
+-- ------------------------------------------------- test-harness hygiene ---
+-- r_* helpers take SQL text; a new function is EXECUTE-able by PUBLIC, i.e. by `authenticated`.
+-- rls_surface_audit.sql (suite 6) is the tripwire that proves this revoke happened.
+do $hyg$
+declare f record;
+begin
+  for f in
+    select p.oid::regprocedure::text as sig
+    from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 
+-- ------------------------------------------------- test-harness hygiene ---
+-- r_* helpers take SQL text, and a new function is EXECUTE-able by PUBLIC - i.e. by
+-- `authenticated`. rls_surface_audit.sql (suite 6) is the tripwire that proves this revoke happened.
+do $hyg$
+declare f record;
+begin
+  for f in
+    select p.oid::regprocedure::text as sig
+    from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public' and p.proname ~ '^(r_|rbac_|b_|f_|p5_)'
+  loop
+    execute format('revoke all on function %s from public', f.sig);
+  end loop;
+end $hyg$;

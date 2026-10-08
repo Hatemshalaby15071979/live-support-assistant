@@ -268,23 +268,44 @@ create table fleet_fixture (
   note         text
 );
 
+-- A bare `insert into t (tenant_id) values (...)` fails on every one of these tables — they all
+-- have NOT NULL columns without defaults — so the marker was never created and every cross-tenant
+-- probe went vacuous. Instead: copy one row of the OTHER tenant, writing THIS tenant's id, over the
+-- non-primary-key column list (the PK defaults regenerate). Where neither tenant has a row the copy
+-- cannot run, and the probe stays honestly vacuous.
 do $$
 declare
-  o record; a boolean; b boolean; v_note text;
+  o record; t uuid; home uuid; v_cols text; v_count bigint; v_note text; v_ok_a boolean; v_ok_b boolean;
+  v_alpha uuid := '11111111-1111-1111-1111-111111111111';
+  v_beta  uuid := '22222222-2222-2222-2222-222222222222';
 begin
   for o in select * from fleet_objects where kind = 'table' and has_tenant_id order by name loop
-    a := false; b := false; v_note := null;
-    begin
-      execute format('insert into %s (tenant_id) values (%L)', o.qualified, '11111111-1111-1111-1111-111111111111');
-      a := true;
-    exception when others then v_note := 'alpha:' || sqlstate;
-    end;
-    begin
-      execute format('insert into %s (tenant_id) values (%L)', o.qualified, '22222222-2222-2222-2222-222222222222');
-      b := true;
-    exception when others then v_note := coalesce(v_note || ' ', '') || 'beta:' || sqlstate;
-    end;
-    insert into fleet_fixture values (o.name, a, b, v_note);
+    select string_agg(quote_ident(c.column_name), ', ' order by c.ordinal_position)
+      into v_cols
+    from information_schema.columns c
+    where c.table_schema = o.schema_name and c.table_name = o.name
+      and c.column_name not in (
+        select a.attname from pg_index i
+        join pg_attribute a on a.attrelid = i.indrelid and a.attnum = any(i.indkey)
+        where i.indisprimary and i.indrelid = to_regclass(o.qualified)
+      );
+    v_note := null; v_ok_a := false; v_ok_b := false;
+    foreach t in array array[v_alpha, v_beta] loop
+      home := case when t = v_alpha then v_beta else v_alpha end;
+      begin
+        execute format('select count(*) from %s where tenant_id = %L', o.qualified, t) into v_count;
+        if v_count = 0 and v_cols is not null then
+          execute format('insert into %s (%s) select %s from %s where tenant_id = %L limit 1',
+            o.qualified, v_cols,
+            replace(v_cols, 'tenant_id', format('%L', t)),
+            o.qualified, home);
+        end if;
+        if t = v_alpha then v_ok_a := true; else v_ok_b := true; end if;
+      exception when others then
+        v_note := coalesce(v_note || ' ', '') || 'seed:' || sqlstate;
+      end;
+    end loop;
+    insert into fleet_fixture values (o.name, v_ok_a, v_ok_b, v_note);
   end loop;
 end $$;
 
@@ -565,6 +586,24 @@ select o.name,
                  where c.table_name = o.name), '-')       as information_schema
 from fleet_objects o
 order by o.name;
+
+-- ------------------------------------------------- test-harness hygiene ---
+-- The suites in this directory create helper functions in `public` that take SQL TEXT and execute it
+-- (b_probe, f_probe, rbac_probe, r_denied, …). PostgreSQL grants EXECUTE on a new function to
+-- PUBLIC, so every one of them is callable by `authenticated` — which is exactly the primitive
+-- finding F-1 needs. They must not be reachable by a client role. `rls_surface_audit.sql` is the
+-- tripwire that proves this revoke happened; it runs after this file.
+do $$
+declare f record;
+begin
+  for f in
+    select p.oid::regprocedure::text as sig
+    from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public' and p.proname ~ '^(b_|f_|rbac_|p5_|r_|surface_)'
+  loop
+    execute format('revoke all on function %s from public', f.sig);
+  end loop;
+end $$;
 
 -- ---------------------------------------------------------------- report ---
 \echo ''
