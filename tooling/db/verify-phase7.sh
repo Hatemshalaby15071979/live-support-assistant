@@ -19,7 +19,9 @@
 # `claim override capability` probes. A green fleet suite is a REGRESSION, not a success.
 # The gate does not take that on trust: `fleet_acceptance_check` reads the suite's own
 # `fleet_results` table and requires the failure set to match the documented F-1 identity
-# EXACTLY. Any deviation fails the phase. The acceptance lives in
+# EXACTLY. The suite emits EIGHT sections; every one must be present, and every one except the
+# accepted `claim override capability` must have zero failures — including `object existence`.
+# Any deviation fails the phase. The acceptance lives in
 # docs/SECURITY_FINDING_F1_claim_override.md §8 and docs/program/DECISIONS.md (2026-10-08);
 # the gate refuses to accept the red if that record no longer says ACCEPTED.
 #
@@ -56,10 +58,32 @@ FLEET_OBJECT="sops"
 FLEET_OBSERVED_RE='^rows:[1-9]'
 FLEET_ACCEPTED_COUNT=7
 FLEET_MIN_PROBES=1000
-# Every section label the fleet suite may emit. A row from anywhere else is unexpected.
-FLEET_KNOWN_SECTIONS="'anonymous','claim override capability','claim-shape forgery','cross-tenant read','cross-tenant write','key and threshold ledger','positive control'"
-# The sections that must have ZERO failures (all of them except the accepted one).
-FLEET_CLEAN_SECTIONS="'anonymous','claim-shape forgery','cross-tenant read','cross-tenant write','key and threshold ledger','positive control'"
+# The complete section vocabulary the fleet suite emits, listed ONCE so the allowed set, the
+# required-present set and the required-clean set cannot drift apart. Taken from the suite, not
+# from memory: section 0b ("existence assertion") emits `object existence`, and an earlier version
+# of this list omitted it, so the wrapper misread its 17 passing probes as an unexpected section.
+FLEET_SECTIONS=(
+  "anonymous"
+  "claim override capability"
+  "claim-shape forgery"
+  "cross-tenant read"
+  "cross-tenant write"
+  "key and threshold ledger"
+  "object existence"
+  "positive control"
+)
+# Derived: every known section, SQL-quoted — a row from anywhere else is unexpected.
+FLEET_KNOWN_SECTIONS="$(printf "'%s'," "${FLEET_SECTIONS[@]}")"
+FLEET_KNOWN_SECTIONS="${FLEET_KNOWN_SECTIONS%,}"
+# Derived: every section that must have ZERO failures — all of them except the accepted one.
+FLEET_CLEAN_SECTIONS=""
+for _section in "${FLEET_SECTIONS[@]}"; do
+  if [ "$_section" = "$FLEET_SECTION" ]; then
+    continue
+  fi
+  FLEET_CLEAN_SECTIONS="${FLEET_CLEAN_SECTIONS:+$FLEET_CLEAN_SECTIONS,}'$_section'"
+done
+unset _section
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root"
@@ -163,6 +187,11 @@ fleet_count() {  # predicate
     "select count(*) from fleet_results where $1;" 2>/dev/null | tr -d '[:space:]' || true
 }
 
+# One text value out of the suite's table. Only CR/LF are stripped: section labels contain spaces.
+fleet_scalar() {  # sql returning a single value
+  docker exec -i "$CONTAINER" psql -U postgres -d "$DB" -At -c "$1" 2>/dev/null | tr -d '\r\n' || true
+}
+
 # The acceptance must not outlive the record that justifies it.
 f1_record_guard() {
   if [ ! -f "$F1_RECORD" ]; then
@@ -185,7 +214,7 @@ f1_record_guard() {
 # expectation, so an unexamined state can never yield a pass.
 fleet_acceptance_check() {
   local fails=0
-  local probes total accepted other clean missing unknown vacuous
+  local probes total accepted other clean missing unknown vacuous obj_failed absent_sections
 
   probes=$(fleet_count "true")
   total=$(fleet_count "not ok")
@@ -195,8 +224,12 @@ fleet_acceptance_check() {
   missing=$(fleet_count "not ok and observed = 'MISSING'")
   unknown=$(fleet_count "section not in ($FLEET_KNOWN_SECTIONS)")
   vacuous=$(fleet_count "observed = 'vacuous'")
+  # `object existence` is required to be present AND clean, checked by name and not only via the list.
+  obj_failed=$(fleet_count "not ok and section = 'object existence'")
+  # Every known section must actually be emitted. A section that silently stops running must not pass.
+  absent_sections=$(fleet_scalar "select coalesce(string_agg(s, ', ' order by s), '') from unnest(array[$FLEET_KNOWN_SECTIONS]) s where not exists (select 1 from fleet_results where section = s);")
 
-  for v in "$probes" "$total" "$accepted" "$other" "$clean" "$missing" "$unknown" "$vacuous"; do
+  for v in "$probes" "$total" "$accepted" "$other" "$clean" "$missing" "$unknown" "$vacuous" "$obj_failed"; do
     if ! is_number "$v"; then
       echo "    FLEET ACCEPTANCE FAILED: could not read fleet_results (psql error, or the suite never populated it)." >&2
       return 1
@@ -229,6 +262,14 @@ fleet_acceptance_check() {
   fi
   if [ "$unknown" -ne 0 ]; then
     echo "    FLEET ACCEPTANCE FAILED: $unknown row(s) from an unexpected section." >&2
+    fails=1
+  fi
+  if [ "$obj_failed" -ne 0 ]; then
+    echo "    FLEET ACCEPTANCE FAILED: 'object existence' has $obj_failed failure(s); it must have zero." >&2
+    fails=1
+  fi
+  if [ -n "$absent_sections" ]; then
+    echo "    FLEET ACCEPTANCE FAILED: expected section(s) absent from fleet_results: $absent_sections" >&2
     fails=1
   fi
   if [ $(( vacuous * 10 )) -gt "$probes" ]; then

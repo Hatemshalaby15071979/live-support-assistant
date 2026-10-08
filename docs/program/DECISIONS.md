@@ -4,6 +4,80 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-08 — Hosted helper residue: CONTAINED AND REMOVED (Zone R external action, owner-authorized)
+
+**Zone.** R — an external action on the hosted project, explicitly authorized by the owner in the
+request that produced this entry. **Target:** hosted Supabase project ref **`lxlokqtowvaesxjishqz`**,
+session pooler (`aws-1-eu-west-1.pooler.supabase.com:5432`) — the same database the hosted surface
+audit ran against.
+
+### Why it was removed
+The hosted surface audit found seven functions in the **API-exposed `public` schema** with EXECUTE
+granted to `anon` and `authenticated`. Six of them take caller-supplied text into `execute`
+(`execute p_sql`; `execute format('select count(*) from (%s) q', p_query)`), i.e. they expose the
+**F-1 primitive through the API** — the very thing F-1's §3 argued was not reachable. They were
+**test-harness residue**, not shipped application: none is created by any migration; all are defined
+only in `supabase/tests/` (`rls_bypass.sql`, `phase5_telemetry.sql`, `rbac_matrix.sql`).
+
+**Root cause:** `tooling/db/verify-hosted.sh`'s cleanup drops them with **stale hardcoded signatures**
+(8/6/3/8/6/6/1 args) while the current definitions are 9/7/4/9/7/7/3. Every mismatched drop is a
+**no-op**, so the functions survived. Confirmed by correlation: every helper whose signature *matches*
+the cleanup is gone (`rbac_probe`, `b_claims`, `b_no_claims`, `p5_claims`), and every one that
+mismatches survives.
+
+### Approved helper allowlist (exactly these seven — nothing else touched)
+`b_probe` · `b_read` · `b_anon_read` · `p5_probe` · `p5_read` · `rbac_probe_read` · `rbac_claims`
+
+**Explicitly NOT touched:** `public.rls_auto_enable` (platform; returns `event_trigger`, not directly
+callable), `graphql_public.graphql` (platform, `supabase_admin`, **no** dynamic SQL), and every
+unrelated function.
+
+### What was executed
+One transaction, `psql -v ON_ERROR_STOP=1`, explicit `BEGIN`/`COMMIT`, **no `CASCADE`**: for each of
+the seven exact identities, `REVOKE EXECUTE … FROM anon, authenticated, public`, then
+`DROP FUNCTION <exact signature>`. Exact SQL and both verification passes:
+**`docs/program/hosted-helper-removal-2026-10-08.sql`**.
+
+### Before / after
+| Check | Before | After |
+| --- | --- | --- |
+| Helper functions present in `public` | **7** | **0** |
+| EXECUTE grants on those names | 7 × (PUBLIC, anon, authenticated, postgres, service_role) | **0 rows** |
+| `public.rls_auto_enable` | present | **present, untouched** |
+| `graphql_public.graphql` | present | **present, untouched** |
+
+**Dependent-object failure: NONE.** The pre-check (`pg_depend`, `deptype <> 'i'`) returned 0 rows, so
+every no-CASCADE `DROP` succeeded. `psql` output: `BEGIN`, 7 × `REVOKE`, 7 × `DROP FUNCTION`,
+`COMMIT`, exit 0.
+
+### Not done (deliberately)
+No policy change, no table drop, no auth change, no migration change, no `supabase db push`, no
+deploy. `verify-hosted.sh` was **not** run before or after, and no hosted suite was run — a hold is in
+force until the verifier is fixed locally and a local regression test passes.
+
+### Follow-on — hardening applied 2026-10-08 (same day, before commit)
+The stale-signature cleanup is **fixed**. `tooling/db/verify-hosted.sh` now: (1) discovers helper
+identities from `pg_proc`, restricted by a **20-name test-helper allowlist** and an explicit
+exposed-schema list; (2) revokes EXECUTE from `public`/`anon`/`authenticated` in a transaction
+**committed independently**, so a later drop failure can never restore EXECUTE; (3) drops exact
+identities with **no `CASCADE`** under `ON_ERROR_STOP=1`, preserving the PostgreSQL error on failure
+rather than discarding it; and (4) runs a **fail-closed residue check** over three metrics —
+allowlisted helpers present, unexpected helper-shaped names, and exposed helpers still holding
+API-role EXECUTE. Proven locally by `supabase/tests/helper_exposure.sql`
+(`bash tooling/db/verify-helper-exposure.sh`): **13/13 checks pass**.
+
+**Two follow-ups are open and queued:**
+- **OQ-013** — 97 hosted accounts outside the fixture: **PROVISIONAL, likely synthetic residue, not
+  proven real** (reserved RFC 2606/6761 domains, `provider = email`, all confirmed, creation windows
+  matching known test runs). **Left untouched.**
+- **OQ-014** — move helpers out of API-exposed schemas (`test_support`); **parked**, needs a
+  controlled experiment.
+
+**The F-1 acceptance/disposition is unchanged**, and no new security claim is made until the hardened
+verifier is reviewed and the hosted re-verification completes.
+
+---
+
 ## 2026-10-08 — SECURITY FINDING F-1: ACCEPTED as option D (defence-in-depth); review 2027-01-06
 
 **Zone.** R (owner decision). **Status.** **ACCEPTED.** The DB-level property is unchanged and

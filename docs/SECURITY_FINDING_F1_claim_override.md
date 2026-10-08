@@ -73,6 +73,39 @@ whether the body contains dynamic SQL, whether it calls `set_config`, and its te
 - **Conclusion:** no shipped edge function and no exposed RPC accepts caller-supplied SQL, and none
   calls `set_config` with caller input. So F-1 is **not reachable through the API as configured.**
 
+> **AMENDMENT — 2026-10-08 (hosted evidence). The conclusion above was accurate about *shipped* code,
+> and it was FALSE of the hosted project at the time it was written.**
+>
+> The hosted surface audit found **seven test-helper functions in the API-exposed `public` schema**
+> with EXECUTE granted to `anon` and `authenticated`. Six of them take caller-supplied text into
+> `execute` (`execute p_sql`; `execute format('select count(*) from (%s) q', p_query)`), so an
+> `authenticated` API caller could reach the F-1 primitive through the API. They were residue from an
+> earlier hosted `verify-hosted.sh` run, not shipped application surface and not migration output.
+>
+> Root cause: that script's cleanup dropped the helpers by **hardcoded signature**, so when the helper
+> signatures changed every `drop function` became a **no-op** and the helpers survived, still granted
+> to the API roles. Correlation on the hosted catalog confirmed it: every helper whose signature
+> matched the old drop list was gone, every one that mismatched survived.
+>
+> Status of the residue: **removed** on 2026-10-08 (exact SQL and before/after evidence in
+> `docs/program/hosted-helper-removal-2026-10-08.sql`); root cause **fixed** in
+> `tooling/db/verify-hosted.sh`, which now discovers helper identities from the catalog (allowlist +
+> exposed-schema scoped), drops them with no `CASCADE`, and **fails the run if any test helper remains
+> in an API-exposed schema**. Recorded in `docs/program/DECISIONS.md` (2026-10-08).
+>
+> This is a **separate residue / root-cause finding**, not a re-opening of F-1's DB-level property.
+> It is proven locally by `supabase/tests/helper_exposure.sql`
+> (`bash tooling/db/verify-helper-exposure.sh`), which reproduces the primitive through an exposed
+> helper — re-pointing the caller's own tenant claim — and shows that moving the helper out of the
+> exposed surface removes the path.
+>
+> **The acceptance depends on a standing test:** no callable function exposed to API roles may accept
+> caller-supplied SQL. `rls_surface_audit.sql` (suite 6) is that test, and the hosted verifier's
+> post-run residue check now enforces the same rule on the hosted project.
+>
+> **The acceptance and disposition in §8 are UNCHANGED by this amendment.** The text above is left as
+> written; only this note is added.
+
 ## 4. Fix options — DB level. None applied.
 
 | # | Option | Cost | Risk / limit |

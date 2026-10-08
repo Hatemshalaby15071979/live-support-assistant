@@ -217,61 +217,205 @@ run_suite supabase/tests/phase8_retention.sql  "RETENTION SUITE OK"
 # `authenticated`. The container run never had to care because the whole database
 # was dropped afterwards. On a hosted project, dropping is our job.
 #
+# This list used to be hardcoded by SIGNATURE, and that silently stopped working when the
+# helper signatures changed: a `drop function` whose signature no longer matches is a NO-OP.
+# Seven helpers survived on the hosted project and the surface audit later found them with
+# EXECUTE granted to `anon` and `authenticated`. Cleanup is now DISCOVERY-based — exact
+# identities are read from the catalog — so a signature change cannot defeat it silently,
+# and the run FAILS if any helper is left in an API-exposed schema.
+#
 # Pass --keep to leave the artefacts in place for debugging. Do that on a
-# throwaway project, never on one holding data.
+# throwaway project, never on one holding data: it leaves a caller-SQL surface
+# reachable through the API.
 keep=0
 if [ "${1:-}" = "--keep" ]; then
   keep=1
 fi
 
+# The approved helper-name allowlist — TEST HELPERS ONLY. Every name here is created by a suite in
+# supabase/tests/; none is application or platform surface. Verified against the suites themselves
+# by tooling/db/verify-helper-exposure.sh (check F), which FAILS if a suite creates a helper that is
+# not listed here — so a new suite helper cannot be silently left behind.
+#   rls_bypass.sql       : b_claims, b_no_claims, b_probe, b_read, b_anon_read
+#   rls_bypass_fleet.sql : f_claims, f_raw_claims, f_record, f_probe, f_claim_override_probe
+#   phase5_telemetry.sql : p5_claims, p5_probe, p5_read
+#   phase8_retention.sql : r_expect, r_claims, r_denied, r_seed
+#   rbac_matrix.sql      : rbac_claims, rbac_probe, rbac_probe_read
+HELPER_NAMES="'b_claims','b_no_claims','b_probe','b_read','b_anon_read','f_claims','f_raw_claims','f_record','f_probe','f_claim_override_probe','p5_claims','p5_probe','p5_read','r_expect','r_claims','r_denied','r_seed','rbac_claims','rbac_probe','rbac_probe_read'"
+
+# The naming families the suites use. A function in an exposed schema that matches one of these but
+# is NOT in the allowlist is an UNEXPECTED helper — a suite helper whose name was never registered.
+HELPER_PREFIX="^(b_|f_|p5_|r_|rbac_)"
+
+# API-exposed schemas. A test helper here is a defect, not a leftover. Written out explicitly rather
+# than derived, so a change to the exposed set has to be a deliberate edit.
+EXPOSED_SCHEMAS="'public','graphql_public','app'"
+
+# Exact identities of any allowlisted helper still sitting in an exposed schema.
+helper_identities() {
+  psql_cmd -At -c "
+    select n.nspname||'.'||p.proname||'('||pg_get_function_identity_arguments(p.oid)||')'
+    from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname in ($EXPOSED_SCHEMAS) and p.proname in ($HELPER_NAMES)
+    order by 1;"
+}
+
+# Residue metrics: "<present>|<unexpected>|<callable>", or EMPTY if the catalog cannot be read.
+#   present    — allowlisted helpers still in an exposed schema
+#   unexpected — helper-SHAPED functions in an exposed schema that are not allowlisted
+#   callable   — allowlisted helpers in an exposed schema still holding EXECUTE for anon/authenticated
+# `|| true` is required: without it, `set -e` aborts at the caller's assignment and the fail-closed
+# branch below is unreachable.
+residue_metrics() {
+  psql_cmd -At -F'|' -c "
+    select
+      (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+        where n.nspname in ($EXPOSED_SCHEMAS) and p.proname in ($HELPER_NAMES)),
+      (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+        where n.nspname in ($EXPOSED_SCHEMAS)
+          and p.proname ~ '$HELPER_PREFIX'
+          and p.proname not in ($HELPER_NAMES)),
+      (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+        where n.nspname in ($EXPOSED_SCHEMAS) and p.proname in ($HELPER_NAMES)
+          and (case when exists (select 1 from pg_roles where rolname = 'anon')
+                    then has_function_privilege('anon', p.oid, 'EXECUTE') else false end
+            or case when exists (select 1 from pg_roles where rolname = 'authenticated')
+                    then has_function_privilege('authenticated', p.oid, 'EXECUTE') else false end));" \
+    2>/dev/null | tr -d '\r' || true
+}
+
 cleanup() {
   if [ $keep -eq 1 ]; then
     echo ""
     echo "--keep given: leaving probe functions and result tables in place."
-    return
+    echo "    WARNING: a helper left in an API-exposed schema is reachable through PostgREST."
+    return 0
   fi
 
   echo ""
-  echo "==> removing probe functions and result tables"
+  echo "==> removing probe functions and result tables (discovery-based, two-phase)"
 
+  before="$(residue_metrics)"
+  echo "    residue before cleanup (present|unexpected|callable): ${before:-<catalog read failed>}"
+  if [ -n "$before" ]; then
+    helper_identities | sed 's/^/      /'
+  fi
+
+  # PHASE 1 — CONTAINMENT, committed on its own. This is deliberately a SEPARATE transaction from
+  # the drops: if a drop fails and rolls back, the revocation is already committed and cannot be
+  # undone. The guarantee is therefore: a drop failure must never restore EXECUTE.
   set +e
-  psql_cmd -q -c "
-    drop function if exists public.rbac_claims(app_role);
-    drop function if exists public.rbac_probe(text, app_role, uuid, uuid, text, text, text, text);
-    drop function if exists public.rbac_probe_read(text, app_role, uuid, uuid, text, text);
-    drop function if exists public.p5_claims(app_role, uuid, uuid);
-    drop function if exists public.p5_probe(text, app_role, uuid, uuid, text, text, text, text);
-    drop function if exists public.p5_read(text, app_role, uuid, uuid, text, text);
-    drop function if exists public.b_claims(app_role, uuid, uuid);
-    drop function if exists public.b_no_claims();
-    drop function if exists public.b_probe(text, app_role, uuid, uuid, text, text, text, text);
-    drop function if exists public.b_read(text, app_role, uuid, uuid, text, text);
-    drop function if exists public.b_anon_read(text, text, text);
-    drop function if exists public.r_expect(text, text, text, text, boolean);
-    drop function if exists public.r_claims(text, uuid, uuid);
-    drop function if exists public.r_denied(text, text);
-    drop function if exists public.r_seed();
+  contain_out="$(psql_cmd -v ON_ERROR_STOP=1 -c "
+    do \$\$
+    declare r record;
+    begin
+      for r in
+        select n.nspname, p.proname, pg_get_function_identity_arguments(p.oid) as args
+        from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+        where n.nspname in ($EXPOSED_SCHEMAS) and p.proname in ($HELPER_NAMES)
+      loop
+        execute format('revoke all on function %I.%I(%s) from public, anon, authenticated',
+                       r.nspname, r.proname, r.args);
+      end loop;
+    end
+    \$\$;" 2>&1)"
+  contain_status=$?
+  set -e
+  if [ $contain_status -ne 0 ]; then
+    echo "    CONTAINMENT FAILED (exit $contain_status). PostgreSQL said:" >&2
+    printf '%s\n' "$contain_out" | sed 's/^/      /' >&2
+    status=1
+  else
+    echo "    containment committed: EXECUTE revoked from public, anon, authenticated."
+  fi
+
+  # PHASE 2 — DROP, its own transaction, exact identities read from the catalog, no CASCADE.
+  # ON_ERROR_STOP=1 so a blocked drop aborts instead of being skipped. Output is captured, not
+  # discarded: a failure must name the function and carry the PostgreSQL error.
+  set +e
+  drop_out="$(psql_cmd -v ON_ERROR_STOP=1 -c "
+    do \$\$
+    declare r record;
+    begin
+      for r in
+        select n.nspname, p.proname, pg_get_function_identity_arguments(p.oid) as args
+        from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+        where n.nspname in ($EXPOSED_SCHEMAS) and p.proname in ($HELPER_NAMES)
+      loop
+        execute format('drop function %I.%I(%s)', r.nspname, r.proname, r.args);
+      end loop;
+    end
+    \$\$;
     drop table if exists public.rbac_results;
     drop table if exists public.phase5_results;
     drop table if exists public.bypass_results;
     drop table if exists public.retention_results;
-  " >/dev/null 2>&1
-  cleanup_status=$?
+    drop table if exists public.surface_audit;" 2>&1)"
+  drop_status=$?
   set -e
-
-  if [ $cleanup_status -eq 0 ]; then
-    echo "    done"
+  if [ $drop_status -ne 0 ]; then
+    echo "    DROP FAILED (exit $drop_status). The revocation above is COMMITTED and stays in force;" >&2
+    echo "    the helpers listed below remain and must be reported. PostgreSQL said:" >&2
+    printf '%s\n' "$drop_out" | sed 's/^/      /' >&2
+    helper_identities | sed 's/^/      still present: /' >&2
+    status=1
   else
-    # Overloaded signatures are the likely cause; report it rather than hide it,
-    # because a surviving rbac_probe is a live exposure, not a cosmetic issue.
-    echo "    WARNING: cleanup did not complete cleanly." >&2
-    echo "    A surviving public.rbac_probe accepts caller-supplied SQL. Check" >&2
-    echo "    for it and drop it by hand before this project holds data:" >&2
-    echo "      select p.oid::regprocedure from pg_proc p" >&2
-    echo "        join pg_namespace n on n.oid = p.pronamespace" >&2
-    echo "       where n.nspname = 'public' and p.proname in" >&2
-    echo "             ('rbac_probe','p5_probe','b_probe');" >&2
+    echo "    drop committed: helpers removed (no CASCADE)."
   fi
+
+  # PHASE 3 — RESIDUE CHECK. Fails closed on every branch: unreadable catalog, a helper left in an
+  # exposed schema, an unexpected helper-shaped name, or a helper still holding EXECUTE for an API role.
+  after="$(residue_metrics)"
+  if [ -z "$after" ]; then
+    echo "    RESIDUE CHECK INCONCLUSIVE: the catalog could not be read. Treating as failure." >&2
+    status=1
+    return 1
+  fi
+
+  present="${after%%|*}"
+  rest="${after#*|}"
+  unexpected="${rest%%|*}"
+  callable="${rest#*|}"
+  for v in "$present" "$unexpected" "$callable"; do
+    case "$v" in
+      '' | *[!0-9]*)
+        echo "    RESIDUE CHECK INCONCLUSIVE: unreadable metric '$v'. Treating as failure." >&2
+        status=1
+        return 1
+        ;;
+    esac
+  done
+
+  bad=0
+  if [ "$present" -ne 0 ]; then
+    echo "    RESIDUE CHECK FAILED: $present allowlisted test helper(s) remain in an API-exposed schema:" >&2
+    helper_identities | sed 's/^/      /' >&2
+    bad=1
+  fi
+  if [ "$unexpected" -ne 0 ]; then
+    echo "    RESIDUE CHECK FAILED: $unexpected unexpected helper-shaped function(s) in an API-exposed" >&2
+    echo "    schema — the name matches $HELPER_PREFIX but is not in HELPER_NAMES:" >&2
+    psql_cmd -At -c "
+      select n.nspname||'.'||p.proname
+      from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+      where n.nspname in ($EXPOSED_SCHEMAS)
+        and p.proname ~ '$HELPER_PREFIX'
+        and p.proname not in ($HELPER_NAMES)
+      order by 1;" | sed 's/^/      /' >&2
+    bad=1
+  fi
+  if [ "$callable" -ne 0 ]; then
+    echo "    RESIDUE CHECK FAILED: $callable exposed test helper(s) still hold EXECUTE for anon/authenticated." >&2
+    bad=1
+  fi
+  if [ "$bad" -ne 0 ]; then
+    echo "    A test helper in an API-exposed schema is reachable through PostgREST. Failing the run." >&2
+    status=1
+    return 1
+  fi
+
+  echo "    residue after cleanup (present|unexpected|callable): $present|$unexpected|$callable — residue check passed"
+  return 0
 }
 
 cleanup
