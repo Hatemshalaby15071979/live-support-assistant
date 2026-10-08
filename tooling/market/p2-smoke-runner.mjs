@@ -20,6 +20,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const runMarket = resolve(ROOT, 'tooling/market/run-market.mjs');
+const verifyDigest = resolve(ROOT, 'tooling/market/verify-p2-smoke-digest.mjs');
 
 const argv = process.argv.slice(2);
 const seedIdx = argv.indexOf('--seed');
@@ -35,4 +36,15 @@ if (result.error) {
   process.stdout.write(`P2 smoke: could not start runner — ${result.error.message}\n`);
   process.exit(2);
 }
-process.exit(result.status ?? 1);
+if (result.status !== 0) process.exit(result.status ?? 1);
+
+const digest = spawnSync(process.execPath, [verifyDigest, '--seed', String(seed)], {
+  cwd: ROOT,
+  stdio: 'inherit',
+  timeout: 30000,
+});
+if (digest.error) {
+  process.stdout.write(`P2 smoke: could not verify the golden digest — ${digest.error.message}\n`);
+  process.exit(2);
+}
+process.exit(digest.status ?? 1);

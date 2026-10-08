@@ -30,3 +30,7 @@ tooling/video/demo-video.mp4
 
 # Local run logs — never committed (environment detail: target URL, demo email)
 deployed-run.txt
+
+# Generated Market Twin reports include the local commit SHA. Keep them local;
+# the deterministic smoke digest is the reviewed, tracked regression artifact.
+tooling/market/reports/
