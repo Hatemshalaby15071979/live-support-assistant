@@ -147,6 +147,23 @@ verdict line, but not its per-check count. Retention is therefore **verified OK 
 carried at 16**, not re-measured at 16. Recording the distinction costs nothing and is the
 difference between a measurement and an assumption.
 
+### 6.1 Re-run by the owner, 2026-10-08 — recorded at HEAD `399e6d6`
+
+Second owner run on the host, same script (`tooling/db/verify-phase7.sh`). The database was **dropped
+and recreated from empty with all migrations applied**, so the result cannot pass on leftover state.
+Result: **all four suites OK.**
+
+| Suite | Probes | Verdict |
+| --- | --- | --- |
+| `phase2_rbac` — RBAC matrix | **99/99** | OK |
+| `phase5_telemetry` — ingest matrix | **27/27** | OK |
+| `phase7_rls_bypass` — attack suite | **40/40** | OK |
+| `phase8_retention` — retention | passed | OK — per-check count **not shown**, so 16 stays **carried, not re-measured** |
+
+Counts reproduce the 2026-10-07 run exactly (99 / 27 / 40). The retention distinction is the same one
+§6 draws above and is kept deliberately. Recorded at HEAD `399e6d6` (branch `prog/p1-corpus`); the SQL
+suites are schema-side and do not vary with the JS revision.
+
 **The deployed path was re-run separately** — see §7.2.
 
 ---
