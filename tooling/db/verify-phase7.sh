@@ -3,8 +3,10 @@
 # Phase 7 verification.
 #
 # Brings up a throwaway PostgreSQL, applies ALL migrations, seeds fixtures, and
-# runs every database suite in one session:
+# runs every database suite in one session. Step 0 is an offline lint of the suite
+# files (dollar-quote pairing), so a malformed suite fails without booting the database:
 #
+#   0. lint-sql-suites.mjs   — every suite file parses (delimiters paired, no psql var in a body)
 #   1. rbac_matrix.sql       — the privilege matrix (99 probes)
 #   2. phase5_telemetry.sql  — ingest contracts + dashboards (17 probes)
 #   3. rls_bypass.sql        — the attack suite (40 probes)
@@ -27,6 +29,12 @@ DB="${DB:-sop}"
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root"
+
+# Offline lint before touching the database: a malformed suite should fail in milliseconds,
+# not after a container boot. This guards the truncated dollar-quoted block that shipped once
+# and silently skipped the test-harness revoke, leaving harness functions callable.
+echo "==> [0/6] offline lint: the SQL suites parse"
+node tooling/db/lint-sql-suites.mjs
 
 echo "==> ensuring container '$CONTAINER'"
 if ! docker inspect "$CONTAINER" >/dev/null 2>&1; then
