@@ -4,6 +4,18 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-08 — Standing rule: no push without diff summary, clean scan, and owner's explicit yes
+
+**Zone.** Y (procedure). **Status.** RECORDED — standing, applies to every future push from this host.
+
+Owner directive (repo made private this session after having been public; all content previously pushed is treated as exposed). No push of any branch to `origin` may occur unless all three hold:
+
+- **(a) Plain-English diff summary** — a human-readable description of what the pushed range changes, stated in chat before the push.
+- **(b) Clean secret/PII scan of the pushed range** — `git log --all -p` secret/PII pickaxe across the full history of every branch being pushed returns no sensitive hit (secrets, passwords, JWTs, private-key halves, DB host + ref beyond public-by-design, real user emails). Permitted public-by-design: Supabase publishable-key references, public key halves, project ref in docs/eval artifacts, synthetic `.example` principals, owner's public contact email.
+- **(c) Owner's explicit yes in chat** — an explicit approval message from the owner authorizing that specific push.
+
+This supersedes any convenience default. The credential-manager push override (Zone Y, 2026-10-08) remains the only sanctioned transport, but it does **not** satisfy (c) by itself. Existing standing constraints hold: `main` is never pushed or merged without explicit owner authorization; no force push; no credential on a command line.
+
 ## 2026-10-08 — Push procedure: credential-manager override for the HTTPS remote
 
 **Zone.** Y (procedure). **Status.** RECORDED — standing push procedure for this host.
