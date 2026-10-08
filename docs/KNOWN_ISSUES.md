@@ -426,3 +426,36 @@ change requires its own preregistered experiment (RX-03 draft: `docs/prereg/rx03
 All g15 conclusions are agent-label-relative (0 `label_source=owner` rows); no owner-backed D3 claim
 is made. Data: `data_mode=calibration` (ans N 12/27/14, OOS N 75/75/81) and `data_mode=held-out`
 (ans N 6/11/11, OOS N 33/30/25); held-out validated exactly once after calibration selection.
+
+## 15. Near-duplicate procedures in one tenant trigger `insufficient_margin` — a gate property, not a bug
+
+The gate refuses when the top procedure does not beat the runner-up by `minMargin`. Two procedures in
+the **same tenant** whose bodies are near-identical therefore tie, and the query escalates even though
+retrieval found the right document. This is the gate behaving as designed: it will not choose between
+two answers it cannot separate. It surfaced as a false failure when `verify:deployed` authored two probe
+procedures per run and never retired them, so the demo tenant's bundle grew run over run (bundle
+12→13→14→15→16; procedures 19→21→23→25→9) and the accumulated `Deployed refund …` bodies tied. Fixed in
+the harness by retiring its own probe titles before authoring (`a9ea1f8`). Operationally: **a tenant
+whose content contains near-duplicates will see escalations on exactly those topics**, and that is the
+gate working — the remedy is content curation (see the conflict lint, `tooling/conflicts/`), not a
+threshold change.
+
+## 16. Open question — `key_unwrap_failed` on a fresh device, vs "no policy bundle has been published"
+
+Two runs of the same harness against the dev project disagreed on the *pre-publish* bundle state. My
+local run (client built from the working tree) reported **"no policy bundle has been published for this
+tenant yet"**; the owner's run reported **"the server's bundle was refused: `key_unwrap_failed`"**. Both
+are the same check ("fresh device is told no bundle is serving") and both passed.
+
+**Leading explanation (REASONED, not verified).** `apps/web/src/device-state.ts:10–14` documents that a
+cached device identity is tenant-coupled — the KEK salt is derived from the tenant id — so an identity
+that does not match cannot unwrap anything, and the failure "reads like a crypto fault rather than a
+stale key". By the same mechanism, a client whose baked-in `VITE_TENANT_SIGNING_PUBLIC_KEY` /
+`VITE_SERVER_WRAPPING_PUBLIC_KEY` do not match the deployment's current secrets cannot unwrap the
+server's bundle and reports `key_unwrap_failed`, whereas a client whose keys do match but for which no
+bundle row exists reports "no policy bundle has been published". The owner's run reported the former,
+which is **evidence — not proof — that it exercised a client carrying different baked-in keys** (i.e.
+the deployed build). The saved output does not echo `TARGET_URL`, so this cannot be settled from it.
+
+**Status.** Open, and harmless: no check depends on which of the two messages appears. It is logged
+because "which build was that?" is exactly the question the build-stamp work is meant to answer.

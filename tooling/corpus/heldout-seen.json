@@ -1,0 +1,24 @@
+{
+  "note": "Held-out rows that an experiment has ALREADY READ are burned for tuning. A number measured on them is no longer out-of-sample, so they may never be used to choose a threshold, a margin, a model, a rung, or any other knob. They remain usable for one thing only: reporting a previously-taken measurement, with its commit. The 42 multilingual rows postdate g15 and are NOT burned.",
+  "rule": "burn every held-out row that existed when the experiment ran",
+  "excluded_id_prefixes": ["ML-"],
+  "experiments": [
+    {
+      "id": "g15",
+      "what": "P4 scope/refusal layer — calibration selection, then one held-out validation (prereg A2)",
+      "commit": "f4745060",
+      "harness": "tooling/refusal/run-g15.mjs",
+      "results": "tooling/refusal/g15-results.json",
+      "read": "the whole held-out split for T01/T04/T05",
+      "scored_rows": 116,
+      "answerable": { "T01-platform-operations-style": 6, "T04-customer-support-style": 11, "T05-policy-style": 11 },
+      "out_of_scope": { "T01-platform-operations-style": 33, "T04-customer-support-style": 30, "T05-policy-style": 25 },
+      "note": "T01's selected configuration was applied on held-out; T04/T05 held-out was scored as a baseline only, because nothing qualified on calibration. Either way the rows were READ, so all three tenants' held-out rows are burned."
+    }
+  ],
+  "not_burned": {
+    "rows": "the 19 held-out multilingual rows (ML-T01-es/fr/ptbr-*, es 7 · fr 7 · pt-BR 5)",
+    "why": "they were authored after g15 ran (commit b28a1de) and no experiment has read them"
+  },
+  "consequence": "Any future retrieval experiment (including the per-language measurement) may select on calibration only. A held-out validation is a single, preregistered read, and it burns the rows it reads."
+}

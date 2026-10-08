@@ -305,6 +305,15 @@ for (const q of questions) {
   byLanguageSplit[key] = (byLanguageSplit[key] ?? 0) + 1;
 }
 
+// Held-out rows an experiment has already READ are burned for tuning (heldout-seen.json):
+// a number measured on them is no longer out-of-sample. Stamped row by row so a reader of the
+// gold set sees it, not only a reader of the prose.
+const heldoutSeen = read('heldout-seen.json');
+const excludedPrefixes = heldoutSeen.excluded_id_prefixes ?? [];
+for (const q of questions) {
+  if (q.split === 'held-out' && !excludedPrefixes.some((p) => q.id.startsWith(p))) q.heldout_seen = true;
+}
+
 const output = {
   note:
     'Gold set. Every row carries origin, label_source, data_mode and slice. Labels are at DOCUMENT ' +
@@ -317,6 +326,12 @@ const output = {
   owner_wording_note:
     'The OD- rows are owner-directed drafts: topics chosen by the owner, wording drafted by Claude. ' +
     'They are NOT real customer questions and must never be described as such.',
+  heldout_seen: {
+    burned: questions.filter((q) => q.heldout_seen === true).length,
+    rule: heldoutSeen.rule,
+    experiments: heldoutSeen.experiments.map((e) => `${e.id}@${e.commit}`),
+    consequence: heldoutSeen.consequence,
+  },
   counts,
   by_tenant: byTenant,
   questions,

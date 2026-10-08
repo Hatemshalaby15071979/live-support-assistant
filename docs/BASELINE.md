@@ -254,8 +254,20 @@ one synthetic corpus, on the development project. It is not an accuracy measure,
 measure, and not production-customer evidence. What it establishes is that the hosted path is
 wired end to end and that a stranger can complete it.
 
+**What the 19/19 actually asserted — corrected 2026-10-08.** The P0-era check read *"query produces an
+answer or an escalation"*, and this run recorded a **content-free escalation**. So the 19/19 proved the
+stranger path was *wired* end to end; it did **not** prove the stranger path **answered**. The harness
+now carries a separate hard check — *"stranger query is answered from the published bundle (not
+blocked/unknown_tenant)"* — which requires an **answer**. Read the 3bab890 figure as "the path is wired",
+never as "the stranger path answered".
+
 **Re-measured:** `pnpm run verify:deployed` → 19/19 (was 19/19 in the P0-era record; the path is
 unchanged and now carries a SHA).
+
+**Re-measured against the current client, 2026-10-08** (`tooling/browser/verify-deployed-local.mjs`,
+local build at `a9ea1f8`, dev Supabase project): **`19 of 19 checks passed` — `DEPLOYED STRANGER PATH
+OK`**, and this time the outcome was a **safe answer**, not an escalation. The public Vercel URL could
+not be used for this: it serves a build that predates the tenant-keyed gate.
 
 ---
 
