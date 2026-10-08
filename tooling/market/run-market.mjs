@@ -22,7 +22,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { createRng, generateProcedures, generateTraffic, RUNGS, TENANTS } from './traffic.mjs';
+import { createRng, generateProcedures, generateTraffic, resolveTenants, RUNGS } from './traffic.mjs';
 import { runChaos } from './chaos.mjs';
 import { assertInvariants } from './assert.mjs';
 
@@ -130,14 +130,39 @@ function decide(message) {
 
 const args = parseArgs(process.argv.slice(2));
 const rung = RUNGS[args.rung];
-const tenant = TENANTS[0];
+const tenants = resolveTenants(rung.tenantSet);
 
 const rng = createRng(args.seed);
-const procedures = generateProcedures(rng, tenant, rung.proceduresPerTenant);
-const messages = generateTraffic(rng, tenant, procedures, rung.messages);
-const chaos = runChaos(rng, { tenantId: tenant.id });
 
-const outcomes = messages.map((m) => {
+// Per-tenant generation, in tenant order. With a single tenant this is exactly the call sequence
+// the smoke rung has always used, so the smoke report stays byte-identical.
+const allProcedures = [];
+const allMessages = [];
+const procedureIdsByTenant = {};
+const tenantByMessageId = {};
+const repeatOfById = {};
+
+let idOffset = 0;
+for (const tenant of tenants) {
+  const procedures = generateProcedures(rng, tenant, rung.proceduresPerTenant);
+  const messages = generateTraffic(rng, tenant, procedures, rung.messages, idOffset);
+  idOffset += rung.messages;
+  allProcedures.push(...procedures);
+  allMessages.push(...messages);
+  procedureIdsByTenant[tenant.id] = procedures.map((p) => p.id);
+  for (const m of messages) {
+    tenantByMessageId[m.id] = tenant.id;
+    // Kept out of `outcomes`, so it does not enter the decision digest and the smoke report is
+    // unaffected. It exists so the repeat invariant can follow the ACTUAL origin rather than
+    // guessing by text — with 500 procedures two messages can share a text.
+    if (m.repeatsId) repeatOfById[m.id] = m.repeatsId;
+  }
+}
+
+// Chaos runs once, after all traffic — the same position it held in the smoke rung.
+const chaos = runChaos(rng, { tenantId: tenants[0].id });
+
+const outcomes = allMessages.map((m) => {
   const d = decide(m);
   return {
     id: m.id,
@@ -156,15 +181,15 @@ const outcomes = messages.map((m) => {
   };
 });
 
-const distinctTexts = [...new Set(messages.map((m) => m.text))];
-const distinctTickets = [...new Set(messages.map((m) => m.ticketId))];
+const distinctTexts = [...new Set(allMessages.map((m) => m.text))];
+const distinctTickets = [...new Set(allMessages.map((m) => m.ticketId))];
 
 const totals = {
   answered: outcomes.filter((o) => o.outcome === 'answered').length,
   escalated: outcomes.filter((o) => o.outcome === 'escalated').length,
   unsafe: outcomes.filter((o) => o.groundTruth === 'out_of_scope' && o.outcome === 'answered').length,
   falseEscalation: outcomes.filter((o) => o.groundTruth === 'in_scope' && o.outcome === 'escalated').length,
-  correct: outcomes.filter((o) => o.outcome === 'answered' && o.procedureId === messages.find((m) => m.id === o.id).expectedProcedureId).length,
+  correct: outcomes.filter((o) => o.outcome === 'answered' && o.procedureId === allMessages.find((m) => m.id === o.id).expectedProcedureId).length,
   distinctMessages: distinctTexts.length,
 };
 
@@ -176,7 +201,7 @@ for (const o of outcomes) {
   if (o.groundTruth === 'out_of_scope' && o.outcome === 'answered') byLanguage[o.language].unsafe += 1;
 }
 for (const t of distinctTexts) {
-  const lang = messages.find((m) => m.text === t).language;
+  const lang = allMessages.find((m) => m.text === t).language;
   byLanguage[lang].distinct += 1;
 }
 
@@ -184,20 +209,23 @@ const perLanguage = Object.keys(byLanguage)
   .sort()
   .map((lang) => ({ language: lang, ...byLanguage[lang] }));
 
-const perTenant = [
-  {
+// One row per tenant. With a single tenant this is the same row the smoke rung always emitted.
+const perTenant = tenants.map((tenant) => {
+  const msgs = allMessages.filter((m) => m.tenantId === tenant.id);
+  const outs = outcomes.filter((o) => tenantByMessageId[o.id] === tenant.id);
+  return {
     tenant: tenant.name,
     tenantId: tenant.id,
-    procedures: procedures.length,
-    messages: outcomes.length,
-    distinct: distinctTexts.length,
-    tickets: distinctTickets.length,
-    answered: totals.answered,
-    escalated: totals.escalated,
-    unsafe: totals.unsafe,
-    falseEscalation: totals.falseEscalation,
-  },
-];
+    procedures: procedureIdsByTenant[tenant.id].length,
+    messages: msgs.length,
+    distinct: new Set(msgs.map((m) => m.text)).size,
+    tickets: new Set(msgs.map((m) => m.ticketId)).size,
+    answered: outs.filter((o) => o.outcome === 'answered').length,
+    escalated: outs.filter((o) => o.outcome === 'escalated').length,
+    unsafe: outs.filter((o) => o.groundTruth === 'out_of_scope' && o.outcome === 'answered').length,
+    falseEscalation: outs.filter((o) => o.groundTruth === 'in_scope' && o.outcome === 'escalated').length,
+  };
+});
 
 const decisionDigest = sha256(canonical({ seed: args.seed, rung: args.rung, outcomes, totals, chaos }));
 
@@ -217,8 +245,8 @@ const report = {
   },
   git: { sha: readHeadSha(), branch: readBranch() },
   traffic: {
-    tenants: 1,
-    procedures: procedures.length,
+    tenants: tenants.length,
+    procedures: allProcedures.length,
     totalMessages: outcomes.length,
     distinctMessages: distinctTexts.length,
     tickets: distinctTickets.length,
@@ -233,7 +261,10 @@ const report = {
 const { checks, failed } = assertInvariants({
   ...report,
   outcomes,
-  procedureIds: procedures.map((p) => p.id),
+  procedureIds: allProcedures.map((p) => p.id),
+  procedureIdsByTenant,
+  tenantByMessageId,
+  repeatOfById,
   traffic: { ...report.traffic, totalMessages: outcomes.length, distinctMessages: distinctTexts.length, tickets: distinctTickets.length },
   totals,
   dataMode: report.data_mode,
@@ -276,6 +307,18 @@ md.push(`| false escalation | ${report.totals.falseEscalation} |`);
 md.push(`| correct | ${report.totals.correct} |`);
 md.push(`| distinct messages | ${report.totals.distinctMessages} |`);
 md.push('');
+// The per-tenant table is shown only when there is more than one tenant; with one it would just
+// restate the totals, and rendering it would change the committed smoke report for no gain.
+if (report.traffic.tenants > 1) {
+  md.push('## Per tenant');
+  md.push('');
+  md.push('| tenant | procedures | messages | distinct | tickets | answered | escalated | unsafe | false escalation |');
+  md.push('| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |');
+  for (const r of report.tables.perTenant) {
+    md.push(`| ${r.tenant} | ${r.procedures} | ${r.messages} | ${r.distinct} | ${r.tickets} | ${r.answered} | ${r.escalated} | ${r.unsafe} | ${r.falseEscalation} |`);
+  }
+  md.push('');
+}
 md.push('## Per language');
 md.push('');
 md.push('| language | messages | distinct | answered | escalated | unsafe |');
@@ -325,5 +368,5 @@ if (failed.length > 0) {
   for (const name of failed) process.stdout.write(`  - ${name}\n`);
   process.exit(1);
 }
-process.stdout.write('\nMARKET TWIN SMOKE OK\n');
+process.stdout.write(`\nMARKET TWIN ${args.rung.toUpperCase()} OK\n`);
 process.exit(0);

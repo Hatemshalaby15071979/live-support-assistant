@@ -58,9 +58,19 @@ export function assertInvariants(report) {
     'a repeat contact resolves to the same procedure as its first occurrence',
     outcomes.every((o) => {
       if (!o.isRepeat) return true;
-      const first = outcomes.find((p) => p.text === o.text && !p.isRepeat);
-      if (!first) return true;
-      return first.outcome === o.outcome && first.procedureId === o.procedureId;
+      // Follow the recorded origin chain to the first NON-repeat occurrence. Matching by text was
+      // ambiguous once procedure titles repeat: two messages can share a text but not a procedure,
+      // and the lookup then compared against the wrong origin.
+      let id = report.repeatOfById[o.id];
+      const seen = new Set();
+      while (id && !seen.has(id)) {
+        seen.add(id);
+        const first = outcomes.find((p) => p.id === id);
+        if (!first) return true;
+        if (!first.isRepeat) return first.outcome === o.outcome && first.procedureId === o.procedureId;
+        id = report.repeatOfById[id];
+      }
+      return true;
     }),
     'repeats are stable',
   );
@@ -70,6 +80,21 @@ export function assertInvariants(report) {
     outcomes.every((o) => o.outcome !== 'answered' || report.procedureIds.includes(o.procedureId)),
     `${report.procedureIds.length} procedures in the set`,
   );
+
+  // Multi-tenant only: an answer must name a procedure belonging to the message's OWN tenant.
+  // Skipped on a single-tenant rung, where it would be vacuous — which also keeps the smoke rung's
+  // invariant list, and therefore its committed report, unchanged.
+  if (report.traffic.tenants > 1) {
+    check(
+      'every answer names a procedure belonging to the message tenant',
+      outcomes.every(
+        (o) =>
+          o.outcome !== 'answered' ||
+          (report.procedureIdsByTenant[report.tenantByMessageId[o.id]] ?? []).includes(o.procedureId),
+      ),
+      `${report.traffic.tenants} tenants`,
+    );
+  }
 
   check(
     'no out-of-scope or adversarial message is answered on text alone',
