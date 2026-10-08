@@ -24,6 +24,13 @@
 -- therefore passed at top level into a table; no dollar-quoted block references a psql
 -- variable. `tooling/db/verify-fleet-only.sh` lints for that mistake before running.
 --
+-- DISCLOSURE (2026-10-08, commit ac9b0ef). The claim-shape section ran 700 probes and now runs 630:
+-- the 70 removed were the 2 REAL tenant ids x 5 role strings x 7 principals. They were moved, not
+-- deleted. The 18 unreal/malformed values stay asserted fail-closed; the two real tenant ids are now
+-- asserted by the section 4b capability probe, which is strictly stronger (it attempts the override
+-- from inside the authenticated role rather than performing it as the superuser). That probe found
+-- finding F-1: docs/SECURITY_FINDING_F1_claim_override.md.
+--
 -- Run: psql -f supabase/tests/rls_bypass_fleet.sql
 --      (tooling/db/verify-phase7.sh runs it as the fifth suite;
 --       tooling/db/verify-fleet-only.sh runs it alone)

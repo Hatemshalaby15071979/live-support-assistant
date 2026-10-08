@@ -158,11 +158,12 @@ Result: **all four suites OK.**
 | `phase2_rbac` — RBAC matrix | **99/99** | OK |
 | `phase5_telemetry` — ingest matrix | **27/27** | OK |
 | `phase7_rls_bypass` — attack suite | **40/40** | OK |
-| `phase8_retention` — retention | passed | OK — per-check count **not shown**, so 16 stays **carried, not re-measured** |
+| `phase8_retention` — retention | **16/16** (7+4+5) | OK — **re-measured**, no longer carried |
 
-Counts reproduce the 2026-10-07 run exactly (99 / 27 / 40). The retention distinction is the same one
-§6 draws above and is kept deliberately. Recorded at HEAD `399e6d6` (branch `prog/p1-corpus`); the SQL
-suites are schema-side and do not vary with the JS revision.
+Counts reproduce the 2026-10-07 run exactly (99 / 27 / 40). **Retention is no longer carried:** the
+2026-10-08 run reported **16/16 (7+4+5)**, so the "carried, not re-measured" caveat §6 draws is
+**withdrawn** — all four counts are now measured. Recorded at HEAD `399e6d6` (branch `prog/p1-corpus`);
+the SQL suites are schema-side and do not vary with the JS revision.
 
 **The deployed path was re-run separately** — see §7.2.
 

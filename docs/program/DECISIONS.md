@@ -4,6 +4,36 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-08 — SECURITY FINDING F-1: an `authenticated` role can re-point its own tenant claim (OPEN)
+
+**Zone.** R (owner decides). **Status.** OPEN — not fixed, not accepted, not merged. Branch
+`prog/p5-security` stays red until the owner rules.
+
+Found by the fleet isolation suite's new capability probe. As `authenticated`,
+`set_config('request.jwt.claims', <another tenant's claim>, true)` followed by `select … from sops`
+returns the **other** tenant's rows (observed `rows:3`, all five Alpha roles, 7/7 probes). RLS trusts
+the claim: `sops_select … using (tenant_id = app.current_tenant())`, and `app.current_tenant()` reads
+`auth.jwt()` → `current_setting('request.jwt.claims')`, a **custom GUC** that PostgreSQL lets any role
+write. Full write-up: `docs/SECURITY_FINDING_F1_claim_override.md`.
+
+**Severity Medium, not Low, and not accepted.** Preconditions: an authenticated principal **plus** the
+ability to run `set_config`/`SET` in the request transaction. The shipped API does not expose that
+primitive — `supabase/config.toml` exposes `public, graphql_public, app`, the two edge functions use
+only parameterised PostgREST calls, and no exposed function takes SQL text. A direct DB session does
+satisfy it. No clean DB-level fix exists (custom GUCs have no per-role ACL on PG17 or Supabase); the
+only structural fix is moving the trust anchor (option C in the write-up).
+
+**Compensating control, committed:** `supabase/tests/rls_surface_audit.sql` fails if any function
+executable by `authenticated`/`anon` contains dynamic SQL. That is the tripwire, not the fix.
+
+**Disclosure — the claim-shape section went 700 → 630 probes (commit `ac9b0ef`).** The 70 removed are
+the 2 REAL tenant ids × 5 roles × 7 principals. They were moved, not deleted: the 18 unreal/malformed
+values stay asserted fail-closed, and the two real ids are now asserted by the new, strictly stronger
+capability probe (section 4b) that attempts the override from inside the authenticated role. That
+probe is what found F-1.
+
+---
+
 ## 2026-10-08 — P1 gold set FROZEN; owner provenance refined (`evidence_basis`); g15/RX-03 status stated exactly
 
 **Zone.** Y (governance). Owner review of `b28a1de` (42 multilingual rows) — seven corrections applied.
