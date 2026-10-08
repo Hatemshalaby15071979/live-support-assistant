@@ -1,0 +1,11 @@
+fn,kind,security,dynamic_sql,set_config,text_params,ok,note
+app.bundle_for_device,function,DEFINER,f,f,-,t,
+app.current_role,function,INVOKER,f,f,-,t,
+app.current_tenant,function,INVOKER,f,f,-,t,
+app.enrolled_devices,function,INVOKER,f,f,-,t,
+app.ingest_escalation,function,DEFINER,f,f,-,t,
+app.ingest_telemetry_event,function,DEFINER,f,f,"p_user_pseudonym:text, p_event_type:text",t,
+app.next_bundle_version,function,INVOKER,f,f,-,t,
+app.publish_policy_bundle,function,INVOKER,f,f,p_signature:text,t,
+app.revoke_tenant_key,function,DEFINER,f,f,p_kind:text,t,
+graphql_public.graphql,function,INVOKER,f,f,"operationName:text, query:text",t,

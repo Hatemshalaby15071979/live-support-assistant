@@ -4,6 +4,18 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-08 — public.surface_audit lockdown (Zone R hosted action, owner-authorized)
+
+**Zone.** R — hosted mutation, explicitly authorized by the owner in this request. **Target.** `public.surface_audit` on hosted project `lxlokqtowvaesxjishqz`.
+
+**Action.** Exported the 10 rows (metadata only) to `docs/program/surface-audit-2026-10-08.csv` — columns `fn, kind, security, dynamic_sql, set_config, text_params, ok, note`; no user PII, no secrets. Then, in a single transaction, `REVOKE ALL ON public.surface_audit FROM anon, authenticated;` by name, leaving the owner (`postgres`) and `service_role` grants intact. The table was **not** dropped (leftover audit artifact; owner may drop later via `drop table if exists public.surface_audit;`).
+
+**ACL before.** `{postgres=arwdDxtm/postgres, anon=arwdDxtm/postgres, authenticated=arwdDxtm/postgres, service_role=arwdDxtm/postgres}`
+**ACL after.** `{postgres=arwdDxtm/postgres, service_role=arwdDxtm/postgres}`
+**Verdict.** `anon` and `authenticated` no longer hold any privilege on the table.
+
+**Exact SQL.** Saved to `docs/program/surface-audit-revoke-2026-10-08.sql`. **Transport.** Docker `postgres:17-alpine` psql against the session pooler; the DB password was supplied via a temporary env file that was deleted immediately after the run — never on the command line, never committed.
+
 ## 2026-10-08 — Standing rule: no push without diff summary, clean scan, and owner's explicit yes
 
 **Zone.** Y (procedure). **Status.** RECORDED — standing, applies to every future push from this host.
