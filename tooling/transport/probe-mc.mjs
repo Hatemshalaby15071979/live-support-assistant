@@ -67,10 +67,12 @@
  */
 
 import { createRequire } from 'node:module';
-import { existsSync, readFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -78,7 +80,10 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 // The sync package is the wire between the two halves. It is self-contained
 // (no npm runtime deps), so the local half runs from a clean checkout.
 const require = createRequire(resolve(root, 'apps/web/package.json'));
-const sync = await import(pathToFileURL(resolve(root, 'packages/sync/dist/index.js')).href);
+const syncModulePath = process.env.MC_SYNC_MODULE_PATH
+  ? resolve(process.env.MC_SYNC_MODULE_PATH)
+  : resolve(root, 'packages/sync/dist/index.js');
+const sync = await import(pathToFileURL(syncModulePath).href);
 // The server policy the deployed publish-bundle edge function imports. Exercising
 // it here proves the same refusal logic the function uses.
 const { PUBLISHED_MODEL, resolvePublishModel } = await import(
@@ -203,6 +208,46 @@ async function clientChecks() {
   check('MC-07', 'foreign refusal reason is NOT model_mismatch', foreignRefused.reason !== 'model_mismatch', foreignRefused.reason);
 }
 
+/**
+ * This is a mutation negative control, not a second happy-path assertion. It copies the
+ * compiled sync package to a temporary directory, removes only the model-mismatch return,
+ * and runs this same probe against that copy. MC-06 must then fail and the child must exit 1.
+ */
+function modelCheckNegativeControl() {
+  if (process.argv.includes('--assert-model-check')) return;
+
+  const scratch = mkdtempSync(resolve(tmpdir(), 'sop-mc-model-check-'));
+  try {
+    const source = dirname(syncModulePath);
+    cpSync(source, scratch, { recursive: true });
+    const installPath = resolve(scratch, 'install.js');
+    const original = readFileSync(installPath, 'utf8');
+    const mutated = original.replace(
+      /    if \(built\.modelId !== expectedModel\.id \|\|\n        built\.modelRevision !== expectedModel\.revision \|\|\n        built\.quantization !== expectedModel\.quantization \|\|\n        built\.dimensions !== expectedModel\.dimensions\) \{\n        return rejected\('model_mismatch',[\s\S]*?\n    \}\n/,
+      '',
+    );
+    if (mutated === original) throw new Error('scratch mutation did not find the model-mismatch guard');
+    writeFileSync(installPath, mutated, 'utf8');
+
+    const child = spawnSync(process.execPath, [process.argv[1], '--assert-model-check'], {
+      cwd: root,
+      encoding: 'utf8',
+      env: { ...process.env, MC_SYNC_MODULE_PATH: resolve(scratch, 'index.js') },
+    });
+    const childFailedAtMc06 = child.status === 1 && /FAIL  MC-06/.test(child.stdout ?? '');
+    check(
+      'MC-NC',
+      'disabling the model check in a scratch copy makes this probe fail',
+      childFailedAtMc06,
+      `child exit=${child.status}; MC-06 failure observed=${/FAIL  MC-06/.test(child.stdout ?? '')}`,
+    );
+  } catch (error) {
+    check('MC-NC', 'disabling the model check in a scratch copy makes this probe fail', false, String(error));
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
+}
+
 // ----------------------------------------------------------------- MC-09 (hypothesis)
 function hypothesisProbe() {
   process.stdout.write('\n==> MC-09 — historical divergence reconstruction (UNPROVEN HYPOTHESIS)\n');
@@ -279,6 +324,7 @@ async function main() {
   process.stdout.write('MC probe — model-confusion (P5 MC-01..MC-09)\n');
   serverChecks();
   await clientChecks();
+  modelCheckNegativeControl();
   hypothesisProbe();
   if (process.argv.includes('--remote')) {
     await remoteHalf();
