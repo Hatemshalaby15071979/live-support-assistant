@@ -4,6 +4,60 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-08 — SECURITY FINDING F-1: ACCEPTED as option D (defence-in-depth); review 2027-01-06
+
+**Zone.** R (owner decision). **Status.** **ACCEPTED.** The DB-level property is unchanged and
+platform-inherent; it is **not** fixed. `prog/p5-security` is **not merged**.
+
+**The decision.** The owner accepts F-1 as **option D** — a documented, platform-inherent risk,
+mitigated architecturally (the shipped transport exposes no caller SQL) and guarded by the surface
+audit as a regression tripwire. Option C (snapshot the verified claim per request behind a
+`SECURITY DEFINER` boundary) is the only option that removes the client's influence over the trust
+anchor; it is a structural change (a hook on every request path plus a migration) and is **deferred
+until condition 4 fires**. Options A and B are partial — A does not close it at all (`SET` is a
+command, not a function call), B closes only the bogus-sub case — and were rejected on their own
+merits.
+
+**Conditions of acceptance — all four are obligations, not statements.**
+
+1. **The tripwire stays.** `rls_surface_audit.sql` remains a required suite in `pnpm run verify:db`.
+   It **FAILS** if any function executable by `authenticated`/`anon` contains **dynamic SQL**, and it
+   **reports** (`REVIEW`) any that calls `set_config`. Neither the failure rule nor the review line is
+   to be removed or weakened.
+2. **The 7 section-4b probes keep failing.** They are the live proof that the property is unmitigated.
+   A green fleet suite is a **regression**, not a success — the probes must not be weakened, skipped,
+   reclassified, or have their expectation changed.
+3. **`anon` coverage is proven on a hosted run.** The local stack has no `anon` role, so its coverage
+   is **UNPROVEN LOCALLY** — an open obligation, not a satisfied one.
+4. **Option C is taken up if an RPC with a text parameter is ever added** — any exposed function that
+   takes caller text which can reach SQL, or that calls `set_config` with caller input. That converts
+   the latent hazard into a live one; condition 1 is the tripwire expected to fire first.
+
+**Review date: 2027-01-06** (90 days from acceptance). The review re-checks conditions 1–4, whether any
+text-parameter RPC has been added, whether `anon` coverage has been shown on a hosted project, and
+whether a platform change (a per-role ACL for custom GUCs) makes option A or B viable.
+
+**What acceptance does not mean.** Not that the property is safe at the database level; not a licence
+to remove the audit, weaken section 4b, or report the fleet suite green; not a change to severity
+(Medium — severity describes the property, not the decision); not authorisation to merge
+`prog/p5-security`.
+
+Full write-up — reproduction, surface audit, exposure, options, severity — is
+`docs/SECURITY_FINDING_F1_claim_override.md`; **§8 is the acceptance record**.
+
+**Also this turn (Zone G):** `tooling/db/verify-rls-fleet-mutation.sh` made runnable and given an
+expected result against this accepted baseline. Two defects fixed: it dropped the policy on
+`app.sops` (the tables are created unqualified, so they live in `public`), and it used `drop policy`
+— which on a table whose only SELECT policy is removed means **default-deny**, so the suite would have
+gone red on a *positive control* (an outage), not on a cross-tenant read. The mutation is now
+`alter policy sops_select on public.sops using (true)`, which keeps the policy present and permissive:
+positive controls still pass and only the isolation assertion fails. The script now asserts the
+accepted baseline (7 failures, all in `claim override capability`; 0 in `cross-tenant read`; 0 in
+`positive control`) and requires the mutation to add `cross-tenant read` failures while positive
+controls stay green.
+
+---
+
 ## 2026-10-08 — Fleet-only vs verify:db seed drift: fixed; surface audit hardened; wired as suite 6
 
 **Zone.** Y (governance), with F-1 still open in Zone R.
@@ -36,10 +90,11 @@ the verdict `SURFACE AUDIT INCOMPLETE` rather than a pass.
 
 ---
 
-## 2026-10-08 — SECURITY FINDING F-1: an `authenticated` role can re-point its own tenant claim (OPEN)
+## 2026-10-08 — SECURITY FINDING F-1: an `authenticated` role can re-point its own tenant claim (OPEN → ACCEPTED)
 
-**Zone.** R (owner decides). **Status.** OPEN — not fixed, not accepted, not merged. Branch
-`prog/p5-security` stays red until the owner rules.
+**Zone.** R (owner decides). **Status.** ~~OPEN — not fixed, not accepted, not merged~~ →
+**SUPERSEDED 2026-10-08: ACCEPTED as option D; see the entry at the top of this file.** The DB-level
+property is unchanged; `prog/p5-security` stays red and is not merged.
 
 Found by the fleet isolation suite's new capability probe. As `authenticated`,
 `set_config('request.jwt.claims', <another tenant's claim>, true)` followed by `select … from sops`
