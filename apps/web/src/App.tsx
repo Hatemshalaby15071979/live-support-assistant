@@ -17,6 +17,7 @@ import { useIdentity } from './auth';
 import { SignInGate, SessionBar } from './SignIn';
 import { CommandCenter } from './CommandCenter';
 import { EscalationConsole } from './EscalationConsole';
+import { BuildIdentity } from './BuildIdentity';
 import { canAuthorProcedures, canReadEscalations } from './roles';
 import { wipeDeviceState } from './device-state';
 import { syncBundle, type BundleState } from './bundle-client';
@@ -871,6 +872,7 @@ function App() {
             transformers.js on the edge, deterministic gate. No generative model in the answering
             path.
           </p>
+          <BuildIdentity />
         </div>
       </footer>
     </div>

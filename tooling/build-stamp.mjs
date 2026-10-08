@@ -15,24 +15,50 @@
  * this host. The dirty flag is best-effort via a guarded spawnSync.
  */
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** Resolve { sha, branch } straight from .git, no child process. */
+/** Resolve { sha, branch } straight from .git, including linked worktrees. */
 function readHead() {
-  const headPath = resolve(ROOT, '.git/HEAD');
+  const gitEntry = resolve(ROOT, '.git');
+  if (!existsSync(gitEntry)) return { sha: 'unknown', branch: 'unknown' };
+
+  // A normal checkout has a .git directory. A linked worktree has a .git file
+  // pointing at git/worktrees/<name>; the branch refs live in its common dir.
+  const gitDir = statSync(gitEntry).isDirectory()
+    ? gitEntry
+    : resolve(ROOT, readFileSync(gitEntry, 'utf8').trim().replace(/^gitdir:\s*/, ''));
+  if (!existsSync(gitDir)) return { sha: 'unknown', branch: 'unknown' };
+
+  const commonDirFile = resolve(gitDir, 'commondir');
+  const commonDir = existsSync(commonDirFile)
+    ? resolve(gitDir, readFileSync(commonDirFile, 'utf8').trim())
+    : gitDir;
+  const headPath = resolve(gitDir, 'HEAD');
   if (!existsSync(headPath)) return { sha: 'unknown', branch: 'unknown' };
   const head = readFileSync(headPath, 'utf8').trim();
   if (!head.startsWith('ref:')) return { sha: head.slice(0, 12), branch: '(detached)' };
+
   const ref = head.slice('ref:'.length).trim();
-  const refPath = resolve(ROOT, '.git', ref);
-  const sha = existsSync(refPath) ? readFileSync(refPath, 'utf8').trim() : 'unknown';
+  const loosePaths = [resolve(gitDir, ref), resolve(commonDir, ref)];
+  const looseRef = loosePaths.find((path) => existsSync(path));
+  let sha = looseRef ? readFileSync(looseRef, 'utf8').trim() : '';
+
+  // A packed branch ref has no loose file; consult packed-refs in the common dir.
+  const packedRefsPath = resolve(commonDir, 'packed-refs');
+  if (sha === '' && existsSync(packedRefsPath)) {
+    const packedLine = readFileSync(packedRefsPath, 'utf8')
+      .split(/\r?\n/)
+      .find((line) => !line.startsWith('#') && !line.startsWith('^') && line.endsWith(` ${ref}`));
+    sha = packedLine?.split(' ')[0] ?? '';
+  }
+
   const branch = ref.replace(/^refs\/heads\//, '');
-  return { sha: sha.slice(0, 12), branch };
+  return { sha: sha === '' ? 'unknown' : sha.slice(0, 12), branch };
 }
 
 /** Best-effort working-tree dirty check. Returns true / false / 'unknown'. */
