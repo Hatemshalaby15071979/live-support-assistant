@@ -135,6 +135,16 @@ const SUITES = [
     script: 'tooling/verify-agent-skill.mjs',
     verdict: '[verify-agent-skill] OK',
   },
+  {
+    // The Market Twin smoke rung (V2 §P2). It belongs in the gate because it ASSERTS invariants
+    // and exits non-zero when one fails — unlike semantic-eval and reranker-sanity, which measure
+    // and report. The seed is fixed so the gate compares a decision digest, not a moving number.
+    key: 'market-smoke',
+    name: 'Market Twin smoke rung (deterministic)',
+    script: 'tooling/market/run-market.mjs',
+    args: ['--seed', '20261006', '--rung', 'smoke'],
+    verdict: 'MARKET TWIN SMOKE OK',
+  },
 ];
 
 const requested = process.argv.slice(2);
@@ -171,7 +181,7 @@ if (selected.some((suite) => suite.downloadsModel)) {
 
 function runSuite(suite) {
   return new Promise((settle) => {
-    const child = spawn(process.execPath, [suite.script], {
+    const child = spawn(process.execPath, [suite.script, ...(suite.args ?? [])], {
       cwd: root,
       stdio: ['ignore', 'pipe', 'inherit'],
     });
