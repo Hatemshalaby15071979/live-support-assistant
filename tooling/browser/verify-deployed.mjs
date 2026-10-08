@@ -201,8 +201,12 @@ process.stdout.write(`  info  outcome: ${isAnswer ? 'safe answer' : 'content-fre
 // Hard guard: the stranger path must ANSWER from its published bundle, not fall back to a
 // content-free escalation. Without the named demo-tenant gate config (packages/core/src/types.ts)
 // every deployed query is blocked with reason 'unknown_tenant'; this check fails the run if that
-// regression returns.
-check('stranger query is answered from the published bundle (not blocked/unknown_tenant)', isAnswer);
+// regression returns. On failure the gate's own reason is printed — 'unknown_tenant' is a config
+// bug; 'below_threshold'/'insufficient_margin' are the gate refusing a weak match.
+const gateReason = isAnswer
+  ? ''
+  : (await evaluate(`(document.body.innerText.match(/reason:\\s*([a-z_]+)/) ?? [])[1] ?? '(no reason on screen)'`));
+check('stranger query is answered from the published bundle (not blocked/unknown_tenant)', isAnswer, gateReason);
 if (!isAnswer) {
   const refusal = await evaluate(`document.body.innerText`);
   check('escalation carries no procedure text', !refusal.includes('fourteen days') && !refusal.includes('six and nine'), refusal.slice(0, 80));
