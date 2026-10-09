@@ -38,3 +38,11 @@ apps/web/public/build-identity.json
 # Generated Market Twin reports include the local commit SHA. Keep them local;
 # the deterministic smoke digest is the reviewed, tracked regression artifact.
 tooling/market/reports/
+
+# Linked worktrees created by `git worktree add` for parallel agent work
+# (.agent-worktrees/mc, /p2, /xss). Each is a full checkout of a branch, so
+# committing one adds an embedded git repository — a gitlink with no content —
+# and a clone of this repository would not be able to obtain it. Verified before
+# this line existed: `git add -n .agent-worktrees/` warned "adding embedded git
+# repository: .agent-worktrees/mc".
+.agent-worktrees/
