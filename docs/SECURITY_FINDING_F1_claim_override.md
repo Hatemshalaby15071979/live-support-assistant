@@ -5,6 +5,7 @@ section "claim override capability"), owner's `verify:db` on `ac9b0ef`.
 **Status.** **ACCEPTED — option D (accept as defence-in-depth)**, owner decision **2026-10-08**. The
 DB-level property is unchanged and platform-inherent; it is **not** fixed at the database level.
 Conditions and the review date are in **§8**. Branch `prog/p5-security` is not merged.
+**Plain-English version for the owner: `docs/program/F1-plain-english.md`** (added 2026-10-09).
 **Severity.** **Medium** — see §5 for the reasoning and the preconditions. It is **not** Low.
 Severity describes the property, not the acceptance decision.
 
