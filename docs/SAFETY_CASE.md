@@ -21,7 +21,7 @@ Every `MET` names a command that was actually run; everything else names what is
 | D5 | Calibration — a per-tenant calibration record; 0.17 never a tenant setting | **NOT MET** | No tenant calibrated. `minMargin: 0.18` is a prototype default (`docs/KNOWN_ISSUES.md` #6). `tooling/calibration/derive-margin.mjs` **does not exist**; its prereg is `docs/prereg/g6-calibration-pipeline.md`. |
 | D6 | Isolation — 0 successful cross-tenant reads/writes in ≥ 1,000 adversarial attempts, with negative controls | **NOT MET** | `pnpm run verify:db`, 2026-10-09: fleet suite **1475 probes, vacuous 0**, and **7 probes SUCCEED** — `claim override capability / override claim then read / sops / rows:3`. Accepted red (F-1, option D). Negative controls pass (section `positive control`, 4/4). |
 | D7 | Manifest integrity — the client refuses a bundle whose model differs; test fails before, passes after | **MET** | Probe MC-06 (client refuses `model_mismatch`, prior bundle stays active) and MC-01..MC-05/MC-07/MC-08 — `docs/program/DECISIONS.md:40-55`. Server half in the gate: `tooling/verify-publish-model-policy.mjs`. Red-then-green recorded in `docs/program/phase-0-report.md`. |
-| D8 | Reproducibility — `pnpm run evidence` regenerates every headline number; every deployed/fleet claim carries a SHA | **NOT MET** | `pnpm run evidence` **did not exist** until 2026-10-09. Both deployed runs carry **no commit SHA** (`docs/EVIDENCE.md`, reproducibility gap). See §P8 below. |
+| D8 | Reproducibility — `pnpm run evidence` regenerates every headline number; every deployed/fleet claim carries a SHA | **NOT MET** | The command now exists and its **first run is RED by design**: `claims: 16 · verified: 12 · mismatch: 0 · unverifiable: 4`. The four are the three deployed-path claims (no labelled commit SHA in either run) and the `0.180757` divergence (unreproduced). See §P8 below. |
 | D9 | Operability-lite — SLO doc, runbook, backup-restore drill, bundle-rollback drill, each executed and recorded | **NOT STARTED** | P7 not started. None of the four artifacts exists. |
 | D10 | Tenant lifecycle (scripted) — provision, publish, query, read telemetry from scripts alone; one recorded journey with SHA | **NOT STARTED** | P6 not started. |
 | D11 | Supply chain — `pnpm run audit` green, no expired accepted advisory | **MET** | 2026-10-09: `pnpm audit --prod --json` → `"advisories": {}`, 0 production advisories; `node tooling/audit-gate.mjs` → `dependency gate passed`, `new: 0 escalated: 0`. Baseline empty since 2026-10-07. See the host note below. |
@@ -96,8 +96,36 @@ does not reproduce. The verifier is `tooling/evidence/verify-claims.mjs` (added 
    **unreproduced**. MC-09 was built to reconstruct it and remains an unproven hypothesis.
 
 **Evidence to add:** the first green run of `pnpm run evidence` from a clean clone. It cannot be green
-until the two unverifiable claims are either removed from the published documents or re-run with a
+until the four unverifiable claims are either removed from the published documents or re-run with a
 recorded SHA. **That is an owner decision, not an engineering one.**
+
+**First run, 2026-10-09** — `pnpm run evidence`, exit 1:
+
+```
+claims: 16   verified: 12   mismatch: 0   unverifiable: 4
+  unverifiable  deployed-500        no labelled commit SHA in phase5-deployed-run-0aec9773442c4282.md
+  unverifiable  deployed-parity-39  no labelled commit SHA in phase5-deployed-run-60cdbbea8a4f478f.md
+  unverifiable  deployed-tagging    no labelled commit SHA in phase5-deployed-run-0aec9773442c4282.md
+  unverifiable  divergence-0.180757 unreproduced: MC-09 is an unproven hypothesis
+EVIDENCE VERIFICATION FAILED
+```
+
+Zero mismatches is the useful part: every figure that *can* be checked still reproduces, including the
+two **recomputed** ones — `84/302 = 27.8%` and `93/302 = 30.8%` are re-derived from the raw rows
+(414 − 112 answerable; 196 − 112 and 205 − 112 correct), not string-matched.
+
+**A bug this found in itself.** The first version of the verifier accepted *any* 40-hex token as a
+build SHA, and the deployed parity artifact's only such token is the **embedding model revision**
+(`751bff37…`, published as `@ <sha>` with no commit label). That run was reported VERIFIED and is not.
+The check now requires an explicit commit label, and `--self-test` asserts both failure modes are
+caught:
+
+```
+node tooling/evidence/verify-claims.mjs --self-test
+  MISMATCH      SELF-TEST-tampered-claim
+  UNVERIFIABLE  SELF-TEST-model-revision-is-not-a-commit
+EVIDENCE VERIFIER SELF-TEST OK — a wrong figure and a missing build SHA are both caught
+```
 
 ---
 
