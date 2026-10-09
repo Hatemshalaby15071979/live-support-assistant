@@ -4,22 +4,28 @@ Open limitations of the current build, each with the source that establishes it.
 These are documented honestly; none is hidden behind a passing claim. Numbers are
 reported exactly as measured on simulated or author-written data.
 
-## 1. The web client never verifies its loaded model against the bundle manifest
+## 1. RESOLVED IN CODE (2026-10-09) — the client now refuses a bundle built for a different model
 
-`packages/embedder/src/model.ts:6-7` documents the contract: "Policy bundles carry
-the same values and a client refuses to serve search when its loaded model does not
-match the bundle manifest." The client does **not** enforce this.
+**Was.** The client read only `bundleVersion` and `sops` from the manifest and never compared its
+loaded model against it, so a bundle published for a different embedding model would still be served.
 
-- `apps/web/src/bundle-client.ts:233-234` reads only `bundleVersion` and `sops` from
-  the manifest — never the embedding-model id or revision.
-- `apps/web/src/App.tsx:384-386` records the model in telemetry from the build-time
-  constant `EMBEDDING_MODEL`, not from the bundle.
+**Now.** The client hands its loaded model to the install pipeline and refuses a mismatch:
 
-Consequence: a bundle published with a different embedding model would still be
-served against a mismatched local model, silently degrading scores. This is the
-recorded-but-unexplained cause of the one historical deployed/local divergence
-(deployed `0aec9773442c4282` answered at 0.180757 vs local 0.167715 on the same
-ticket). See `tooling/eval/simulated-tenant/parity-results.md`.
+- `apps/web/src/bundle-client.ts:227-236` — `installBundle(fetched, identity, store, LOADED_MODEL)`;
+  any rejection other than `not_monotonic` becomes a named `unavailable` state rather than a corpus
+  scored against the wrong vectors.
+- `apps/web/src/bundle-client.ts:277-278` — `modelId` and `modelRevision` are returned from the
+  **manifest**, not from the build-time constant.
+- `apps/web/src/App.tsx:121-122` — telemetry records the bundle's model when the bundle supplies one,
+  and falls back to `EMBEDDING_MODEL` only when it does not.
+- Proven by probe MC-06 (client refuses `model_mismatch`, the previous bundle stays active) —
+  `docs/program/DECISIONS.md:50`.
+
+**Still open — and not closed by the above.** The historical divergence itself is still
+**unreproduced**: deployed `0aec9773442c4282` answered at 0.180757 against local 0.167715 on
+`SIM-TICKET-00272`. MC-09 was built to reconstruct it and remains an **unproven hypothesis**
+(`docs/program/DECISIONS.md:51`, reproduction blocked). Treat the divergence as unexplained.
+See `tooling/eval/simulated-tenant/parity-results.md`.
 
 ## 2. The conflict lint parses English number words only
 
@@ -102,16 +108,24 @@ round trip is exercised. This is a demo limitation, not a backend failure.
 Consequence: the walkthrough can be re-rendered on Windows only, as written. This affects
 build tooling, not the shipped decision path or any measured claim.
 
-## 9. Accepted dependency advisory — GHSA-86w9-cpqp-85rv (node-forge, High)
+## 9. CLOSED (2026-10-07) — the accepted node-forge advisory is no longer in the tree
 
-Accepted as a known risk on 2026-10-02: the advisory (CVE-2026-85393, affected
-`<=1.4.0`) has no patched release — `1.4.0` is the latest on npm — and it reaches the
-build only through the unbuilt `@sop/mobile` app via Expo tooling
-(`@expo/code-signing-certificates`, `selfsigned`); it is absent from the web app, the
-desktop shell, and every `apps/*/src` / `packages/*/src` import, so it is off the
-ticket-processing and credential path. Review by 2026-10-30; re-check with
-`pnpm why node-forge` and `pnpm audit --prod`, and the accepted id stays in
-`tooling/audit-baseline.json` so the gate stays green without hiding new advisories.
+**Was.** `GHSA-86w9-cpqp-85rv` (node-forge, High, CVE-2026-85393, affected `<=1.4.0`) was accepted as
+a known risk on 2026-10-02: no patched release existed (`1.4.0` was the latest on npm), and it
+arrived only through the unbuilt `@sop/mobile` app via Expo tooling
+(`@expo/code-signing-certificates`, `selfsigned`).
+
+**Now.** `@sop/mobile` was excluded from the workspace install (prereg `docs/prereg/g9-drop-mobile.md`),
+which removed node-forge, braces and sprintf-js with it; `sharp` was forced to `0.35.5`.
+`tooling/audit-baseline.json` now carries `"advisories": {}` and states: *"The accepted-advisory set
+is EMPTY as of 2026-10-07 ... The gate is therefore strict: any advisory appearing in
+`pnpm audit --prod` now fails the build. Nothing is tolerated in this file."*
+
+Re-verified 2026-10-09: `grep -c node-forge pnpm-lock.yaml` → `0`.
+
+**Consequence.** The 2026-10-30 review date no longer covers a live risk — there is nothing to
+re-check. The gate is stricter than it was, not looser: a new advisory now fails the build instead of
+being absorbed into a baseline.
 
 ## 10. T04 cannot answer generic consumer scenarios — corpus-fit limit
 

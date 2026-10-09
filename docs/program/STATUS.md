@@ -6,13 +6,26 @@ One row per phase. Updated at every phase end. Values: `done` | `in progress` | 
 | --- | --- | --- | --- | --- |
 | P0 | Integrity and baseline | **done** | `pnpm run verify` 10/10; ticket validator OK; D7 red-then-green (client and server); `docs/BASELINE.md` complete. SQL suites `not re-run` (host sandbox). | `docs/program/phase-0-report.md` |
 | P1 | Licensed corpus and gold set | **done** (2026-10-08) | **3 tenants / 3 domains, harvesting CLOSED (cut #1 — one below the cut-line floor).** 544 documents → 3,659 procedures. **Gold set FROZEN 2026-10-08: 459 rows**, register C, document-level labels; `verify-corpus.mjs` exit 0; `pnpm run verify` 14/14; `verify:db` all four suites OK. Verdicts: corpus half MET; **fleet ≥4 NOT MET (3)**, **gold set 150–300 NOT MET for T04 (145)/T05 (144)**, **owner spot-check NOT DONE**, **D3 NOT MEASURABLE**. Limits stated in the report. | `docs/program/phase-1-report.md` |
-| P2 | Market Twin (smoke + standard) | not started | `run-market.mjs --seed 20261006 --rung smoke` exits 0 | — |
+| P2 | Market Twin (smoke + standard) | **done** | Smoke rung is wired into the gate — `tooling/run-verification.mjs:138-145` (`key: 'market-smoke'`, `--seed 20261006 --rung smoke`, verdict line `MARKET TWIN SMOKE OK`). Standard rung merged at `2f765a5` (`git show --stat 2f765a5`), deliberately **not** in the gate: nightly, not merge-gating. | `docs/program/DECISIONS.md` (no P2 entry — recorded in git history only) |
 | P3 | Retrieval at 500 | not started | per-rung/per-language tables; D3/D4 reported honestly | — |
 | P4 | Gate and safety hardening | not started | D1, D2, D5, D7 reported honestly | — |
-| P5 | Security and isolation proof | not started | D6 and D11 met | — |
+| P5 | Security and isolation proof | **in progress** | Probe list written: `docs/program/P5_PROBES.md` (7 categories, each with a negative control). MC-01..MC-08 proven locally, MC-09 left an unproven hypothesis — `docs/program/DECISIONS.md:40-55`. XSS harness rebuilt and run 21/21 — `docs/program/DECISIONS.md:7-21`. F-1 reproduced and dispositioned — `docs/SECURITY_FINDING_F1_claim_override.md`. **The isolation suite has not been run as a suite.** | `docs/program/P5_PROBES.md` |
 | P6 | Tenant lifecycle (scripted) | not started | D10 met; journey recorded | — |
 | P7 | Operations, lite | not started | D9 and D12 met; drills recorded | — |
-| P8 | Evidence pack and close | not started | `pnpm run evidence` green from a clean clone | — |
+| P8 | Evidence pack and close | not started | `pnpm run evidence` green from a clean clone — **that script does not exist yet**: `grep -n '"evidence"' package.json` returns nothing, and `docs/PRODUCTION_SAAS_PROGRAM_V2.md:411` says "(create it)" | — |
+
+## Reconciliation — 2026-10-09
+
+The board above was last written before the P2 work landed, so it read "not started" for work
+that is merged. Reconciled against the tree on 2026-10-09:
+
+| Row | Was | Now | Evidence |
+| --- | --- | --- | --- |
+| P2 | not started | done | `tooling/run-verification.mjs:138-145`; `git log --oneline -- tooling/market/` (`b073f57`, `6b41fc3`, `2f765a5`, `e9192e2`, `7ad243c`, `07aa5e3`) |
+| P5 | not started | in progress | `docs/program/P5_PROBES.md`; `docs/program/DECISIONS.md:7-55` |
+| P8 | not started | not started — and its gate command is missing | `grep -n '"evidence"' package.json` → no match |
+
+Rows P0, P1, P3, P4, P6, P7 are unchanged: the recorded values still match the tree.
 
 ## Cut line (from V2 §11)
 

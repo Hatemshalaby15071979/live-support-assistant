@@ -2581,3 +2581,45 @@ documented read-only-equivalent override `-c credential.helper=manager` was used
 for `ls-remote` and the push — no credential on any command line. No application
 code changed in this step; this ledger entry is the only modification.
 
+## P0/P1 program — 2026-09-28 to 2026-10-08 (pointer)
+
+This ledger has no dated section between the 2026-09-28 release close-out and the
+2026-10-08 push. That gap is real: the V2 production program (P0 integrity and
+baseline, P1 licensed corpus and gold set, and the start of P2 and P5) ran in it and
+was recorded in `docs/program/` instead of here. Nothing is reconstructed from memory;
+this section exists so the gap is visible and points at the actual record.
+
+| What happened in the gap | Where the record lives |
+| --- | --- |
+| P0 integrity and baseline, D7 red-then-green | `docs/program/phase-0-report.md`, `docs/BASELINE.md` |
+| P1 corpus (3 tenants, 544 docs, 3,659 procedures) and the frozen gold set (459 rows) | `docs/program/phase-1-report.md`, `docs/CORPUS_PROVENANCE.md` |
+| Phase board and the cut line (cut #1: fleet 6 → 3) | `docs/program/STATUS.md` |
+| Owner queue: OQ-001..OQ-014 | `docs/program/OWNER_QUEUE.md` |
+| Every Zone Y / Zone G / Zone R decision, newest first | `docs/program/DECISIONS.md` |
+| The P5 probe list (7 categories, each with a negative control) | `docs/program/P5_PROBES.md` |
+| Finding F-1, its reproduction and its disposition | `docs/SECURITY_FINDING_F1_claim_override.md` |
+| Hosted helper removal (7 helpers, one transaction) | `docs/program/hosted-helper-removal-2026-10-08.sql` |
+
+Branch-level detail is in git, not here: `prog/p0-integrity`, `prog/p1-corpus`,
+`prog/p2-smoke`, `prog/p2-standard`, `prog/p5-security`, `prog/skill-install`,
+`prog/mc-probes`, `prog/build-identity-stamp`.
+
+## Reconciliation — 2026-10-09
+
+A read-only evaluation on 2026-10-09 found six documents describing a tree that no
+longer existed (`docs/program/STATUS.md`, `docs/program/OWNER_QUEUE.md`,
+`docs/KNOWN_ISSUES.md` #1 and #9, `docs/PRODUCTION_STATUS.md`, this file). The code was
+ahead, not wrong — 111 commits ahead of `main`. Corrections are recorded in
+`docs/program/DECISIONS.md`, "2026-10-09 — Docs reconciliation", each line naming its
+evidence. **No measured number was changed in this pass; only stale current-state
+sentences were.**
+
+Two facts from that evaluation worth keeping in the ledger:
+
+- `pnpm run evidence` — the P8 exit gate — **does not exist**. `grep -n '"evidence"'
+  package.json` returns nothing, and `docs/PRODUCTION_SAAS_PROGRAM_V2.md:411` says
+  "(create it)". P8 cannot pass until it is built.
+- `.github/workflows/ci.yml` triggers on `push: branches: [main]` only, so `prog/main`
+  is **never CI-verified**. The README CI badge describes a tree 111 commits behind
+  the integration branch.
+
