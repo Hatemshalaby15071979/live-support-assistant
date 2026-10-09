@@ -2527,3 +2527,99 @@ Windows-only (`capture-demo.mjs:15-18` Chrome paths, `gen-titlecards.py:18-21` A
 `C:\Windows\Fonts\`). The dated ledger records that say "seven" are left as written — they
 were true when written.
 
+## Push: `prog/main` published to `origin/prog/main` — 2026-10-08
+
+**Published.** Normal non-force push `prog/main -> prog/main`, accepted by the
+remote as `524e24a..90d0570`. Local HEAD
+`90d057083a7cf2c65a77f13e2a1db8ebf8a201da` (`merge: model-confusion probes`); the
+live remote tip was read back after the push and equals HEAD exactly.
+
+**Range.** 16 local-only commits, 0 remote-only, over the previous tip `524e24a`
+(`524e24aa60cacd9fdfc26ff6b7c5f09a161fe7b5`): build-identity stamp plus UI wiring
+(`build-stamp.mjs`, `BuildIdentity.tsx`, `verify-build-identity.mjs`), P2 smoke
+runner plus golden digest, the MC probe rebuilt as model-confusion (MC-01..MC-08
+proven locally, MC-09 left an unproven hypothesis), the surface-audit lockdown
+record, and the generated Market Twin reports removed from tracking (now
+gitignored, digest pinned instead).
+
+**Gates before approval, all read-only.** Worktree clean except untracked
+`.agent-worktrees/` linked-worktree checkouts. Diff 18 files, +821/−634: in
+scope, no unrelated files, no generated artifact added. Secret scan of the range
+(the range diff only — see the full-history correction below): name-pattern hits
+all safe on inspection (env-var names, in-memory generated keys, fixture UUIDs,
+one per-run random password template); value-pattern scan 0 hits across all
+added lines; literal-email scan 0 hits (one synthetic per-run
+`mc-remote-<uuid>@alpha.example` template noted, example domain). Build capture
+Scope 6-of-7 attributed to the `apps/mobile` workspace exclusion (reasoned — the
+six named projects are the full buildable membership; Rust/Vite warning text was
+not in the capture and stays unverified). Remote-freshness check immediately
+before approval: live `ls-remote` equalled the tracking SHA, divergence `0 16`.
+Owner approval was explicit for `prog/main` only.
+
+**Scan-scope correction (post-push review, same session).** The pre-push scan
+covered only the 16-commit range diff; the standing rule requires the
+`git log --all -p` pickaxe across the pushed branch's full history. That scan
+has now been run per rule category and the clean verdict is preserved — no
+secrets, passwords, JWTs, private-key halves, credential-bearing hosts, or real
+user emails anywhere in the pushed content:
+- passwords: simulated-ticket prose + per-run random templates + API field names, no literals;
+- secrets: public-docs prose + env/header NAMES + the secrets-scanner itself, no values;
+- JWTs: 0 true hits history-wide; private-key blocks: exactly 1 (the detector's own marker list);
+- DB host + ref: bare project ref and pooler hostname prose, no credentials;
+- emails: "0 literal addresses in the range diff; 298 masked history lines across 37 domains, all dispositioned safe" — synthetic `.example`/test/placeholder domains, planted-PII fixtures, public-wording corpus (incl. documented published contacts), upstream vendored attribution, owner's public contact (permitted);
+- pushed-range blob scan: 1 opaque run ≥32 chars, proven column-list prose on direct read.
+52 hit-commits are `prog/main` ancestors (all safe-class); 8 sit on unmerged branches and were never pushed.
+
+**Sync after push.** `status -sb` reads `## prog/main...origin/prog/main`,
+divergence `0 0`, tracked tree clean (only the untracked `.agent-worktrees/`
+remains).
+
+**Untouched.** `main` and every other branch neither pushed nor modified; no
+force push, no history rewrite; `.agent-worktrees/` never staged. Host note:
+plain remote access fails on this machine's broken `helper-selector`, so the
+documented read-only-equivalent override `-c credential.helper=manager` was used
+for `ls-remote` and the push — no credential on any command line. No application
+code changed in this step; this ledger entry is the only modification.
+
+## P0/P1 program — 2026-09-28 to 2026-10-08 (pointer)
+
+This ledger has no dated section between the 2026-09-28 release close-out and the
+2026-10-08 push. That gap is real: the V2 production program (P0 integrity and
+baseline, P1 licensed corpus and gold set, and the start of P2 and P5) ran in it and
+was recorded in `docs/program/` instead of here. Nothing is reconstructed from memory;
+this section exists so the gap is visible and points at the actual record.
+
+| What happened in the gap | Where the record lives |
+| --- | --- |
+| P0 integrity and baseline, D7 red-then-green | `docs/program/phase-0-report.md`, `docs/BASELINE.md` |
+| P1 corpus (3 tenants, 544 docs, 3,659 procedures) and the frozen gold set (459 rows) | `docs/program/phase-1-report.md`, `docs/CORPUS_PROVENANCE.md` |
+| Phase board and the cut line (cut #1: fleet 6 → 3) | `docs/program/STATUS.md` |
+| Owner queue: OQ-001..OQ-014 | `docs/program/OWNER_QUEUE.md` |
+| Every Zone Y / Zone G / Zone R decision, newest first | `docs/program/DECISIONS.md` |
+| The P5 probe list (7 categories, each with a negative control) | `docs/program/P5_PROBES.md` |
+| Finding F-1, its reproduction and its disposition | `docs/SECURITY_FINDING_F1_claim_override.md` |
+| Hosted helper removal (7 helpers, one transaction) | `docs/program/hosted-helper-removal-2026-10-08.sql` |
+
+Branch-level detail is in git, not here: `prog/p0-integrity`, `prog/p1-corpus`,
+`prog/p2-smoke`, `prog/p2-standard`, `prog/p5-security`, `prog/skill-install`,
+`prog/mc-probes`, `prog/build-identity-stamp`.
+
+## Reconciliation — 2026-10-09
+
+A read-only evaluation on 2026-10-09 found six documents describing a tree that no
+longer existed (`docs/program/STATUS.md`, `docs/program/OWNER_QUEUE.md`,
+`docs/KNOWN_ISSUES.md` #1 and #9, `docs/PRODUCTION_STATUS.md`, this file). The code was
+ahead, not wrong — 111 commits ahead of `main`. Corrections are recorded in
+`docs/program/DECISIONS.md`, "2026-10-09 — Docs reconciliation", each line naming its
+evidence. **No measured number was changed in this pass; only stale current-state
+sentences were.**
+
+Two facts from that evaluation worth keeping in the ledger:
+
+- `pnpm run evidence` — the P8 exit gate — **does not exist**. `grep -n '"evidence"'
+  package.json` returns nothing, and `docs/PRODUCTION_SAAS_PROGRAM_V2.md:411` says
+  "(create it)". P8 cannot pass until it is built.
+- `.github/workflows/ci.yml` triggers on `push: branches: [main]` only, so `prog/main`
+  is **never CI-verified**. The README CI badge describes a tree 111 commits behind
+  the integration branch.
+

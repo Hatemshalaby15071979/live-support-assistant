@@ -4,6 +4,34 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-09 — Docs reconciliation: six documents were describing a tree that no longer existed
+
+**Zone.** G (docs that report state). **Status.** RECONCILED — no claim was changed, only stale
+current-state statements were corrected against the tree, and each corrected line names its evidence.
+
+**Why.** The 2026-10-09 read-only evaluation found the documentation lagging `prog/main` by up to 111
+commits. The direction of the error matters: the **code was ahead, not wrong**. Three of the stale
+statements made the project look *less* complete than it is (P2 and P5 "not started", a client model
+check missing), and three made it look *safer* than it is (an accepted advisory that is gone, and two
+merge-status claims). Nothing was edited from memory.
+
+| Document | Was | Now | Evidence |
+| --- | --- | --- | --- |
+| `docs/program/STATUS.md` | P2 "not started"; P5 "not started" | P2 **done**; P5 **in progress** | `tooling/run-verification.mjs:138-145`; `docs/program/P5_PROBES.md`; `DECISIONS.md:7-55` |
+| `docs/program/OWNER_QUEUE.md` OQ-012 | listed as an open audit obligation | obligation (a) **satisfied**; the acceptance itself re-marked **NOT ACCEPTED** pending the owner's confirmation | `DECISIONS.md:98-117` (commit `524e24a`) |
+| `docs/KNOWN_ISSUES.md` #1 | "the client does not enforce this" | **RESOLVED IN CODE** | `apps/web/src/bundle-client.ts:227-236,277-278`; `apps/web/src/App.tsx:121-122` |
+| `docs/KNOWN_ISSUES.md` #9, `docs/PRODUCTION_STATUS.md` | node-forge advisory accepted, review 2026-10-30 | **CLOSED 2026-10-07** — no longer in the tree | `grep -c node-forge pnpm-lock.yaml` → `0`; `tooling/audit-baseline.json` `"advisories": {}` |
+| this file, below | "not merged to `prog/main`" | merged — inline markers added at both statements | `git branch --merged prog/main` |
+| `.github/workflows/ci.yml` | "three SQL suites (99/17/40)"; "36 advisories in the baseline" | seven steps; baseline empty | `tooling/db/verify-phase7.sh:9-15`; `tooling/audit-baseline.json` |
+| `AGENTS.md` | no section between 2026-09-28 and 2026-10-08 | pointer section added | `docs/program/` |
+
+**Not reconciled, deliberately.** The two dated decision records below keep their original wording;
+a correction marker is appended rather than the text rewritten, so the record of what was believed at
+the time survives (F3). The F-1 acceptance text is **not** edited: flipping it would change what
+`verify:db` enforces, which is an owner decision, not a docs edit.
+
+---
+
 ## 2026-10-08 — XSS harness rebuilt: real client render path in headless Chrome
 
 **Zone.** Y (procedure). **Status.** REBUILT — branch `prog/xss-harness` now holds the V2-compliant harness (`7ab9c69`).
@@ -37,6 +65,11 @@ The prior version (`39d8d83`) only generated `apps/web/public/build-identity.jso
 
 **Run status.** Gate passes (12/12). Vite build succeeds with the component. Verified on branch worktree; not merged to `prog/main`.
 
+> **CORRECTED 2026-10-09 — it was merged.** `prog/build-identity-stamp` is merged into `prog/main` at
+> `bd41354` (`merge: build identity stamp`), and the pushed range `524e24a..90d0570` includes it
+> (`AGENTS.md`, "Push: `prog/main` published to `origin/prog/main` — 2026-10-08"). Evidence:
+> `git branch --merged prog/main`. The sentence above is left as written; only this marker is new.
+
 ## 2026-10-08 — prog/mc-probes misinterpreted: MC = model-confusion, not message/command
 
 **Zone.** Y (definition / procedure). **Status.** CORRECTED — prog/mc-probes rebuilt from P5 MC-01..MC-09; the wrong version is kept out of the branch.
@@ -53,6 +86,10 @@ The prior `tooling/transport/probe-mc.mjs` (commit `e567d26`, branch `prog/mc-pr
 **Run status.** Local halves (MC-01..MC-08) run with no stack; all **12 proven checks pass**, MC-09 flagged unproven. The optional `--remote` half (deployed `publish-bundle` edge function) was **not run** — hosted suites are stopped by standing rule and credentials are not required for the local proof.
 
 **Verdict.** Wrong version removed from the branch (replaced in full at `5f4e467`); not merged to `prog/main`. MC-01..MC-08 proven locally; MC-09 is an open P5 item.
+
+> **CORRECTED 2026-10-09 — it was merged.** `prog/mc-probes` is merged into `prog/main` at `90d0570`
+> (`merge: model-confusion probes`). Evidence: `git branch --merged prog/main`. The sentence above is
+> left as written; only this marker is new. MC-09 remains an open P5 item — the merge did not close it.
 
 ## 2026-10-08 — public.surface_audit lockdown (Zone R hosted action, owner-authorized)
 

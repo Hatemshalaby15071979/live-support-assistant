@@ -85,8 +85,11 @@ jobs:
 
       # GitHub-hosted runners already have Docker, which is all verify-phase7.sh
       # needs. It creates its own throwaway PostgreSQL 17 container, drops and
-      # recreates the database, applies every migration, then runs all three SQL
-      # suites: 99 RBAC probes, 17 telemetry probes, 40 attack probes.
+      # recreates the database, applies every migration, then runs SEVEN steps
+      # (tooling/db/verify-phase7.sh:9-15): an offline SQL lint, then rbac_matrix
+      # (99 probes), phase5_telemetry (17), rls_bypass (40), rls_bypass_fleet
+      # (>1,000, an ACCEPTED RED - see the F-1 record), phase8_retention (16) and
+      # rls_surface_audit (no callable function builds SQL).
       - name: Database verification
         run: bash tooling/db/verify-phase7.sh
 
@@ -160,8 +163,9 @@ jobs:
       # install keeps this gate fast and independent of the workspace build.
       #
       # Fails on new or escalated advisories against tooling/audit-baseline.json.
-      # The 36 advisories currently in the baseline are all reachable through
-      # apps/mobile -> expo, which is unbuilt; the gate exists so the count can
-      # only go down from here.
+      # The accepted set is EMPTY as of 2026-10-07: @sop/mobile was excluded from
+      # the workspace install, which removed node-forge, braces and sprintf-js
+      # with it, and sharp was forced to 0.35.5. The gate is therefore strict -
+      # any advisory appearing in `pnpm audit --prod` fails the build.
       - name: Dependency gate
         run: pnpm run audit
