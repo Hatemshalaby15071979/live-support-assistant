@@ -9,8 +9,17 @@ name: CI
 # stage would be decoration. It attaches when the bundle transport slice lands.
 
 on:
+  # `main` is the public branch. `prog/**` is the integration branch and its
+  # phase branches, which until now were never verified by CI at all: the push
+  # trigger named `main` only, and `prog/main` is 111 commits ahead of it, so the
+  # green badge on the README described a tree nobody was working on.
+  #
+  # What this does NOT do: `pull_request` still covers every target branch, and
+  # nothing here runs the hosted suites (`pnpm run verify:hosted`) or any browser
+  # harness (`verify:signin`, `verify:deployed`, the XSS client-path harness).
+  # Those need credentials and a Chrome install, and they stay stopped.
   push:
-    branches: [main]
+    branches: [main, 'prog/**']
   pull_request:
 
 permissions:
