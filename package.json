@@ -30,7 +30,8 @@
     "verify:deployed": "node tooling/browser/verify-deployed.mjs",
     "eval:simulated:deployed": "node tooling/browser/run-simulated-deployed-evaluation.mjs",
     "audit": "node tooling/audit-gate.mjs",
-    "audit:update": "node tooling/audit-gate.mjs --update"
+    "audit:update": "node tooling/audit-gate.mjs --update",
+    "security:xss": "node tooling/security/xss-harness.mjs"
   },
   "devDependencies": {
     "turbo": "2.11.4"

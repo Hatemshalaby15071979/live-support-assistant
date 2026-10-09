@@ -28,6 +28,12 @@ jobs:
   workspace:
     name: Lint, typecheck, build, JS harnesses
     runs-on: ubuntu-24.04
+    env:
+      # The XSS suite in `pnpm run verify` drives the installed Chrome over the DevTools
+      # Protocol. tooling/security/xss-harness.mjs defaults to the Windows install path,
+      # so without this the gate fails on a Linux runner with "Chrome not found".
+      # GitHub's ubuntu-24.04 image ships Chrome at this path.
+      CHROME_PATH: /usr/bin/google-chrome
     steps:
       - uses: actions/checkout@v5
 

@@ -145,6 +145,20 @@ const SUITES = [
     args: ['--seed', '20261006', '--rung', 'smoke'],
     verdict: 'MARKET TWIN SMOKE OK',
   },
+  {
+    // Stored-XSS through the real client render path (V2 §5 P5, II-02 and OS-01).
+    // It belongs in the gate because it ASSERTS and exits non-zero: 21 hostile payloads
+    // must render inert, AND the negative control must fire — an `innerHTML` renderer has
+    // to inject DOM, or the harness cannot detect an unsafe renderer and the whole pass
+    // is vacuous — AND the served document must carry a strict CSP with no inline
+    // script-src. It needs a Chrome install; CHROME_PATH overrides the Windows default.
+    // Verified 2026-10-09 on prog/xss-harness: 21/21 inert, negative control live, CSP
+    // enforced, exit 0.
+    key: 'xss',
+    name: 'stored-XSS render path (headless Chrome)',
+    script: 'tooling/security/xss-harness.mjs',
+    verdict: 'XSS HARNESS OK',
+  },
 ];
 
 const requested = process.argv.slice(2);
