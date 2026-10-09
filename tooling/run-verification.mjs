@@ -146,6 +146,24 @@ const SUITES = [
     verdict: 'MARKET TWIN SMOKE OK',
   },
   {
+    // The pinned smoke digest (V2 §P2; the D8 class of defect — a published number nothing
+    // enforces). Until 2026-10-09 this file was checked by nothing in the gate: the smoke
+    // suite above runs run-market.mjs directly, and the digest comparison was reachable only
+    // through `pnpm run verify:p2-smoke`, which is in neither the gate nor CI.
+    //
+    // It belongs in the gate because it ASSERTS: the pinned seed's decision digest must equal
+    // tooling/market/smoke-golden-digest.json, the generated reports must stay untracked, AND
+    // the check must be able to FAIL — `--negative-control` tampers a copy of the golden digest
+    // and requires the comparison to reject it.
+    //
+    // Must run AFTER market-smoke: it reads the report that suite writes.
+    key: 'market-digest',
+    name: 'Market Twin golden smoke digest (+ negative control)',
+    script: 'tooling/market/verify-p2-smoke-digest.mjs',
+    args: ['--negative-control'],
+    verdict: 'P2 SMOKE DIGEST OK',
+  },
+  {
     // Render-path XSS harness (textContent) — V2 §5 P5, II-02 and OS-01.
     //
     // WHAT IT PROVES: hostile payloads are inert when rendered with `textContent`, the
