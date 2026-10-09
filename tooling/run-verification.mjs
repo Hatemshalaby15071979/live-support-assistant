@@ -146,16 +146,21 @@ const SUITES = [
     verdict: 'MARKET TWIN SMOKE OK',
   },
   {
-    // Stored-XSS through the real client render path (V2 §5 P5, II-02 and OS-01).
-    // It belongs in the gate because it ASSERTS and exits non-zero: 21 hostile payloads
-    // must render inert, AND the negative control must fire — an `innerHTML` renderer has
-    // to inject DOM, or the harness cannot detect an unsafe renderer and the whole pass
-    // is vacuous — AND the served document must carry a strict CSP with no inline
-    // script-src. It needs a Chrome install; CHROME_PATH overrides the Windows default.
-    // Verified 2026-10-09 on prog/xss-harness: 21/21 inert, negative control live, CSP
-    // enforced, exit 0.
+    // Render-path XSS harness (textContent) — V2 §5 P5, II-02 and OS-01.
+    //
+    // WHAT IT PROVES: hostile payloads are inert when rendered with `textContent`, the
+    // exact mechanism the app's React text children use.
+    // WHAT IT DOES NOT PROVE: that the app is inert. The payloads go through a stand-in
+    // page, not the built client, so the REAL client render path is NOT yet proven. That
+    // needs tooling/security/verify-xss-client-path.mjs against a live backend.
+    //
+    // It belongs in the gate because it ASSERTS and exits non-zero: 21 payloads must render
+    // inert, AND the negative control must fire — an `innerHTML` renderer has to inject DOM,
+    // or the harness cannot detect an unsafe renderer and the whole pass is vacuous — AND the
+    // served document must carry a strict CSP with no inline script-src. It needs a Chrome
+    // install; CHROME_PATH overrides the Windows default.
     key: 'xss',
-    name: 'stored-XSS render path (headless Chrome)',
+    name: 'render-path XSS harness (textContent)',
     script: 'tooling/security/xss-harness.mjs',
     verdict: 'XSS HARNESS OK',
   },

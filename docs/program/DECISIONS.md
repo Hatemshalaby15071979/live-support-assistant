@@ -48,6 +48,14 @@ The prior version (`a5455d2`) was a STATIC payload battery: it submitted payload
 
 **Run status.** Verified locally: 21/21 safe payloads pass, negative control live (unsafe renderer injects DOM), CSP enforced. Exit 0.
 
+> **CORRECTED 2026-10-09 — the heading above overclaims, and so does the body.** This harness renders
+> through a **stand-in page** that uses `textContent`; the app is never in the loop. It proves the
+> *mechanism* is inert, not that the *app* is inert. The correct name is **"render-path XSS harness
+> (textContent)"**, and the real client render path is **NOT yet proven** — that needs
+> `tooling/security/verify-xss-client-path.mjs` against a live backend (P5). The registration in
+> `tooling/run-verification.mjs` now carries that name and that limit. The sentence above is left as
+> written; only this marker is new.
+
 ## 2026-10-08 — Build identity wired into the app UI + version file
 
 **Zone.** Y (procedure). **Status.** WIRED — branch `prog/build-identity-stamp` now holds the full integration (`a5555b7`).
