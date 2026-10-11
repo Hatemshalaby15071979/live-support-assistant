@@ -473,3 +473,9 @@ the deployed build). The saved output does not echo `TARGET_URL`, so this cannot
 
 **Status.** Open, and harmless: no check depends on which of the two messages appears. It is logged
 because "which build was that?" is exactly the question the build-stamp work is meant to answer.
+
+## 17. P8 evidence verifier is red
+
+`pnpm run evidence` exists at `package.json:34` and exits red: 16 claims, 12 verified, 0 mismatches, 4 unverifiable (`docs/SAFETY_CASE.md:24,105-109`).
+The unverifiable claims are deployed-500, deployed-parity-39, deployed-tagging, and the `0.180757` divergence; missing labelled commit SHAs and the unreproduced divergence are recorded in `docs/SAFETY_CASE.md:106-109`.
+The verifier defines unverifiable claims as failures (`tooling/evidence/verify-claims.mjs:8-15`); the gate remains red until the four claims are resolved with evidence.

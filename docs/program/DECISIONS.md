@@ -1324,3 +1324,13 @@ Both runs are recorded in `docs/program/phase-0-report.md`.
 
 `docs/program/` created with `STATUS.md`, `DECISIONS.md`, `OWNER_QUEUE.md`, `DEFERRED.md`
 and `FAILURES/`. Branches `prog/main` and `prog/p0-integrity` created. `main` is untouched.
+
+## 2026-10-11 — Production region and scoped push authorization
+
+**Zone.** Owner decision recorded; no external action taken here.
+
+- **Production data region: EU.** This is the selected region for production data residency. The specific provider/region identifier and the deployed project's actual region still need verification before any residency claim.
+- **Push authorization:** standing authorization to push `prog/**` branches non-force, after a full-history secret scan. This supersedes the 2026-10-08 requirement for a separate explicit yes for each such push. It does not authorize force pushes, releases, or public deployment.
+- `00_CONSTITUTION.md` was checked and is missing. No replacement content was inferred or created; the missing file is reported as a governance gap.
+
+**Evidence.** Owner instruction in chat on 2026-10-11. No push or hosted mutation was performed during A0.

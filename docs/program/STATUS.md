@@ -12,7 +12,7 @@ One row per phase. Updated at every phase end. Values: `done` | `in progress` | 
 | P5 | Security and isolation proof | **in progress** | Probe list written: `docs/program/P5_PROBES.md` (7 categories, each with a negative control). MC-01..MC-08 proven locally, MC-09 left an unproven hypothesis — `docs/program/DECISIONS.md:40-55`. XSS harness rebuilt and run 21/21 — `docs/program/DECISIONS.md:7-21`. F-1 reproduced and dispositioned — `docs/SECURITY_FINDING_F1_claim_override.md`. **The isolation suite has not been run as a suite.** | `docs/program/P5_PROBES.md` |
 | P6 | Tenant lifecycle (scripted) | not started | D10 met; journey recorded | — |
 | P7 | Operations, lite | not started | D9 and D12 met; drills recorded | — |
-| P8 | Evidence pack and close | not started | `pnpm run evidence` green from a clean clone — **that script does not exist yet**: `grep -n '"evidence"' package.json` returns nothing, and `docs/PRODUCTION_SAAS_PROGRAM_V2.md:411` says "(create it)" | — |
+| P8 | Evidence pack and close | **in progress — gate red** | `pnpm run evidence` exists; 12/16 verified, 4 unverifiable, 0 mismatches; unverifiable claims fail (`package.json:34`; `docs/SAFETY_CASE.md:24,105-109`) | `docs/SAFETY_CASE.md`; `tooling/evidence/verify-claims.mjs` |
 
 ## Reconciliation — 2026-10-09
 
@@ -85,3 +85,9 @@ dependency-gate negative controls · guard-bypass logging rule · server half of
 - `exp/<id>` — Zone Y experiments.
 
 `main` is untouched by this program.
+
+## A0 execution — 2026-10-11
+
+Execution record for A0.1–A0.7 (mapped in order to the first seven P0 `Do` items in V2; the repository documents the sequence as P0 and contains no literal A0.1–A0.7 labels): `docs/program/a0-execution-2026-10-11.md`.
+
+Summary: A0.1 install/build not proved (pnpm store outside writable workspace; repair cap reached); A0.2 JS gate not run to completion and SQL only passed offline lint (Docker unavailable); A0.3 ticket validator OK after recording hashes of every pinned batch/corpus input; A0.4 G11 rerun not done (no browser binary); A0.5 server model policy 24/24, client sync harness blocked by incompatible `sharp` binary, deployed/local divergence not reproduced; A0.6 syntax and fallback checks pass, full capture not run; A0.7 audit gate passes with 0 production advisories, while the full verify condition was not re-established. No targets or thresholds were changed.

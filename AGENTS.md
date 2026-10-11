@@ -8,7 +8,7 @@ this first in any new session; update it at the end of every completed step.
 ## Standing authorization
 
 - Commits inside this repository are authorized for sanctioned work.
-- Pushes, releases, and anything public are **not** authorized. Ask first.
+- Pushes of `prog/**` branches are authorized only as non-force pushes after a full-history secret scan (owner decision: `docs/program/DECISIONS.md`, “2026-10-11 — Production region and scoped push authorization”). Releases and public deployments need separate owner authorization.
 - No destructive operation on personal directories, ever.
 
 ## Repository
@@ -2616,10 +2616,10 @@ sentences were.**
 
 Two facts from that evaluation worth keeping in the ledger:
 
-- `pnpm run evidence` — the P8 exit gate — **does not exist**. `grep -n '"evidence"'
-  package.json` returns nothing, and `docs/PRODUCTION_SAAS_PROGRAM_V2.md:411` says
-  "(create it)". P8 cannot pass until it is built.
-- `.github/workflows/ci.yml` triggers on `push: branches: [main]` only, so `prog/main`
-  is **never CI-verified**. The README CI badge describes a tree 111 commits behind
-  the integration branch.
+- `pnpm run evidence` — the P8 exit gate — **exists and is red**: 12 verified, 4 unverifiable, 0 mismatches. Its 4 unverifiable claims fail by design (`package.json:34`; `docs/SAFETY_CASE.md:24,105-109`; `tooling/evidence/verify-claims.mjs:8-15`).
+- `.github/workflows/ci.yml` triggers pushes to `prog/**` and pull requests; hosted credentials are not referenced in the workflow (`.github/workflows/ci.yml:11-23`).
 
+
+## A0 execution record — 2026-10-11
+
+A0.1–A0.7 results, failures, and exact commands: `docs/program/a0-execution-2026-10-11.md`. The pinned inputs were SHA-256 recorded before A0.3 in `docs/program/a0-pinned-hashes.md`. `00_CONSTITUTION.md` is missing; its content was not invented. Owner decision: EU production data region; standing non-force `prog/**` push authorization only after full-history secret scan (see `docs/program/DECISIONS.md`, “2026-10-11 — Production region and scoped push authorization”).
