@@ -19,7 +19,7 @@ on:
   # harness (`verify:signin`, `verify:deployed`, the XSS client-path harness).
   # Those need credentials and a Chrome install, and they stay stopped.
   push:
-    branches: [main, 'prog/**']
+    branches: ['prog/**']
   pull_request:
 
 permissions:
