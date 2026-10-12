@@ -111,3 +111,24 @@ re-established" for the JS half. Record: `docs/program/p0-evidence-2026-10-12.md
 | Evidence pack | red by design: 12 verified / 4 unverifiable (exit 1) |
 | Not run | `verify:db` (Docker stopped), `verify:hosted`, `verify:deployed` (credentials / authorization) |
 | Blocker | GitHub connector cannot resolve the repo → tracker #1 and workstreams #2–#8 unreachable; queue mirrored in `OWNER_QUEUE.md` |
+
+## Task C/D — merged-tip verification — 2026-10-12
+
+Supersedes nothing; adds a measured row for the merged commit `df1e569`.
+Record: `docs/program/integration-evidence-2026-10-12.md`.
+
+| Item | Result |
+| --- | --- |
+| Merge verified | `df1e5694dd7cdb98fb848068798cfe5bcb9900a1`, parents `2f23950` + `7383314`, tree clean, 31 branches / 12 remote refs preserved |
+| Remote | fetch OK over HTTPS; `origin/prog/main` `90d0570`; `prog/main` ahead 27; **not pushed** |
+| Gate | `node tooling/run-verification.mjs` → **17/17 pass, exit 0** at the merged SHA |
+| Scanner controls | `node tooling/security/verify-history-secret-scanner.mjs` → **17/17 pass, exit 0** |
+| History scan | 228/228 commits, 968,929 lines, **0 hard hits**, 10 approved exceptions, exit 0; `--strict` surfaces exactly those 10 |
+| Root build | `pnpm -r run build` → **FAILED** (`os error 231`, host limitation) — reported as failed |
+| Package builds | 4 libs + `@sop/web` + `@sop/desktop` → PASS; `@sop/web` lint → 0 errors, 1 pre-existing warning; typecheck → PASS |
+| Dependency gate | 0 production advisories · baseline 0 · new 0 · escalated 0 → passed |
+| Pinned data | all 12 digests match `a0-pinned-hashes.md`; `chaos-500.json` = `717c40dc…` unchanged |
+| Ticket validator | SIMULATED DATA VALIDATION OK — 500 tickets, chaos 0.15/0.15, 0 PII findings, exit 0 |
+| NOT RUN | `verify:db` (Docker verified stopped), `verify:hosted`, `verify:deployed`, Admin-API XSS harness |
+| Evidence pack | `pnpm run evidence` still red by design (12 verified / 4 unverifiable) |
+| Correction | the merge commit's "226/226 measured at 7383314" was wrong; 226/226 was at `e06555f`, `7383314` = 227. See AGENTS.md. |

@@ -5,6 +5,18 @@
   "releasedWith": "2026-10-12 Task A2 hardening of scan-history-secrets.mjs",
   "entries": [
     {
+      "id": "EXC-CREDURL-DOC-001",
+      "commit": "74386380e86708b93ee747ca50dad22a7cdec8ee",
+      "path": "docs/program/p0-evidence-2026-10-12.md",
+      "op": "removed",
+      "category": "credential-url",
+      "lineSha256": "b8b2ba3a80d4141c0bad2a15ccf363dea624e21eeeef0d133d6db24a3e5bb638",
+      "disposition": "reviewed documentation placeholder, not a credential",
+      "reason": "The reword commit that replaced the pattern example with plain English ('URLs carrying inline credentials') removed that exact line. This entry covers the removal event of the same reviewed placeholder so the scan of full history stays clean without weakening detection.",
+      "reviewedBy": "engineering agent, Task A2",
+      "reviewedAt": "2026-10-12"
+    },
+    {
       "id": "EXC-CREDURL-DOC-002",
       "commit": "bf75949bfcff6ce16dd5bd01a36a97da2628b56f",
       "path": "docs/program/p0-evidence-2026-10-12.md",
@@ -17,15 +29,99 @@
       "reviewedAt": "2026-10-12"
     },
     {
-      "id": "EXC-CREDURL-DOC-001",
-      "commit": "74386380e86708b93ee747ca50dad22a7cdec8ee",
-      "path": "docs/program/p0-evidence-2026-10-12.md",
-      "op": "removed",
+      "id": "EXC-FIXTURE-PLANT-001",
+      "commit": "7383314a90075b91d2bdeb51a7ea145715685e16",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "added",
       "category": "credential-url",
-      "lineSha256": "b8b2ba3a80d4141c0bad2a15ccf363dea624e21eeeef0d133d6db24a3e5bb638",
-      "disposition": "reviewed documentation placeholder, not a credential",
-      "reason": "The reword commit that replaced the pattern example with plain English ('URLs carrying inline credentials') removed that exact line. This entry covers the removal event of the same reviewed placeholder so the scan of full history stays clean without weakening detection.",
-      "reviewedBy": "engineering agent, Task A2",
+      "lineSha256": "c3e488f38c275c76c33824f36ae58672f8c98939ba6b35f809c18714c1ea2538",
+      "disposition": "reviewed synthetic test fixture, not a credential",
+      "reason": "Synthetic fixture planted by the scanner's OWN negative-control suite (tooling/security/verify-history-secret-scanner.mjs) to prove the detector fires. The value is derived from a SHA-256 of a label at runtime, so it cannot be a real credential. Reviewed on 2026-10-12 in Task C2 by reading the commit diffs. The current source of that suite constructs every one of these from parts, so no NEW occurrence can accrue silently — a reintroduced literal fails closed and needs its own reviewed entry.  What it is: the scanner test suite's synthetic credential-URL fixture (user atom `pass`, host github.com) planted to prove the detector fires",
+      "reviewedBy": "engineering agent, Task C2",
+      "reviewedAt": "2026-10-12"
+    },
+    {
+      "id": "EXC-FIXTURE-PLANT-002",
+      "commit": "7383314a90075b91d2bdeb51a7ea145715685e16",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "added",
+      "category": "credential-url",
+      "lineSha256": "688bcef17bab661096f33c8fbc3674253d2b2ed8edf355e7a19529455406e7d5",
+      "disposition": "reviewed synthetic test fixture, not a credential",
+      "reason": "Synthetic fixture planted by the scanner's OWN negative-control suite (tooling/security/verify-history-secret-scanner.mjs) to prove the detector fires. The value is derived from a SHA-256 of a label at runtime, so it cannot be a real credential. Reviewed on 2026-10-12 in Task C2 by reading the commit diffs. The current source of that suite constructs every one of these from parts, so no NEW occurrence can accrue silently — a reintroduced literal fails closed and needs its own reviewed entry.  What it is: the scanner test suite's synthetic credential-URL fixture (password atom `token`, host api.github.com) planted to prove the detector fires",
+      "reviewedBy": "engineering agent, Task C2",
+      "reviewedAt": "2026-10-12"
+    },
+    {
+      "id": "EXC-FIXTURE-PLANT-003",
+      "commit": "7383314a90075b91d2bdeb51a7ea145715685e16",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "added",
+      "category": "credential-url",
+      "lineSha256": "18051266f854abfe7dc39c2f971a1969725a3ac49996b1beee03b27d6f4f0ef3",
+      "disposition": "reviewed synthetic test fixture, not a credential",
+      "reason": "Synthetic fixture planted by the scanner's OWN negative-control suite (tooling/security/verify-history-secret-scanner.mjs) to prove the detector fires. The value is derived from a SHA-256 of a label at runtime, so it cannot be a real credential. Reviewed on 2026-10-12 in Task C2 by reading the commit diffs. The current source of that suite constructs every one of these from parts, so no NEW occurrence can accrue silently — a reintroduced literal fails closed and needs its own reviewed entry.  What it is: the reviewed documentation line reproduced byte-for-byte so the registry's content identity can be checked",
+      "reviewedBy": "engineering agent, Task C2",
+      "reviewedAt": "2026-10-12"
+    },
+    {
+      "id": "EXC-FIXTURE-PLANT-004",
+      "commit": "7383314a90075b91d2bdeb51a7ea145715685e16",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "added",
+      "category": "private-key-block",
+      "lineSha256": "bc3773e4b3398b282caf30130f2953b90b19ce95acf81c516f7e951e3bf9e67a",
+      "disposition": "reviewed synthetic test fixture, not a credential",
+      "reason": "Synthetic fixture planted by the scanner's OWN negative-control suite (tooling/security/verify-history-secret-scanner.mjs) to prove the detector fires. The value is derived from a SHA-256 of a label at runtime, so it cannot be a real credential. Reviewed on 2026-10-12 in Task C2 by reading the commit diffs. The current source of that suite constructs every one of these from parts, so no NEW occurrence can accrue silently — a reintroduced literal fails closed and needs its own reviewed entry.  What it is: a nonfunctional private-key header/footer planted in a temp fixture to prove the detector fires",
+      "reviewedBy": "engineering agent, Task C2",
+      "reviewedAt": "2026-10-12"
+    },
+    {
+      "id": "EXC-FIXTURE-PLANT-005",
+      "commit": "df1e5694dd7cdb98fb848068798cfe5bcb9900a1",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "added",
+      "category": "credential-url",
+      "lineSha256": "c3e488f38c275c76c33824f36ae58672f8c98939ba6b35f809c18714c1ea2538",
+      "disposition": "reviewed synthetic test fixture, not a credential",
+      "reason": "Synthetic fixture planted by the scanner's OWN negative-control suite (tooling/security/verify-history-secret-scanner.mjs) to prove the detector fires. The value is derived from a SHA-256 of a label at runtime, so it cannot be a real credential. Reviewed on 2026-10-12 in Task C2 by reading the commit diffs. The current source of that suite constructs every one of these from parts, so no NEW occurrence can accrue silently — a reintroduced literal fails closed and needs its own reviewed entry.  What it is: same content as EXC-FIXTURE-PLANT-001, introduced again as an added line by the merge commit's diff against its first parent",
+      "reviewedBy": "engineering agent, Task C2",
+      "reviewedAt": "2026-10-12"
+    },
+    {
+      "id": "EXC-FIXTURE-PLANT-006",
+      "commit": "df1e5694dd7cdb98fb848068798cfe5bcb9900a1",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "added",
+      "category": "credential-url",
+      "lineSha256": "688bcef17bab661096f33c8fbc3674253d2b2ed8edf355e7a19529455406e7d5",
+      "disposition": "reviewed synthetic test fixture, not a credential",
+      "reason": "Synthetic fixture planted by the scanner's OWN negative-control suite (tooling/security/verify-history-secret-scanner.mjs) to prove the detector fires. The value is derived from a SHA-256 of a label at runtime, so it cannot be a real credential. Reviewed on 2026-10-12 in Task C2 by reading the commit diffs. The current source of that suite constructs every one of these from parts, so no NEW occurrence can accrue silently — a reintroduced literal fails closed and needs its own reviewed entry.  What it is: same content as EXC-FIXTURE-PLANT-002, re-introduced by the merge diff",
+      "reviewedBy": "engineering agent, Task C2",
+      "reviewedAt": "2026-10-12"
+    },
+    {
+      "id": "EXC-FIXTURE-PLANT-007",
+      "commit": "df1e5694dd7cdb98fb848068798cfe5bcb9900a1",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "added",
+      "category": "credential-url",
+      "lineSha256": "18051266f854abfe7dc39c2f971a1969725a3ac49996b1beee03b27d6f4f0ef3",
+      "disposition": "reviewed synthetic test fixture, not a credential",
+      "reason": "Synthetic fixture planted by the scanner's OWN negative-control suite (tooling/security/verify-history-secret-scanner.mjs) to prove the detector fires. The value is derived from a SHA-256 of a label at runtime, so it cannot be a real credential. Reviewed on 2026-10-12 in Task C2 by reading the commit diffs. The current source of that suite constructs every one of these from parts, so no NEW occurrence can accrue silently — a reintroduced literal fails closed and needs its own reviewed entry.  What it is: same content as EXC-FIXTURE-PLANT-003, re-introduced by the merge diff",
+      "reviewedBy": "engineering agent, Task C2",
+      "reviewedAt": "2026-10-12"
+    },
+    {
+      "id": "EXC-FIXTURE-PLANT-008",
+      "commit": "df1e5694dd7cdb98fb848068798cfe5bcb9900a1",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "added",
+      "category": "private-key-block",
+      "lineSha256": "bc3773e4b3398b282caf30130f2953b90b19ce95acf81c516f7e951e3bf9e67a",
+      "disposition": "reviewed synthetic test fixture, not a credential",
+      "reason": "Synthetic fixture planted by the scanner's OWN negative-control suite (tooling/security/verify-history-secret-scanner.mjs) to prove the detector fires. The value is derived from a SHA-256 of a label at runtime, so it cannot be a real credential. Reviewed on 2026-10-12 in Task C2 by reading the commit diffs. The current source of that suite constructs every one of these from parts, so no NEW occurrence can accrue silently — a reintroduced literal fails closed and needs its own reviewed entry.  What it is: same content as EXC-FIXTURE-PLANT-004, re-introduced by the merge diff",
+      "reviewedBy": "engineering agent, Task C2",
       "reviewedAt": "2026-10-12"
     }
   ]

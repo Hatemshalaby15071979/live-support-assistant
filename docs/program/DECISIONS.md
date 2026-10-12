@@ -4,6 +4,36 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-12 — Task C/D: merged-tip verified, and a self-inflicted scanner red resolved without an exemption
+
+**Zone.** G (tooling, evidence, docs that report state). **Status.** RECORDED. Record:
+`docs/program/integration-evidence-2026-10-12.md`.
+
+**Merged tip.** `df1e5694dd7cdb98fb848068798cfe5bcb9900a1` (parents `2f23950` + `7383314`), re-verified in
+this session: gate 17/17 exit 0; scanner controls 17/17 exit 0; history scan 228/228 commits, 968,929
+changed lines, **0 hard hits**, 10 approved exceptions, exit 0; root turbo build **failed**
+(`os error 231`, host limitation, reported as failed); per-package builds, web lint, typecheck and
+desktop link all pass; dependency gate 0 advisories; all 12 pinned digests reproduce; ticket validator
+OK. `verify:db`, `verify:hosted`, `verify:deployed` and the Admin-API XSS harness were NOT RUN with
+reasons. Not pushed.
+
+**Correction.** The merge commit's message claimed "226/226 … measured at 7383314"; in fact 226/226 was
+measured at `e06555f` and `7383314` is 227. Corrected rather than quietly carried forward.
+
+**The self-inflicted red, and the rule it set.** The first scan of the merged commit was RED because the
+scanner's own negative-control suite carried credential-shaped literals in its committed source. The
+temptation — and the wrong answer — is to exempt the test file. Decision taken instead: (1) rewrite the
+test source so planted values are **constructed from parts**, leaving zero credential-shaped literals in
+the committed file; (2) leave history untouched and register the historical occurrences as exact entries
+(`EXC-FIXTURE-PLANT-001..008`), each bound to commit + path + op + SHA-256 of the normalized diff-line;
+(3) keep the fail-closed rule that a reintroduced literal fails the scan and needs its own reviewed entry.
+
+**Precedent for future exceptions.** An exception is admissible only for an occurrence a human has read
+and dispositioned, identified exactly (commit + path + op + content hash). "It is in a test file",
+"it looks like a placeholder", and "the host is example.com" are **not** dispositions.
+
+---
+
 ## 2026-10-12 — P0 re-baseline: remote truth, ancestry, secret scan, and a green JS baseline
 
 **Zone.** G (tooling, evidence, docs that report state). **Status.** RECORDED. Full record:

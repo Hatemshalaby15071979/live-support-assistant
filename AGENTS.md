@@ -2676,3 +2676,40 @@ is mirrored locally in `docs/program/OWNER_QUEUE.md`.
 `docs/HANDOFF-2026-10-12.md` (new), this entry, the status board and the decision log. No product
 code, threshold, schema, gate or pinned data changed; no push, release, deployment or hosted
 mutation.
+
+## Task C/D — merged-tip verification and ledger — 2026-10-12
+
+Full record: `docs/program/integration-evidence-2026-10-12.md`. Merge commit
+`df1e5694dd7cdb98fb848068798cfe5bcb9900a1` (parents `2f23950` + `7383314`) on `prog/main`.
+
+**Verified at the merged commit, in this session (nothing carried forward):** gate
+`node tooling/run-verification.mjs` → **17/17, exit 0**. Scanner controls
+`node tooling/security/verify-history-secret-scanner.mjs` → **17/17, exit 0**. History scan
+`node tooling/security/scan-history-secrets.mjs HEAD` → **228/228 commits, 968,929 changed lines,
+0 hard hits, 10 approved exceptions, exit 0**; `--strict` shows exactly those 10 and nothing else.
+Builds: root `pnpm -r run build` **FAILED** (`os error 231`, documented host limitation); the four
+library packages, `@sop/web` build, `@sop/web` lint (0 errors, 1 pre-existing warning), typecheck and
+`@sop/desktop` all pass. Dependency gate: 0 production advisories, baseline 0 · new 0 · escalated 0,
+exit 0. All 12 pinned digests reproduce `a0-pinned-hashes.md` exactly; `chaos-500.json` still
+`717c40dc…`. Ticket validator: SIMULATED DATA VALIDATION OK, 500 tickets, chaos 0.15/0.15, 0 PII
+findings. **NOT RUN:** `verify:db` (Docker verified stopped: `docker info` exit 1), `verify:hosted`
+(credentials/authorization), `verify:deployed`, and the Admin-API XSS harness (never against the
+shared project). `pnpm run evidence` remains red by design.
+
+**Correction to a previous claim.** The merge commit `df1e569` states "226/226 commits … measured at
+7383314". That is wrong on both halves: 226/226 was measured at `e06555f`, and
+`git rev-list --count 7383314` = 227. The tree-identity claim was true. The evidence for the merged
+commit is the scan above, at `df1e569`.
+
+**Scanner self-finding, and the fix (recorded because it is a real control failure).** The first scan of
+the merged commit was **RED** — the scanner's own negative-control suite contained credential-shaped
+literals in its committed source (a private-key header and three URL fixtures). No exemption was
+granted for "my own test file". Instead the test source was rewritten so every planted value is
+constructed from parts (grep now finds zero credential-shaped literals), the immutable historical
+occurrences in `7383314` and `df1e569` were registered as 8 exact entries
+(`EXC-FIXTURE-PLANT-001..008`, bound to commit + path + op + SHA-256), and the suite re-verified at
+17/17 controls with 0 hard hits.
+
+**Changed:** `tooling/security/verify-history-secret-scanner.mjs`, `tooling/security/history-scan-exceptions.json`,
+`docs/program/integration-evidence-2026-10-12.md`, this entry, the status board, the decision log.
+`prog/main` is 27 commits ahead of `origin/prog/main` (`90d0570`) and has **not** been pushed.

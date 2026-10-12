@@ -52,6 +52,13 @@
  *   --exceptions   path to the exception registry JSON (default: the committed registry)
  *   --git          git binary path (test seam; default: `git` on PATH)
  *
+ * Precedent for admissible exceptions (set 2026-10-12, Task C/D): an occurrence may be registered only
+ * when a human has read it and dispositioned it, and it is identified exactly — commit + path + op +
+ * content hash. "It is in a test file", "it looks like a placeholder", and "the host is example.com" are
+ * NOT dispositions. The scanner's own control suite once tripped this rule by planting literal fixtures;
+ * it was rewritten to construct its fixtures from parts, and the immutable historical occurrences were
+ * registered individually rather than exempted by file. A reintroduced literal fails closed.
+ *
  * Exit codes: 0 = completed, no hard hit · 1 = completed, hard hit(s) · 2 = did not complete.
  *
  * Known limitation (documented, not hidden): binary file content is not inspected; `git log -p`

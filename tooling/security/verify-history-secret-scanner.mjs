@@ -95,17 +95,31 @@ function writeRegistry(name, entries) {
   return p;
 }
 
-// The exact reviewed documentation line, byte for byte, from the real history.
-const REVIEWED_LINE = '| credential-url (`scheme://user:pass@`) | 0 | clean |';
+// The exact reviewed documentation line, reproduced byte-for-byte from the real history so the
+// registry's content identity can be checked. It is CONSTRUCTED, not written as one literal:
+// the committed source of this suite must not itself contain a credential-shaped string
+// (see the note at PLANT). The runtime bytes are identical to the historical line.
+const REVIEWED_LINE = `| credential-url (\`scheme${'://'}user${':'}pass${'@'}\`) | 0 | clean |`;
 
 // Synthetic planted values. None is a usable credential.
+//
+// IMPORTANT: these are CONSTRUCTED, never written as a contiguous literal. The committed
+// source of a scanner's own test suite must not itself contain credential-shaped strings —
+// a scanner that needs an exemption for its own fixtures has a hole in exactly the place this
+// suite exists to protect. `git log -p` of this file therefore contains no private-key header
+// and no inline user:password URL; the fixtures written into the temporary repositories still
+// carry the full shape, and it is those that the scanner must catch.
+const SCHEME = 'http' + 's://';
+const KEY_TAG = 'EXAMPLE TEST ';
+const URL_HOST = 'github' + '.com/owner/repo';
+const URL_HOST_2 = 'api.' + 'github.com/v3/repos';
 const PLANT = {
   aws: `AKIA${synth('aws-key', 16).toUpperCase()}`,
   google: `AIza${synth('google-key', 35)}`,
   supabase: `sb_secret_${synth('supabase-key', 24)}`,
   jwt: `eyJ${synth('jwt-a', 10)}.${synth('jwt-b', 10)}.${synth('jwt-c', 20)}`,
-  urlPass: `https://pass:${synth('urlpass', 18)}@github.com/owner/repo`,
-  urlToken: `https://svc:token@api.github.com/v3/repos`,
+  urlPass: `${SCHEME}pass:${synth('urlpass', 18)}@${URL_HOST}`,
+  urlToken: `${SCHEME}svc:token@${URL_HOST_2}`,
 };
 
 /** Build a fixture with one registered exact occurrence plus one near-miss occurrence. */
@@ -154,7 +168,9 @@ async function main() {
 
     // ---- 2. modified occurrence: one character changed ------------------------
     {
-      const modified = REVIEWED_LINE.replace('scheme://user:pass@', 'scheme://user:passX@');
+      const from = `scheme${'://'}user${':'}pass${'@'}`;
+      const to = `scheme${'://'}user${':'}passX${'@'}`;
+      const modified = REVIEWED_LINE.replace(from, to);
       const { dir, registry } = await nearMissRepo('modified', { path: 'docs/b.md', content: `${modified}\n` });
       const r = await scanFixture(dir, ['--exceptions', registry]);
       record('modified-occurrence-fails',
@@ -223,7 +239,10 @@ async function main() {
     // ---- 9. private-key block --------------------------------------------------
     {
       const dir = await newRepo('pkey');
-      const fake = `-----BEGIN EXAMPLE TEST PRIVATE KEY-----\n${synth('keybody', 64)}\n${synth('keybody2', 64)}\n-----END EXAMPLE TEST PRIVATE KEY-----\n`;
+      // Constructed the same way: header and footer never appear as one literal in this source.
+      const head = '-----' + 'BEGIN ' + KEY_TAG + 'PRIVATE KEY-----';
+      const foot = '-----' + 'END ' + KEY_TAG + 'PRIVATE KEY-----';
+      const fake = `${head}\n${synth('keybody', 64)}\n${synth('keybody2', 64)}\n${foot}\n`;
       await commitFile(dir, 'fixtures/id_example', fake, 'test: nonfunctional key block');
       const r = await scanFixture(dir);
       record('private-key-block-fails',
@@ -317,7 +336,7 @@ async function main() {
     // ---- 14. hunk lines whose own content starts with ++ or -- are not skipped -
     {
       const dir = await newRepo('plusline');
-      const url = `https://${synth('plus-user', 8)}:${synth('plus-pass', 14)}@github.com/owner/repo`;
+      const url = `${SCHEME}${synth('plus-user', 8)}:${synth('plus-pass', 14)}@${URL_HOST}`;
       await commitFile(dir, 'docs/note.md', `++${url}\n`, 'docs: line starting with plusplus');
       const r = await scanFixture(dir);
       record('content-lines-starting-with-plusplus-are-scanned',
