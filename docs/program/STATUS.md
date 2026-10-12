@@ -91,3 +91,23 @@ dependency-gate negative controls · guard-bypass logging rule · server half of
 Execution record for A0.1–A0.7 (mapped in order to the first seven P0 `Do` items in V2; the repository documents the sequence as P0 and contains no literal A0.1–A0.7 labels): `docs/program/a0-execution-2026-10-11.md`.
 
 Summary: A0.1 install/build not proved (pnpm store outside writable workspace; repair cap reached); A0.2 JS gate not run to completion and SQL only passed offline lint (Docker unavailable); A0.3 ticket validator OK after recording hashes of every pinned batch/corpus input; A0.4 G11 rerun not done (no browser binary); A0.5 server model policy 24/24, client sync harness blocked by incompatible `sharp` binary, deployed/local divergence not reproduced; A0.6 syntax and fallback checks pass, full capture not run; A0.7 audit gate passes with 0 production advisories, while the full verify condition was not re-established. No targets or thresholds were changed.
+
+## P0 re-baseline — 2026-10-12
+
+Supersedes the A0 row's "JS gate not run to completion" and "full verify condition was not
+re-established" for the JS half. Record: `docs/program/p0-evidence-2026-10-12.md`.
+
+| Item | Result |
+| --- | --- |
+| HEAD | `e934eb61b032c8b286c7bb2e1aac400de9de73f2` (`prog/xss-real-client`), clean tree |
+| Remote truth | **established** — SSH has no key; **HTTPS + credential-manager works**; fetched all heads. `origin/main` `c9de5a2` (local 6 behind) · `origin/prog/main` `90d0570` (**22 behind the candidate**) · `origin/prog/xss-real-client` `e934eb6` |
+| Ancestry | merge-base `2f23950`; `prog/main` is an ancestor; **11 commits, 28 files, +2476/−508** |
+| Secret scan | **re-run at the current candidate** (old record named `d1d6052`): 210 commits / 879,941 lines, **all hard categories 0**; delta `d1d6052..e934eb6` all categories 0; review hits dispositioned. New tool `tooling/security/scan-history-secrets.mjs` |
+| Install / build | install clean (frozen lockfile, 7 projects); `pnpm -r run build` **fails** (turbo pipe-busy, host); per-package builds pass (4 libs + web, build-identity `e934eb6`) |
+| Gate | `node tooling/run-verification.mjs` → **17/17 pass, exit 0** |
+| Dependency gate | 0 production advisories; baseline 0 · new 0 · escalated 0 → passed |
+| Ticket validator | SIMULATED DATA VALIDATION OK (500 tickets, chaos 0.15/0.15, 0 PII findings) |
+| Pinned data | all 12 inputs match `a0-pinned-hashes.md`; `chaos-500.json` = `717c40dc…` unchanged |
+| Evidence pack | red by design: 12 verified / 4 unverifiable (exit 1) |
+| Not run | `verify:db` (Docker stopped), `verify:hosted`, `verify:deployed` (credentials / authorization) |
+| Blocker | GitHub connector cannot resolve the repo → tracker #1 and workstreams #2–#8 unreachable; queue mirrored in `OWNER_QUEUE.md` |

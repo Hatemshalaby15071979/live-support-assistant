@@ -2623,3 +2623,55 @@ Two facts from that evaluation worth keeping in the ledger:
 ## A0 execution record — 2026-10-11
 
 A0.1–A0.7 results, failures, and exact commands: `docs/program/a0-execution-2026-10-11.md`. The pinned inputs were SHA-256 recorded before A0.3 in `docs/program/a0-pinned-hashes.md`. `00_CONSTITUTION.md` is missing; its content was not invented. Owner decision: EU production data region; standing non-force `prog/**` push authorization only after full-history secret scan (see `docs/program/DECISIONS.md`, “2026-10-11 — Production region and scoped push authorization”).
+
+## P0 re-baseline — 2026-10-12
+
+Full record: `docs/program/p0-evidence-2026-10-12.md`. HEAD
+`e934eb61b032c8b286c7bb2e1aac400de9de73f2`, branch `prog/xss-real-client`, working tree clean at
+start (one untracked file, the handoff report).
+
+**Remote truth, established for the first time since 2026-10-09.** SSH fails
+(`Permission denied (publickey)` — no key on this host); **HTTPS with the stored credential works**:
+`GIT_TERMINAL_PROMPT=0 git -c credential.helper=manager fetch https://github.com/… '+refs/heads/*:refs/remotes/origin/*'` → exit 0.
+Live refs after fetch: `origin/main` `c9de5a2` (local `main` 6 behind), `origin/prog/main` `90d0570`,
+`origin/prog/xss-real-client` `e934eb6`, plus `exp/*`, `feat/*`, `tool/labeling-tool`.
+
+**Ancestry.** `merge-base prog/main prog/xss-real-client` = `2f23950` (= local `prog/main` tip);
+`prog/main` **is** an ancestor; **11 commits** `prog/main..HEAD`, 0 the other way; **28 files
+changed, +2476/−508**.
+
+**Secret scan re-run against the current candidate** — the 2026-10-11 record named `d1d6052`; three
+commits (`f5a6ec0`, `edf1d3f`, `e934eb6`) came after it. New repeatable tool
+`tooling/security/scan-history-secrets.mjs`: `prog/xss-real-client` full history = **210 commits,
+879,941 changed lines inspected, EXIT 0** — private-key-block 0, jwt-shape 0, aws-access-key 0,
+google-api-key 0, supabase-secret-key 0, credential-url 0. Review hits dispositioned: 1
+password-assignment = `supabase/config.toml:246` `# pass = "env(SENDGRID_API_KEY)"` (commented
+template); 6 db-host-ref = `.env.example`; 302 email candidates across 42 domains, all in the
+documented safe classes (planted-PII generators, public corpus attribution, RFC 2606 placeholders).
+Delta-only scan `d1d6052..e934eb6` (3 commits, 1073 lines): **all categories 0**. Evidence JSON:
+`docs/program/secret-scan-2026-10-12.json`. Any new commit invalidates this scan.
+
+**Baseline.** `NODE_OPTIONS="" pnpm install --frozen-lockfile` clean (7 projects). `pnpm -r run build`
+**fails** (root script is turbo → pipe-busy `os error 231`, documented host constraint); per-package
+builds pass: `@sop/core`, `@sop/embedder`, `@sop/vector-store`, `@sop/sync` (tsc) and `@sop/web`
+(vite, 118 modules, build-identity `e934eb6`). `node tooling/run-verification.mjs` → **17 of 17 suites
+pass, exit 0**. `SOP_AUDIT_JSON=… node tooling/audit-gate.mjs` → **dependency gate passed** (0
+production advisories; baseline 0 · new 0 · escalated 0). Ticket validator → "SIMULATED DATA
+VALIDATION OK" (500 tickets, chaos 0.15/0.15, 0 PII findings). All 12 pinned inputs match
+`a0-pinned-hashes.md`; `chaos-500.json` still `717c40dc…`. `pnpm run evidence` → 12 verified /
+4 unverifiable, **exit 1 by design**.
+
+**Not run, labelled:** `verify:db` (Docker daemon stopped), `verify:hosted` (credentials +
+authorization), `verify:deployed` (credentials; the client-path XSS harness must not touch the
+shared project).
+
+**Blocker needing the owner.** The GitHub connector token cannot resolve this repository
+(`issues/1` → 404; `list_issues` → "Could not resolve to a Repository"; branches/PRs → 404) while
+git over HTTPS succeeds. Master tracker #1 and workstreams #2–#8 are unreachable; the decision queue
+is mirrored locally in `docs/program/OWNER_QUEUE.md`.
+
+**Changed by P0:** `tooling/security/scan-history-secrets.mjs` (new),
+`docs/program/secret-scan-2026-10-12.json` (new), `docs/program/p0-evidence-2026-10-12.md` (new),
+`docs/HANDOFF-2026-10-12.md` (new), this entry, the status board and the decision log. No product
+code, threshold, schema, gate or pinned data changed; no push, release, deployment or hosted
+mutation.
