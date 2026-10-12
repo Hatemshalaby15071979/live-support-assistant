@@ -123,6 +123,54 @@
       "reason": "Synthetic fixture planted by the scanner's OWN negative-control suite (tooling/security/verify-history-secret-scanner.mjs) to prove the detector fires. The value is derived from a SHA-256 of a label at runtime, so it cannot be a real credential. Reviewed on 2026-10-12 in Task C2 by reading the commit diffs. The current source of that suite constructs every one of these from parts, so no NEW occurrence can accrue silently — a reintroduced literal fails closed and needs its own reviewed entry.  What it is: same content as EXC-FIXTURE-PLANT-004, re-introduced by the merge diff",
       "reviewedBy": "engineering agent, Task C2",
       "reviewedAt": "2026-10-12"
+    },
+    {
+      "id": "EXC-FIXTURE-PLANT-009",
+      "commit": "10e08259e3fddfeadb3fb5cc936e790eecab33d5",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "removed",
+      "category": "credential-url",
+      "lineSha256": "c3e488f38c275c76c33824f36ae58672f8c98939ba6b35f809c18714c1ea2538",
+      "disposition": "reviewed synthetic test fixture removal, not a credential",
+      "reason": "REMOVAL of the synthetic fixture line, by the commit that rewrote the scanner control suite so its planted values are constructed from parts instead of written as literals. Reviewed 2026-10-12 in Task C/D: the same content identity was already reviewed as EXC-FIXTURE-PLANT-001/002/003/004 (added side); this entry covers the removal event at this commit so full-history coverage stays exact without weakening detection. What it is: pass-user synthetic URL fixture, removed.",
+      "reviewedBy": "engineering agent, Task C/D",
+      "reviewedAt": "2026-10-12"
+    },
+    {
+      "id": "EXC-FIXTURE-PLANT-010",
+      "commit": "10e08259e3fddfeadb3fb5cc936e790eecab33d5",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "removed",
+      "category": "credential-url",
+      "lineSha256": "688bcef17bab661096f33c8fbc3674253d2b2ed8edf355e7a19529455406e7d5",
+      "disposition": "reviewed synthetic test fixture removal, not a credential",
+      "reason": "REMOVAL of the synthetic fixture line, by the commit that rewrote the scanner control suite so its planted values are constructed from parts instead of written as literals. Reviewed 2026-10-12 in Task C/D: the same content identity was already reviewed as EXC-FIXTURE-PLANT-001/002/003/004 (added side); this entry covers the removal event at this commit so full-history coverage stays exact without weakening detection. What it is: token-password synthetic URL fixture, removed.",
+      "reviewedBy": "engineering agent, Task C/D",
+      "reviewedAt": "2026-10-12"
+    },
+    {
+      "id": "EXC-FIXTURE-PLANT-011",
+      "commit": "10e08259e3fddfeadb3fb5cc936e790eecab33d5",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "removed",
+      "category": "credential-url",
+      "lineSha256": "18051266f854abfe7dc39c2f971a1969725a3ac49996b1beee03b27d6f4f0ef3",
+      "disposition": "reviewed synthetic test fixture removal, not a credential",
+      "reason": "REMOVAL of the synthetic fixture line, by the commit that rewrote the scanner control suite so its planted values are constructed from parts instead of written as literals. Reviewed 2026-10-12 in Task C/D: the same content identity was already reviewed as EXC-FIXTURE-PLANT-001/002/003/004 (added side); this entry covers the removal event at this commit so full-history coverage stays exact without weakening detection. What it is: reviewed documentation line reproduced for the content-identity control, removed.",
+      "reviewedBy": "engineering agent, Task C/D",
+      "reviewedAt": "2026-10-12"
+    },
+    {
+      "id": "EXC-FIXTURE-PLANT-012",
+      "commit": "10e08259e3fddfeadb3fb5cc936e790eecab33d5",
+      "path": "tooling/security/verify-history-secret-scanner.mjs",
+      "op": "removed",
+      "category": "private-key-block",
+      "lineSha256": "bc3773e4b3398b282caf30130f2953b90b19ce95acf81c516f7e951e3bf9e67a",
+      "disposition": "reviewed synthetic test fixture removal, not a credential",
+      "reason": "REMOVAL of the synthetic fixture line, by the commit that rewrote the scanner control suite so its planted values are constructed from parts instead of written as literals. Reviewed 2026-10-12 in Task C/D: the same content identity was already reviewed as EXC-FIXTURE-PLANT-001/002/003/004 (added side); this entry covers the removal event at this commit so full-history coverage stays exact without weakening detection. What it is: nonfunctional private-key header/footer fixture, removed.",
+      "reviewedBy": "engineering agent, Task C/D",
+      "reviewedAt": "2026-10-12"
     }
   ]
 }
