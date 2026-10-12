@@ -124,6 +124,15 @@ for (const problem of problems) {
 }
 
 console.log('');
+// The G13 preregistration verdict is NOT MET and stays NOT MET. The number above is the same
+// frozen set scored again after the stale `account-identifier` mapping in pii-categories.mjs was
+// corrected: that correction is post-hoc, it is shown beside the prereg'd figure, and it is never
+// called met. A green line from this suite means the regression guard holds — it does NOT mean
+// G13 passed. See docs/prereg/g13-shape-first.md and docs/program/DECISIONS.md, 2026-10-07.
+console.log('G13 PREREG VERDICT   NOT MET   (28/30 = 93.3% vs the 95% floor, as scored per the prereg)');
+console.log('  the figure above is 29/30 = 96.7% after correcting the measuring instrument - post-hoc,');
+console.log('  shown beside the prereg\'d number, never called met. A pass here is a regression guard only.');
+console.log('');
 const ok = recall >= RECALL_FLOOR && problems.length === 0;
 console.log(ok ? 'HELD-OUT RECALL OK' : 'HELD-OUT RECALL FAILED');
 

@@ -146,16 +146,39 @@ const SUITES = [
     verdict: 'MARKET TWIN SMOKE OK',
   },
   {
-    // Stored-XSS through the real client render path (V2 §5 P5, II-02 and OS-01).
-    // It belongs in the gate because it ASSERTS and exits non-zero: 21 hostile payloads
-    // must render inert, AND the negative control must fire — an `innerHTML` renderer has
-    // to inject DOM, or the harness cannot detect an unsafe renderer and the whole pass
-    // is vacuous — AND the served document must carry a strict CSP with no inline
-    // script-src. It needs a Chrome install; CHROME_PATH overrides the Windows default.
-    // Verified 2026-10-09 on prog/xss-harness: 21/21 inert, negative control live, CSP
-    // enforced, exit 0.
+    // The pinned smoke digest (V2 §P2; the D8 class of defect — a published number nothing
+    // enforces). Until 2026-10-09 this file was checked by nothing in the gate: the smoke
+    // suite above runs run-market.mjs directly, and the digest comparison was reachable only
+    // through `pnpm run verify:p2-smoke`, which is in neither the gate nor CI.
+    //
+    // It belongs in the gate because it ASSERTS: the pinned seed's decision digest must equal
+    // tooling/market/smoke-golden-digest.json, the generated reports must stay untracked, AND
+    // the check must be able to FAIL — `--negative-control` tampers a copy of the golden digest
+    // and requires the comparison to reject it.
+    //
+    // Must run AFTER market-smoke: it reads the report that suite writes.
+    key: 'market-digest',
+    name: 'Market Twin golden smoke digest (+ negative control)',
+    script: 'tooling/market/verify-p2-smoke-digest.mjs',
+    args: ['--negative-control'],
+    verdict: 'P2 SMOKE DIGEST OK',
+  },
+  {
+    // Render-path XSS harness (textContent) — V2 §5 P5, II-02 and OS-01.
+    //
+    // WHAT IT PROVES: hostile payloads are inert when rendered with `textContent`, the
+    // exact mechanism the app's React text children use.
+    // WHAT IT DOES NOT PROVE: that the app is inert. The payloads go through a stand-in
+    // page, not the built client, so the REAL client render path is NOT yet proven. That
+    // needs tooling/security/verify-xss-client-path.mjs against a live backend.
+    //
+    // It belongs in the gate because it ASSERTS and exits non-zero: 21 payloads must render
+    // inert, AND the negative control must fire — an `innerHTML` renderer has to inject DOM,
+    // or the harness cannot detect an unsafe renderer and the whole pass is vacuous — AND the
+    // served document must carry a strict CSP with no inline script-src. It needs a Chrome
+    // install; CHROME_PATH overrides the Windows default.
     key: 'xss',
-    name: 'stored-XSS render path (headless Chrome)',
+    name: 'render-path XSS harness (textContent)',
     script: 'tooling/security/xss-harness.mjs',
     verdict: 'XSS HARNESS OK',
   },

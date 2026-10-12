@@ -1,14 +1,21 @@
 #!/usr/bin/env node
 /**
- * XSS harness — V2 §5 P5 (stored-XSS / render-path) requirement.
+ * XSS harness — render-path (textContent). V2 §5 P5, II-02 / OS-01.
+ *
+ * WHAT THIS PROVES, AND WHAT IT DOES NOT. Every payload is rendered through a
+ * STAND-IN page that uses `textContent` — the same mechanism the app's React text
+ * children compile to. That proves the *mechanism* is inert.
+ *
+ * It does NOT prove the app is inert, because the app is not in the loop: this is
+ * not the real client render path. The real client path is covered by
+ * tooling/security/verify-xss-client-path.mjs, which drives the built app against a
+ * live backend, and that is NOT yet proven.
  *
  * The earlier version (branch prog/xss-harness, a5455d2) was a STATIC payload
  * battery: it submitted payloads to the upsert-sop edge function and grep-checked
- * the echoed value for raw tags. That is NOT the V2 requirement. V2/P5 (II-02,
- * OS-01) require rendering hostile payloads through the REAL client rendering path
- * in a headless browser and asserting that nothing executes or injects.
+ * the echoed value for raw tags. That was not the V2 requirement either.
  *
- * This rebuild does exactly that, with no npm dependencies:
+ * This rebuild does the stand-in half, with no npm dependencies:
  *
  *   - A throwaway HTTP server serves a tiny page WITH a strict Content-Security-
  *     Policy (script-src 'self', no 'unsafe-inline'). Same-origin script runs;
@@ -19,7 +26,8 @@
  *       * SAFE  — `el.textContent = payload` — the EXACT mechanism the web app uses.
  *                 apps/web/src/App.tsx:714 `<h3>{view.sop.title}</h3>` and :716
  *                 `<p>{view.sop.summary}</p>` compile to React text children, which
- *                 set textContent. This is the real client rendering path.
+ *                 set textContent. Same mechanism — NOT the same page. The app is
+ *                 not in this loop, so this is not the real client render path.
  *       * UNSAFE — `el.innerHTML = payload` — a deliberately unsafe renderer used ONLY
  *                 as a negative control: it MUST inject DOM, proving the harness can
  *                 detect an unsafe renderer. A harness that could not tell the two
@@ -268,7 +276,7 @@ async function main() {
       process.stdout.write('\nXSS HARNESS FAILED\n');
       process.exit(1);
     }
-    process.stdout.write('\nXSS HARNESS OK — every payload renders inert through the real client path; unsafe renderer detected by negative control; CSP enforced\n');
+    process.stdout.write('\nXSS HARNESS OK — every payload renders inert through textContent; unsafe renderer detected by negative control; CSP enforced (stand-in page, NOT the built client — the real client path is not yet proven)\n');
     process.exit(0);
   } catch (err) {
     cleanup();

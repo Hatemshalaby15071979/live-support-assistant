@@ -4,6 +4,47 @@ Zone Y and Zone G decisions taken under the V2 operating contract. Newest first.
 
 ---
 
+## 2026-10-12 — P0 re-baseline: remote truth, ancestry, secret scan, and a green JS baseline
+
+**Zone.** G (tooling, evidence, docs that report state). **Status.** RECORDED. Full record:
+`docs/program/p0-evidence-2026-10-12.md`.
+
+- **Remote is reachable over HTTPS, not SSH.** `git fetch origin` fails (`Permission denied
+  (publickey)`); `git -c credential.helper=manager fetch https://github.com/…` succeeds. Standing
+  consequence: use the explicit HTTPS + credential-manager override for fetch and push on this host;
+  no credential on any command line.
+- **Live remote refs (first verified since 2026-10-09):** `origin/main` `c9de5a2` (local `main` 6
+  behind), `origin/prog/main` `90d0570` (**22 commits behind the candidate**), `origin/prog/xss-real-client`
+  `e934eb6`.
+- **Ancestry:** merge-base `2f23950`; `prog/main` is an ancestor of the candidate; 11 commits,
+  28 files, +2476/−508.
+- **Secret scan re-run at the current candidate.** The 2026-10-11 record named `d1d6052`; three
+  commits followed it. New tool `tooling/security/scan-history-secrets.mjs` (hard categories fail the
+  run): 210 commits / 879,941 changed lines, **0 hard-category hits**; delta `d1d6052..e934eb6`
+  (3 commits / 1,073 lines) **0 in every category**. Review hits dispositioned in the report.
+  Evidence: `docs/program/secret-scan-2026-10-12.json`. **A scan is evidence about the revision it
+  names; any new commit requires a re-run.**
+- **Baseline:** install clean; per-package builds pass (`pnpm -r run build` fails on turbo
+  pipe-busy — host constraint); gate **17/17**; dependency gate passed; ticket validator OK; all 12
+  pinned inputs unchanged. `verify:db` / `verify:hosted` / `verify:deployed` NOT RUN (Docker stopped,
+  credentials, authorization).
+- **No product code, threshold, schema, gate or pinned data changed.**
+
+## 2026-10-12 — GitHub connector cannot see this repository (Zone R, parked with a default)
+
+**Zone.** R (external account access). **Status.** PARKED — default in effect.
+
+The connected GitHub account resolves as `HatemIsmailShalaby1979`, but every repository-scoped API
+call returns 404 / "Could not resolve to a Repository" (`issues/1`, `list_issues`, `list_branches`,
+`list_pull_requests`) while `git` over HTTPS with the stored credential succeeds against the same
+repo. The master tracker (issue #1) and workstream issues #2–#8 are therefore unreachable, and CI
+run status / branch protection cannot be inspected.
+
+**Default while waiting:** the decision queue stays mirrored in `docs/program/OWNER_QUEUE.md`, and
+progress is recorded in this log and `docs/program/STATUS.md`. **Owner action:** grant the GitHub
+connector access to this repository (or supply a scoped PAT). No workaround was attempted against
+the API.
+
 ## 2026-10-09 — Docs reconciliation: six documents were describing a tree that no longer existed
 
 **Zone.** G (docs that report state). **Status.** RECONCILED — no claim was changed, only stale
@@ -47,6 +88,14 @@ The prior version (`a5455d2`) was a STATIC payload battery: it submitted payload
 - Asserts strict CSP is served and same-origin script runs while inline/handlers are blocked.
 
 **Run status.** Verified locally: 21/21 safe payloads pass, negative control live (unsafe renderer injects DOM), CSP enforced. Exit 0.
+
+> **CORRECTED 2026-10-09 — the heading above overclaims, and so does the body.** This harness renders
+> through a **stand-in page** that uses `textContent`; the app is never in the loop. It proves the
+> *mechanism* is inert, not that the *app* is inert. The correct name is **"render-path XSS harness
+> (textContent)"**, and the real client render path is **NOT yet proven** — that needs
+> `tooling/security/verify-xss-client-path.mjs` against a live backend (P5). The registration in
+> `tooling/run-verification.mjs` now carries that name and that limit. The sentence above is left as
+> written; only this marker is new.
 
 ## 2026-10-08 — Build identity wired into the app UI + version file
 
@@ -1316,3 +1365,13 @@ Both runs are recorded in `docs/program/phase-0-report.md`.
 
 `docs/program/` created with `STATUS.md`, `DECISIONS.md`, `OWNER_QUEUE.md`, `DEFERRED.md`
 and `FAILURES/`. Branches `prog/main` and `prog/p0-integrity` created. `main` is untouched.
+
+## 2026-10-11 — Production region and scoped push authorization
+
+**Zone.** Owner decision recorded; no external action taken here.
+
+- **Production data region: EU.** This is the selected region for production data residency. The specific provider/region identifier and the deployed project's actual region still need verification before any residency claim.
+- **Push authorization:** standing authorization to push `prog/**` branches non-force, after a full-history secret scan. This supersedes the 2026-10-08 requirement for a separate explicit yes for each such push. It does not authorize force pushes, releases, or public deployment.
+- `00_CONSTITUTION.md` was checked and is missing. No replacement content was inferred or created; the missing file is reported as a governance gap.
+
+**Evidence.** Owner instruction in chat on 2026-10-11. No push or hosted mutation was performed during A0.
