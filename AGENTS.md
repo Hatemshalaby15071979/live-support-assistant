@@ -2654,7 +2654,8 @@ Delta-only scan `d1d6052..e934eb6` (3 commits, 1073 lines): **all categories 0**
 **Baseline.** `NODE_OPTIONS="" pnpm install --frozen-lockfile` clean (7 projects). `pnpm -r run build`
 **fails** (root script is turbo → pipe-busy `os error 231`, documented host constraint); per-package
 builds pass: `@sop/core`, `@sop/embedder`, `@sop/vector-store`, `@sop/sync` (tsc) and `@sop/web`
-(vite, 118 modules, build-identity `e934eb6`). `node tooling/run-verification.mjs` → **17 of 17 suites
+(vite, 118 modules, build-identity `e934eb6`); `@sop/desktop` (`tauri build --no-bundle`) also links
+— `sop-desktop.exe`, release profile, 1m45s. `node tooling/run-verification.mjs` → **17 of 17 suites
 pass, exit 0**. `SOP_AUDIT_JSON=… node tooling/audit-gate.mjs` → **dependency gate passed** (0
 production advisories; baseline 0 · new 0 · escalated 0). Ticket validator → "SIMULATED DATA
 VALIDATION OK" (500 tickets, chaos 0.15/0.15, 0 PII findings). All 12 pinned inputs match
