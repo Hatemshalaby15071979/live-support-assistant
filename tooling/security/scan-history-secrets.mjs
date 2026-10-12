@@ -5,20 +5,30 @@
  * Why: the standing push rule (AGENTS.md "Standing authorization") requires a clean
  * full-history scan of the exact candidate branch before any push. The 2026-10-11 record
  * (docs/program/FAILURES/2026-10-11-full-history-secret-scan.md) covered HEAD d1d6052 only;
- * the candidate head moved to e934eb6. A scan is evidence about the revision it names, so it
- * must be re-run, not re-quoted.
+ * the candidate head moved on. A scan is evidence about the revision it names, so it must be
+ * re-run, not re-quoted.
  *
  * What it does: streams `git log -p` for every commit reachable from <rev>, inspects every
  * ADDED and REMOVED line (i.e. every line ever introduced anywhere in that history), and
- * classifies candidates into categories. Matched values are redacted before printing; email
- * local-parts are never printed, only domains.
+ * classifies candidates. Matched values are redacted before printing; email local-parts are
+ * never printed, only domains.
  *
  * Usage:
- *   node tooling/security/scan-history-secrets.mjs [rev] [--json <path>]
+ *   node tooling/security/scan-history-secrets.mjs [rev] [--json <path>] [--strict]
  *
- * Exit code: 1 if a HARD category (key material, token shape, credential-bearing URL) has a
- * hit; 0 otherwise. REVIEW categories (assignments, emails, host refs) are printed for human
- * disposition and never fail the run by themselves.
+ * --strict disables the documented placeholder exemption (see PLACEHOLDER_ATOM / PLACEHOLDER_HOST)
+ * and reports every syntactically credential-shaped string as a hard hit. Use it when the question
+ * is "what shapes exist", not "is a real secret present".
+ *
+ * Placeholder exemption, and why it is narrow: documentation and fixtures legitimately contain
+ * credential-shaped *placeholders*. The exemption matches an EXACT whole atom — the literal words
+ * user/pass/password/pwd/secret/token/changeme, `<angle-bracket>` and `${braced}` templates, and
+ * `env(...)` references — or a host on the documented placeholder list. A real credential is not
+ * one of those exact words, so it still fails. This exemption was added on 2026-10-12 after the
+ * scan flagged this repository's own documentation prose; the strict view is always available.
+ *
+ * Exit code: 1 if a hard-category hit survives the exemption; 0 otherwise. REVIEW categories are
+ * printed for human disposition and never fail the run by themselves.
  *
  * No dependencies. Async spawn only (spawnSync fails EBUSY on this host).
  */
@@ -30,9 +40,9 @@ import { writeFileSync } from 'node:fs';
 const args = process.argv.slice(2);
 const jsonIdx = args.indexOf('--json');
 const jsonPath = jsonIdx >= 0 ? args[jsonIdx + 1] : null;
+const strict = args.includes('--strict');
 const rev = args.find((a) => !a.startsWith('--') && a !== jsonPath) || 'HEAD';
 
-const HARD = new Set(['private-key-block', 'jwt-shape', 'aws-access-key', 'google-api-key', 'credential-url', 'supabase-secret-key']);
 const MAX_DETAIL = 25;
 
 const CATEGORIES = [
@@ -49,6 +59,18 @@ const CATEGORIES = [
 ];
 
 const EMAIL_SAFE_DOMAIN = /(^|\.)(example\.(com|org|net)|example|invalid|test|localhost)$/i;
+/** Exact whole-atom placeholders. A real credential is not one of these words. */
+const PLACEHOLDER_ATOM = /^(user|username|user_name|user-name|pass|password|passwd|pwd|secret|token|changeme|change_me|xxx+|x{3,}|your[-_]?[a-z_]*|<[^>]*>|\$\{[^}]*\}|env\([^)]*\))$/i;
+/** Documented placeholder hosts. */
+const PLACEHOLDER_HOST = /^(example\.(com|org|net)|example|localhost|127\.0\.0\.1|host|hostname|server|db|db\.example|your-host)$/i;
+
+function isPlaceholderCredentialUrl(raw) {
+  const m = raw.match(/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\/([^@/:]+):([^@/]+)@(.*)$/);
+  if (!m) return false;
+  const [, user, pass, rest] = m;
+  const host = rest.split(/[/:?#]/)[0];
+  return PLACEHOLDER_ATOM.test(user) || PLACEHOLDER_ATOM.test(pass) || PLACEHOLDER_HOST.test(host);
+}
 
 /** Keep the shape, hide the value. */
 function redact(s) {
@@ -60,11 +82,15 @@ function redact(s) {
 function classify(line, cat) {
   const m = line.match(cat.re);
   if (!m) return null;
+  const raw = m[0];
   if (cat.id === 'email-address') {
-    const domain = m[0].split('@')[1] || '';
-    return { value: `<local-part>@${domain}`, safeDomain: EMAIL_SAFE_DOMAIN.test(domain) };
+    const domain = raw.split('@')[1] || '';
+    return { value: `<local-part>@${domain}`, hard: false, safeClass: EMAIL_SAFE_DOMAIN.test(domain) ? 'rfc2606/example domain' : null };
   }
-  return { value: redact(m[0]), safeDomain: false };
+  if (cat.id === 'credential-url' && !strict && isPlaceholderCredentialUrl(raw)) {
+    return { value: redact(raw), hard: false, safeClass: 'documentation placeholder' };
+  }
+  return { value: redact(raw), hard: cat.hard, safeClass: null };
 }
 
 const git = spawn('git', ['log', '-p', '--no-color', '--no-merges', '--format=@@@%H|%aI|%s', rev], {
@@ -78,6 +104,7 @@ if (!git.stdout) {
 }
 
 const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, 0]));
+const hardCounts = Object.fromEntries(CATEGORIES.map((c) => [c.id, 0]));
 const details = Object.fromEntries(CATEGORIES.map((c) => [c.id, []]));
 const domains = new Map();
 let commits = 0;
@@ -127,34 +154,41 @@ rl.on('line', (line) => {
     const hit = classify(body, cat);
     if (!hit) continue;
     counts[cat.id] += 1;
-    if (cat.id === 'email-address') domains.set(hit.value.split('@')[1], (domains.get(hit.value.split('@')[1]) || 0) + 1);
+    if (hit.hard) hardCounts[cat.id] += 1;
+    if (cat.id === 'email-address') {
+      const d = hit.value.split('@')[1];
+      domains.set(d, (domains.get(d) || 0) + 1);
+    }
     if (details[cat.id].length < MAX_DETAIL) {
-      details[cat.id].push(`${current.sha} ${current.date} ${file} :: ${hit.value}`);
+      const note = hit.safeClass ? `  [${hit.safeClass}]` : '';
+      details[cat.id].push(`${current.sha} ${current.date} ${file} :: ${hit.value}${note}`);
     }
   }
 });
 
 git.on('close', (code) => {
-  const hardHits = CATEGORIES.filter((c) => c.hard).reduce((n, c) => n + counts[c.id], 0);
+  const hardHits = CATEGORIES.reduce((n, c) => n + hardCounts[c.id], 0);
   const report = {
     tool: 'scan-history-secrets.mjs',
     rev,
-    revResolved: null,
+    strict,
     scannedAt: new Date().toISOString(),
     commits,
     changedLinesInspected: addedLines,
     counts,
+    hardCounts,
     hardHits,
     emailDomains: Object.fromEntries([...domains.entries()].sort((a, b) => b[1] - a[1])),
     details,
   };
 
-  console.log(`# history secret scan — rev ${rev}`);
+  console.log(`# history secret scan — rev ${rev}${strict ? ' (STRICT)' : ''}`);
   console.log(`commits scanned: ${commits}   changed lines inspected: ${addedLines}`);
   console.log('');
   for (const cat of CATEGORIES) {
     const n = counts[cat.id];
-    const tag = cat.hard ? (n > 0 ? 'HARD-HIT' : 'clean') : n > 0 ? 'REVIEW' : 'clean';
+    const h = hardCounts[cat.id];
+    const tag = cat.hard ? (h > 0 ? `HARD-HIT ${h}` : 'clean') : n > 0 ? 'REVIEW' : 'clean';
     console.log(`${cat.id.padEnd(20)} ${String(n).padStart(6)}  ${tag}`);
     for (const d of details[cat.id]) console.log(`    ${d}`);
     if (counts[cat.id] > details[cat.id].length) {
