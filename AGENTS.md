@@ -2713,3 +2713,32 @@ occurrences in `7383314` and `df1e569` were registered as 8 exact entries
 **Changed:** `tooling/security/verify-history-secret-scanner.mjs`, `tooling/security/history-scan-exceptions.json`,
 `docs/program/integration-evidence-2026-10-12.md`, this entry, the status board, the decision log.
 `prog/main` is 27 commits ahead of `origin/prog/main` (`90d0570`) and has **not** been pushed.
+
+
+## Harness portability and the missing constitution — 2026-10-31
+
+**Executed.** Two gaps the A0 record left open, both closed and proven.
+
+1. **The XSS harness could not find a browser off Windows.** `tooling/security/xss-harness.mjs` hardcoded
+   `C:/Program Files/Google/Chrome/Application/chrome.exe`, so on this host the suite printed
+   `XSS HARNESS NOT RUN` and the gate reported 16/17. Resolution now lives in
+   `tooling/security/chrome.mjs` (env var, Linux, macOS, Windows, then a locally bootstrapped headless
+   shell) and `tooling/security/ensure-chrome.mjs` downloads the pinned
+   `chrome-headless-shell 156.0.8078.80` into `.cache/chrome` when nothing is installed. Snap Chromium is
+   deliberately not a candidate: it fails on this host with `cannot create transient scope: DBus error`,
+   which would turn a missing browser into a confusing harness failure.
+
+2. **`00_CONSTITUTION.md` did not exist.** `docs/program/a0-execution-2026-10-11.md` recorded it as
+   missing and refused to invent content. The repository now carries its own constitution, restating the
+   workspace rules that bind this code: identity before implementation, reproducibility before
+   publication, fail-closed boundaries, per-tenant thresholds, no silent telemetry loss, no production
+   claim.
+
+**Verified.** `pnpm run verify` → **17 of 17 suites pass**, including `render-path XSS harness`
+(21 payloads, 0 safe failures, negative control fires, CSP enforced). `pnpm run evidence` remains **red**
+by design: 12 verified, 4 unverifiable, 0 mismatched. Those four are recorded in the workspace blocker
+register (`LSA-B01`) with a disposition protocol; striking them without re-running the underlying
+measurement would be the fabricated-green failure this repository exists to avoid.
+
+**Changed:** `tooling/security/{chrome,ensure-chrome,xss-harness}.mjs`, `00_CONSTITUTION.md`, this entry.
+

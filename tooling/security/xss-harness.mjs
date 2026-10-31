@@ -55,8 +55,14 @@ import { tmpdir } from 'node:os';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 
-const CHROME = process.env.CHROME_PATH
-  || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+import { ensureChrome } from './ensure-chrome.mjs';
+
+let CHROME = null;
+try {
+  CHROME = ensureChrome();
+} catch {
+  CHROME = null;
+}
 const DEBUG_PORT = 9333;
 const HOST = '127.0.0.1';
 
@@ -189,8 +195,10 @@ window.__unsafe = (s) => {
 
 async function main() {
   const payloads = JSON.parse(readFileSync(resolve(root, 'tooling/security/xss-payloads.json'), 'utf8'));
-  if (!existsSync(CHROME)) {
-    process.stdout.write(`XSS HARNESS NOT RUN — Chrome not found at ${CHROME} (set CHROME_PATH)\n`);
+  if (!CHROME || !existsSync(CHROME)) {
+    process.stdout.write(
+      'XSS HARNESS NOT RUN — no usable Chrome (set CHROME_PATH or run tooling/security/ensure-chrome.mjs)\n',
+    );
     process.exit(2);
   }
 
