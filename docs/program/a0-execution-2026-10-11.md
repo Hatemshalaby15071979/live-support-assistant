@@ -11,7 +11,7 @@ The repository's V2 brief names these as P0 tasks, not A0.1–A0.7. This report 
 ## A0.1 — install and build
 
 **DID:** Tried install and build in order.
-**PROVED:** None. `pnpm install && pnpm -r run build` failed before build because pnpm could not create `/home/thommyshelby/.local/share/pnpm/store` (`ENOENT`). The three attempts and exact outcomes are in `docs/program/FAILURES/A0-1-install-build.md`.
+**PROVED:** None. `pnpm install && pnpm -r run build` failed before build because pnpm could not create `/home/<user>/.local/share/pnpm/store` (`ENOENT`). The three attempts and exact outcomes are in `docs/program/FAILURES/A0-1-install-build.md`.
 **NOT DONE:** Build did not run. Three attempts reached the cap.
 **RISK:** Existing `node_modules` is from a different platform; some direct harnesses fail to load native `sharp` on Linux.
 **NEXT:** Re-run on a host with a writable pnpm store and supported TTY install confirmation.
