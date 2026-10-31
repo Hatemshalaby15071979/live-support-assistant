@@ -39,7 +39,7 @@ const snapshotsDir = resolve(here, 'snapshots');
 const manifestPath = resolve(here, 'manifest.json');
 const sourcesPath = resolve(here, 'sources.json');
 
-const USER_AGENT = 'live-support-assistant-corpus-harvester (+https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant)';
+const USER_AGENT = 'live-support-assistant-corpus-harvester (+https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant)';
 
 /** Documents larger than this are skipped: a book is not a support procedure. */
 const MAX_DOCUMENT_BYTES = 200_000;

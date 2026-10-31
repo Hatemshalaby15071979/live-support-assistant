@@ -64,7 +64,7 @@ and dispositioned, identified exactly (commit + path + op + content hash). "It i
 
 **Zone.** R (external account access). **Status.** PARKED — default in effect.
 
-The connected GitHub account resolves as `HatemIsmailShalaby1979`, but every repository-scoped API
+The connected GitHub account resolves as `<YOUR_GITHUB_ORG>`, but every repository-scoped API
 call returns 404 / "Could not resolve to a Repository" (`issues/1`, `list_issues`, `list_branches`,
 `list_pull_requests`) while `git` over HTTPS with the stored credential succeeds against the same
 repo. The master tracker (issue #1) and workstream issues #2–#8 are therefore unreachable, and CI
@@ -198,7 +198,7 @@ This supersedes any convenience default. The credential-manager push override (Z
 
 **Zone.** Y (procedure). **Status.** RECORDED — standing push procedure for this host.
 
-The repository uses an HTTPS remote (`https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant.git`). PortableGit on this host ships `credential.helper=helper-selector`, which is **not present**, so a plain `git push`/`pull` fails with `could not read Username`. The working override (non-force, non-rejection) is:
+The repository uses an HTTPS remote (`https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant.git`). PortableGit on this host ships `credential.helper=helper-selector`, which is **not present**, so a plain `git push`/`pull` fails with `could not read Username`. The working override (non-force, non-rejection) is:
 
 ```
 GIT_TERMINAL_PROMPT=0 git -c "credential.helper=$(command -v git-credential-manager)" push origin <branch>

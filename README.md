@@ -5,9 +5,9 @@
 
 <!-- badges:start -->
 
-[![CI](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/actions/workflows/CI/badge.svg)](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/actions)
+[![CI](https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant/actions/workflows/CI/badge.svg)](https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant/actions)
 ![licence](https://img.shields.io/badge/licence-MIT-blue)
-[![last commit](https://img.shields.io/github/last-commit/HatemIsmailShalaby1979/LIVE-Support-Assistant)](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/commits/main)
+[![last commit](https://img.shields.io/github/last-commit/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant)](https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant/commits/main)
 ![status](https://img.shields.io/badge/ci-success-brightgreen?label=success%20(2026-10-05))
 
 *Measured 2026-10-06 — CI **success**; head `ad1f45d` (2026-10-05); JavaScript.*
@@ -20,7 +20,7 @@
 **An explainable browser support prototype with an on-device confidence gate.**
 
 ![Status](https://img.shields.io/badge/status-prototype-yellow)
-![Confidence gate — CI](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/actions/workflows/ci.yml/badge.svg)
+![Confidence gate — CI](https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant/actions/workflows/ci.yml/badge.svg)
 ![Licence](https://img.shields.io/badge/licence-MIT-blue)
 ![TypeScript](https://img.shields.io/badge/typescript-app-3178c6)
 
@@ -116,7 +116,7 @@ Four experiment branches are **evidence-only** — measured, rejected or kept as
 
 | Tag | Branch | Finding |
 | --- | --- | --- |
-| [`evidence/scale-rung`](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md) (`e5a7d9baf4f6`) | `exp/scale-rung` | 48-procedure corpus; in-scope recall 84/302 (27.8%) at 0.18 |
+| [`evidence/scale-rung`](https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md) (`e5a7d9baf4f6`) | `exp/scale-rung` | 48-procedure corpus; in-scope recall 84/302 (27.8%) at 0.18 |
 | `evidence/multilingual-embedder` (`65b76aef103f`) | `exp/multilingual-embedder` | +0.3 pp overall at 5.1× download — rejected |
 | `evidence/reranker` (`495b52f6399b`) | `exp/reranker-measurement` | +14/+15 unsafe answers — rejected |
 | `evidence/procedure-wording` (`bd6db511a0ca`) | `exp/procedure-distinctness` | threshold-dependent — rejected |
@@ -277,11 +277,11 @@ Nothing in this repository has been through any of the six.
 
 ## Related work
 
-- [Portfolio and wider work](https://github.com/HatemIsmailShalaby1979/HatemIsmailShalaby1979)
+- [Portfolio and wider work](https://github.com/<YOUR_GITHUB_ORG>/<YOUR_GITHUB_ORG>)
 
 ## Author
 
-Built by Hatem Ismail Shalaby, Contact Centre Operations & AI Implementation Lead | WFM & CX Transformation. Background: https://github.com/HatemIsmailShalaby1979
+Built by Hatem Shalaby, Contact Centre Operations & AI Implementation Lead | WFM & CX Transformation. Background: https://github.com/<YOUR_GITHUB_ORG>
 
 ## Licence
 

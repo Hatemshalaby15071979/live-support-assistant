@@ -3,7 +3,7 @@ name = "sop-desktop"
 version = "0.1.0"
 edition = "2021"
 description = "Desktop shell for the Explainable SOP Escalation & Audit Engine"
-authors = ["Hatem Ismail Shalaby"]
+authors = ["Hatem Shalaby"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
