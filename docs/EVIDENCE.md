@@ -19,13 +19,13 @@ has been shown, what it costs, and what has not been shown at all.
 | Safety behaviour, independent holdout seed, margin 0.18 | 359/500 (71.8%), 141 false escalations, **0 unsafe** | `tooling/eval/simulated-tenant/phase5-holdout-seed-20260929-margin-018.md` |
 | Safety behaviour at 48 procedures, margin 0.18 | 196/414 (47.3%), 218 false escalations, **0 unsafe** | tag `evidence/scale-rung` (`e5a7d9baf4f6`) — [scale-rung-results.md](https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md) |
 | Same corpus, margin 0.17 | 205/414 (49.5%), 208 false escalations, **1 unsafe** (`SCALE-0328`) | same file |
-| Deployed path end to end (sign-in, bundle, model, gate, tagged ingest) | 361/500 (72.2%), 138 false escalations, 1 unsafe, 0 runtime errors | `tooling/eval/simulated-tenant/phase5-deployed-run-0aec9773442c4282.md` |
-| Deployed parity run, 39-ticket batch, margin 0.17 | 26/39 (66.7%), 7 false escalations, 6 unsafe (PARITY-RP-022/023/025/026/040/060) — the same six out-of-scope false accepts as the refusal table; margins 0.1869–0.4175, all ≥ shipped 0.18 | `tooling/eval/simulated-tenant/phase5-deployed-run-60cdbbea8a4f478f.md` |
-| **Proven** — tenant isolation audit | 500/500 query events, 261/261 escalation records, 15 SOP versions, 4 profiles, 2 devices tagged; **0 untagged rows** | same file |
+| **Recorded — not a verified claim.** Deployed path end to end (sign-in, bundle, model, gate, tagged ingest); no commit pinned | 361/500 (72.2%), 138 false escalations, 1 unsafe, 0 runtime errors | `tooling/eval/simulated-tenant/phase5-deployed-run-0aec9773442c4282.md` |
+| **Recorded — not a verified claim.** Deployed parity run, 39-ticket batch, margin 0.17; no commit pinned | 26/39 (66.7%), 7 false escalations, 6 unsafe (PARITY-RP-022/023/025/026/040/060) — the same six out-of-scope false accepts as the refusal table; margins 0.1869–0.4175, all ≥ shipped 0.18 | `tooling/eval/simulated-tenant/phase5-deployed-run-60cdbbea8a4f478f.md` |
+| **Recorded — not a verified claim.** Tenant isolation audit on the deployed run; no commit pinned | 500/500 query events, 261/261 escalation records, 15 SOP versions, 4 profiles, 2 devices tagged; **0 untagged rows** | same file |
 | Refusal behaviour, author-written floor set | **0 of 8** refusal rows auto-answered at 0.18 and 0.17 | `tooling/eval/simulated-tenant/floor-queries-results.md` |
 | The gate never leaks procedure text on escalation | 10/10 gate checks, including blocked views echoing the query text | `tooling/gate/verify-gate.mjs` |
 
-> **Reproducibility gap (deployed runs).** Neither deployed run pins a git commit hash:
+> **Reproducibility gap (deployed runs).** These three rows are recorded observations, not verified claims: since no commit is pinned, they are excluded from `pnpm run evidence` rather than counted as green. Neither deployed run pins a git commit hash:
 > `phase5-deployed-run-0aec9773442c4282` (500-ticket) and `phase5-deployed-run-60cdbbea8a4f478f`
 > (39-ticket parity) both omit the build SHA, so the exact commit each was evaluated against is not
 > recorded and the runs are not byte-for-byte reproducible from this repository alone. The parity run

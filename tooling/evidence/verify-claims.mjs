@@ -2,9 +2,17 @@
 /**
  * Evidence verifier (V2 D8 / P8).
  *
- * Every headline number published in README.md, docs/EVIDENCE.md and
+ * Every reproducible headline number published in README.md, docs/EVIDENCE.md and
  * docs/PRODUCTION_STATUS.md is listed here with the artifact it came from and the rule that
  * proves it still reproduces. `pnpm run evidence` runs this file.
+ *
+ * EXCLUDED ON PURPOSE: the deployed-run figures (500-ticket path, 39-ticket parity, the tagging
+ * audit) and the deployed/local divergence are published as **recorded observations**, not
+ * claims. Neither deployed run pins a commit, so none of them can be reproduced from this
+ * repository; they were struck from this list on 2026-10-31 rather than counted as green. The
+ * artifacts remain in `tooling/eval/simulated-tenant/` and the documents label them as
+ * unreproducible. The UNVERIFIABLE state stays in the code path for any future claim that
+ * declares one.
  *
  * THE EXIT RULE, and why it is strict. The command exits 0 only when EVERY claim is VERIFIED.
  * A claim that cannot be checked is UNVERIFIABLE, and UNVERIFIABLE is a FAILURE, not a pass:
@@ -88,27 +96,6 @@ const CLAIMS = [
     checks: [/\|\s*0\.17\s*\|\s*414\s*\|\s*205\s*\|\s*49\.5%\s*\|\s*208\s*\|\s*86\s*\|\s*1\s*\|\s*0\s*\|/, /SCALE-0328/],
   },
   {
-    id: 'deployed-500',
-    published: '361/500 (72.2%), 138 false escalations, 1 unsafe, 0 runtime errors — deployed path',
-    source: DEPLOYED_500,
-    checks: [/361\/500/, /138/],
-    requiresSha: true,
-  },
-  {
-    id: 'deployed-parity-39',
-    published: '26/39 (66.7%), 7 false escalations, 6 unsafe — deployed parity batch',
-    source: DEPLOYED_PARITY,
-    checks: [/26\/39/],
-    requiresSha: true,
-  },
-  {
-    id: 'deployed-tagging',
-    published: '500/500 query events, 261/261 escalation records tagged, 0 untagged rows',
-    source: DEPLOYED_500,
-    checks: [/500\/500/, /261\/261/, /untagged rows: 0/],
-    requiresSha: true,
-  },
-  {
     id: 'floor-refusal',
     published: '0 of 8 refusal rows auto-answered at margin 0.18 and 0.17',
     source: { kind: 'worktree', path: 'tooling/eval/simulated-tenant/floor-queries-results.md' },
@@ -145,18 +132,6 @@ const CLAIMS = [
     published: '6 of 52 out-of-scope public questions falsely accepted at 0.18 (7 at 0.17)',
     source: { kind: 'worktree', path: 'tooling/eval/simulated-tenant/real-phrased-label-results.md' },
     checks: [/6 of 52/, /7 of 52/],
-  },
-  {
-    id: 'divergence-0.180757',
-    published: 'the deployed/local divergence: 0.180757 against 0.167715 on SIM-TICKET-00272',
-    source: { kind: 'worktree', path: 'tooling/eval/simulated-tenant/parity-results.md' },
-    checks: [/0\.180757/, /0\.167715/],
-    // Declared unverifiable before the run, so the verdict does not depend on whether the
-    // strings happen to be present. MC-09 was built to reconstruct this and is an unproven
-    // hypothesis (docs/program/DECISIONS.md:51): the deployed publish path now refuses the
-    // contradictory corpus at HTTP 422, so the divergent margin cannot be replayed.
-    unverifiableReason:
-      'unreproduced: MC-09 is an unproven hypothesis and the deployed publish path now refuses the corpus at HTTP 422',
   },
 ];
 

@@ -38,7 +38,9 @@ with 500 fictional WaveCast tickets in isolated, visibly tagged tenants against
 the development Supabase project. The React confidence control was verified at
 the test-only 0.17 margin. Results: 361/500 expected dispositions (72.2%), 138
 false escalations, one unsafe answer on a contradictory synthetic payout case,
-and zero runtime errors. This is a deployed UI/bundle/model/ingest path test,
+and zero runtime errors. **Recorded observation, not a verified claim:** the run
+pins no commit and is not reproducible from this repository, so it is excluded
+from `pnpm run evidence`. This is a deployed UI/bundle/model/ingest path test,
 not a production-customer accuracy or adoption measure. The audited run
 (`0aec9773442c4282`) has tagged query, escalation, SOP-version, profile, and
 device records; the detailed report is under

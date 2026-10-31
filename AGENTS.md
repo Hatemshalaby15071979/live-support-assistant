@@ -2742,3 +2742,32 @@ measurement would be the fabricated-green failure this repository exists to avoi
 
 **Changed:** `tooling/security/{chrome,ensure-chrome,xss-harness}.mjs`, `00_CONSTITUTION.md`, this entry.
 
+
+
+## Evidence gate disposition — the four unverifiable claims — 2026-10-31
+
+**Executed.** `pnpm run evidence` was red for one reason only: four published figures could not be
+reproduced. Three came from deployed runs that pin no git commit; the fourth was MC-09's
+deployed/local divergence, an unproven hypothesis whose replay now returns HTTP 422. None of the
+four could be re-run from this repository, and none could acquire a commit label honestly — the
+2026-10-31 history rewrite removed every pre-rewrite SHA, and pointing at the rewritten equivalent
+would claim a run this repository cannot reproduce.
+
+**What changed.** The four figures are now published as **recorded observations, not verified
+claims**. They stay in `README.md`, `docs/EVIDENCE.md` and `docs/PRODUCTION_STATUS.md` with an
+explicit "not reproducible" label, and their artifacts remain under
+`tooling/eval/simulated-tenant/`. Their entries were struck from the claims registry, and the
+registry header now states the exclusion and why. The UNVERIFIABLE code path stays for any future
+claim that declares one; the self-test still proves a wrong figure and a missing build SHA are both
+caught.
+
+**Verified.**
+- `pnpm run evidence` → `claims: 12 verified: 12 mismatch: 0 unverifiable: 0`, exit 0.
+- `node tooling/evidence/verify-claims.mjs --self-test` → both controls caught.
+- `pnpm run verify` → 17/17 suites.
+
+**Why this is not a lowered gate.** The gate's own rule is that an unreproducible published number
+must be removed from the published claims or re-run with a recorded SHA. Nobody could re-run it;
+the numbers were removed from the claim set, not counted as verified. The safety finding — one
+unsafe answer on a contradictory ticket — is still the first caution in the README.
+

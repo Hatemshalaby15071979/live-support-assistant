@@ -41,7 +41,7 @@ confidence gate — and escalates instead of guessing when the match is weak.
 
 > [!CAUTION]
 > **Read this first — the three weakest measured results.**
-> - One unsafe answer on the deployed path at margin **0.180757** — the shipped 0.18 default would not have stopped it ([Safety](#safety--what-is-claimed-and-what-is-not)).
+> - One unsafe answer on the deployed path at margin **0.180757** — the shipped 0.18 default would not have stopped it ([Safety](#safety--what-is-claimed-and-what-is-not)). **Recorded observation, not a verified claim:** the run pins no commit, so it is not counted by `pnpm run evidence` and cannot be reproduced from this repository.
 > - **6 of 52** out-of-scope public questions answered at margin 0.18 ([Safety](#safety--what-is-claimed-and-what-is-not)).
 > - In-scope recall **84/302 (27.8%)** at 48 procedures ([Evidence tiers](docs/EVIDENCE.md#tier-2--measured-limits)).
 > - A second deployed run — a 39-ticket **parity batch** (`60cdbbea8a4f478f`) — recorded **6 unsafe answers**, but these are the *same* six out-of-scope false accepts already in the [refusal table](#safety--what-is-claimed-and-what-is-not) (`rp-022/023/025/026/040/060`), answered at margins 0.1869–0.4175 (all ≥ the shipped 0.18). It is a refusal-heavy batch and is **not comparable** to the 500-ticket run; its JSON sets `localBaselineApplies:false`, and neither deployed run records a git commit hash — a [reproducibility gap](docs/EVIDENCE.md#tier-1--demonstrated-on-simulated-data).
@@ -186,13 +186,14 @@ file. Nothing here is a production-customer measure. The three tiers — demonst
 measured limits, and not proven — are the honest reading, moved in full to
 [`docs/EVIDENCE.md`](docs/EVIDENCE.md).
 
-- **Demonstrated (simulated):** 500-ticket deployed run 72.2% (361/500), 1 unsafe answer at
+- **Recorded, not reproducible (deployed, 500-ticket):** 72.2% (361/500), 1 unsafe answer at
   margin 0.180757; author-written floor set 0/8 refusal rows answered at 0.18 and 0.17; gate
-  10/10 checks (`tooling/gate/verify-gate.mjs`).
-- **Demonstrated (deployed parity, 39-ticket):** 26/39 (66.7%) correct, 7 false escalations, 6
-  unsafe answers at margins 0.1869–0.4175 (all ≥ shipped 0.18) — the same six out-of-scope false
-  accepts in the refusal table, **not a regression**. `localBaselineApplies:false`; no git commit
-  hash recorded (`tooling/eval/simulated-tenant/phase5-deployed-run-60cdbbea8a4f478f.md`).
+  10/10 checks (`tooling/gate/verify-gate.mjs`). The deployed run pins no commit, so this is an
+  observation rather than a verified claim and is excluded from `pnpm run evidence`.
+- **Recorded, not reproducible (deployed parity, 39-ticket):** 26/39 (66.7%) correct, 7 false
+  escalations, 6 unsafe answers at margins 0.1869–0.4175 (all ≥ shipped 0.18) — the same six
+  out-of-scope false accepts in the refusal table, **not a regression**. `localBaselineApplies:false`;
+  no git commit hash recorded (`tooling/eval/simulated-tenant/phase5-deployed-run-60cdbbea8a4f478f.md`).
 - **Measured limits:** in-scope recall 84/302 (27.8%) at 48 procedures (0.18); non-English gap
   en 62.1% vs es 32.0% / pt 31.0%; three changes (procedure wording, cross-encoder reranker,
   multilingual embedders) measured and rejected.
