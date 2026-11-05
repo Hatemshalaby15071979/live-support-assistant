@@ -2771,3 +2771,70 @@ must be removed from the published claims or re-run with a recorded SHA. Nobody 
 the numbers were removed from the claim set, not counted as verified. The safety finding — one
 unsafe answer on a contradictory ticket — is still the first caution in the README.
 
+## Local readiness execution — 2026-11-04
+
+**Result:** NOT READY for a customer-facing or production pilot. Current execution record:
+`docs/program/execution-2026-11-04-live-support.md`; machine-readable results:
+`docs/program/evidence/live-support-execution-2026-11-04.json`.
+
+**Verified:** `pnpm run typecheck` (9 tasks), `pnpm run verify` (17/17), `pnpm run evidence`
+(12/12 registered claims), `pnpm run audit` (0 production advisories), and `pnpm run build:node`
+(5 tasks) passed. `pnpm run lint` completed with one pre-existing React Hook dependency warning.
+`pnpm run test` has no package-level test scripts to execute.
+
+**Isolation:** `CONTAINER=sop-prompt1-20261104 PORT=55433 DB=sop_prompt1 pnpm run verify:db`
+exited 0 on a fresh disposable PostgreSQL container, with five of six suites reporting OK and
+the expected accepted F-1 red: 1,475 fleet probes, zero vacuous, seven successful claim-override
+reads (`rows:3`). Anonymous-role coverage remains unproven locally. The container was removed.
+
+**Synthetic data:** the 500-ticket WaveCast fixture validator passed (75/500 chaos, 10 mutation
+classes, zero email/phone pattern findings). Two generations from the current generator were
+identical to each other but did not match the checked-in fixture hash. The offline embedder probe
+failed with `TypeError: this.tokenizer is not a function`; no fresh full-batch inference was run.
+Only one fictional tenant is covered by the support ticket batch. No hosted service or deployed
+application was accessed; `.env.local` and `SUPABASE_URL` were absent. P3, P4, P6, and P7 remain
+incomplete; P5 and P8 remain open.
+
+### Continuation — offline model and F-1 boundary — 2026-11-04
+
+The local model smoke failure was diagnosed: with Transformers.js 4.3.0, `cacheDir` alone
+does not resolve the existing pinned revision-folder model as a tokenizer source. `createEmbedder`
+now accepts an optional `modelPath`, and
+`node tooling/eval/verify-offline-embedder.mjs` verifies local loading with downloads disabled
+and a finite 384-dimensional vector. Verified with `pnpm --filter @sop/embedder build` and the
+smoke command; the workspace typecheck, 17/17 `verify`, 12/12 `evidence`, dependency audit,
+Node build, lint, and synthetic fixture validator also passed in the same continuation.
+
+`CONTAINER=sop-prompt1-continuation-20261104 PORT=55434 DB=sop_prompt1 pnpm run verify:db`
+exited 0 on a newly created disposable database; the 7 F-1 claim-override probes remain the
+accepted red. The local image lacked the `anon` role. The owner record documents hosted `anon`
+coverage as met on 2026-10-08 (`docs/program/DECISIONS.md`, OQ-012); that proof was not refreshed
+in this local continuation. The exact container was removed.
+No migration or probe expectation was changed: F-1's active owner record explicitly defers
+option C until its stated trigger, and a local PostgreSQL run cannot validate Supabase hook
+semantics. The plain-English owner re-confirmation remains pending. No migration or F-1 probe
+expectation was changed. No full 500-ticket inference or two-tenant authenticated app workflow was
+completed at that point. The execution report and machine record are
+`docs/program/execution-2026-11-04-live-support.md` and
+`docs/program/evidence/live-support-execution-2026-11-04.json`. Production readiness remains
+unproven.
+
+### Continuation — offline two-tenant inference — 2026-11-05
+
+Added `tooling/eval/run-local-synthetic-evaluation.mjs`, which uses the pinned local MiniLM cache
+with remote loading disabled and the shipped retrieval/gate/agent-view components. It freshly
+evaluated WaveCast full and holdout batches (500 each) and a deterministic Cedar Grove Online
+School fictional corpus (50 full / 50 holdout). Results: WaveCast 354/500 and 370/500 correct;
+Cedar Grove 26/50 and 23/50 correct; 0 runtime errors. Cedar Grove's 51 false escalations remain
+negative evidence; no tuning was done after the run. Batch/corpus hashes matched on a repeated
+run. Detailed per-ticket results:
+`docs/program/evidence/live-support-local-eval-2026-11-05/local-inference-results.json`.
+
+`pnpm --filter @sop/embedder build`, `node tooling/eval/verify-offline-embedder.mjs`,
+`node --check tooling/eval/run-local-synthetic-evaluation.mjs`, `pnpm run typecheck`,
+`pnpm run verify`, `pnpm run evidence`, `pnpm run audit`, `pnpm run build:node`, and
+`pnpm run lint` passed. This proves local model/decision-path behavior only; it is not an
+authenticated app workflow, hosted test, tenant-isolation pass, or production-readiness claim.
+P3 is in progress; P4, P6, and P7 remain incomplete; P5 and P8 remain open. F-1's accepted-red
+probes, migration, and disposition remain unchanged. The plain-English owner re-confirmation,
+authenticated hosted app/tenant-flow evidence, and external acceptances remain open.

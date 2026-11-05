@@ -1,16 +1,31 @@
 # LIVE Support Assistant — production status
 
-**Positioning.** Validated on a simulated tenant; safety-first by design; ready for a shadow-mode
-pilot. Not production-proven: no real customer traffic.
+**Positioning — updated 2026-11-05.** Prototype; **not production-ready and not approved for a
+customer-facing pilot**. Fresh local synthetic inference found unsafe answers, and tenant
+isolation, authenticated end-to-end flows, and operations remain unproven for release. No real
+customer traffic was used.
+
+**Latest local evaluation — SIMULATED DATA.** The offline pinned-model runner evaluated WaveCast
+Creator Care (500 full / 500 holdout) and the separate fictional Cedar Grove Online School
+tenant (50 full / 50 holdout). Correct dispositions were 354/500 and 370/500 for WaveCast, and
+26/50 and 23/50 for Cedar Grove. It recorded 1 and 2 unsafe answers on WaveCast; the Cedar Grove
+sets had 0, with 51 false escalations combined. This is local decision-path evidence, not an
+authenticated application, tenant-isolation, or customer outcome. The complete result and hashes
+are in [`local-inference-results.json`](program/evidence/live-support-local-eval-2026-11-05/local-inference-results.json);
+reproduce with `node tooling/eval/run-local-synthetic-evaluation.mjs`.
+
+The local database isolation suite continues to report seven accepted F-1 claim-override reads.
+The owner-recorded disposition and its required tripwire remain unchanged; this is not evidence
+that hostile claim overrides are technically prevented. See the [dated execution record](program/execution-2026-11-04-live-support.md).
 
 **What it does.** LIVE Support Assistant answers frontline support questions from
 a tenant's own procedures. It searches on the device, and a deterministic
 confidence gate either returns a sourced answer or hands the question to a human
 with no procedure text shown. There is no generative model in the answering path.
 
-**Proof it works.** One authenticated query, asked from a clean browser with no
-local setup, reached the hosted backend and left a verified escalation record in
-the tenant's database.
+**Previously recorded hosted-path observation.** The historical authenticated-query result
+below is retained as dated evidence; it was not re-run during the 2026-11-05 local evaluation.
+It must not be read as proof of current release readiness.
 
 **Live (sign-in required).** [https://dist-omega-black-31.vercel.app/](https://dist-omega-black-31.vercel.app/)
 — a genuine sign-in form renders to anonymous visitors; there is no guest account, so

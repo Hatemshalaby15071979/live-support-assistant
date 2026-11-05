@@ -7,12 +7,12 @@ One row per phase. Updated at every phase end. Values: `done` | `in progress` | 
 | P0 | Integrity and baseline | **done** | `pnpm run verify` 10/10; ticket validator OK; D7 red-then-green (client and server); `docs/BASELINE.md` complete. SQL suites `not re-run` (host sandbox). | `docs/program/phase-0-report.md` |
 | P1 | Licensed corpus and gold set | **done** (2026-10-08) | **3 tenants / 3 domains, harvesting CLOSED (cut #1 — one below the cut-line floor).** 544 documents → 3,659 procedures. **Gold set FROZEN 2026-10-08: 459 rows**, register C, document-level labels; `verify-corpus.mjs` exit 0; `pnpm run verify` 14/14; `verify:db` all four suites OK. Verdicts: corpus half MET; **fleet ≥4 NOT MET (3)**, **gold set 150–300 NOT MET for T04 (145)/T05 (144)**, **owner spot-check NOT DONE**, **D3 NOT MEASURABLE**. Limits stated in the report. | `docs/program/phase-1-report.md` |
 | P2 | Market Twin (smoke + standard) | **done** | Smoke rung is wired into the gate — `tooling/run-verification.mjs:138-145` (`key: 'market-smoke'`, `--seed 20261006 --rung smoke`, verdict line `MARKET TWIN SMOKE OK`). Standard rung merged at `2f765a5` (`git show --stat 2f765a5`), deliberately **not** in the gate: nightly, not merge-gating. | `docs/program/DECISIONS.md` (no P2 entry — recorded in git history only) |
-| P3 | Retrieval at 500 | not started | per-rung/per-language tables; D3/D4 reported honestly | — |
+| P3 | Retrieval at 500 | **in progress** | Fresh offline full/holdout inference on 2026-11-05: 500+500 WaveCast tickets; fresh Cedar Grove synthetic tenant at 50+50. The low Cedar Grove scores remain adverse evidence; per-rung/per-language tables and D3/D4 are still required. | `docs/program/execution-2026-11-04-live-support.md`; `docs/program/evidence/live-support-local-eval-2026-11-05/local-inference-results.json` |
 | P4 | Gate and safety hardening | not started | D1, D2, D5, D7 reported honestly | — |
-| P5 | Security and isolation proof | **in progress** | Probe list written: `docs/program/P5_PROBES.md` (7 categories, each with a negative control). MC-01..MC-08 proven locally, MC-09 left an unproven hypothesis — `docs/program/DECISIONS.md:40-55`. XSS harness rebuilt and run 21/21 — `docs/program/DECISIONS.md:7-21`. F-1 reproduced and dispositioned — `docs/SECURITY_FINDING_F1_claim_override.md`. **The isolation suite has not been run as a suite.** | `docs/program/P5_PROBES.md` |
+| P5 | Security and isolation proof | **in progress** | Local phase-7 run on 2026-11-04: 1,475 fleet probes, including 7 accepted F-1 claim-override failures (`rows:3`); local `anon` coverage unavailable. The owner decision records hosted `anon` coverage met on 2026-10-08; plain-English F-1 re-confirmation remains pending. | `docs/SECURITY_FINDING_F1_claim_override.md`; `docs/program/DECISIONS.md`; `docs/program/execution-2026-11-04-live-support.md` |
 | P6 | Tenant lifecycle (scripted) | not started | D10 met; journey recorded | — |
 | P7 | Operations, lite | not started | D9 and D12 met; drills recorded | — |
-| P8 | Evidence pack and close | **in progress — gate red** | `pnpm run evidence` exists; 12/16 verified, 4 unverifiable, 0 mismatches; unverifiable claims fail (`package.json:34`; `docs/SAFETY_CASE.md:24,105-109`) | `docs/SAFETY_CASE.md`; `tooling/evidence/verify-claims.mjs` |
+| P8 | Evidence pack and close | **in progress** | `pnpm run evidence` verified all 12 currently registered claims on 2026-11-04; this verifies the claims still registered, not full P8 completion or end-to-end tenant readiness. | `docs/SAFETY_CASE.md`; `tooling/evidence/verify-claims.mjs`; `docs/program/execution-2026-11-04-live-support.md` |
 
 ## Reconciliation — 2026-10-09
 
@@ -132,3 +132,58 @@ Record: `docs/program/integration-evidence-2026-10-12.md`.
 | NOT RUN | `verify:db` (Docker verified stopped), `verify:hosted`, `verify:deployed`, Admin-API XSS harness |
 | Evidence pack | `pnpm run evidence` still red by design (12 verified / 4 unverifiable) |
 | Correction | the merge commit's "226/226 measured at 7383314" was wrong; 226/226 was at `e06555f`, `7383314` = 227. See AGENTS.md. |
+
+## Local readiness execution — 2026-11-04
+
+The exact commands, source hashes, and machine-readable result are in
+[`execution-2026-11-04-live-support.md`](./execution-2026-11-04-live-support.md) and
+[`evidence/live-support-execution-2026-11-04.json`](./evidence/live-support-execution-2026-11-04.json).
+
+`pnpm run typecheck`, `pnpm run verify` (17/17), `pnpm run evidence` (12/12 registered claims),
+`pnpm run audit` (0 production advisories), and `pnpm run build:node` passed. `pnpm run lint`
+completed with one existing React Hook dependency warning. `pnpm run test` did not execute a
+package test suite: the workspace has no `test` scripts in its package manifests; `verify` is the
+available harness gate.
+
+The local database drill used a newly created disposable PostgreSQL container and removed it
+afterward. The phase-7 verifier exited 0 with five of six SQL suites reporting OK; the fleet
+suite's seven F-1 claim-override probes remain an accepted red, each observing three rows from
+the other tenant. This is not a tenant-isolation pass. Anonymous-role coverage is unproven on the
+local stack.
+
+The checked-in 500-ticket fixture validates (500 tickets; 75 chaos tickets; 10 mutation classes;
+zero email/phone pattern findings). Two generations from the current generator were byte-identical
+to each other but did not match the pinned fixture hash, so the generator/fixture version mismatch
+remains open. A full query evaluation was not run: an offline Node embedder probe failed with
+`TypeError: this.tokenizer is not a function`; the authenticated application path was not run
+because `.env.local` and `SUPABASE_URL` are absent. No external service, deployed app, or real
+tenant data was accessed. The 500-ticket support fixture remains one fictional tenant; no
+multi-tenant app workflow was proven.
+
+### Continuation — 2026-11-04
+
+The Transformers.js offline cache issue is fixed for local model loading via `createEmbedder`'s
+optional `modelPath`; `node tooling/eval/verify-offline-embedder.mjs` now passes with remote
+downloads disabled. This proves only a single query embedding, not a fresh 500-ticket evaluation.
+The database gate was rerun on a new disposable local container and retained the documented
+seven F-1 negative-control failures. The owner decision explicitly defers structural option C
+until its trigger, so no migration or test expectation was changed. Hosted `anon` coverage,
+authenticated product flows, full-batch inference, and a two-tenant end-to-end app path remain
+open. See the continuation in
+[`execution-2026-11-04-live-support.md`](./execution-2026-11-04-live-support.md). Readiness
+remains **NOT READY**.
+
+### Continuation — offline two-tenant inference — 2026-11-05
+
+The new Node evaluation runner used the pinned MiniLM model cache with remote loading disabled.
+Fresh inference completed for WaveCast full/holdout (500 tickets each) and a deterministic,
+separate Cedar Grove fictional support corpus (50 tickets each). Results show 354/500 and 370/500
+correct for WaveCast; Cedar Grove scored 26/50 and 23/50, with 51 false escalations across its two
+splits. No runtime errors occurred. The weak Cedar Grove results are retained without tuning and
+do not satisfy P3; per-rung/language tables, D3/D4, and the remaining phase gates are still open.
+
+This is a local model/decision-path evaluation only, not an authenticated two-tenant application
+test. No phase is closed. F-1's migration/probe expectation and acceptance remain unchanged.
+See the detailed report and hashes in
+[`execution-2026-11-04-live-support.md`](./execution-2026-11-04-live-support.md) and
+[`local-inference-results.json`](./evidence/live-support-local-eval-2026-11-05/local-inference-results.json).

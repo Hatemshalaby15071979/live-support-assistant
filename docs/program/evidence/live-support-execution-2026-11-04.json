@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "run_id": "lsa-local-readiness-2026-11-04-047bdd6",
+  "recorded_date": "2026-11-04",
+  "data_mode": "simulated",
+  "verdict": "NOT_READY_FOR_CUSTOMER_OR_PRODUCTION_PILOT",
+  "scope": "Local code gates, synthetic fixture validation, and disposable local PostgreSQL verification only. No deployed or authenticated browser path.",
+  "provenance": {
+    "repository": "live-support-assistant",
+    "branch_at_start": "prog/main",
+    "commit": "047bdd62c8f07b4be21154edb15dd91a0be6677b",
+    "worktree_clean_at_start": true,
+    "commit_alone_reproduces_execution": false,
+    "note": "Follow-up changes are local and uncommitted; the complete synthetic inference run did not execute."
+  },
+  "source_data": [
+    {
+      "path": "tooling/eval/simulated-tenant/chaos-500.json",
+      "sha256": "717c40dcc7d1f31b51ea32b0b1bfa4bf418699167a5c5c7e2736cbea90191d96",
+      "data_mode": "simulated",
+      "tenant_count": 1,
+      "tickets": 500,
+      "chaos_tickets": 75,
+      "chaos_types": 10
+    },
+    {
+      "path": "tooling/eval/simulated-tenant/corpus.json",
+      "sha256": "e9e058685d255b24219ed5aab2ede0eaf62542eda9844b9b7b26becec63546fe",
+      "data_mode": "simulated"
+    },
+    {
+      "path": "tooling/eval/simulated-tenant/phase5-holdout-seed-20260929-margin-018.json",
+      "sha256": "5cd2253f5301bc3693537148cdd4fb9fd7efa5f5e6931fe7913b2a3004d9799f",
+      "data_mode": "simulated",
+      "freshly_evaluated_in_this_run": false
+    }
+  ],
+  "commands": [
+    {
+      "command": "pnpm run typecheck",
+      "result": "pass",
+      "detail": "Turbo reported 9 tasks successful."
+    },
+    {
+      "command": "pnpm run verify",
+      "result": "pass",
+      "detail": "17 of 17 harness suites passed."
+    },
+    {
+      "command": "pnpm run evidence",
+      "result": "pass",
+      "detail": "12 registered claims verified; 0 mismatches; 0 unverifiable."
+    },
+    {
+      "command": "pnpm run audit",
+      "result": "pass",
+      "detail": "0 production advisories; 0 new; 0 escalated."
+    },
+    {
+      "command": "pnpm run build:node",
+      "result": "pass_with_warning",
+      "detail": "5 tasks successful; Vite emitted a 539.21 kB chunk warning."
+    },
+    {
+      "command": "pnpm run lint",
+      "result": "pass_with_warning",
+      "detail": "0 errors; 1 existing React Hook dependency warning at apps/web/src/App.tsx:436."
+    },
+    {
+      "command": "pnpm run test",
+      "result": "not_a_test_suite",
+      "detail": "Command exited 0; no package test scripts are defined, so no package-level tests were run."
+    },
+    {
+      "command": "node tooling/eval/simulated-tenant/verify-tickets.mjs tooling/eval/simulated-tenant/chaos-500.json",
+      "result": "pass",
+      "detail": "500 records; 75 chaos records; 10 mutation classes; 0 email/phone pattern findings. This is not an anonymization certification."
+    },
+    {
+      "command": "CONTAINER=sop-prompt1-20261104 PORT=55433 DB=sop_prompt1 pnpm run verify:db",
+      "result": "accepted_red_with_exit_0",
+      "detail": "1,475 fleet probes; 0 vacuous; 7 F-1 claim-override failures, all observed rows:3; five of six suites reported OK; anonymous-role coverage unproven. A newly created disposable container was removed."
+    },
+    {
+      "command": "Offline createEmbedder(EMBEDDING_MODEL, { cacheDir: '.cache/transformers', allowRemoteModels: false }) then embedQuery",
+      "result": "diagnosed",
+      "detail": "Transformers.js 4.3.0 does not resolve the existing revision-folder cache through cacheDir alone; the extractor has a null tokenizer. An explicit local model directory is required."
+    },
+    {
+      "command": "pnpm --filter @sop/embedder build && node tooling/eval/verify-offline-embedder.mjs",
+      "result": "pass",
+      "detail": "The pinned local model loaded with allowRemoteModels=false and returned a finite 384-dimensional query embedding. This smoke does not rerun the 500-ticket batch."
+    },
+    {
+      "command": "CONTAINER=sop-prompt1-continuation-20261104 PORT=55434 DB=sop_prompt1 pnpm run verify:db",
+      "result": "accepted_red_with_exit_0",
+      "detail": "Fresh local disposable database run; seven F-1 claim-override probes remain red under the active owner decision. Newly created container removed after run; hosted anon coverage remains unproven."
+    }
+  ],
+  "repeatability": {
+    "generator_command": "node tooling/eval/simulated-tenant/generate-tickets.mjs --count 500 --chaos-rate 0.15 --seed 20260928 --out <temporary-file>",
+    "two_generated_outputs_identical": true,
+    "generated_output_sha256": "2baecc0bb1e1215e5bb740478f34ad167ebe56ab36df74f95a888fb606083467",
+    "generated_output_matches_pinned_fixture": false,
+    "pinned_fixture_sha256": "717c40dcc7d1f31b51ea32b0b1bfa4bf418699167a5c5c7e2736cbea90191d96"
+  },
+  "registered_historical_observations": [
+    {
+      "claim_id": "500-ticket-local-017",
+      "correct": 362,
+      "total": 500,
+      "false_escalations": 138,
+      "unsafe_answers": 0,
+      "freshly_evaluated_in_this_run": false
+    },
+    {
+      "claim_id": "holdout-20260929-018",
+      "correct": 359,
+      "total": 500,
+      "false_escalations": 141,
+      "unsafe_answers": 0,
+      "freshly_evaluated_in_this_run": false
+    },
+    {
+      "claim_id": "refusal-6-of-52",
+      "false_accepts": 6,
+      "total": 52,
+      "freshly_evaluated_in_this_run": false
+    }
+  ],
+  "readiness_blockers": [
+    "Seven local F-1 claim-override reads remain accepted; database-level tenant isolation is not proven.",
+    "Anonymous-role database coverage is unproven locally.",
+    "No authenticated UI, sign-in, bundle, telemetry, escalation, or cross-tenant application flow was run; .env.local is absent and SUPABASE_URL is unset.",
+    "Only the offline single-query model smoke was fixed and verified; no fresh 500-ticket or holdout inference run completed.",
+    "Only one synthetic support tenant exists in the evaluated ticket fixture.",
+    "The current generator does not reproduce the pinned fixture byte-for-byte.",
+    "P3, P4, P6, and P7 remain incomplete; P5 and P8 are not closed."
+  ],
+  "external_actions": {
+    "deployed_application_accessed": false,
+    "hosted_database_accessed": false,
+    "external_services_contacted": false,
+    "real_customer_data_used": false,
+    "committed_or_pushed": false
+  }
+}
