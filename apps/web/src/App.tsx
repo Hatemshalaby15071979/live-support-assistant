@@ -433,7 +433,7 @@ function App() {
         setSearching(false);
       }
     }
-  }, [index, inputText, minMargin, queue, flush, activeCorpus, bundleVersion, auth]);
+  }, [index, inputText, queue, flush, activeCorpus, bundleVersion, auth, servingModel.id, servingModel.revision]);
 
 
   const copyToClipboard = useCallback(async () => {

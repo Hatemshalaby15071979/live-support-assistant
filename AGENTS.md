@@ -2838,3 +2838,24 @@ authenticated app workflow, hosted test, tenant-isolation pass, or production-re
 P3 is in progress; P4, P6, and P7 remain incomplete; P5 and P8 remain open. F-1's accepted-red
 probes, migration, and disposition remain unchanged. The plain-English owner re-confirmation,
 authenticated hosted app/tenant-flow evidence, and external acceptances remain open.
+
+### Continuation — shipment-readiness recheck — 2026-11-05
+
+Corrected `apps/web/src/App.tsx`'s `findAnswer` callback dependency list: the event record reads
+the serving model id/revision, so those values now invalidate the callback when the model changes;
+removed the stale, unused `minMargin` dependency. `pnpm run lint` is now clean. Re-ran
+`pnpm run verify`, `pnpm run audit`, `pnpm run evidence`, `pnpm run typecheck`, and `pnpm run lint`
+with exit 0. The 17-suite local harness passes, dependency baseline and registered evidence checks
+pass. This does not close F-1's seven expected-red probes, hosted anon re-verification, low Cedar
+Grove accuracy, unfinished phases, authenticated tenant journey, hosted CI, or external acceptance.
+Release readiness remains **NOT READY**. No owner decision, SQL, threshold, probe expectation,
+hosted service, or remote branch was changed.
+
+The first full-history scan exited 2 because 14 exact exception entries named old commit IDs
+removed by `.git/filter-repo`. The IDs were reconciled through its commit map without changing
+path, operation, content hash, category, or review reason. The rerun scanned 235/235 commits and
+1,002,077 changed lines, found zero hard-category hits, and reported no stale entries. The
+scanner's negative controls passed 17/17 with subprocess execution enabled. Evidence:
+`docs/program/evidence/live-support-history-scan-2026-11-05.json` and
+`docs/program/FAILURES/2026-11-05-history-scan-stale-exceptions.md`. Re-run the full scan on the
+final committed tip before any push, as required by standing authorization.

@@ -27,6 +27,8 @@ export interface Embedder {
 export interface EmbedderOptions {
   /** Directory for the model cache. Defaults to the library's own choice. */
   readonly cacheDir?: string;
+  /** Explicit local model directory, useful for offline Node evaluation. */
+  readonly modelPath?: string;
   /**
    * Set false to run strictly from cache. Platform shells can use this once they
    * package the pinned model; the current web client leaves it true so an
@@ -58,7 +60,7 @@ export async function createEmbedder(
     env.allowRemoteModels = options.allowRemoteModels;
   }
 
-  const extractor = await pipeline('feature-extraction', spec.id, {
+  const extractor = await pipeline('feature-extraction', options.modelPath ?? spec.id, {
     revision: spec.revision,
     dtype: spec.dtype,
     ...(options.onProgress === undefined
