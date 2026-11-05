@@ -2,29 +2,31 @@
 
 # LIVE Support Assistant
 
-
 <!-- badges:start -->
 
-[![CI](https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant/actions/workflows/CI/badge.svg)](https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant/actions)
+[![CI](https://github.com/Hatemshalaby15071979/live-support-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/Hatemshalaby15071979/live-support-assistant/actions)
 ![licence](https://img.shields.io/badge/licence-MIT-blue)
-[![last commit](https://img.shields.io/github/last-commit/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant)](https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant/commits/main)
-![status](https://img.shields.io/badge/ci-success-brightgreen?label=success%20(2026-10-05))
+![local verification](https://img.shields.io/badge/local%20verification-pass%20(2026--11--05)-brightgreen)
 
-*Measured 2026-10-06 — CI **success**; head `ad1f45d` (2026-10-05); JavaScript.*
+*Local verification measured 2026-11-05 on `prog/main` (`1fed25d`); the supplied GitHub destination is empty and has no hosted CI result.*
 
 <!-- No static test or coverage count is shown here: a frozen
      number decays silently. Run the suite for a current figure;
-     the CI badge above is the live status. -->
+     the local verification record below is dated evidence, not a live hosted result. -->
 <!-- badges:end -->
 
 **An explainable browser support prototype with an on-device confidence gate.**
 
 ![Status](https://img.shields.io/badge/status-prototype-yellow)
-![Confidence gate — CI](https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant/actions/workflows/ci.yml/badge.svg)
+[![Confidence gate — CI](https://github.com/Hatemshalaby15071979/live-support-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/Hatemshalaby15071979/live-support-assistant/actions)
 ![Licence](https://img.shields.io/badge/licence-MIT-blue)
 ![TypeScript](https://img.shields.io/badge/typescript-app-3178c6)
 
 </div>
+
+## GitHub shipment status (2026-11-05)
+
+The intended public repository is [Hatemshalaby15071979/live-support-assistant](https://github.com/Hatemshalaby15071979/live-support-assistant), which is currently empty. No hosted Actions result exists for this local candidate. The local CI-equivalent checks and the current deployment boundary are documented in [SHIPMENT_READINESS.md](SHIPMENT_READINESS.md). Current CI builds and uploads a web bundle artifact; it does not deploy it. Simulation-only application tests use synthetic data and do not constitute production release approval.
 
 ## One-line identity
 
@@ -33,8 +35,7 @@ tenant's own procedures using an on-device retrieval runtime and a deterministic
 confidence gate — and escalates instead of guessing when the match is weak.
 
 > [!IMPORTANT]
-> **Positioning.** Validated on a simulated tenant; safety-first by design; designed for a
-> shadow-mode pilot; six prerequisites listed, none met yet. Not production-proven: no real customer traffic.
+> **Positioning.** Evaluated with synthetic tenant data; intended for a shadow-mode pilot, not production. There is no real customer traffic. The current CI builds and uploads a web artifact but does not deploy the client, and the standalone demo does not connect hosted telemetry or escalation transport.
 
 > [!NOTE]
 > **Operating principle.** No generative model sits in the answering path. A wrong procedure in a support reply is a compliance breach, not a drafting aid — so retrieval, a deterministic confidence gate, and human escalation decide what a user sees. The gate requires an absolute floor and a measured margin between the best and second-best procedure; if that margin is not met, the reply is escalated to a human rather than shown as an answer.
@@ -103,11 +104,11 @@ SQL ingest contracts. No generative model in query, gate, answer, or escalation.
 ## Production status & test coverage
 
 > [!WARNING]
-> This is a prototype, not a production deployment. **Validated on a simulated tenant; safety-first by design; designed for a shadow-mode pilot; six prerequisites listed, none met yet. Not production-proven: no real customer traffic.** The headline measurement is 500 simulated tickets (47 distinct messages, 7 procedures, four languages) through the deployed path with tenant isolation audited. **One unsafe answer was found and documented, and the shipped 0.18 margin would not have stopped it** — see *Safety* below. It was repeated on an independent holdout seed and at 48 procedures — see [`docs/EVIDENCE.md`](docs/EVIDENCE.md). The on-device retrieval + confidence gate flow was re-verified on current HEAD on 2026-09-27. The backend verification suites (RBAC, RLS, telemetry, retention, encrypted sync, key rotation, telemetry queue, conflicting-procedure lint) pass independently, but the hosted transport that would connect them to the running client is not wired into the standalone demo — a query's telemetry or escalation is not actually delivered there. No external security audit, no certified data isolation, no signed installer. No revenue and no paying users. The latest tag is **v1.0-simulated-validation** (2026-09-28, cut on `main` HEAD — see `docs/RELEASE_NOTES.md`); the last product release tag remains **v1.0.1** (2026-08-29). In-sample prototype results (e.g. the 0.18 margin auto-answers 8 of 50 in-scope queries) are not a production SLA; threshold calibration remains a per-tenant onboarding task. There is no design partner.
+> This is a prototype, not a production deployment. **Validated on simulated tenants; safety-first by design; intended for a shadow-mode pilot. It is not production-proven and has no real customer traffic.** Historical deployed-path evaluations reported 500 simulated tickets and an unsafe answer that the then-shipped 0.18 margin would not have blocked; the cited reports do not pin the serving commit and are recorded observations rather than reproducible current-build results. Current local verification and registered metrics are listed in [`SHIPMENT_READINESS.md`](SHIPMENT_READINESS.md) and [`docs/EVIDENCE.md`](docs/EVIDENCE.md). The standalone demo does not wire hosted telemetry or escalation transport to the client. No external security audit, certified data isolation, or signed installer is claimed. Threshold calibration remains per-tenant work; recall and unsafe-answer limits are documented under *Safety*.
 
 ## Release status & merge state
 
-This release is on `main`. Two branches are **merged**:
+The current audited checkout is `prog/main`. The branch history records two changes as merged to the earlier `main` branch:
 
 - `feat/publish-conflict-block` — the publish path now refuses a contradictory corpus with **HTTP 422** ("publication blocked: the tenant corpus contains contradictory procedures"). Live in the development Supabase project.
 - `exp/deployed-local-parity` — deployed-vs-local parity evidence (39/39 identical margins on a 7-procedure corpus). Tooling only; no product-code change.
@@ -116,7 +117,7 @@ Four experiment branches are **evidence-only** — measured, rejected or kept as
 
 | Tag | Branch | Finding |
 | --- | --- | --- |
-| [`evidence/scale-rung`](https://github.com/<YOUR_GITHUB_ORG>/LIVE-Support-Assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md) (`e5a7d9baf4f6`) | `exp/scale-rung` | 48-procedure corpus; in-scope recall 84/302 (27.8%) at 0.18 |
+| [`evidence/scale-rung`](https://github.com/Hatemshalaby15071979/live-support-assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md) (`e5a7d9baf4f6`) | `exp/scale-rung` | 48-procedure corpus; in-scope recall 84/302 (27.8%) at 0.18 |
 | `evidence/multilingual-embedder` (`65b76aef103f`) | `exp/multilingual-embedder` | +0.3 pp overall at 5.1× download — rejected |
 | `evidence/reranker` (`495b52f6399b`) | `exp/reranker-measurement` | +14/+15 unsafe answers — rejected |
 | `evidence/procedure-wording` (`bd6db511a0ca`) | `exp/procedure-distinctness` | threshold-dependent — rejected |
@@ -278,11 +279,11 @@ Nothing in this repository has been through any of the six.
 
 ## Related work
 
-- [Portfolio and wider work](https://github.com/<YOUR_GITHUB_ORG>/<YOUR_GITHUB_ORG>)
+- [Portfolio and wider work](https://github.com/Hatemshalaby15071979)
 
 ## Author
 
-Built by Hatem Shalaby, Contact Centre Operations & AI Implementation Lead | WFM & CX Transformation. Background: https://github.com/<YOUR_GITHUB_ORG>
+Built by Hatem Shalaby, Contact Centre Operations & AI Implementation Lead | WFM & CX Transformation. Background: https://github.com/Hatemshalaby15071979
 
 ## Licence
 
