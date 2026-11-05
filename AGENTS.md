@@ -2859,3 +2859,8 @@ scanner's negative controls passed 17/17 with subprocess execution enabled. Evid
 `docs/program/evidence/live-support-history-scan-2026-11-05.json` and
 `docs/program/FAILURES/2026-11-05-history-scan-stale-exceptions.md`. Re-run the full scan on the
 final committed tip before any push, as required by standing authorization.
+
+Post-commit gate on `7e15dc3`: the full-history scan re-ran on 236/236 commits and 1,002,676
+changed lines, with zero hard hits and zero stale exceptions; scanner controls passed 17/17.
+Local `verify`, `audit`, `evidence`, `typecheck`, and `lint` also exited 0. Documentation-only
+commits were rescanned on their final candidate tip before push.

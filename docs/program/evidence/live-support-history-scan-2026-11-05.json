@@ -5,9 +5,9 @@
   "repoRoot": "[LOCAL_PATH]/[REDACTED_VOLUME]/Career/cloned_repos/live-support-assistant",
   "exceptionsPath": "[LOCAL_PATH]/[REDACTED_VOLUME]/Career/cloned_repos/live-support-assistant/tooling/security/history-scan-exceptions.json",
   "strict": false,
-  "scannedAt": "2026-11-05T05:48:13.943Z",
-  "commits": 235,
-  "changedLinesInspected": 1002077,
+  "scannedAt": "2026-11-05T05:56:13.752Z",
+  "commits": 236,
+  "changedLinesInspected": 1002676,
   "counts": {
     "private-key-block": 3,
     "jwt-shape": 0,
@@ -55,8 +55,8 @@
   ],
   "integrity": {
     "completed": true,
-    "expectedCommits": 235,
-    "seenCommits": 235,
+    "expectedCommits": 236,
+    "seenCommits": 236,
     "staleExceptions": 0
   },
   "emailDomains": {
