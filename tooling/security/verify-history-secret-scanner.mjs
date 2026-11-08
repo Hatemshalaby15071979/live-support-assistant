@@ -4,8 +4,7 @@
  *
  * Why: a scanner that exits 0 proves nothing unless you have watched it fail. This suite builds
  * disposable temporary Git repositories, plants synthetic (non-functional) credential-shaped
- * values, and asserts the scanner FAILS on everything that is not an exact registered exception
- * and PASSES only on the exact reviewed occurrence.
+ * values, and asserts every credential shape remains a hard hit. Triage metadata never suppresses.
  *
  * Fixtures: every repository is created under os.tmpdir()/lss-scanner-tests-<pid>/ and removed
  * at the end. The real repository and any hosted service are never used as a fixture, and no
@@ -22,7 +21,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 
-import { walkDiff, audit, normalizeAndHash, loadExceptions } from './scan-history-secrets.mjs';
+import { walkDiff, audit, normalizeAndHash, loadExceptions, validateTriageRegistry, CATEGORIES, classify } from './scan-history-secrets.mjs';
 
 const SCANNER = new URL('./scan-history-secrets.mjs', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 const ROOT = process.cwd();
@@ -72,6 +71,9 @@ async function newRepo(tag) {
   await git(['config', 'user.email', 'scanner-test@example.invalid'], dir);
   await git(['config', 'user.name', 'Scanner Test'], dir);
   await git(['config', 'commit.gpgsign', 'false'], dir);
+  const registryPath = join(dir, 'tooling/security/history-scan-exceptions.json');
+  mkdirSync(join(registryPath, '..'), { recursive: true });
+  writeFileSync(registryPath, JSON.stringify({ version: 2, entries: [] }, null, 2));
   return dir;
 }
 
@@ -86,13 +88,24 @@ async function commitFile(dir, relPath, content, message) {
 }
 
 async function scanFixture(dir, extraArgs = []) {
-  return run(process.execPath, [SCANNER, 'HEAD', ...extraArgs], dir);
+  return run(process.execPath, [SCANNER, ...extraArgs], dir);
 }
 
-function writeRegistry(name, entries) {
-  const p = join(TMP_ROOT, name);
-  writeFileSync(p, JSON.stringify({ version: 1, entries }, null, 2));
+function writeRegistry(dir, entries) {
+  const p = join(dir, 'tooling/security/history-scan-exceptions.json');
+  mkdirSync(join(p, '..'), { recursive: true });
+  writeFileSync(p, JSON.stringify({ version: 2, entries }, null, 2));
   return p;
+}
+
+async function commitBytes(dir, relPath, content, message) {
+  const full = join(dir, relPath);
+  mkdirSync(join(full, '..'), { recursive: true });
+  writeFileSync(full, content);
+  await git(['add', relPath], dir);
+  const r = await git(['commit', '-q', '-m', message], dir);
+  if (r.code !== 0) throw new Error(`commit failed: ${r.err}`);
+  return (await git(['rev-parse', 'HEAD'], dir)).out.trim();
 }
 
 // The exact reviewed documentation line, reproduced byte-for-byte from the real history so the
@@ -105,7 +118,7 @@ const REVIEWED_LINE = `| credential-url (\`scheme${'://'}user${':'}pass${'@'}\`)
 //
 // IMPORTANT: these are CONSTRUCTED, never written as a contiguous literal. The committed
 // source of a scanner's own test suite must not itself contain credential-shaped strings —
-// a scanner that needs an exemption for its own fixtures has a hole in exactly the place this
+// a scanner that needs a suppression for its own fixtures has a hole in exactly the place this
 // suite exists to protect. `git log -p` of this file therefore contains no private-key header
 // and no inline user:password URL; the fixtures written into the temporary repositories still
 // carry the full shape, and it is those that the scanner must catch.
@@ -128,42 +141,49 @@ async function nearMissRepo(tag, nearMiss) {
   const registeredPath = 'docs/program/p0-evidence-2026-10-12.md';
   const registeredSha = await commitFile(dir, registeredPath, `${REVIEWED_LINE}\n`, 'docs: reviewed placeholder line');
   const nearSha = await commitFile(dir, nearMiss.path, nearMiss.content, 'docs: near-miss line');
-  const registry = writeRegistry(`${tag}-exceptions.json`, [{
+  const registry = writeRegistry(dir, [{
     id: 'EXC-TEST-REG', commit: registeredSha, path: registeredPath,
     op: 'added', category: 'credential-url', lineSha256: normalizeAndHash(REVIEWED_LINE),
-    disposition: 'reviewed documentation placeholder',
+    disposition: 'synthetic documentation fixture, retained as a hard hit',
+    reviewedBy: 'reviewer-one', approvedBy: 'reviewer-two', reviewedAt: '2026-11-08',
   }]);
   return { dir, registry, registeredSha, nearSha };
 }
 
 async function main() {
   try {
-    // ---- 0. the committed registry's content identity is stable ---------------
+    // ---- 0. strict hard-hit policy and empty in-repository triage registry -----
     {
       const registry = loadExceptions(join(ROOT, 'tooling/security/history-scan-exceptions.json'));
-      const registryHash = registry.find((e) => e.id === 'EXC-CREDURL-DOC-002')?.lineSha256;
-      const localHash = normalizeAndHash(REVIEWED_LINE);
-      record('registry-content-identity-stable',
-        `normalizeAndHash(reviewedLine) equals the committed registry hash (${String(registryHash).slice(0, 12)}…)`,
-        typeof registryHash === 'string' && localHash === registryHash,
-        `localHash=${String(localHash).slice(0, 12)}… registryHash=${String(registryHash).slice(0, 12)}…`);
+      record('all-categories-hard-and-registry-empty',
+        'all detector categories are hard and the pinned registry starts empty',
+        CATEGORIES.length >= 14 && CATEGORIES.every((c) => c.hard) && registry.length === 0,
+        `categories=${CATEGORIES.length}; hard=${CATEGORIES.filter((c) => c.hard).length}; entries=${registry.length}`);
+      const emailCategory = CATEGORIES.find((c) => c.id === 'email-address');
+      const reserved = classify('contact@example.invalid', emailCategory);
+      const personal = classify(['user','@','gmail.com'].join(''), emailCategory);
+      record('reserved-email-domains-only-are-safe-fixtures',
+        'reserved example/test domains are annotated safe; real consumer email domains remain hard hits',
+        reserved?.hard === false && personal?.hard === true,
+        `reserved=${reserved?.hard}; consumer_domain=${personal?.hard}`);
     }
 
-    // ---- 1. the approved historical occurrence is an EXPLICIT exception -------
+    // ---- 1. reviewed historical occurrence remains a hard hit -------
     {
       const dir = await newRepo('approved');
       const sha = await commitFile(dir, 'docs/program/p0-evidence-2026-10-12.md', `${REVIEWED_LINE}\n`, 'docs: reviewed placeholder line');
-      const registry = writeRegistry('approved-exceptions.json', [{
+      writeRegistry(dir, [{
         id: 'EXC-TEST-001', commit: sha, path: 'docs/program/p0-evidence-2026-10-12.md',
         op: 'added', category: 'credential-url', lineSha256: normalizeAndHash(REVIEWED_LINE),
-        disposition: 'reviewed documentation placeholder',
+        disposition: 'synthetic documentation fixture, retained as a hard hit',
+        reviewedBy: 'reviewer-one', approvedBy: 'reviewer-two', reviewedAt: '2026-11-08',
       }]);
-      const r = await scanFixture(dir, ['--exceptions', registry]);
-      const applied = r.out.includes('APPROVED EXCEPTIONS APPLIED') && r.out.includes('EXC-TEST-001');
-      record('approved-exception-is-explicit',
-        'exit 0, and the occurrence is listed as an approved exception (not silently ignored)',
-        r.code === 0 && applied,
-        `exit ${r.code}; banner=${applied}; ${(r.out.match(/credential-url\s+\d+\s+\S*/) || ['<no line>'])[0]}`);
+      const r = await scanFixture(dir);
+      const applied = r.out.includes('TRIAGE RECORDS MATCHED') && r.out.includes('EXC-TEST-001') && r.out.includes('(still hard)');
+      record('two-person-triage-never-exempts',
+        'exit 1 and the exact occurrence is visibly triaged while remaining a hard hit',
+        r.code === 1 && applied && /credential-url\s+1\s+HARD-HIT 1/.test(r.out),
+        `exit ${r.code}; triage=${applied}; ${(r.out.match(/credential-url\s+\d+\s+\S*/) || ['<no line>'])[0]}`);
     }
 
     // ---- 2. modified occurrence: one character changed ------------------------
@@ -172,31 +192,31 @@ async function main() {
       const to = `scheme${'://'}user${':'}passX${'@'}`;
       const modified = REVIEWED_LINE.replace(from, to);
       const { dir, registry } = await nearMissRepo('modified', { path: 'docs/b.md', content: `${modified}\n` });
-      const r = await scanFixture(dir, ['--exceptions', registry]);
+      const r = await scanFixture(dir);
       record('modified-occurrence-fails',
-        'exit 1 with one credential-url HARD-HIT while the exact occurrence stays exempted',
-        r.code === 1 && /credential-url\s+2\s+HARD-HIT 1/.test(r.out) && r.out.includes('EXC-TEST-REG'),
-        `exit ${r.code}; ${(r.out.match(/credential-url\s+\d+\s+\S+/) || [''])[0]}; exception applied=${r.out.includes('EXC-TEST-REG')}`);
+        'exit 1 with two credential-url HARD-HITs; even the exact triaged occurrence remains hard',
+        r.code === 1 && /credential-url\s+2\s+HARD-HIT 2/.test(r.out) && r.out.includes('EXC-TEST-REG'),
+        `exit ${r.code}; ${(r.out.match(/credential-url\s+\d+\s+\S+/) || [''])[0]}; triage record matched=${r.out.includes('EXC-TEST-REG')}`);
     }
 
     // ---- 3. wrong file ---------------------------------------------------------
     {
       const { dir, registry } = await nearMissRepo('wrongfile', { path: 'docs/elsewhere.md', content: `${REVIEWED_LINE}\n` });
-      const r = await scanFixture(dir, ['--exceptions', registry]);
+      const r = await scanFixture(dir);
       record('wrong-file-fails',
-        'exit 1 with one credential-url HARD-HIT: the same bytes in a different path are not the registered occurrence',
-        r.code === 1 && /credential-url\s+2\s+HARD-HIT 1/.test(r.out) && r.out.includes('EXC-TEST-REG'),
-        `exit ${r.code}; ${(r.out.match(/credential-url\s+\d+\s+\S+/) || [''])[0]}; exception applied=${r.out.includes('EXC-TEST-REG')}`);
+        'exit 1 with two credential-url HARD-HITs; a different path receives no triage record',
+        r.code === 1 && /credential-url\s+2\s+HARD-HIT 2/.test(r.out) && r.out.includes('EXC-TEST-REG'),
+        `exit ${r.code}; ${(r.out.match(/credential-url\s+\d+\s+\S+/) || [''])[0]}; triage record matched=${r.out.includes('EXC-TEST-REG')}`);
     }
 
     // ---- 4. wrong commit -------------------------------------------------------
     {
       const { dir, registry } = await nearMissRepo('wrongcommit', { path: 'docs/program/p0-evidence-2026-10-12.md', content: `${REVIEWED_LINE}\n${REVIEWED_LINE}\n` });
-      const r = await scanFixture(dir, ['--exceptions', registry]);
+      const r = await scanFixture(dir);
       record('wrong-commit-fails',
-        'exit 1 with one credential-url HARD-HIT: the same bytes introduced by a different commit are not the registered occurrence',
-        r.code === 1 && /credential-url\s+2\s+HARD-HIT 1/.test(r.out) && r.out.includes('EXC-TEST-REG'),
-        `exit ${r.code}; ${(r.out.match(/credential-url\s+\d+\s+\S+/) || [''])[0]}; exception applied=${r.out.includes('EXC-TEST-REG')}`);
+        'exit 1 with two credential-url HARD-HITs; a different commit receives no triage record',
+        r.code === 1 && /credential-url\s+2\s+HARD-HIT 2/.test(r.out) && r.out.includes('EXC-TEST-REG'),
+        `exit ${r.code}; ${(r.out.match(/credential-url\s+\d+\s+\S+/) || [''])[0]}; triage record matched=${r.out.includes('EXC-TEST-REG')}`);
     }
 
     // ---- 5/6. credential URLs using `pass` and `token` against real hosts ------
@@ -343,6 +363,83 @@ async function main() {
         'exit 1: a changed line whose own text begins with "++" must not be mistaken for a diff header and skipped',
         r.code === 1 && /credential-url\s+1\s+HARD-HIT 1/.test(r.out),
         `exit ${r.code}; ${(r.out.match(/credential-url\s+\d+\s+\S+/) || [''])[0]}`);
+    }
+
+    // ---- 15. all refs are scanned, not only the checked-out branch ------------
+    {
+      const dir = await newRepo('allrefs');
+      await commitFile(dir, 'README.md', 'clean\n', 'chore: seed');
+      await git(['checkout', '-q', '-b', 'side'], dir);
+      const token = `sk-${synth('side-branch-key', 20)}`;
+      await commitFile(dir, 'docs/branch.txt', `token = ${token}\n`, 'docs: secondary branch fixture');
+      await git(['checkout', '-q', '-'], dir);
+      const r = await scanFixture(dir);
+      record('all-refs-are-scanned', 'a token reachable only from a non-checked-out branch is a hard hit',
+        r.code === 1 && /openai-api-key\s+1\s+HARD-HIT 1/.test(r.out),
+        `exit ${r.code}; ${(r.out.match(/openai-api-key\s+\d+\s+\S+/) || ['<no line>'])[0]}`);
+    }
+
+    // ---- 16. provider token and high-entropy detectors ------------------------
+    {
+      const dir = await newRepo('token-families');
+      const contents = [
+        `openai=${`sk-${synth('openai-key', 20)}`}`,
+        `github=${`ghp_${synth('github-key', 24)}`}`,
+        `slack=${`xoxb-${synth('slack-key', 24)}`}`,
+        `api_key="${synth('high-entropy', 48)}"`,
+      ].join('\n') + '\n';
+      await commitFile(dir, 'fixtures/provider-tokens.txt', contents, 'test: provider token families');
+      const r = await scanFixture(dir);
+      const ok = r.code === 1 && /openai-api-key\s+1\s+HARD-HIT 1/.test(r.out)
+        && /github-token\s+1\s+HARD-HIT 1/.test(r.out)
+        && /slack-token\s+1\s+HARD-HIT 1/.test(r.out)
+        && /high-entropy-assignment\s+1\s+HARD-HIT 1/.test(r.out);
+      record('provider-and-high-entropy-detectors', 'sk-, ghp_, xox-, and high-entropy assignments are hard hits', ok,
+        `exit ${r.code}; provider rules=${['openai-api-key','github-token','slack-token','high-entropy-assignment'].filter((x) => r.out.includes(x)).join(',')}`);
+    }
+
+    // ---- 17. unreachable binary objects are scanned ---------------------------
+    {
+      const dir = await newRepo('unreachable-binary');
+      await commitFile(dir, 'README.md', 'clean\n', 'chore: seed');
+      await git(['checkout', '-q', '-b', 'unreachable-fixture'], dir);
+      const bytes = Buffer.concat([Buffer.from([0, 255, 1]), Buffer.from(`ghp_${synth('unreachable-token', 24)}`), Buffer.from([0, 10])]);
+      await commitBytes(dir, 'fixtures/archive.bin', bytes, 'test: unreachable binary fixture');
+      await git(['checkout', '-q', '-'], dir);
+      await git(['branch', '-D', 'unreachable-fixture'], dir);
+      const r = await scanFixture(dir);
+      record('unreachable-binary-object-is-scanned', 'an unreachable binary Git blob remains visible as a hard hit',
+        r.code === 1 && /stored-object blob [0-9a-f]{12} github-token HARD-HIT/.test(r.out),
+        `exit ${r.code}; stored-object hit=${/stored-object blob [0-9a-f]{12} github-token HARD-HIT/.test(r.out)}`);
+    }
+
+    // ---- 18. exception path is pinned -----------------------------------------
+    {
+      const dir = await newRepo('registry-path');
+      await commitFile(dir, 'README.md', 'clean\n', 'chore: seed');
+      const external = join(TMP_ROOT, 'outside-registry.json');
+      writeFileSync(external, JSON.stringify({ version: 2, entries: [] }));
+      const r = await scanFixture(dir, ['--exceptions', external]);
+      record('triage-registry-path-pinned', 'caller-supplied registry files fail closed',
+        r.code === 2 && /registry path are pinned/.test(r.out + r.err), `exit ${r.code}`);
+    }
+
+    // ---- 19. tooling exemptions are forbidden -------------------------------
+    {
+      const entry = { id:'EXC-TOOL', commit:'a'.repeat(40), path:'tooling/security/scan.mjs', op:'added', lineSha256:'b'.repeat(64), disposition:'review', reviewedBy:'reviewer-one', approvedBy:'reviewer-two', reviewedAt:'2026-11-08' };
+      const errors = validateTriageRegistry([entry]);
+      record('tooling-triage-entry-rejected', 'triage entries cannot point into tooling/', errors.some((x) => /may not point into tooling/.test(x)), `errors=${errors.length}`);
+    }
+
+    // ---- 20. two distinct human logins are mandatory -------------------------
+    {
+      const entry = { id:'EXC-SAME', commit:'a'.repeat(40), path:'docs/note.md', op:'added', lineSha256:'b'.repeat(64), disposition:'review', reviewedBy:'reviewer-one', approvedBy:'reviewer-one', reviewedAt:'2026-11-08' };
+      const errors = validateTriageRegistry([entry]);
+      const agent = { ...entry, id:'EXC-AGENT', reviewedBy:'engineering-agent', approvedBy:'reviewer-two' };
+      const agentErrors = validateTriageRegistry([agent]);
+      record('two-person-human-triage-required', 'duplicate reviewer identities and agent identities fail closed',
+        errors.some((x) => /two distinct human GitHub login/.test(x)) && agentErrors.some((x) => /two distinct human GitHub login/.test(x)),
+        `duplicate_errors=${errors.length}; agent_identity_errors=${agentErrors.length}`);
     }
   } finally {
     try { rmSync(TMP_ROOT, { recursive: true, force: true, maxRetries: 3 }); } catch { /* leave for the OS */ }
