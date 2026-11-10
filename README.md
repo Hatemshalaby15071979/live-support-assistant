@@ -8,7 +8,7 @@
 ![licence](https://img.shields.io/badge/licence-MIT-blue)
 ![local verification](https://img.shields.io/badge/local%20verification-pass%20(2026--11--05)-brightgreen)
 
-*Local verification measured 2026-11-05 on `prog/main` (`1fed25d`); the supplied GitHub destination is empty and has no hosted CI result.*
+*Local verification measured 2026-11-05 on `prog/main`; the public GitHub repository is populated (default branch `prog/main`) and its hosted CI runs pass.*
 
 <!-- No static test or coverage count is shown here: a frozen
      number decays silently. Run the suite for a current figure;
@@ -26,7 +26,7 @@
 
 ## GitHub shipment status (2026-11-05)
 
-The intended public repository is [Hatemshalaby15071979/live-support-assistant](https://github.com/Hatemshalaby15071979/live-support-assistant), which is currently empty. No hosted Actions result exists for this local candidate. The local CI-equivalent checks and the current deployment boundary are documented in [SHIPMENT_READINESS.md](SHIPMENT_READINESS.md). Current CI builds and uploads a web bundle artifact; it does not deploy it. Simulation-only application tests use synthetic data and do not constitute production release approval.
+The public repository is [Hatemshalaby15071979/live-support-assistant](https://github.com/Hatemshalaby15071979/live-support-assistant) — populated on the default branch `prog/main`, with hosted CI runs passing. The local CI-equivalent checks and the current deployment boundary are documented in [SHIPMENT_READINESS.md](SHIPMENT_READINESS.md). Current CI builds and uploads a web bundle artifact; it does not deploy it. Simulation-only application tests use synthetic data and do not constitute production release approval.
 
 ## One-line identity
 
