@@ -15,265 +15,74 @@
      the local verification record below is dated evidence, not a live hosted result. -->
 <!-- badges:end -->
 
-**An explainable browser support prototype with an on-device confidence gate.**
-
-![Status](https://img.shields.io/badge/status-prototype-yellow)
-[![Confidence gate — CI](https://github.com/Hatemshalaby15071979/live-support-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/Hatemshalaby15071979/live-support-assistant/actions)
-![Licence](https://img.shields.io/badge/licence-MIT-blue)
-![TypeScript](https://img.shields.io/badge/typescript-app-3178c6)
-
 </div>
 
-## GitHub shipment status (2026-11-05)
+## What is this?
 
-The public repository is [Hatemshalaby15071979/live-support-assistant](https://github.com/Hatemshalaby15071979/live-support-assistant) — populated on the default branch `prog/main`, with hosted CI runs passing. The local CI-equivalent checks and the current deployment boundary are documented in [SHIPMENT_READINESS.md](SHIPMENT_READINESS.md). Current CI builds and uploads a web bundle artifact; it does not deploy it. Simulation-only application tests use synthetic data and do not constitute production release approval.
+A support assistant that answers customer questions **from a tenant's own procedures**, and is designed to say "I'm not sure — let me get a human" instead of guessing.
 
-## One-line identity
+There is no AI chatbot deciding what you read. The flow is:
 
-LIVE Support Assistant is an explainable browser support prototype that answers from a
-tenant's own procedures using an on-device retrieval runtime and a deterministic
-confidence gate — and escalates instead of guessing when the match is weak.
+1. Sign in — your tenant's signed policy bundle loads (no fallback corpus; searching nothing returns nothing).
+2. The app searches those procedures **on your device** (nothing leaves the machine).
+3. A confidence gate checks the match. If the best answer isn't decisively better than the runner-up, the question is **escalated to a human** — with no procedure text leaked.
+4. Accepted answers can be copied and sent.
 
-> [!IMPORTANT]
-> **Positioning.** Evaluated with synthetic tenant data; intended for a shadow-mode pilot, not production. There is no real customer traffic. The current CI builds and uploads a web artifact but does not deploy the client, and the standalone demo does not connect hosted telemetry or escalation transport.
+The gate's behaviour is covered by 10 verification checks. The prototype also refuses to publish a procedure corpus that contradicts itself.
 
-> [!NOTE]
-> **Operating principle.** No generative model sits in the answering path. A wrong procedure in a support reply is a compliance breach, not a drafting aid — so retrieval, a deterministic confidence gate, and human escalation decide what a user sees. The gate requires an absolute floor and a measured margin between the best and second-best procedure; if that margin is not met, the reply is escalated to a human rather than shown as an answer.
+## Current status — read this first
 
-> [!CAUTION]
-> **Read this first — the three weakest measured results.**
-> - One unsafe answer on the deployed path at margin **0.180757** — the shipped 0.18 default would not have stopped it ([Safety](#safety--what-is-claimed-and-what-is-not)). **Recorded observation, not a verified claim:** the run pins no commit, so it is not counted by `pnpm run evidence` and cannot be reproduced from this repository.
-> - **6 of 52** out-of-scope public questions answered at margin 0.18 ([Safety](#safety--what-is-claimed-and-what-is-not)).
-> - In-scope recall **84/302 (27.8%)** at 48 procedures ([Evidence tiers](docs/EVIDENCE.md#tier-2--measured-limits)).
-> - A second deployed run — a 39-ticket **parity batch** (`60cdbbea8a4f478f`) — recorded **6 unsafe answers**, but these are the *same* six out-of-scope false accepts already in the [refusal table](#safety--what-is-claimed-and-what-is-not) (`rp-022/023/025/026/040/060`), answered at margins 0.1869–0.4175 (all ≥ the shipped 0.18). It is a refusal-heavy batch and is **not comparable** to the 500-ticket run; its JSON sets `localBaselineApplies:false`, and neither deployed run records a git commit hash — a [reproducibility gap](docs/EVIDENCE.md#tier-1--demonstrated-on-simulated-data).
+**This is a prototype, evaluated only on simulated tenants. It is intended for a shadow-mode pilot (answers shown to agents, never to customers) — not production.**
 
-## What it does
+- Hosted CI passes on the default branch, but it only builds a web bundle; it does not deploy anything.
+- There is no real customer traffic, no external security audit, and no certified data isolation.
+- The hosted app needs credentials, so there is no guest account.
 
-The part a user actually exercises: open the app, sign in through the hosted Supabase
-backend, and the on-device search runtime answers from a tenant's own procedures.
+## What the measurements honestly show
 
-1. Sign in with the hosted Supabase account; the server assigns your tenant and role.
-2. The app fetches the policy bundle signed for your tenant. There is deliberately no fallback to a checked-in corpus — a search over nothing returns nothing.
-3. Click **Load model and build index** to start the on-device runtime (MiniLM from Hugging Face on first use; ONNX runtime from jsDelivr).
-4. Paste a customer message and click **Find Answer**.
-5. MiniLM embeds the message and retrieves relevant passages from the tenant bundle.
-6. The deterministic Confidence Gate either returns a policy and a suggested reply, or escalates without exposing procedure content.
-7. Copy an accepted reply to the clipboard.
+Every number below is a measurement on simulated or author-written data — not production experience. Full detail lives in [`docs/EVIDENCE.md`](docs/EVIDENCE.md).
 
-Embedding and the gate run entirely on the device. The confidence gate is covered by
-**10 passing verification checks** (`tooling/gate/verify-gate.mjs`).
+**What works:**
 
-### Built and independently tested, not yet connected
+- The author-written "must refuse" set held: **0 of 8** refusal rows were auto-answered.
+- The deployed app and the local harness made **identical decisions on all 39 comparable tickets**.
+- The gate, sync, persistence, key-rotation and database layers all have their own passing verification suites.
 
-These pieces are implemented and have their own verification suites, but are **not**
-part of the standalone client path — they are the backend and encryption machinery the
-demo does not reach:
+**What doesn't — measured, not rhetorical:**
 
-- Encrypted sync protocol — 31/0 · Persistence adapters — 33/0 · Key rotation — 13/0
-  · Telemetry queue — 35/0 (`tooling/sync/*`, `tooling/telemetry/*`).
-- Conflicting-procedure lint — reproduces the contradictory-payout case and catches
-  it (`tooling/conflicts/*`). **Wired into publishing** via `supabase/functions/publish-bundle/index.ts`: a contradictory corpus is refused at publish with **HTTP 422**.
-- PostgreSQL Command Center backend: RBAC 99/0 · Telemetry ingest 27/0 · RLS bypass
-  40/0 · Retention 16/0 (`supabase/migrations`, `pnpm verify:db`).
+- **One unsafe answer was recorded on the deployed path.** A deliberately contradictory question was answered at a match margin of 0.18 — exactly the shipped threshold, so the gate did not stop it. The local harness escalates the same question; the deployed run pins no commit, so this is a recorded observation, not a reproducible claim.
+- **6 of 52 out-of-scope questions were answered** when they should have been escalated (7 at a stricter threshold). Three of the six were cases where the human owner disagreed with the machine's own assessment.
+- **Recall is low on a bigger corpus:** 84 of 302 in-scope questions found at 48 procedures (27.8%).
+- Non-English retrieval lags well behind English (62.1% vs ~32%).
 
-## How it fits Helix Codex
+The honest summary: the refusal path is real and the direction is right, but the claim is **"safety-first by design" — not "safe"**. Threshold calibration is per-tenant work that hasn't been done.
 
-LIVE Support Assistant is part of the Helix Codex / Helix Prime body of work — the same
-author and the same design philosophy (explainable, auditable, no generative model in
-the answering path). It is an **independent repository with no shared codebase,
-packages, or runtime infrastructure** with Helix Prime; "a component of Helix Codex"
-means portfolio membership, not technical integration. A possible future relationship:
-its operational signals **could** inform Helix Education's curriculum — designed to
-consume that feed; **not yet wired**.
+## Try it (5 minutes, no account needed)
 
-## Architecture
-
-- `apps/web` — React client (sign-in, on-device search, confidence gate, telemetry queue).
-- `apps/desktop` — Tauri shell; `apps/mobile` — Expo WebView shell.
-- `packages/core` — domain types, Confidence Gate, agent view, escalation record.
-- `packages/embedder` — pinned local embedding and evaluation models.
-- `packages/vector-store` — passage extraction and cosine retrieval.
-- `packages/sync` — canonical JSON, encrypted bundles, install pipeline, persistence, key rotation.
-- `supabase` — Command Center migrations, fixtures, database verification suites.
-- `tooling` — gate, parity, sync, persistence, rotation, telemetry, database harnesses.
-
-Stack: React 19, TypeScript, Vite, Tailwind; Transformers.js with a pinned MiniLM int8
-model and ONNX Runtime; pnpm workspaces + Turborepo; PostgreSQL/Supabase with RLS and
-SQL ingest contracts. No generative model in query, gate, answer, or escalation.
-
-## Production status & test coverage
-
-> [!WARNING]
-> This is a prototype, not a production deployment. **Validated on simulated tenants; safety-first by design; intended for a shadow-mode pilot. It is not production-proven and has no real customer traffic.** Historical deployed-path evaluations reported 500 simulated tickets and an unsafe answer that the then-shipped 0.18 margin would not have blocked; the cited reports do not pin the serving commit and are recorded observations rather than reproducible current-build results. Current local verification and registered metrics are listed in [`SHIPMENT_READINESS.md`](SHIPMENT_READINESS.md) and [`docs/EVIDENCE.md`](docs/EVIDENCE.md). The standalone demo does not wire hosted telemetry or escalation transport to the client. No external security audit, certified data isolation, or signed installer is claimed. Threshold calibration remains per-tenant work; recall and unsafe-answer limits are documented under *Safety*.
-
-## Release status & merge state
-
-The current audited checkout is `prog/main`. The branch history records two changes as merged to the earlier `main` branch:
-
-- `feat/publish-conflict-block` — the publish path now refuses a contradictory corpus with **HTTP 422** ("publication blocked: the tenant corpus contains contradictory procedures"). Live in the development Supabase project.
-- `exp/deployed-local-parity` — deployed-vs-local parity evidence (39/39 identical margins on a 7-procedure corpus). Tooling only; no product-code change.
-
-Four experiment branches are **evidence-only** — measured, rejected or kept as evidence, and tagged (not merged, so their code is not on `main`). Their reports survive branch cleanup because they are pinned by tag and commit SHA:
-
-| Tag | Branch | Finding |
-| --- | --- | --- |
-| [`evidence/scale-rung`](https://github.com/Hatemshalaby15071979/live-support-assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md) (`e5a7d9baf4f6`) | `exp/scale-rung` | 48-procedure corpus; in-scope recall 84/302 (27.8%) at 0.18 |
-| `evidence/multilingual-embedder` (`65b76aef103f`) | `exp/multilingual-embedder` | +0.3 pp overall at 5.1× download — rejected |
-| `evidence/reranker` (`495b52f6399b`) | `exp/reranker-measurement` | +14/+15 unsafe answers — rejected |
-| `evidence/procedure-wording` (`bd6db511a0ca`) | `exp/procedure-distinctness` | threshold-dependent — rejected |
-
-## Deployed-vs-local parity
-
-The shipped decision path was measured on the **deployed** app (public Vercel app + development Supabase) and on the **local** browser harness over the **same 39 comparable tickets** on a **7-procedure corpus**, on the current build.
-
-- Result: **39/39 identical decisions**, identical top-1 and top-2 procedures, and margins identical to four decimal places (Δ min/median/mean/max = 0.0000).
-- The contradiction ticket (`SIM-TICKET-00272`) is **not** a margin comparison: the deployed publish path now **refuses the contradictory corpus with HTTP 422**, so it cannot be replayed there. The local harness still escalates it (margin 0.167715).
-- **What it does not cover:** the set is 39 tickets on a 7-procedure corpus, not the full 500 or the 48-procedure corpus; one historical deployed/local divergence (deployed `0aec9773442c4282` answered at 0.180757 vs local 0.167715) is recorded but **unexplained** — the web client never verifies its loaded model against the bundle manifest. Report: `tooling/eval/simulated-tenant/parity-results.md`.
-
-### Safety — what is claimed, and what is not
-
-The design is **safety-first**: the gate answers only when the best procedure clears both the
-absolute floor and the margin, and an escalation carries no procedure text, no title and no
-suggested reply (10/10 checks, `tooling/gate/verify-gate.mjs`).
-
-**That is not the same as "fails safe", and the difference is measured, not rhetorical.**
-
-- **One unsafe answer is recorded, and the shipped default would not have stopped it.** On the
-  deployed path, `SIM-TICKET-00272` — a deliberately contradictory payout case — was **answered**
-  at a measured top-1/top-2 margin of **0.180757**, which is **≥ the shipped 0.18 default** as well
-  as the applied 0.17 (`tooling/eval/simulated-tenant/phase5-deployed-run-0aec9773442c4282.md`).
-  The gate measures how *decisive* a match is, not whether the matched policy agrees with itself.
-- **The local harness does not reproduce that answer** — it escalates the same ticket at margin
-  0.167715. The counterexample therefore rests on the deployed run alone.
-- **Out-of-scope public questions were answered.** Scored at margin 0.18 on the browser-local path,
-  the assistant **answered 6 of 52 out-of-scope public questions** — questions the owner labelled
-  escalate or ambiguous, where the correct behaviour is not to answer
-  (`tooling/eval/simulated-tenant/real-phrased-label-results.md`):
-
-  | Query | Text | Owner label | Label provenance | Contested? |
-  | --- | --- | --- | --- | --- |
-  | `rp-022` | Livestream on youtube by phone and microphone not enabling this just started happening | escalate | human-resolved | **yes** — both agent passes called it answerable; the owner overrode |
-  | `rp-023` | How can i Enable Live Streaming? | escalate | human-resolved | **yes** — same split |
-  | `rp-025` | Live stream on mobile | ambiguous | human-resolved | no |
-  | `rp-026` | Live streaming issues | ambiguous | recorded as "live streaming issues are technical stream problems" | no |
-  | `rp-040` | YouTube: We have detected multiple streams using the same stream key with auto-start enabled. | ambiguous | human-resolved | **yes** — same split |
-  | `rp-060` | How can creators monetize on TikTok? | escalate | agent-agreed, unconfirmed | no |
-
-  "Contested" means the row is in the set where two independent agent passes agreed the query was
-  answerable and the owner overrode to escalate/ambiguous — three of the six. The other three are
-  uncontested, and the assistant answered them anyway. At margin 0.17 the same set produced **7**
-  false accepts.
-- **The deployed parity run re-recorded these same six as unsafe.** The 39-ticket deployed run
-  `60cdbbea8a4f478f` (margin 0.17, `localBaselineApplies:false`) answered the identical six
-  out-of-scope queries — `PARITY-RP-022` → `rp-022`, `PARITY-RP-023` → `rp-023`, `PARITY-RP-025`
-  → `rp-025`, `PARITY-RP-026` → `rp-026`, `PARITY-RP-040` → `rp-040`, `PARITY-RP-060` → `rp-060`
-  — at measured margins **0.2293, 0.2674, 0.2821, 0.4175, 0.2598, 0.1869**. Every one is **≥ the
-  shipped 0.18 default**, so the margin threshold alone would not have stopped any of them. These
-  are the same six already in the table above — **not six new failures and not a regression**; the
-  deployed parity path is a refusal-heavy batch and is not comparable to the 500-ticket run. Neither
-  deployed run records a git commit hash, so the exact build each was taken against is not pinned (a
-  [reproducibility gap](docs/EVIDENCE.md#tier-1--demonstrated-on-simulated-data)).
-- **Against that, the author-written floor set held.** **0 of 8** refusal rows (5 escalate + 3
-  ambiguous) were auto-answered at 0.18 and 0.17
-  (`tooling/eval/simulated-tenant/floor-queries-results.md`).
-
-Net: the refusal path is real and the direction is right, but the claim is **"safety-first by
-design"**, not "safe".
-
-### Evaluation evidence — summary
-
-Every number below is a measurement on simulated or author-written data, with its source
-file. Nothing here is a production-customer measure. The three tiers — demonstrated,
-measured limits, and not proven — are the honest reading, moved in full to
-[`docs/EVIDENCE.md`](docs/EVIDENCE.md).
-
-- **Recorded, not reproducible (deployed, 500-ticket):** 72.2% (361/500), 1 unsafe answer at
-  margin 0.180757; author-written floor set 0/8 refusal rows answered at 0.18 and 0.17; gate
-  10/10 checks (`tooling/gate/verify-gate.mjs`). The deployed run pins no commit, so this is an
-  observation rather than a verified claim and is excluded from `pnpm run evidence`.
-- **Recorded, not reproducible (deployed parity, 39-ticket):** 26/39 (66.7%) correct, 7 false
-  escalations, 6 unsafe answers at margins 0.1869–0.4175 (all ≥ shipped 0.18) — the same six
-  out-of-scope false accepts in the refusal table, **not a regression**. `localBaselineApplies:false`;
-  no git commit hash recorded (`tooling/eval/simulated-tenant/phase5-deployed-run-60cdbbea8a4f478f.md`).
-- **Measured limits:** in-scope recall 84/302 (27.8%) at 48 procedures (0.18); non-English gap
-  en 62.1% vs es 32.0% / pt 31.0%; three changes (procedure wording, cross-encoder reranker,
-  multilingual embedders) measured and rejected.
-- **Not proven:** real customer traffic (none exists); recall at production corpus sizes (largest
-  tested is 48 procedures); per-tenant calibration (shipped `minMargin: 0.18` is a prototype
-  default, the 0.17 used here is harness-only).
-
-Full tier tables, source paths and tags: [`docs/EVIDENCE.md`](docs/EVIDENCE.md).
-
-## Run the demo (5 minutes, no account needed)
-
-The shipped decision path — pinned MiniLM → passage retrieval → Confidence Gate → agent view —
-runs entirely on the device. The evaluation harness drives that same path in a browser with **no
-sign-in, no tenant bundle, no database and no telemetry**, so it is the one flow a stranger can
-run end to end.
+The local evaluation harness runs the same decision path in a browser with no sign-in and no database:
 
 ```bash
 pnpm install
-pnpm -r run build          # builds packages/*/dist, which the harness imports
-node tooling/eval/simulated-tenant/run-chaos-evaluation.mjs \
-  SIMULATION_RUN_LABEL=my-demo
-```
-
-That last line needs the environment variables set, so copy it exactly:
-
-```bash
+pnpm -r run build
 SIMULATION_RUN_LABEL=my-demo SIMULATION_MIN_MARGIN=0.18 \
 SIMULATION_BATCH=demo-tickets.json SIMULATION_CORPUS=corpus.json \
 node tooling/eval/simulated-tenant/run-chaos-evaluation.mjs
 ```
 
-It launches headless Chrome, runs four tickets, and writes `my-demo.md` and `my-demo.json` into
-`tooling/eval/simulated-tenant/`. First run downloads the pinned MiniLM model (~22 MB) from
-Hugging Face; the query text never leaves the machine. Requires Node ≥ 22, pnpm, and Chrome.
+It runs four tickets — one answered, three refused — and writes the results next to the harness. First run downloads a ~22 MB model; your query text never leaves the machine. Needs Node ≥ 22, pnpm, and Chrome. Full walkthrough: [`docs/DEMO.md`](docs/DEMO.md).
 
-Full runbook, including the four scenarios and their expected outcomes:
-[`docs/DEMO.md`](docs/DEMO.md). A pre-run copy of the output is checked in as
-`tooling/eval/simulated-tenant/demo-four-tickets.md`.
+A narrated screen recording of that same run exists (`tooling/video/demo-video.mp4`, ~3½ minutes); the hosted copy is pending.
 
-**Narrated walkthrough.** `tooling/video/demo-video.mp4` (199.11 s) shows the same
-four-ticket run with the real gate decisions on screen, narrated from
-[`docs/DEMO_NARRATION.md`](docs/DEMO_NARRATION.md). It is a capture of the **local browser**
-evaluation, not of the hosted app. Regenerate it with `node tooling/video/capture-demo.mjs`
-then `python tooling/video/assemble-video.py`; the derived MP4 is not committed, but the
-sources and `tooling/video/demo-video-manifest.json` are.
+## Before a real pilot
 
-<!-- TODO(Hatem): paste GitHub user-attachments video URL on its own line here -->
+A shadow-mode pilot needs, at minimum:
 
-Narrated walkthrough video (hosted copy pending). A 199.11-second screen recording of the local
-four-ticket browser run: the shipped decision path answers one clear question, refuses three
-weaker ones, and shows the real confidence-gate decisions on screen. It is a capture of the
-**local browser** evaluation, not of the hosted app. The MP4 is deliberately not committed to
-this repository; the hosted copy is attached to a GitHub issue or pull request comment, and the
-resulting `user-attachments` URL is pasted on the line above.
-
-The **hosted** app is a separate, credential-gated path — see `docs/PRODUCTION_STATUS.md`. There
-is no guest account, so a reviewer without one should watch the narrated walkthrough above
-rather than click through.
-
-## Shadow-mode pilot checklist
-
-A shadow-mode pilot means the assistant runs alongside human agents and its answers are **not**
-shown to customers. Before that is worth doing, a real pilot needs:
-
-1. **Real-tenant procedures.** The tenant's own published policy, imported and versioned — not the
-   seven fictional WaveCast procedures. The conflict lint must pass on that corpus before publish.
-2. **Calibration per tenant.** Re-derive `minMargin` on the tenant's own traffic and procedures.
-   The shipped 0.18 is a prototype default and does not transfer; the 0.17 used in these
-   evaluations is harness-only.
-3. **Monitoring.** Escalation rate, false-escalation rate, unsafe-answer count and retrieval
-   latency, reported per language. The non-English gap measured here (Spanish 32.0%, Portuguese
-   31.0% against English 62.1%) is the first thing a real corpus should be checked for.
-4. **Rollback.** A way to withdraw the assistant and revert to the human queue, with the bundle
-   version that was live at the time recorded.
-5. **Consent and data handling.** Agreed handling for query text, retention limits, and who can
-   read escalation evidence. The demo writes query text to `localStorage` and has no tenant
-   query-text policy.
-6. **A named owner for the handover.** Who resolves an escalation, and what happens when the
-   assistant is wrong — the design assumes the handover is the product, not the fallback.
+1. The tenant's **real** procedures (not the fictional demo corpus), passing the contradiction check.
+2. **Threshold calibration** on that tenant's own traffic — the shipped 0.18 is a prototype default.
+3. **Monitoring** — escalation rate, unsafe answers, retrieval speed, per language.
+4. A **rollback** plan — how to pull the assistant and revert to the human queue.
+5. **Consent and data handling** — who can read escalation evidence, retention limits.
+6. **A named owner** for every escalation.
 
 Nothing in this repository has been through any of the six.
 
@@ -283,7 +92,7 @@ Nothing in this repository has been through any of the six.
 
 ## Author
 
-Built by Hatem Shalaby, Contact Centre Operations & AI Implementation Lead | WFM & CX Transformation. Background: https://github.com/Hatemshalaby15071979
+Built by Hatem Shalaby — Contact Centre Operations & AI Implementation Lead (WFM & CX transformation).
 
 ## Licence
 
