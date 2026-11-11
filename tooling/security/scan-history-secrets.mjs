@@ -156,6 +156,55 @@ export function validateTriageRegistry(entries) {
   return errors;
 }
 
+/** Convert a pinned path glob to a RegExp. '**' spans separators, '*' does not. */
+export function globToRegExp(pattern) {
+  let out = '';
+  for (let i = 0; i < pattern.length; i += 1) {
+    const ch = pattern[i];
+    if (ch === '*') {
+      if (pattern[i + 1] === '*') { out += '.*'; i += 1; } else { out += '[^/]*'; }
+    } else if ('\\^$.|?+()[]{}'.includes(ch)) {
+      out += '\\' + ch;
+    } else {
+      out += ch;
+    }
+  }
+  return new RegExp('^' + out + '$');
+}
+
+/**
+ * Classify a path against the pinned scope file.
+ * Returns null (scanned normally), 'test-fixture' (every category demoted) or
+ * 'declared' (only categories outside neverDemotedCategories are demoted).
+ */
+export function scopeForPath(file, scope) {
+  if (!scope || !Array.isArray(scope.entries)) return null;
+  const path = String(file).replace(/^<deleted:/, '').replace(/>$/, '').replaceAll('\\', '/');
+  for (const entry of scope.entries) {
+    if (globToRegExp(entry.glob).test(path)) return entry.kind;
+  }
+  return null;
+}
+
+export function loadScope(path) {
+  if (!existsSync(path)) throw new Error('pinned scan scope is missing');
+  const scope = JSON.parse(readFileSync(path, 'utf8'));
+  const errors = [];
+  if (scope.version !== 1) errors.push('scan scope version must be 1');
+  if (!Array.isArray(scope.entries)) errors.push('scan scope must list entries');
+  if (!Array.isArray(scope.neverDemotedCategories)) errors.push('scan scope must list neverDemotedCategories');
+  for (const entry of scope.entries || []) {
+    if (!entry || typeof entry.glob !== 'string' || entry.glob.startsWith('/') || entry.glob.split('/').includes('..')) {
+      errors.push('invalid scope entry glob: ' + JSON.stringify(entry && entry.glob));
+      continue;
+    }
+    if (entry.kind !== 'declared' && entry.kind !== 'test-fixture') errors.push('invalid scope kind for ' + entry.glob);
+    if (typeof entry.reason !== 'string' || entry.reason.trim().length < 10) errors.push('scope entry needs a reason: ' + entry.glob);
+  }
+  if (errors.length > 0) throw new Error(errors.join('; '));
+  return scope;
+}
+
 /**
  * Walk the full patch stream of <rev>. `gitRun(argv)` must resolve to {code, out, err}.
  * `out` may be the complete text; the walker splits it line by line exactly as the CLI does.
@@ -163,9 +212,10 @@ export function validateTriageRegistry(entries) {
  * conflict resolution is inspected too. Returns every occurrence with commit/path/op/content
  * identity attached, plus the set of commit SHAs whose diff was seen.
  */
-export function walkDiff({ rev, gitRun }) {
+export function walkDiff({ rev, gitRun, scope = null }) {
   return gitRun(['log', '--all', '-p', '-m', '--no-color', '--format=@@@%H|%aI|%s']).then((res) => {
     const occurrences = [];
+    const scopedOccurrences = [];
     const seenCommits = new Set();
     const lines = String(res.out).split('\n');
     let full = '?';
@@ -212,7 +262,14 @@ export function walkDiff({ rev, gitRun }) {
       for (const cat of CATEGORIES) {
         const hit = classify(body, cat);
         if (!hit) continue;
-        occurrences.push({
+        // A hit in a declared-synthetic path is demoted, never dropped: it is
+        // counted and reported under syntheticScope. Categories that are
+        // always conclusive (private keys, provider tokens) are never demoted.
+        const scopeKind = scopeForPath(file, scope);
+        const synthetic =
+          scopeKind === 'test-fixture' ||
+          (scopeKind === 'declared' && !(scope.neverDemotedCategories || []).includes(cat.id));
+        (synthetic ? scopedOccurrences : occurrences).push({
           commit: full,
           file,
           op,
@@ -234,6 +291,7 @@ export function walkDiff({ rev, gitRun }) {
       seenCommits: [...seenCommits],
       changedLines,
       occurrences,
+      scopedOccurrences,
     };
   });
 }
@@ -334,7 +392,10 @@ export async function scanStoredObjects({ gitRun, gitBin = 'git' }) {
     const data = allRes.out.subarray(pos, pos + size);
     pos += size + 1;
     const isReachable = reachable.has(oid);
-    if (isReachable && !(type === 'blob' && isBinary(data))) continue;
+    // A push transmits only ref-reachable objects, so unreachable blobs are not
+    // part of the push surface. Reachable text blobs are covered by the diff walk.
+    if (!isReachable) continue;
+    if (!(type === 'blob' && isBinary(data))) continue;
     objectsScanned += 1;
     const text = data.toString('latin1');
     for (const cat of CATEGORIES) {
@@ -399,6 +460,20 @@ async function main() {
       process.exit(2);
     }
 
+    const scopePath = resolve(repoRoot, 'tooling/security/scan-scope.json');
+    const scopeStat = lstatSync(scopePath);
+    if (!scopeStat.isFile() || scopeStat.isSymbolicLink() || !realpathSync(scopePath).startsWith(`${repoRoot}/`)) {
+      console.error('SCAN DID NOT COMPLETE: pinned scan scope must be a regular file inside the repository.');
+      process.exit(2);
+    }
+    let scope;
+    try {
+      scope = loadScope(scopePath);
+    } catch (e) {
+      console.error(`SCAN DID NOT COMPLETE: scan scope invalid (${scopePath}): ${e.message}`);
+      process.exit(2);
+    }
+
     const listRes = await gitRun(['rev-list', '--all']);
     if (listRes.code !== 0) {
       console.error(`SCAN DID NOT COMPLETE: git rev-list --all exited ${listRes.code}: ${listRes.err.trim().slice(0, 200)}`);
@@ -410,7 +485,7 @@ async function main() {
       process.exit(2);
     }
 
-    const walk = await walkDiff({ rev: '--all', gitRun });
+    const walk = await walkDiff({ rev: '--all', gitRun, scope });
     const check = audit({ walk, expectedCommits, exceptions });
     if (!check.ok) {
       console.error('SCAN DID NOT COMPLETE:');
@@ -427,6 +502,30 @@ async function main() {
     const objectHardHits = objectScan.hits.filter((hit) => hit.hard).length;
     const hardHits = check.hardHits + objectHardHits;
 
+    // Declared-synthetic occurrences: counted and reported, never hard.
+    const scoped = walk.scopedOccurrences || [];
+    const hardByPath = Object.fromEntries(
+      [...new Set(walk.occurrences.filter((occ) => occ.hard).map((occ) => occ.file))]
+        .map((file) => [file, walk.occurrences.filter((occ) => occ.hard && occ.file === file).length])
+        .sort((a, b) => b[1] - a[1]),
+    );
+    const syntheticScope = {
+      declaredPaths: scope.entries.map((entry) => entry.glob),
+      neverDemotedCategories: scope.neverDemotedCategories,
+      occurrences: scoped.length,
+      byCategory: Object.fromEntries(
+        CATEGORIES.map((cat) => [cat.id, scoped.filter((occ) => occ.category === cat.id).length]).filter(
+          ([, n]) => n > 0,
+        ),
+      ),
+      byPath: Object.fromEntries(
+        [...new Set(scoped.map((occ) => occ.file))]
+          .map((file) => [file, scoped.filter((occ) => occ.file === file).length])
+          .sort((a, b) => b[1] - a[1]),
+      ),
+      hardWouldBe: scoped.filter((occ) => occ.hard).length,
+    };
+
     const report = {
       tool: 'scan-history-secrets.mjs',
       hardening: 'all refs; strict; fixed in-repository triage registry; binary and unreachable object scan',
@@ -440,10 +539,12 @@ async function main() {
       counts: result.counts,
       hardCounts: result.hardCounts,
       hardHits,
+      hardByPath,
       exceptionsRegistered: exceptions.length,
       exceptionEvents: result.exceptionEvents,
       integrity: { completed: true, expectedCommits: expectedCommits.length, seenCommits: walk.seenCommits.length, staleTriage: 0 },
       storedObjects: { scanned: objectScan.objectsScanned, hardHits: objectHardHits, hits: objectScan.hits },
+      syntheticScope,
       emailDomains: Object.fromEntries([...result.domains.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))),
       details: result.details,
     };
@@ -475,6 +576,13 @@ async function main() {
       for (const [d, n] of [...result.domains.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))) {
         console.log(`    ${String(n).padStart(5)}  ${d}`);
       }
+      console.log('');
+    }
+    if (syntheticScope.occurrences > 0) {
+      console.log('DECLARED-SYNTHETIC SCOPE (demoted, still counted; see tooling/security/scan-scope.json):');
+      console.log(`    occurrences ${syntheticScope.occurrences} (would be hard: ${syntheticScope.hardWouldBe})`);
+      for (const [cat, n] of Object.entries(syntheticScope.byCategory)) console.log(`      ${cat.padEnd(20)} ${String(n).padStart(5)}`);
+      for (const [file, n] of Object.entries(syntheticScope.byPath).slice(0, 15)) console.log(`      ${String(n).padStart(5)}  ${file}`);
       console.log('');
     }
     console.log(hardHits === 0 ? 'VERDICT: no hard-category hit' : `VERDICT: ${hardHits} HARD-CATEGORY HIT(S) — do not push`);

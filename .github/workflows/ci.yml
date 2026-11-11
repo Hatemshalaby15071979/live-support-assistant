@@ -83,6 +83,13 @@ jobs:
       - name: Verification gate
         run: pnpm run verify
 
+      # Findings L-1/L-2/L-3: replays recorded retrieval scores through the
+      # shipped gate AND the manual-review boundary, then fails if any unsafe
+      # answer reaches an agent or a pilot prerequisite stops failing closed.
+      # Pre-registration: tooling/eval/GATE_EVAL_PREREGISTRATION.md
+      - name: Gate behaviour evaluation
+        run: node tooling/eval/gate-eval.mjs
+
       # Proves the build output is a real, servable bundle rather than a
       # side effect of typechecking. Uploaded but not deployed anywhere.
       - name: Upload web dist
@@ -184,3 +191,31 @@ jobs:
       # any advisory appearing in `pnpm audit --prod` fails the build.
       - name: Dependency gate
         run: pnpm run audit
+
+  # Finding N-X-9. The push rule requires a clean full-history scan, but until
+  # now nothing in CI ran the scanner, so the rule was unenforced. This job
+  # scans every ref and fails closed. fetch-depth: 0 is required — a shallow
+  # clone would scan only the tip and report a false clean.
+  secrets-scan:
+    name: Full-history secret scan
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Scan every ref
+        run: node tooling/security/scan-history-secrets.mjs --json secrets-scan.json
+
+      - name: Upload scan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: secrets-scan
+          path: secrets-scan.json
+          retention-days: 7
+

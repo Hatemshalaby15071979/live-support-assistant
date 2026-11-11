@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "reviewedAt": "2026-11-11",
+  "rationale": "The full-history scan walks every line ever introduced. Some paths are synthetic by construction (seeded corpora, detector control suites) or are documentation/evidence that quotes placeholder values. Hits there are demoted from the push-blocking count but are still counted, listed and written to the report under syntheticScope. Nothing is dropped. 'test-fixture' entries demote every category because the file IS the detector's control suite; 'declared' entries still keep neverDemotedCategories hard.",
+  "neverDemotedCategories": [
+    "private-key-block",
+    "aws-access-key",
+    "google-api-key",
+    "supabase-secret-key",
+    "github-token",
+    "slack-token",
+    "openai-api-key"
+  ],
+  "entries": [
+    {
+      "glob": "tooling/corpus/**",
+      "kind": "test-fixture",
+      "reason": "Simulated tenant corpora (seeded, data_mode=simulated) containing planted PII used to measure the PII detector."
+    },
+    {
+      "glob": "tooling/eval/simulated-tenant/**",
+      "kind": "test-fixture",
+      "reason": "Synthetic evaluation batches and their recorded results (data_mode=simulated)."
+    },
+    {
+      "glob": "docs/program/evidence/**",
+      "kind": "declared",
+      "reason": "Committed scan/evaluation evidence; it embeds hit values by design."
+    },
+    {
+      "glob": "docs/program/p0-evidence-2026-10-12.md",
+      "kind": "declared",
+      "reason": "Historical evidence record that quotes scan output."
+    },
+    {
+      "glob": "docs/CORPUS_PROVENANCE.md",
+      "kind": "declared",
+      "reason": "Documentation of which PII findings are published role addresses or FAQ examples."
+    },
+    {
+      "glob": "docs/HANDOFF-2026-10-12.md",
+      "kind": "declared",
+      "reason": "Historical handoff quoting a git SSH error line."
+    },
+    {
+      "glob": "docs/prereg/g12-role-addresses.md",
+      "kind": "declared",
+      "reason": "Pre-registration listing published organisational role addresses as non-personal."
+    },
+    {
+      "glob": "AGENTS.md",
+      "kind": "declared",
+      "reason": "The repository ledger records the scanner's own findings, so it necessarily quotes them."
+    },
+    {
+      "glob": ".env.example",
+      "kind": "declared",
+      "reason": "Documented placeholders only; no values."
+    },
+    {
+      "glob": "supabase/config.toml",
+      "kind": "declared",
+      "reason": "Local CLI template; commented-out example values, no credentials."
+    },
+    {
+      "glob": "pnpm-lock.yaml",
+      "kind": "declared",
+      "reason": "Third-party package deprecation notices; no first-party content."
+    },
+    {
+      "glob": "tooling/verify-corpus-gates.mjs",
+      "kind": "test-fixture",
+      "reason": "The PII detector's own control suite: synthetic names and addresses constructed for tests."
+    },
+    {
+      "glob": "tooling/security/verify-history-secret-scanner.mjs",
+      "kind": "test-fixture",
+      "reason": "The secret scanner's own control suite: synthetic credential shapes built from parts."
+    },
+    {
+      "glob": "tooling/security/verify-xss-client-path.mjs",
+      "kind": "test-fixture",
+      "reason": "XSS harness self-test vectors."
+    },
+    {
+      "glob": "tooling/security/xss-harness.mjs",
+      "kind": "test-fixture",
+      "reason": "XSS harness with synthetic payload references."
+    },
+    {
+      "glob": "tooling/security/xss-payloads.json",
+      "kind": "test-fixture",
+      "reason": "Synthetic XSS payload corpus."
+    },
+    {
+      "glob": "tooling/eval/compare-reranker-measurement.mjs",
+      "kind": "declared",
+      "reason": "Quotes a prior ledger entry in a comparison string."
+    }
+  ]
+}

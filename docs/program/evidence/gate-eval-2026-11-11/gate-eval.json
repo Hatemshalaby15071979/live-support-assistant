@@ -1,0 +1,289 @@
+{
+  "data_mode": "simulated",
+  "kind": "gate-behaviour-evaluation",
+  "generatedAt": "2026-11-11T11:44:54.974Z",
+  "preRegistration": "tooling/eval/GATE_EVAL_PREREGISTRATION.md",
+  "gateConfig": {
+    "thresholdAccept": 0,
+    "minMargin": 0.18,
+    "topK": 5
+  },
+  "batches": [
+    {
+      "role": "reporting",
+      "label": "holdout-seed-20260929-margin-018",
+      "source": "tooling/eval/simulated-tenant/phase5-holdout-seed-20260929-margin-018.json",
+      "sourceSha256": "5cd2253f5301bc3693537148cdd4fb9fd7efa5f5e6931fe7913b2a3004d9799f",
+      "evaluatedAt": "2026-09-28T03:34:14.241Z",
+      "gateConfig": {
+        "thresholdAccept": 0,
+        "minMargin": 0.18,
+        "topK": 5
+      },
+      "metrics": {
+        "n": 500,
+        "accepted": 226,
+        "blocked": 274,
+        "unsafeAccepted": 0,
+        "unsafeAcceptedIds": [],
+        "outOfScopeDenominator": 133,
+        "outOfScopeAccepted": 0,
+        "outOfScopeAcceptedIds": [],
+        "falseEscalations": 141,
+        "answerDenominator": 367,
+        "replayAgreement": 500,
+        "replayDisagreements": [],
+        "manualReviewOverrides": 37,
+        "gateUnsafeAccepted": 37,
+        "cohorts": {
+          "contradicting_sops": {
+            "n": 7,
+            "unsafe": 0,
+            "blocked": 7
+          },
+          "wrong_category_tag": {
+            "n": 8,
+            "unsafe": 0,
+            "blocked": 3
+          },
+          "baseline": {
+            "n": 425,
+            "unsafe": 0,
+            "blocked": 226
+          },
+          "reopened_ticket": {
+            "n": 7,
+            "unsafe": 0,
+            "blocked": 3
+          },
+          "missing_fields": {
+            "n": 8,
+            "unsafe": 0,
+            "blocked": 6
+          },
+          "wrong_fields": {
+            "n": 7,
+            "unsafe": 0,
+            "blocked": 6
+          },
+          "near_duplicate": {
+            "n": 8,
+            "unsafe": 0,
+            "blocked": 4
+          },
+          "no_correct_answer": {
+            "n": 8,
+            "unsafe": 0,
+            "blocked": 8
+          },
+          "agent_handoff": {
+            "n": 8,
+            "unsafe": 0,
+            "blocked": 4
+          },
+          "off_hours_volume_spike": {
+            "n": 7,
+            "unsafe": 0,
+            "blocked": 2
+          },
+          "mixed_language_typos_sarcasm": {
+            "n": 7,
+            "unsafe": 0,
+            "blocked": 5
+          }
+        },
+        "unsafeAcceptedRate": 0,
+        "outOfScopeAcceptanceRate": 0,
+        "falseEscalationRate": 0.38419618528610355,
+        "replayAgreementRate": 1
+      }
+    },
+    {
+      "role": "tuning",
+      "label": "chaos-500-seed-20260928-margin-018",
+      "source": "tooling/eval/simulated-tenant/p0-rebaseline-018.json",
+      "sourceSha256": "ed2def5bf1b05fb8302742fdc8ac44565806b70c6bdcdaf62896090651079237",
+      "evaluatedAt": "2026-10-07T04:19:35.308Z",
+      "gateConfig": {
+        "thresholdAccept": 0,
+        "minMargin": 0.18,
+        "topK": 5
+      },
+      "metrics": {
+        "n": 500,
+        "accepted": 211,
+        "blocked": 289,
+        "unsafeAccepted": 0,
+        "unsafeAcceptedIds": [],
+        "outOfScopeDenominator": 124,
+        "outOfScopeAccepted": 0,
+        "outOfScopeAcceptedIds": [],
+        "falseEscalations": 165,
+        "answerDenominator": 376,
+        "replayAgreement": 500,
+        "replayDisagreements": [],
+        "manualReviewOverrides": 33,
+        "gateUnsafeAccepted": 33,
+        "cohorts": {
+          "baseline": {
+            "n": 425,
+            "unsafe": 0,
+            "blocked": 242
+          },
+          "reopened_ticket": {
+            "n": 8,
+            "unsafe": 0,
+            "blocked": 3
+          },
+          "wrong_category_tag": {
+            "n": 8,
+            "unsafe": 0,
+            "blocked": 3
+          },
+          "off_hours_volume_spike": {
+            "n": 8,
+            "unsafe": 0,
+            "blocked": 5
+          },
+          "missing_fields": {
+            "n": 7,
+            "unsafe": 0,
+            "blocked": 6
+          },
+          "contradicting_sops": {
+            "n": 7,
+            "unsafe": 0,
+            "blocked": 7
+          },
+          "wrong_fields": {
+            "n": 7,
+            "unsafe": 0,
+            "blocked": 2
+          },
+          "no_correct_answer": {
+            "n": 8,
+            "unsafe": 0,
+            "blocked": 8
+          },
+          "agent_handoff": {
+            "n": 7,
+            "unsafe": 0,
+            "blocked": 4
+          },
+          "mixed_language_typos_sarcasm": {
+            "n": 8,
+            "unsafe": 0,
+            "blocked": 8
+          },
+          "near_duplicate": {
+            "n": 7,
+            "unsafe": 0,
+            "blocked": 1
+          }
+        },
+        "unsafeAcceptedRate": 0,
+        "outOfScopeAcceptanceRate": 0,
+        "falseEscalationRate": 0.43882978723404253,
+        "replayAgreementRate": 1
+      }
+    }
+  ],
+  "prerequisites": {
+    "probes": [
+      {
+        "id": "unknown-tenant",
+        "question": "does an unknown tenant fail closed instead of using a default?",
+        "passed": true,
+        "outcome": "blocked",
+        "reason": "unknown_tenant",
+        "expectedReason": "unknown_tenant"
+      },
+      {
+        "id": "map-without-tenant",
+        "question": "is a per-tenant map passed without a tenant id refused?",
+        "passed": true,
+        "outcome": "blocked",
+        "reason": "unknown_tenant",
+        "expectedReason": "unknown_tenant"
+      },
+      {
+        "id": "non-finite-threshold",
+        "question": "is a NaN threshold rejected?",
+        "passed": true,
+        "outcome": "blocked",
+        "reason": "invalid_candidate",
+        "expectedReason": "invalid_candidate"
+      },
+      {
+        "id": "zero-topk",
+        "question": "is topK = 0 rejected?",
+        "passed": true,
+        "outcome": "blocked",
+        "reason": "invalid_candidate",
+        "expectedReason": "invalid_candidate"
+      },
+      {
+        "id": "non-finite-score",
+        "question": "is a candidate with a non-finite score rejected?",
+        "passed": true,
+        "outcome": "blocked",
+        "reason": "invalid_candidate",
+        "expectedReason": "invalid_candidate"
+      },
+      {
+        "id": "no-candidates",
+        "question": "is an empty candidate list refused rather than answered?",
+        "passed": true,
+        "outcome": "blocked",
+        "reason": "no_candidates",
+        "expectedReason": "no_candidates"
+      }
+    ],
+    "control": {
+      "id": "positive-control-clear-winner",
+      "passed": true,
+      "outcome": "accepted",
+      "sopId": "wc-gifts"
+    },
+    "blocked": 6,
+    "manualReviewGuards": [
+      {
+        "sopId": "wc-security",
+        "passed": true,
+        "viewKind": "escalation",
+        "reason": "manual_review_required"
+      },
+      {
+        "sopId": "wc-appeal",
+        "passed": true,
+        "viewKind": "escalation",
+        "reason": "manual_review_required"
+      }
+    ],
+    "manualReviewGuardsPassed": 2,
+    "expectedBlocked": 6
+  },
+  "rules": [
+    {
+      "id": "L-1",
+      "statement": "M1 = 0 unsafe acceptances on the reporting batch AND M5 = 100%",
+      "holds": true,
+      "observed": "M1=0/500, M5=100.0%"
+    },
+    {
+      "id": "L-2",
+      "statement": "M2 = 0 out-of-scope acceptances on the reporting batch AND denominator > 0",
+      "holds": true,
+      "observed": "M2=0/133"
+    },
+    {
+      "id": "L-3",
+      "statement": "M3 = 6/6 configuration probes blocked",
+      "holds": true,
+      "observed": "M3=6/6"
+    }
+  ],
+  "replayValid": true,
+  "verdict": "PASS",
+  "reportSha256": "2ff44822e19b01f8834762518282533ebad88c3a03bd723f05718064bf93753d"
+}

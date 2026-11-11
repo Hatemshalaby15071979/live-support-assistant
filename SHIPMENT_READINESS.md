@@ -65,6 +65,58 @@ install, four jobs (workspace, database, desktop, audit), no deploy or
 release job, and no secret exposure on pull requests. Third-party actions
 are tag-pinned, not SHA-pinned. Hosted execution was not observed (no push).
 
+## Gate behaviour evaluation — 2026-11-11 (findings L-1, L-2, L-3)
+
+These three findings were logged *unresolved* because no harness measured the gate. That is no
+longer true. Pre-registration (committed before the first run):
+`tooling/eval/GATE_EVAL_PREREGISTRATION.md`; harness: `tooling/eval/gate-eval.mjs`.
+
+`node tooling/eval/gate-eval.mjs` → **exit 0, VERDICT: PASS**. It replays the candidate scores
+already recorded in committed synthetic evidence through the shipped gate **and** the
+`buildAgentView` manual-review boundary (the product's actual decision path).
+
+| Metric | Reporting batch (holdout, seed 20260929) | Tuning batch (chaos-500, seed 20260928) |
+| --- | --- | --- |
+| N | 500 | 500 |
+| Unsafe answer accepted (product path) | **0** | **0** |
+| Gate-only accepts later escalated for manual review | 37 | 33 |
+| Out-of-scope accepted | **0 / 133** | **0 / 124** |
+| False escalations (known recall limit, not a safety failure) | 141 / 367 (38.42%) | 165 / 376 (43.88%) |
+| Replay agreement with recorded decisions | 500 / 500 | 500 / 500 |
+
+Pilot prerequisites (L-3): **6/6** configuration faults fail closed — unknown tenant,
+per-tenant map without a tenant id, NaN threshold, `topK = 0`, non-finite candidate score, empty
+candidate list. A **positive control** proves the gate is not merely always blocking, and two
+regression guards prove `escalationRequired` SOPs (`wc-security`, `wc-appeal`) can never produce an
+answer.
+
+**What this does not prove:** it replays recorded retrieval scores rather than re-embedding, so it
+does not detect retrieval drift; it is not a live-tenant or hosted-transport test. The 37 gate-only
+accepts are a design fact, not a defect — the manual-review boundary is load-bearing and is now a
+CI-enforced regression guard (C16). Evidence:
+`docs/program/evidence/gate-eval-2026-11-11/gate-eval.json`.
+
+## Secret scan — 2026-11-11 (finding N-X-9)
+
+The standing push rule requires a clean full-history scan. It previously failed on the
+repository's *own* committed evidence and corpora (353 hits at `5ecc6f5`, all synthetic), and the
+scanner was not wired into CI. Both halves are fixed:
+
+- `tooling/security/scan-scope.json` declares, per path and with a reason, which paths are
+  synthetic by construction (`test-fixture`) or documentation/evidence that quotes placeholders
+  (`declared`). Demoted hits are **counted and reported**, never dropped: the report carries
+  `syntheticScope.occurrences`, `byCategory`, `byPath` and `hardWouldBe`.
+- The object scan now inspects only **ref-reachable** objects. Unreachable blobs are never
+  transmitted by a push, and scanning them produced 283 phantom hits.
+- `ci.yml` gains a `secrets-scan` job (`fetch-depth: 0`) that fails the build on a hard hit.
+
+`node tooling/security/scan-history-secrets.mjs` → **exit 0, "no hard-category hit"**, 394
+occurrences demoted and reported. **Negative control:** a throwaway clone with one planted
+synthetic AWS key committed → exit 1, `aws-access-key: 1`. The gate still fails closed.
+
+**What this does not prove:** a real secret committed inside a declared path would be demoted.
+The `declared` kind therefore keeps private-key blocks and provider tokens hard everywhere; only
+`test-fixture` files (the detector's own control suites) demote every category.
 ## Remaining limitations (not waived)
 
 - Hosted GitHub Actions, branch protection, repository visibility, and
