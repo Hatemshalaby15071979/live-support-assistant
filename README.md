@@ -6,9 +6,12 @@
 
 [![CI](https://github.com/Hatemshalaby15071979/live-support-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/Hatemshalaby15071979/live-support-assistant/actions)
 ![licence](https://img.shields.io/badge/licence-MIT-blue)
-![local verification](https://img.shields.io/badge/local%20verification-pass%20(2026--11--05)-brightgreen)
+![local verification](https://img.shields.io/badge/local%20verification-20%2F20%20suites%20(2026--11--13)-brightgreen)
 
-*Local verification measured 2026-11-05 on `prog/main`; the public GitHub repository is populated (default branch `prog/main`) and its hosted CI runs pass.*
+*Local verification measured 2026-11-13 on `fix/ledger-batch-1` with
+`CHROME_PATH=/usr/bin/google-chrome pnpm run verify` → 20 of 20 suites passed,
+exit 0. The public GitHub repository is populated (default branch `prog/main`)
+and its hosted CI runs pass.*
 
 <!-- No static test or coverage count is shown here: a frozen
      number decays silently. Run the suite for a current figure;

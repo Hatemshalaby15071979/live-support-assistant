@@ -27,31 +27,38 @@ run under a stricter instruction prohibiting any push — so nothing was pushed.
   claimed anywhere in this report. The owner should delete/recreate it from
   the `.json` evidence file on a healthy filesystem if it is still needed.
 
-## Local verification (2026-11-06, re-run in this session)
+## Local verification (2026-11-13, this session)
 
 | Check | Command | Outcome |
 | --- | --- | --- |
-| Lint | `pnpm run lint` | Passed (turbo-cached, inputs unchanged) |
-| Typecheck | `pnpm run typecheck` | Passed, 9 tasks (turbo-cached) |
-| Build | `pnpm run build:node` | Passed, 5 tasks (turbo-cached; Vite web bundle) |
-| Verification gate | `pnpm run verify` | **17/17 suites passed**, incl. parity, encrypted sync, persistence, rotation, confidence gate, telemetry, publish-conflict block, PII recall, Market Twin, XSS stand-in harness (explicitly labelled a stand-in, not the built client) |
-| Evidence | `pnpm run evidence` | **12 claims verified, 0 mismatch, 0 unverifiable** |
-| Dependency gate | `pnpm run audit` | Passed; **0 production advisories**, 0 new/escalated |
+| Verification gate | `CHROME_PATH=/usr/bin/google-chrome pnpm run verify` | **20/20 suites passed, exit 0** — the 17 suites below plus three security suites added on 2026-11-13: desktop CSP (HI-03), no real project refs (HI-05), vendored schemars checksum (ME-13). Output: `remediation/evidence/HI-12/verify-2026-11-13.txt` in the audit workspace. |
+| Database gate | `bash tooling/db/verify-phase7.sh` | Exit 0; 7 suites OK including the HI-04 device-ownership regression. The fleet suite reports the documented F-1 accepted red (7 claim-override probes) on this base. |
+| Frozen install | `pnpm install --frozen-lockfile` | Exit 0; lockfile unchanged. |
 
-Prior (2026-11-05) results also recorded: full-history secret scan at
-`1fed25d` (237 commits, 1,002,690 lines, 0 hard hits, 17/17 negative
-controls) and a Docker database verification with the documented accepted
-F-1 finding (seven claim-override probes red; anonymous-role coverage
-unproven locally; hosted RLS run still needed). The hosted/deployed-path
-evaluator was **not** run: it writes synthetic tenant records to an external
-development Supabase project and must not be described as a local deployment.
+The suites cover parity, encrypted sync, persistence, rotation, confidence gate,
+telemetry, publish-conflict block, PII recall, Market Twin, the XSS stand-in
+harness (explicitly a stand-in, not the built client), and the three security
+suites above. The real-client XSS path is still **not** proven: it needs hosted
+credentials and writes to a shared project, so it is not in the gate (HI-02).
 
-## Secret-history scan (2026-11-06 rerun)
+Prior (2026-11-05/06) results, kept as dated observations and **superseded where
+they disagree with the 2026-11-13 run**: 17/17 JS suites, `pnpm run evidence`
+12 claims verified, `pnpm run audit` 0 production advisories, and a Docker
+database run with the accepted F-1 red. The hosted/deployed-path evaluator was
+**not** run: it writes synthetic tenant records to an external development
+Supabase project and must not be described as a local deployment.
 
-- Ran the repository's own scanner:
-  `node tooling/security/scan-history-secrets.mjs` → **"VERDICT: no
-  hard-category hit"**, exit 0. An independent `git log --all -p` pattern
-  grep found only the scanner's own marker strings in its source code.
+## Secret-history scan (2026-11-13 rerun)
+
+- `node tooling/security/scan-history-secrets.mjs` scans `--all` (275 commits,
+  2,020,950 changed lines) and reports **641 hard-category hits**, exit 1:
+  325 email-address, 11 credential-url, 9 db-host-ref, 7 password-assignment,
+  3 private-key-block, 3 high-entropy-assignment. The hits are historical
+  fixture/example values, but the scanner fails closed and the triage registry
+  is empty, so this is **not** a clean scan and must not be described as one.
+  The earlier "0 hard hits" claim came from a HEAD-only scan of a different
+  revision and is withdrawn. This is why the scanner is not yet a merge gate
+  (HI-02); triaging 641 occurrences is human work.
 - Tracked-file audit: no `.env`, private keys, databases, or `node_modules`
   tracked. `.env.example` carries placeholders only and is checked by
   `tooling/security/verify-no-real-project-refs.mjs` (HI-05). The development
@@ -81,6 +88,7 @@ are tag-pinned, not SHA-pinned. Hosted execution was not observed (no push).
   standalone demo; no external security audit or certified isolation is
   claimed. Production prerequisites remain open.
 
-**Status: locally shipment-ready** for the owner's later push decision, with
-the hosted verifications and limitations above still open. Nothing was
-pushed, published, released, or deployed.
+**Status: locally verified, not shipment-ready.** The 2026-11-13 gate runs
+above are reproducible, but the open ledger findings (HI-02 real-client XSS and
+the un-triaged 641-hit history scan, among others) and the limitations above
+are unresolved. Nothing was pushed, published, released, or deployed.

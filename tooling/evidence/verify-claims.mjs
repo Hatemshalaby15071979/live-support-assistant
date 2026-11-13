@@ -2,6 +2,13 @@
 /**
  * Evidence verifier (V2 D8 / P8).
  *
+ * THIS IS A DOCUMENTATION-CONSISTENCY CHECK, NOT VERIFICATION (HI-12). It
+ * compares published figures against self-produced JSON artifacts in this
+ * repository. It does not re-run an evaluation, does not reach a hosted
+ * service, and cannot establish that a number is true — only that the document
+ * and the artifact it cites still agree. "12 claims verified" means "12 claims
+ * still match their cited files"; read it that way everywhere.
+ *
  * Every reproducible headline number published in README.md, docs/EVIDENCE.md and
  * docs/PRODUCTION_STATUS.md is listed here with the artifact it came from and the rule that
  * proves it still reproduces. `pnpm run evidence` runs this file.
