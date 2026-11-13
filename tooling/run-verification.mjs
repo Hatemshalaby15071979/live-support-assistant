@@ -182,6 +182,17 @@ const SUITES = [
     script: 'tooling/security/xss-harness.mjs',
     verdict: 'XSS HARNESS OK',
   },
+  {
+    // Desktop CSP (HI-03). The Tauri shell shipped `app.security.csp: null`,
+    // which disables the WebView policy every other XSS control assumes. This
+    // suite asserts the production policy is strict (script-src 'self', no
+    // inline/eval, object-src 'none') and that the checker rejects the original
+    // null policy as a negative control.
+    key: 'desktop-csp',
+    name: 'desktop CSP (Tauri)',
+    script: 'tooling/security/verify-desktop-csp.mjs',
+    verdict: 'DESKTOP CSP OK',
+  },
 ];
 
 const requested = process.argv.slice(2);
