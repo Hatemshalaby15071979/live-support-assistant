@@ -1,0 +1,39 @@
+# Dependency update automation.
+#
+# Ecosystems detected for this repository:
+#   - npm  : pnpm workspace at the repo root (apps/web, apps/mobile, packages/*)
+#   - cargo: the Tauri desktop shell at apps/desktop/src-tauri
+#   - github-actions: the workflows under .github/workflows
+#
+# There is no Dockerfile in this repository, so no `docker` ecosystem entry.
+# Versions are still pinned by SHA inside the workflow files themselves
+# (CodeQL, secret scan, checkout) — Dependabot will open PRs to bump those SHAs.
+
+version: 2
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    # This is a pnpm workspace; Dependabot's npm updater handles package.json
+    # manifests and respects pnpm-lock.yaml.
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: "cargo"
+    directory: "/apps/desktop/src-tauri"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "ci"

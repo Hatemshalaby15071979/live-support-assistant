@@ -1,0 +1,49 @@
+# CodeQL security analysis.
+#
+# Runs on every pull request and weekly on the default branch. Languages are
+# auto-detected by the CodeQL engine from the repository contents (the repo is
+# predominantly JavaScript/TypeScript with a Rust/Tauri desktop shell and a
+# pnpm workspace; CodeQL will pick up the languages it supports).
+#
+# Action versions are pinned to full commit SHAs (see the comments) so a
+# compromised tag cannot silently change what runs here. Update the SHA when
+# bumping the major version, and record the new SHA in the PR body.
+
+name: CodeQL
+
+on:
+  pull_request:
+    branches: ["**"]
+  push:
+    branches: ["prog/main"]
+  schedule:
+    - cron: "27 3 * * 1"
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@9418214df1f2c4b8128c770156c409013b07d6b9 # v3
+        # Languages are auto-detected; list explicitly only if auto-detection
+        # misses something. Supported here: javascript-typescript, others if added.
+        with:
+          languages: ""
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@9418214df1f2c4b8128c770156c409013b07d6b9 # v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@9418214df1f2c4b8128c770156c409013b07d6b9 # v3
+        with:
+          category: "/language:auto"

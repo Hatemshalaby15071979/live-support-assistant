@@ -1,0 +1,30 @@
+# gitleaks configuration for live-support-assistant.
+#
+# The default gitleaks ruleset is used as-is. This file ONLY adds an allowlist
+# for documented synthetic fixtures so the scanner does not fail on test data.
+# Real credentials must never be added to this allowlist — if a genuine secret
+# is committed, the scan MUST fail.
+#
+# Keep this minimal. If a fixture path below starts containing real material,
+# remove it from the allowlist rather than widening the regexes.
+
+[extend]
+useDefault = true
+
+[allowlist]
+# 1. Synthetic corpus fixtures. `tooling/corpus/` is generated SOP procedure data
+#    and snapshots consumed by the test harness; it contains no real secrets.
+#    `tooling/market/chaos.mjs` uses an obvious placeholder key.
+paths = [
+  '''tooling/corpus/''',
+  '''tooling/market/chaos\.mjs''',
+  # CR-04 negative-control harness: intentionally plants `EXAMPLE TEST PRIVATE
+  # KEY` / synthetic AWS/Google/Supabase key shapes as self-test fixtures.
+  '''tooling/security/verify-history-secret-scanner\.mjs''',
+]
+
+# 2. Placeholder / synthetic markers that are by construction never real secrets.
+regexes = [
+  '''(?i)REDACTED''',
+  '''(?i)rotated-wrapping-key-v\d+''',
+]
