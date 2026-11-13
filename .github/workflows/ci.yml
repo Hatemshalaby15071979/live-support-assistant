@@ -7,6 +7,14 @@ name: CI
 # What is deliberately NOT here yet: a deploy job, a release artifact, and a
 # hosted database. There is no authenticated transport to deploy, so a deploy
 # stage would be decoration. It attaches when the bundle transport slice lands.
+#
+# BRANCH POLICY (ME-14): the default and integration branch is `prog/main`;
+# there is no `main` or `master`. `push` is limited to `prog/**`, and
+# `pull_request` covers every target branch, so a phase branch is verified by
+# its PR. Any tool or workflow that needs a base branch must name `prog/main`.
+#
+# A commit message saying "[gate: … pass]" is the author's claim, not a result.
+# Only this workflow's output (or a recorded run) is evidence.
 
 on:
   # `main` is the public branch. `prog/**` is the integration branch and its
