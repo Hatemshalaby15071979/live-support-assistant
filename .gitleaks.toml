@@ -1,0 +1,42 @@
+# gitleaks configuration — live-support-assistant
+#
+# Owner-verified 2026-11-13: every finding in this repository is synthetic test
+# data, not a credential. The values fall into three groups:
+#   1. the prompt-corpus fixtures (base64 of ordinary English phrases and a
+#      synthetic hex string) under tooling/corpus/;
+#   2. a test constant in tooling/market/chaos.mjs;
+#   3. the scanner's own self-test, which writes a deliberately fake PEM block
+#      into a throw-away repository to prove that the scanner catches one.
+# See audit-11-13/SECRET_SCAN_RESULTS.md for the value-by-value evidence.
+#
+# `useDefault = true` is required: supplying a config otherwise REPLACES the
+# built-in rule set, so no rules would run at all (a silent false negative).
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Synthetic corpus value and base64 dummy values in tooling/corpus/** (prompt data, not secrets)"
+# Every entry is anchored to the exact string. There is deliberately no `paths`
+# field: gitleaks ORs the fields of an allowlist entry, so a path entry would
+# allowlist every finding in those files — including a real secret.
+regexes = [
+  '''^B0614CADF0EAF85433C715A508F419AA6FB92A90$''',
+  '''^c2VjcmV0IGlzIHNlY3VyZQ==$''',
+  '''^c2VjcmV0IGlzIHNlY3VyZSwgb3IgaXMgaXQ/Cg==$''',
+  '''^c2VjcmV0IGlzIHNlY3VyZSwgSSB0aGluaw==$''',
+  '''^dGhpcyBpcyBwYXNzd29yZA==$''',
+  '''^YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY=$''',
+]
+
+[[allowlists]]
+description = "Test constant in tooling/market/chaos.mjs (not a credential)"
+regexes = ['''^rotated-wrapping-key-v2$''']
+
+[[allowlists]]
+description = "Deliberately fake PEM block written into a temporary repo by the history-scanner self-test"
+# Matched on the distinctive middle of the header, which no real key carries.
+# The leading/trailing dash runs are omitted so this config file does not itself
+# contain a private-key-shaped line. The body is generated per run, so the whole
+# block cannot be enumerated.
+regexes = ['''BEGIN EXAMPLE TEST PRIVATE KEY''']
