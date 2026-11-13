@@ -6,10 +6,10 @@
 
 [![CI](https://github.com/Hatemshalaby15071979/live-support-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/Hatemshalaby15071979/live-support-assistant/actions)
 ![licence](https://img.shields.io/badge/licence-MIT-blue)
-![local verification](https://img.shields.io/badge/local%20verification-20%2F20%20suites%20(2026--11--13)-brightgreen)
+![local verification](https://img.shields.io/badge/local%20verification-21%2F21%20suites%20(2026--11--13)-brightgreen)
 
 *Local verification measured 2026-11-13 on `fix/ledger-batch-1` with
-`CHROME_PATH=/usr/bin/google-chrome pnpm run verify` → 20 of 20 suites passed,
+`CHROME_PATH=/usr/bin/google-chrome pnpm run verify` → 21 of 21 suites passed,
 exit 0. The public GitHub repository is populated (default branch `prog/main`)
 and its hosted CI runs pass.*
 

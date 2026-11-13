@@ -31,7 +31,7 @@ run under a stricter instruction prohibiting any push — so nothing was pushed.
 
 | Check | Command | Outcome |
 | --- | --- | --- |
-| Verification gate | `CHROME_PATH=/usr/bin/google-chrome pnpm run verify` | **20/20 suites passed, exit 0** — the 17 suites below plus three security suites added on 2026-11-13: desktop CSP (HI-03), no real project refs (HI-05), vendored schemars checksum (ME-13). Output: `remediation/evidence/HI-12/verify-2026-11-13.txt` in the audit workspace. |
+| Verification gate | `CHROME_PATH=/usr/bin/google-chrome pnpm run verify` | **21/21 suites passed, exit 0** — the 17 suites below plus four suites added on 2026-11-13: desktop CSP (HI-03), no real project refs (HI-05), vendored schemars checksum (ME-13), agent-text quarantine (ME-15). Output: `remediation/evidence/HI-12/verify-2026-11-13-final.txt` in the audit workspace. |
 | Database gate | `bash tooling/db/verify-phase7.sh` | Exit 0; 7 suites OK including the HI-04 device-ownership regression. The fleet suite reports the documented F-1 accepted red (7 claim-override probes) on this base. |
 | Frozen install | `pnpm install --frozen-lockfile` | Exit 0; lockfile unchanged. |
 

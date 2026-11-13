@@ -3,7 +3,7 @@
 One row per phase. Updated at every phase end. Values: `done` | `in progress` | `parked` | `not met`.
 
 > **Current measurement (2026-11-13):** `CHROME_PATH=/usr/bin/google-chrome pnpm run verify`
-> → **20/20 suites, exit 0**; `bash tooling/db/verify-phase7.sh` → exit 0. Rows below are dated
+> → **21/21 suites, exit 0**; `bash tooling/db/verify-phase7.sh` → exit 0. Rows below are dated
 > observations at the SHA they name; a row saying 10/10, 14/14 or 17/17 is the count at that
 > time, not the current gate. The full-history secret scan is **not clean** (641 hard-category
 > hits over 275 commits); see `SHIPMENT_READINESS.md`.
