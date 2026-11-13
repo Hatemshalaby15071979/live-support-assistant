@@ -30,4 +30,9 @@ This repository inherits the workspace constitution (`../../00_CONSTITUTION.md`)
 - `pnpm run verify` and `pnpm run evidence` are the gate. A red gate blocks a readiness claim, not a commit.
 - `docs/program/STATUS.md` is the phase record; it is allowed to say "not started".
 - `docs/program/FAILURES/` keeps failures as first-class records rather than hiding them in a changelog.
-- The workspace audit at `../../AUDIT_2026-10-30.md` is the external check on these claims.
+- There is **no external audit**. The production-readiness reviews in this
+  repository (architecture, security, operations, product) were run by the same
+  agent harness that wrote the code; they are self-assessments, and the earlier
+  pointer to `../../AUDIT_2026-10-30.md` is withdrawn because no such file
+  exists. A genuine independent review can only be cited after the owner
+  records one (gate G7).

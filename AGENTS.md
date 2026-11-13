@@ -610,8 +610,10 @@ prototype starting point, not a tenant-calibrated constant.
 
 **Audit verdict: NO-GO.** Not a near-miss. Every phase above is a *component*
 completion and each says so honestly in its own record; what never existed was
-the word **integrated**. Four independent reviews (architecture, security,
-operations, product) reached the same verdict, and one fact settles it: a grep
+the word **integrated**. Four internal review passes (architecture, security,
+operations, product) — run by the same agent harness that produced the code,
+so they are self-assessments rather than independent audits — reached the same
+verdict, and one fact settles it: a grep
 for `fetch(`, `supabase`, `createClient`, `Authorization`, `Bearer`,
 `EventSource` and `WebSocket` across `apps/web/src` returns **no matches**. The
 shipped client cannot reach a server, cannot know a tenant exists, and writes
