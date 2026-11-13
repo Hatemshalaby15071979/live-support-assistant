@@ -71,11 +71,16 @@ overrides:
   # before writing it: sharp@0.35.5 resolves.
   sharp: 0.35.5
 
-# onnxruntime-node downloads its native binaries in a postinstall script;
-# protobufjs is pulled in by the ONNX toolchain. Both must be allowed to build.
+# `allowBuilds` decides which dependency install scripts may run as the CI user.
+# onnxruntime-node downloads its native binaries in a postinstall, so it must
+# run. protobufjs is pulled in by the ONNX toolchain but its postinstall
+# (scripts/postinstall.js) only prints a version-scheme warning and generates
+# nothing, so it is explicitly false (ME-13). pnpm fails the install when a
+# script-bearing dependency is neither true nor false here, which keeps this
+# decision fail-closed: adding a package means granting it build permission.
 allowBuilds:
   onnxruntime-node: true
-  protobufjs: true
+  protobufjs: false
 
 minimumReleaseAgeExclude:
   - '@turbo/darwin-64@2.11.4'

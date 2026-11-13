@@ -203,6 +203,17 @@ const SUITES = [
     script: 'tooling/security/verify-no-real-project-refs.mjs',
     verdict: 'NO REAL PROJECT REFS OK',
   },
+  {
+    // ME-13: the Tauri build patches crates-io schemars 0.8.22 to a local path,
+    // which has no registry checksum. This suite verifies every vendored file
+    // against vendor/schemars-0.8.22.sha256, rejects unlisted files, and proves
+    // the patch is the one Cargo.lock resolves. Negative control: a wrong hash
+    // must be rejected.
+    key: 'vendored-schemars',
+    name: 'vendored schemars checksum',
+    script: 'tooling/security/verify-vendored-schemars.mjs',
+    verdict: 'VENDORED SCHEMARS OK',
+  },
 ];
 
 const requested = process.argv.slice(2);
