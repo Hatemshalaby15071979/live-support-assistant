@@ -13,6 +13,7 @@
 #   4. rls_bypass_fleet.sql  — the same guarantee at fleet scale (>1,000 probes, negative controls)
 #   5. phase8_retention.sql  — retention removes expired data, redacts escalations, stays closed
 #   6. rls_surface_audit.sql — no callable function builds SQL (the F-1 compensating control)
+#   7. hi04_device_ownership.sql — HI-04 regression: bundle_for_device scopes to auth.uid(), not just tenant
 #
 # THE FLEET SUITE IS AN ACCEPTED RED (finding F-1, accepted 2026-10-08 as option D).
 # Suite 4 is EXPECTED to report `RLS BYPASS FLEET FAILED`, with exactly 7 failures — the
@@ -337,6 +338,7 @@ run_suite supabase/tests/rls_bypass.sql        "RLS BYPASS SUITE OK"
 run_fleet_suite
 run_suite supabase/tests/phase8_retention.sql  "RETENTION SUITE OK"
 run_suite supabase/tests/rls_surface_audit.sql "SURFACE AUDIT OK"
+run_suite supabase/tests/hi04_device_ownership.sql "HI-04 DEVICE OWNERSHIP OK"
 
 # `output` still holds the audit's verdict, which carries the anon coverage note verbatim.
 if printf '%s' "$output" | grep -q 'anon coverage UNPROVEN LOCALLY'; then
