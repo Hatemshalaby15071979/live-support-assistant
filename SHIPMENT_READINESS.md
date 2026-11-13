@@ -53,7 +53,12 @@ development Supabase project and must not be described as a local deployment.
   hard-category hit"**, exit 0. An independent `git log --all -p` pattern
   grep found only the scanner's own marker strings in its source code.
 - Tracked-file audit: no `.env`, private keys, databases, or `node_modules`
-  tracked; `.env.example` contains placeholder/localhost values only.
+  tracked. `.env.example` carries placeholders only and is checked by
+  `tooling/security/verify-no-real-project-refs.mjs` (HI-05). The development
+  project ref does still appear in historical evidence — `docs/program/` and
+  `tooling/eval/simulated-tenant/` — because those files record which project a
+  past run used; they are evidence, not configuration, and are not read by a
+  build. No credential is recorded in either place.
 - Pattern scans cannot prove no credential ever existed; no values are
   printed here.
 

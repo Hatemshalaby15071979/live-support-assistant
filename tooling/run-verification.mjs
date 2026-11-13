@@ -193,6 +193,16 @@ const SUITES = [
     script: 'tooling/security/verify-desktop-csp.mjs',
     verdict: 'DESKTOP CSP OK',
   },
+  {
+    // HI-05: `.env.example` shipped the development project's real ref while
+    // the readiness doc claimed placeholder-only. This suite scans the files an
+    // operator copies or a workflow reads, and runs a negative control proving
+    // a 20-character ref is detected.
+    key: 'project-refs',
+    name: 'configuration carries no real project refs',
+    script: 'tooling/security/verify-no-real-project-refs.mjs',
+    verdict: 'NO REAL PROJECT REFS OK',
+  },
 ];
 
 const requested = process.argv.slice(2);
