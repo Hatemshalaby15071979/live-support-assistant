@@ -14,9 +14,11 @@ authenticated application, tenant-isolation, or customer outcome. The complete r
 are in [`local-inference-results.json`](program/evidence/live-support-local-eval-2026-11-05/local-inference-results.json);
 reproduce with `node tooling/eval/run-local-synthetic-evaluation.mjs`.
 
-The local database isolation suite continues to report seven accepted F-1 claim-override reads.
-The owner-recorded disposition and its required tripwire remain unchanged; this is not evidence
-that hostile claim overrides are technically prevented. See the [dated execution record](program/execution-2026-11-04-live-support.md).
+The local database isolation suite (fleet RLS) now reports **0** successful claim-override reads: under
+G5/HI-01 (2026-11-13) `EXECUTE` on `pg_catalog.set_config` was revoked from `anon`/`authenticated`, so
+the override probes fail with `denied:privilege` and the fleet suite is green. A residual direct-DB-session
+`SET` vector remains and is documented in the [F-1 record](SECURITY_FINDING_F1_claim_override.md) §8. The
+pre-fix baseline is in the [dated execution record](program/execution-2026-11-04-live-support.md).
 
 **What it does.** LIVE Support Assistant answers frontline support questions from
 a tenant's own procedures. It searches on the device, and a deterministic

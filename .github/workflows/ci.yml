@@ -110,7 +110,7 @@ jobs:
       # recreates the database, applies every migration, then runs SEVEN steps
       # (tooling/db/verify-phase7.sh:9-15): an offline SQL lint, then rbac_matrix
       # (99 probes), phase5_telemetry (17), rls_bypass (40), rls_bypass_fleet
-      # (>1,000, an ACCEPTED RED - see the F-1 record), phase8_retention (16) and
+      # (>1,000, now expected green after the HI-01 fix under G5), phase8_retention (16) and
       # rls_surface_audit (no callable function builds SQL).
       - name: Database verification
         run: bash tooling/db/verify-phase7.sh

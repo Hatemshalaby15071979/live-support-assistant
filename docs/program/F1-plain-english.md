@@ -54,7 +54,18 @@ describes the property, not the decision.
 appeared, and whether a platform release gives the claim note a per-role lock — which would make
 option C unnecessary.
 
-## The one thing needed from you
+## Status (updated 2026-11-13, G5/HI-01)
+
+F-1 is **fixed**, not awaiting an accept/withdraw choice. Under G5 the owner authorised the audit's
+`required_fix`: the `set_config` override path was closed by revoking `EXECUTE` on
+`pg_catalog.set_config` from `anon`/`authenticated` (migration `20261113000000_fix_tenant_claim_spoof.sql`),
+so the fleet suite (`verify:db` suite 4) is now **green** and the old "7 failing probes = expected"
+convention is withdrawn. A residual direct-DB-session `SET` vector remains and is documented in
+`docs/SECURITY_FINDING_F1_claim_override.md` §8; option C (pre-request hook snapshot) would close it
+fully if you later want zero residual.
+
+<details>
+<summary>Original decision prompt (kept for history)</summary>
 
 Confirm or withdraw, in your own words. Either is fine and both are honest:
 
@@ -62,6 +73,7 @@ Confirm or withdraw, in your own words. Either is fine and both are honest:
 - **"F-1 not accepted"** — then either option C gets built, or the database gate knowingly goes red.
   It cannot simply be marked otherwise: `verify:db` refuses to treat the red as expected unless the
   record says ACCEPTED, so withdrawing the acceptance **fails the database gate by design**.
+</details>
 
 **Current state while you decide:** accepted on conditions per your instruction of 2026-10-09, and
 awaiting this plain-English re-confirmation. Nothing about the database has been changed.

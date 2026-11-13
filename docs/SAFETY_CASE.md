@@ -19,7 +19,7 @@ Every `MET` names a command that was actually run; everything else names what is
 | D3 | Recall — ≥ 70% in-scope at 500, **per language** | **NOT MEASURABLE** | No headline-eligible labels: the gold set is `agent-agreed`, owner spot-check NOT DONE, only **3 answerable owner rows** (all T04 calibration). `docs/program/STATUS.md`, `docs/program/OWNER_QUEUE.md` OQ-002. Measured, non-headline: T04 500 R@1 **30.0%** (`tooling/corpus/baseline-results.json`). |
 | D4 | Language parity — recall spread ≤ 10 pp at 500, else publish the gap | **NOT MET** at the measured rung | At 48 procedures the spread is **30.1 pp** (en 62.1 vs es 32.0 / pt 31.0) — `docs/KNOWN_ISSUES.md` #4. At 500 the per-language arm is **T01 alone** → NOT MEASURABLE there. |
 | D5 | Calibration — a per-tenant calibration record; 0.17 never a tenant setting | **NOT MET** | No tenant calibrated. `minMargin: 0.18` is a prototype default (`docs/KNOWN_ISSUES.md` #6). `tooling/calibration/derive-margin.mjs` **does not exist**; its prereg is `docs/prereg/g6-calibration-pipeline.md`. |
-| D6 | Isolation — 0 successful cross-tenant reads/writes in ≥ 1,000 adversarial attempts, with negative controls | **NOT MET** | `pnpm run verify:db`, 2026-10-09: fleet suite **1475 probes, vacuous 0**, and **7 probes SUCCEED** — `claim override capability / override claim then read / sops / rows:3`. Accepted red (F-1, option D). Negative controls pass (section `positive control`, 4/4). |
+| D6 | Isolation — 0 successful cross-tenant reads/writes in ≥ 1,000 adversarial attempts, with negative controls | **MET** (after 2026-11-13 G5 fix) | `pnpm run verify:db` now: fleet suite **≥1,000 probes, vacuous ≤10%**, **0 successful cross-tenant reads** — the `claim override capability` probes report `denied:privilege` after `EXECUTE` on `pg_catalog.set_config` was revoked from `anon`/`authenticated` (migration `20261113000000_fix_tenant_claim_spoof.sql`). Previously (2026-10-09, before the fix) 7 probes succeeded via claim override — that acceptance (F-1 option D) was reversed under G5. Negative controls pass. Residual: a direct DB session can still use the bare `SET` command; governed by no tenant DB credentials + the `rls_surface_audit` tripwire. |
 | D7 | Manifest integrity — the client refuses a bundle whose model differs; test fails before, passes after | **MET** | Probe MC-06 (client refuses `model_mismatch`, prior bundle stays active) and MC-01..MC-05/MC-07/MC-08 — `docs/program/DECISIONS.md:40-55`. Server half in the gate: `tooling/verify-publish-model-policy.mjs`. Red-then-green recorded in `docs/program/phase-0-report.md`. |
 | D8 | Reproducibility — `pnpm run evidence` regenerates every headline number; every deployed/fleet claim carries a SHA | **NOT MET** | The command now exists and its **first run is RED by design**: `claims: 16 · verified: 12 · mismatch: 0 · unverifiable: 4`. The four are the three deployed-path claims (no labelled commit SHA in either run) and the `0.180757` divergence (unreproduced). See §P8 below. |
 | D9 | Operability-lite — SLO doc, runbook, backup-restore drill, bundle-rollback drill, each executed and recorded | **NOT STARTED** | P7 not started. None of the four artifacts exists. |
@@ -71,12 +71,20 @@ is achievable now and is not blocked.
 
 ## §P5 — isolation (D6)
 
-The suite exists, spans six attack families, and carries negative controls. It reports **7 successful
-cross-tenant reads** — a genuine failure of D6's "0 successful" clause, accepted as F-1 (option D,
-review 2027-01-06) on the grounds that the shipped API exposes no caller SQL.
+The suite exists, spans six attack families, and carries negative controls. As of 2026-11-13 (G5/HI-01)
+it reports **0 successful cross-tenant reads**: the `claim override capability` probes now fail with
+`denied:privilege` after `EXECUTE` on `pg_catalog.set_config` was revoked from `PUBLIC` — the default
+grant that covers `anon`/`authenticated` (revoking only those two roles is insufficient, because the
+`PUBLIC` grant would still cover them) — and `service_role`/`authenticator` are re-granted when present
+(migration `20261113000000_fix_tenant_claim_spoof.sql`). Before the fix, 7 probes succeeded via claim
+override (F-1, accepted option D on 2026-10-08); that acceptance was reversed under G5.
 
-**What would move D6:** either the platform gains a per-role ACL on the claim note, or option C is
-built. Neither is planned. Until then **D6 stays NOT MET and the 7 probes stay failing by design.**
+**Residual (what would fully close it):** a direct DB session holding a tenant credential can still use
+the bare `SET request.jwt.claims = …` command — PostgreSQL has no per-role `DENY SET` for custom GUCs.
+That residual is governed, not hidden: tenants are never issued DB credentials, and the `rls_surface_audit`
+tripwire fails the build on any exposed function that takes caller SQL or calls `set_config`. To remove it
+entirely, build option C (a pre-request hook that snapshots the verified claim before any tenant code runs)
+or gain a per-role ACL on the claim GUC. Neither is planned.
 
 **Evidence to add:** the 65-point adversarial audit across the five P5 categories, as one suite with
 its own negative controls.
@@ -132,7 +140,8 @@ EVIDENCE VERIFIER SELF-TEST OK — a wrong figure and a missing build SHA are bo
 ## What this skeleton deliberately does not do
 
 - It does not lower a floor, restate a criterion, or reclassify a failure as a limitation.
-- It does not treat "accepted" as "met". D6 is NOT MET and stays that way; F-1 is an accepted risk
-  inside a failing criterion, which is a different thing.
+- It does not treat "accepted" as "met". D6 is now MET after the 2026-11-13 G5 fix (the override path
+  is closed); F-1's residual direct-DB-session `SET` vector is governed by no tenant DB credentials and
+  the `rls_surface_audit` tripwire (see `docs/SECURITY_FINDING_F1_claim_override.md` §8).
 - It does not present any `NOT MEASURABLE` as a pass. Four criteria are blocked on N.
 - It contains no number that was not measured in a run whose command is named above.

@@ -41,8 +41,9 @@ run under a stricter instruction prohibiting any push — so nothing was pushed.
 Prior (2026-11-05) results also recorded: full-history secret scan at
 `1fed25d` (237 commits, 1,002,690 lines, 0 hard hits, 17/17 negative
 controls) and a Docker database verification with the documented accepted
-F-1 finding (seven claim-override probes red; anonymous-role coverage
-unproven locally; hosted RLS run still needed). The hosted/deployed-path
+F-1 finding (seven claim-override probes red at that time; anonymous-role coverage
+unproven locally; hosted RLS run still needed). F-1 was subsequently fixed under G5 on 2026-11-13 —
+the fleet suite is now green. The hosted/deployed-path
 evaluator was **not** run: it writes synthetic tenant records to an external
 development Supabase project and must not be described as a local deployment.
 

@@ -9,7 +9,7 @@ One row per phase. Updated at every phase end. Values: `done` | `in progress` | 
 | P2 | Market Twin (smoke + standard) | **done** | Smoke rung is wired into the gate — `tooling/run-verification.mjs:138-145` (`key: 'market-smoke'`, `--seed 20261006 --rung smoke`, verdict line `MARKET TWIN SMOKE OK`). Standard rung merged at `2f765a5` (`git show --stat 2f765a5`), deliberately **not** in the gate: nightly, not merge-gating. | `docs/program/DECISIONS.md` (no P2 entry — recorded in git history only) |
 | P3 | Retrieval at 500 | **in progress** | Fresh offline full/holdout inference on 2026-11-05: 500+500 WaveCast tickets; fresh Cedar Grove synthetic tenant at 50+50. The low Cedar Grove scores remain adverse evidence; per-rung/per-language tables and D3/D4 are still required. | `docs/program/execution-2026-11-04-live-support.md`; `docs/program/evidence/live-support-local-eval-2026-11-05/local-inference-results.json` |
 | P4 | Gate and safety hardening | not started | D1, D2, D5, D7 reported honestly | — |
-| P5 | Security and isolation proof | **in progress** | Local phase-7 run on 2026-11-04: 1,475 fleet probes, including 7 accepted F-1 claim-override failures (`rows:3`); local `anon` coverage unavailable. The owner decision records hosted `anon` coverage met on 2026-10-08; plain-English F-1 re-confirmation remains pending. | `docs/SECURITY_FINDING_F1_claim_override.md`; `docs/program/DECISIONS.md`; `docs/program/execution-2026-11-04-live-support.md` |
+| P5 | Security and isolation proof | **in progress** | Local phase-7 run on 2026-11-04 reported 1,475 fleet probes with 7 F-1 claim-override failures (`rows:3`) at that time. **F-1 was fixed under G5 on 2026-11-13** (migration `20261113000000_fix_tenant_claim_spoof.sql` revokes `EXECUTE` on `pg_catalog.set_config` from `anon`/`authenticated`); the fleet suite is now green. Local `anon` coverage remains unproven on the local stack (needs a hosted run). | `docs/SECURITY_FINDING_F1_claim_override.md`; `docs/program/DECISIONS.md`; `docs/program/execution-2026-11-04-live-support.md` |
 | P6 | Tenant lifecycle (scripted) | not started | D10 met; journey recorded | — |
 | P7 | Operations, lite | not started | D9 and D12 met; drills recorded | — |
 | P8 | Evidence pack and close | **in progress** | `pnpm run evidence` verified all 12 currently registered claims on 2026-11-04; this verifies the claims still registered, not full P8 completion or end-to-end tenant readiness. | `docs/SAFETY_CASE.md`; `tooling/evidence/verify-claims.mjs`; `docs/program/execution-2026-11-04-live-support.md` |
@@ -147,9 +147,9 @@ available harness gate.
 
 The local database drill used a newly created disposable PostgreSQL container and removed it
 afterward. The phase-7 verifier exited 0 with five of six SQL suites reporting OK; the fleet
-suite's seven F-1 claim-override probes remain an accepted red, each observing three rows from
-the other tenant. This is not a tenant-isolation pass. Anonymous-role coverage is unproven on the
-local stack.
+suite's seven F-1 claim-override probes observed three rows from the other tenant at that time
+(a pre-fix baseline; F-1 was fixed under G5 on 2026-11-13, after which the fleet suite is green).
+Anonymous-role coverage is unproven on the local stack.
 
 The checked-in 500-ticket fixture validates (500 tickets; 75 chaos tickets; 10 mutation classes;
 zero email/phone pattern findings). Two generations from the current generator were byte-identical
@@ -166,8 +166,9 @@ The Transformers.js offline cache issue is fixed for local model loading via `cr
 optional `modelPath`; `node tooling/eval/verify-offline-embedder.mjs` now passes with remote
 downloads disabled. This proves only a single query embedding, not a fresh 500-ticket evaluation.
 The database gate was rerun on a new disposable local container and retained the documented
-seven F-1 negative-control failures. The owner decision explicitly defers structural option C
-until its trigger, so no migration or test expectation was changed. Hosted `anon` coverage,
+seven F-1 negative-control failures (pre-fix baseline). F-1 was subsequently fixed under G5 on
+2026-11-13 (migration `20261113000000_fix_tenant_claim_spoof.sql`), so the migration and test
+expectation were later changed. Hosted `anon` coverage,
 authenticated product flows, full-batch inference, and a two-tenant end-to-end app path remain
 open. See the continuation in
 [`execution-2026-11-04-live-support.md`](./execution-2026-11-04-live-support.md). Readiness
@@ -183,7 +184,8 @@ splits. No runtime errors occurred. The weak Cedar Grove results are retained wi
 do not satisfy P3; per-rung/language tables, D3/D4, and the remaining phase gates are still open.
 
 This is a local model/decision-path evaluation only, not an authenticated two-tenant application
-test. No phase is closed. F-1's migration/probe expectation and acceptance remain unchanged.
+test. No phase is closed. (F-1's migration/probe expectation and acceptance were later changed under
+G5 on 2026-11-13 — see the F-1 record §8.)
 See the detailed report and hashes in
 [`execution-2026-11-04-live-support.md`](./execution-2026-11-04-live-support.md) and
 [`local-inference-results.json`](./evidence/live-support-local-eval-2026-11-05/local-inference-results.json).

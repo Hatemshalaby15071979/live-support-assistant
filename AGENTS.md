@@ -2784,7 +2784,8 @@ unsafe answer on a contradictory ticket — is still the first caution in the RE
 
 **Isolation:** `CONTAINER=sop-prompt1-20261104 PORT=55433 DB=sop_prompt1 pnpm run verify:db`
 exited 0 on a fresh disposable PostgreSQL container, with five of six suites reporting OK and
-the expected accepted F-1 red: 1,475 fleet probes, zero vacuous, seven successful claim-override
+the then-accepted F-1 red (pre-fix baseline; F-1 was fixed under G5 on 2026-11-13, after which the
+fleet suite is green): 1,475 fleet probes, zero vacuous, seven successful claim-override
 reads (`rows:3`). Anonymous-role coverage remains unproven locally. The container was removed.
 
 **Synthetic data:** the 500-ticket WaveCast fixture validator passed (75/500 chaos, 10 mutation
@@ -2806,14 +2807,15 @@ smoke command; the workspace typecheck, 17/17 `verify`, 12/12 `evidence`, depend
 Node build, lint, and synthetic fixture validator also passed in the same continuation.
 
 `CONTAINER=sop-prompt1-continuation-20261104 PORT=55434 DB=sop_prompt1 pnpm run verify:db`
-exited 0 on a newly created disposable database; the 7 F-1 claim-override probes remain the
-accepted red. The local image lacked the `anon` role. The owner record documents hosted `anon`
+exited 0 on a newly created disposable database; the 7 F-1 claim-override probes remained the
+accepted red (pre-fix baseline). The local image lacked the `anon` role. The owner record documents hosted `anon`
 coverage as met on 2026-10-08 (`docs/program/DECISIONS.md`, OQ-012); that proof was not refreshed
 in this local continuation. The exact container was removed.
-No migration or probe expectation was changed: F-1's active owner record explicitly defers
-option C until its stated trigger, and a local PostgreSQL run cannot validate Supabase hook
-semantics. The plain-English owner re-confirmation remains pending. No migration or F-1 probe
-expectation was changed. No full 500-ticket inference or two-tenant authenticated app workflow was
+No migration or probe expectation was changed at that time: F-1's active owner record then explicitly
+deferred option C until its stated trigger (F-1 was later fixed under G5 on 2026-11-13). A local
+PostgreSQL run cannot validate Supabase hook semantics. The plain-English owner re-confirmation was
+later resolved by the G5 fix. No migration or F-1 probe expectation was changed at that point (later
+changed under G5). No full 500-ticket inference or two-tenant authenticated app workflow was
 completed at that point. The execution report and machine record are
 `docs/program/execution-2026-11-04-live-support.md` and
 `docs/program/evidence/live-support-execution-2026-11-04.json`. Production readiness remains
@@ -2836,7 +2838,8 @@ run. Detailed per-ticket results:
 `pnpm run lint` passed. This proves local model/decision-path behavior only; it is not an
 authenticated app workflow, hosted test, tenant-isolation pass, or production-readiness claim.
 P3 is in progress; P4, P6, and P7 remain incomplete; P5 and P8 remain open. F-1's accepted-red
-probes, migration, and disposition remain unchanged. The plain-English owner re-confirmation,
+probes, migration, and disposition were later changed under G5 on 2026-11-13 (fixed). The plain-English
+owner re-confirmation,
 authenticated hosted app/tenant-flow evidence, and external acceptances remain open.
 
 ### Continuation — shipment-readiness recheck — 2026-11-05
@@ -2846,8 +2849,9 @@ the serving model id/revision, so those values now invalidate the callback when 
 removed the stale, unused `minMargin` dependency. `pnpm run lint` is now clean. Re-ran
 `pnpm run verify`, `pnpm run audit`, `pnpm run evidence`, `pnpm run typecheck`, and `pnpm run lint`
 with exit 0. The 17-suite local harness passes, dependency baseline and registered evidence checks
-pass. This does not close F-1's seven expected-red probes, hosted anon re-verification, low Cedar
-Grove accuracy, unfinished phases, authenticated tenant journey, hosted CI, or external acceptance.
+pass. This does not close hosted anon re-verification, low Cedar Grove accuracy, unfinished phases,
+authenticated tenant journey, hosted CI, or external acceptance. (F-1's seven expected-red probes were
+later closed under G5 on 2026-11-13.)
 Release readiness remains **NOT READY**. No owner decision, SQL, threshold, probe expectation,
 hosted service, or remote branch was changed.
 

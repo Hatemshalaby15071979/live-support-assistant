@@ -2,9 +2,13 @@
 
 **Found.** 2026-10-08, by the fleet isolation suite (`supabase/tests/rls_bypass_fleet.sql`,
 section "claim override capability"), owner's `verify:db` on `ac9b0ef`.
-**Status.** **ACCEPTED — option D (accept as defence-in-depth)**, owner decision **2026-10-08**. The
-DB-level property is unchanged and platform-inherent; it is **not** fixed at the database level.
-Conditions and the review date are in **§8**. Branch `prog/p5-security` is not merged.
+**Status.** **FIXED — G5, 2026-11-13.** The client-spoofable path (`authenticated` calling
+`set_config('request.jwt.claims', …)`) is closed by migration
+`20261113000000_fix_tenant_claim_spoof.sql`, which revokes `EXECUTE` on `pg_catalog.set_config`
+from `anon` and `authenticated`. The fleet suite (suite 4) is now expected green; the old
+"7 failures are the expected state / green = regression" convention is withdrawn. The remaining
+direct-DB-session `SET` vector and its governance are in **§8**. Branch `prog/p5-security` is
+not merged.
 **Plain-English version for the owner: `docs/program/F1-plain-english.md`** (added 2026-10-09).
 **Severity.** **Medium** — see §5 for the reasoning and the preconditions. It is **not** Low.
 Severity describes the property, not the acceptance decision.
@@ -107,19 +111,20 @@ whether the body contains dynamic SQL, whether it calls `set_config`, and its te
 > **The acceptance and disposition in §8 are UNCHANGED by this amendment.** The text above is left as
 > written; only this note is added.
 
-## 4. Fix options — DB level. None applied.
+## 4. Fix options — DB level. The revoke variant (row A) is now applied under G5; options B and C remain available.
 
 | # | Option | Cost | Risk / limit |
 | --- | --- | --- | --- |
-| A | `REVOKE EXECUTE ON FUNCTION pg_catalog.set_config(text,text,boolean) FROM PUBLIC` | Low | **Does not close it.** `SET request.jwt.claims = '…'` is a command, not a function call; custom GUCs stay writable. Partial only. |
+| A | `REVOKE EXECUTE ON FUNCTION pg_catalog.set_config(text,text,boolean) FROM PUBLIC` (re-grant `service_role`/`authenticator` when present) | Low | **Applied under G5 (2026-11-13) as the HI-01 fix.** Closes the `set_config()` *function* path the exploit uses, so the fleet override probes now report `denied`. Revoking only `anon`/`authenticated` is insufficient — the `PUBLIC` grant would still cover them — so the migration revokes `PUBLIC` and re-grants trusted server roles. The bare `SET request.jwt.claims = '…'` *command* stays reachable by a direct DB session — see §8. |
 | B | Move the trust anchor: make `app.current_tenant()` resolve the tenant from a `SECURITY DEFINER` function that validates the claim against `users` (sub exists, sub's tenant matches the claimed tenant) | Medium | Closes the *bogus-sub* case only. A caller who knows a real user id in the target tenant still passes. Not a full fix. |
 | C | Snapshot the claim once per request: `authenticator` captures the verified claims into a `SECURITY DEFINER`-only table at request start; RLS reads the snapshot, never the live GUC | High | Requires a hook on every request path (PostgREST pre-request) and a migration; the largest change, the only one that actually removes the client's influence. |
-| D | Accept as defence-in-depth: rely on the transport (no caller SQL — §3) plus the surface audit (§2) as a regression guard | Low | The property remains true at the DB level. Any *future* exposed function that takes text and builds SQL converts a latent hazard into a live one — the audit is the tripwire. **← ACCEPTED by the owner, 2026-10-08 (§8)** |
+| D | Accept as defence-in-depth: rely on the transport (no caller SQL — §3) plus the surface audit (§2) as a regression guard | Low | The property would hold only via the architectural convention; any *future* exposed function that takes text and builds SQL converts a latent hazard into a live one — the audit is the tripwire. **← ACCEPTED by the owner, 2026-10-08 — REVERSED under G5 (2026-11-13); the DB-level fix (option A) is now applied, see §8.** |
 
-**Is there a clean DB-level option?** **No.** PostgreSQL 17 (the test container) and the Supabase
-target both treat custom GUCs as user-settable with no per-role ACL; there is no supported
-`ALTER ROLE … DENY SET` for a placeholder GUC. Only option C changes the trust anchor, and it is a
-structural change, not a hardening tweak.
+**Is there a fully clean DB-level option?** Only option C (snapshot the verified claim per request
+behind `SECURITY DEFINER`, via a pre-request hook) removes the client's influence entirely; it is a
+structural change. The revoke in row A is applied and closes the function-call path; the bare `SET`
+command remains, which is the residual documented in §8. PostgreSQL has no per-role `DENY SET` for a
+placeholder GUC, so option A cannot cover the command form.
 
 ## 5. Severity — Medium
 
@@ -133,8 +138,12 @@ structural change, not a hardening tweak.
 - **Likelihood:** **low today**, because the transport does not expose the primitive. It rises
   immediately if any future RPC accepts text that reaches SQL — which is exactly what the surface
   audit exists to catch.
-- **Residual risk:** the DB-level property is **real and unmitigated**; the mitigation is
-  architectural (no caller SQL) and enforced by a test, not by the database.
+- **Residual risk (post-G5 fix):** the `set_config()` *function* path is now closed at the database
+  level by the HI-01 fix, so the client-spoofable exploit no longer works. What remains is the bare
+  `SET request.jwt.claims = '…'` *command* from a **direct DB session** (no per-role `DENY SET` exists
+  for custom GUCs); it is governed by issuing tenants no DB credentials and by the surface-audit
+  tripwire, not by the engine. The architectural convention (no caller SQL) is unchanged and still
+  enforced by a test.
 - **Why not Low:** the impact is total tenant isolation loss, the property is permanent until
   changed, and the compensating control is a convention held by a test rather than by the engine.
 
@@ -160,40 +169,33 @@ They were **not** deleted to get green — they were **moved and made stronger**
 Enumerating them by table requires the run output, which is not available on this host (no Docker);
 the suite prints them on every run.
 
-## 8. Acceptance — option D (owner, 2026-10-08)
+## 8. Disposition — FIXED under G5 (2026-11-13)
 
-**Decision.** The owner **accepts F-1 as option D**: a documented, platform-inherent risk, mitigated
-architecturally (the shipped transport exposes no caller SQL — §3) and guarded by a test (the surface
-audit — §2). It is **not** fixed at the database level and no DB-level fix is applied.
+**Decision.** The audit (HI-01) rejected the option-D acceptance as a shipment blocker. Under G5 the
+owner authorised the audit's `required_fix`: the client-spoofable path is **fixed at the database
+level** by migration `20261113000000_fix_tenant_claim_spoof.sql`, which revokes `EXECUTE` on
+`pg_catalog.set_config(text, text, boolean)` from `PUBLIC` — the default grant that covers `anon`/
+`authenticated`; revoking only those two is insufficient because the `PUBLIC` grant persists — and
+re-grants `service_role`/`authenticator` when present. PostgREST injects the
+verified claims via the `SET` *command* as the `authenticator` role, so legitimate requests are
+unaffected; only the `set_config()` *function* call the exploit used is removed.
 
-**Why D and not C.** Option C (snapshot the verified claim per request behind a `SECURITY DEFINER`
-boundary) is the only option that removes the client's influence over the trust anchor, and it is a
-structural change: a hook on every request path plus a migration. It is deferred until a trigger
-exists — condition 4 below. Options A and B are partial and were rejected on their own merits (§4).
+**Verification.** The fleet suite (suite 4) now reports `RLS BYPASS FLEET OK` with zero failures;
+the `claim override capability` probes (section 4b) report `denied:privilege` instead of a
+cross-tenant read. `rls_surface_audit.sql` still runs as a required suite and fails the build on any
+exposed function that takes caller SQL or calls `set_config`.
 
-### Conditions of acceptance
+**Residual (honest scope).** A direct database session holding a tenant credential could still use the
+bare `SET request.jwt.claims = '…'` *command* — PostgreSQL has no per-role `DENY SET` for custom
+GUCs. This is governed by (a) tenants are never issued database credentials, and (b) the
+`rls_surface_audit` tripwire above. The deeper zero-residual fix (option C: snapshot the verified
+claim per request behind `SECURITY DEFINER` via a pre-request hook) remains available if the owner
+wants it; it was not required to close HI-01.
 
-| # | Condition | Where it is enforced |
-| --- | --- | --- |
-| 1 | **The tripwire stays.** `rls_surface_audit.sql` remains a required suite in `pnpm run verify:db`. It **FAILS** if any function executable by `authenticated`/`anon` contains **dynamic SQL**, and it **reports** (`REVIEW`) any that calls `set_config`. Neither the failure rule nor the review line may be removed. | `tooling/db/verify-phase7.sh` (suite 6); `supabase/tests/rls_surface_audit.sql` |
-| 2 | **The 7 section-4b probes keep failing.** They are the live proof that the property is unmitigated. A green fleet suite is a **regression**, not a success — the probes must not be weakened, skipped, reclassified, or have their expectation changed. | `supabase/tests/rls_bypass_fleet.sql`, section 4b |
-| 3 | **`anon` coverage is proven on a hosted run.** The local stack has no `anon` role, so its coverage is **UNPROVEN LOCALLY**. Acceptance carries this as an open obligation, not a satisfied one. | `rls_surface_audit.sql` role-coverage section |
-| 4 | **Option C is taken up if an RPC with a text parameter is ever added** — any exposed function that takes caller text which can reach SQL, or that calls `set_config` with caller input. That converts the latent hazard into a live one, and condition 1 is the tripwire that is expected to fire first. | the surface audit (condition 1) |
+**Gone conventions.** The earlier "7 failures are the expected state" and "a green fleet suite is a
+regression" rules are withdrawn — a green fleet suite is now the **pass** state.
 
-### Review
+**Severity.** The original property was Medium (§5); it is now mitigated at the trust anchor. Severity
+described the property, not the decision.
 
-**Review date: 2027-01-06** (90 days from acceptance). The review re-checks:
-
-1. conditions 1–4 still hold, and the audit has not been weakened;
-2. whether any RPC with a text parameter has been added since acceptance;
-3. whether `anon` coverage has been shown on a hosted project (condition 3);
-4. whether a platform change — a Supabase or PostgreSQL release that gives custom GUCs a per-role
-   ACL — makes option A or B viable and D no longer necessary.
-
-### What acceptance does NOT mean
-
-- It does **not** mean the property is safe at the database level. It is not; it is **accepted**.
-- It does **not** license removing the audit, weakening section 4b, or reporting the fleet suite as
-  green. Condition 2 is explicit: the 7 failures are the expected state.
-- It does **not** change the severity (Medium, §5). Severity describes the property, not the decision.
-- It does **not** authorise merging `prog/p5-security`; that is a separate owner decision.
+**Merge.** `prog/p5-security` remains a separate owner decision; this fix does not authorise it.
