@@ -214,6 +214,16 @@ const SUITES = [
     script: 'tooling/security/verify-vendored-schemars.mjs',
     verdict: 'VENDORED SCHEMARS OK',
   },
+  {
+    // ME-15: agent-directed files (AGENTS.md, constitutions, prompt files,
+    // agent-self-test) are data for a human, not a control channel. Each must
+    // carry the "UNTRUSTED AGENT TEXT (ME-15)" header; a new file matching the
+    // patterns fails until it is added to the list and quarantined.
+    key: 'agent-text',
+    name: 'agent-text quarantine',
+    script: 'tooling/security/verify-agent-instruction-files.mjs',
+    verdict: 'AGENT TEXT QUARANTINE OK',
+  },
 ];
 
 const requested = process.argv.slice(2);
