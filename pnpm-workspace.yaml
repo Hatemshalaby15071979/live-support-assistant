@@ -71,6 +71,23 @@ overrides:
   # before writing it: sharp@0.35.5 resolves.
   sharp: 0.35.5
 
+  # Advisory-driven dependency floor, 2026-11-14.
+  #
+  # Two Dependabot alerts, both with a published patch:
+  #
+  #   * zod 4.6.5 -> 4.6.6. GHSA-mrhx-c7xc-m3w5 (high): memory exhaustion while
+  #     validating oversized constrained collections. This is a patch inside the
+  #     ^4 range every importer already declares, so it is a straight bump.
+  #
+  #   * minimatch 10.2.6 -> 11.0.1. GHSA-g3hv-75wg-m249 (medium): denial of
+  #     service via globparts amplification. Arrives transitively in three
+  #     importers (lockfile), so no direct bump is possible. minimatch 11 requires
+  #     Node >=20; this workspace requires >=22, so the engine floor is met. The
+  #     tooling callers were exercised by the audit gate and the verification
+  #     suite after the override.
+  zod: 4.6.6
+  minimatch: 11.0.1
+
 # onnxruntime-node downloads its native binaries in a postinstall script;
 # protobufjs is pulled in by the ONNX toolchain. Both must be allowed to build.
 allowBuilds:
