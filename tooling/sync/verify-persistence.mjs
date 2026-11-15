@@ -17,9 +17,13 @@
  *     node tooling/sync/verify-persistence.mjs
  */
 
-// fake-indexeddb is a devDependency of @sop/sync; resolve it there explicitly,
-// because tooling/ is not a workspace package and sees no hoisted copy.
-import '../../packages/sync/node_modules/fake-indexeddb/auto/index.mjs';
+// fake-indexeddb is a devDependency of @sop/sync. Resolved as a bare specifier:
+// this workspace installs with `nodeLinker: hoisted` (see pnpm-workspace.yaml),
+// so the package sits at the workspace root and is visible from tooling/. The
+// previous hardcoded `packages/sync/node_modules/...` path only worked under the
+// isolated linker, where that directory existed — it is exactly the kind of path
+// that breaks silently when the install layout changes, and it did.
+import 'fake-indexeddb/auto';
 
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';

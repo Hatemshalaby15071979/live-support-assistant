@@ -8,8 +8,16 @@
  * trail.
  */
 import { StatusBar } from 'expo-status-bar';
+import type { ComponentType } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { WebView } from 'react-native-webview';
+import { WebView, type WebViewProps } from 'react-native-webview';
+
+// react-native-webview 14 declares `class WebView<P = undefined> extends Component<WebViewProps & P>`.
+// Used without a type argument, its props collapse to `WebViewProps & undefined`, which is
+// `never`, and React 19's JSX checker rejects the element outright. Re-typing the export once
+// here keeps every prop checked at the call site; delete this if a later release fixes the
+// default. Verified: tsc --noEmit fails on the plain `<WebView>` form, passes on this one.
+const EngineWebView = WebView as unknown as ComponentType<WebViewProps>;
 
 // Set EXPO_PUBLIC_ENGINE_ORIGIN at build time to the tenant's engine origin.
 // Inlined by the Expo bundler, so there is no runtime configuration dependency.
@@ -19,7 +27,11 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
-      <WebView
+      {/* react-native-webview 14 declares `class WebView<P = undefined>`, so an
+          unparameterised JSX use resolves its props to `WebViewProps & undefined`
+          — which React 19's types reduce to `never` and reject. `EngineWebView`
+          above restores the real props type. */}
+      <EngineWebView
         source={{ uri: engineOrigin }}
         style={styles.web}
         originWhitelist={['*']}
