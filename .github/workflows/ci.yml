@@ -86,7 +86,7 @@ jobs:
       # Proves the build output is a real, servable bundle rather than a
       # side effect of typechecking. Uploaded but not deployed anywhere.
       - name: Upload web dist
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: web-dist
           path: apps/web/dist
