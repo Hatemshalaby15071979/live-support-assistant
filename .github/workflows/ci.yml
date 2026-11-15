@@ -44,7 +44,7 @@ jobs:
       # GitHub's ubuntu-24.04 image ships Chrome at this path.
       CHROME_PATH: /usr/bin/google-chrome
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v4
         with:
@@ -96,7 +96,7 @@ jobs:
     name: Migrations, RBAC, telemetry, RLS bypass
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       # GitHub-hosted runners already have Docker, which is all verify-phase7.sh
       # needs. It creates its own throwaway PostgreSQL 17 container, drops and
@@ -112,7 +112,7 @@ jobs:
     name: Desktop shell links
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v4
         with:
@@ -164,7 +164,7 @@ jobs:
     name: Dependency advisories
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v4
         with:
