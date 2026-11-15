@@ -69,6 +69,21 @@ jobs:
       - name: Build
         run: pnpm run build:node
 
+      # The mobile shell, bundled for the two platforms it ships to.
+      #
+      # WHY THIS EXISTS: the native bundles were broken for the entire SDK 51
+      # lifetime and no job noticed, because nothing built them. `pnpm run build`
+      # covers the web app, and the web path does not import what the native path
+      # imports — `expo export --platform web` passed while android and ios could
+      # not bundle at all. Metro resolves per platform, so one green platform
+      # proves nothing about another. This is the gate that would have caught it.
+      - name: Bundle the mobile shell (android, ios)
+        run: |
+          set -euo pipefail
+          cd apps/mobile
+          npx expo export --platform android
+          npx expo export --platform ios
+
       # The two model-dependent harnesses fetch the pinned MiniLM weights from
       # Hugging Face on first run. The revision is pinned to a commit sha in
       # packages/embedder/src/model.ts, so the cache key is stable; a changed
