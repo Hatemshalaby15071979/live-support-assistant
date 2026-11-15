@@ -75,7 +75,7 @@ jobs:
       # pin produces a different key and a fresh download rather than a stale
       # model silently scoring the gate.
       - name: Restore pinned model cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .cache
           key: embedder-${{ runner.os }}-minilm-q8-751bff37
