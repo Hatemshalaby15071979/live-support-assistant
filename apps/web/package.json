@@ -15,7 +15,7 @@
     "@sop/embedder": "workspace:*",
     "@sop/sync": "workspace:*",
     "@sop/vector-store": "workspace:*",
-    "@supabase/supabase-js": "^2.117.1",
+    "@supabase/supabase-js": "^2.119.0",
     "react": "^19.3.1",
     "react-dom": "^19.2.7"
   },
