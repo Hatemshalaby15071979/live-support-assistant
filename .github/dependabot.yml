@@ -1,0 +1,45 @@
+# Dependency update automation.
+#
+# Ecosystems detected for this repository:
+#   - npm  : pnpm workspace at the repo root (apps/web, apps/mobile, packages/*)
+#   - cargo: the Tauri desktop shell at apps/desktop/src-tauri
+#   - github-actions: the workflows under .github/workflows
+#
+# There is no Dockerfile in this repository, so no `docker` ecosystem entry.
+# Versions are still pinned by SHA inside the workflow files themselves
+# (CodeQL, secret scan, checkout) — Dependabot will open PRs to bump those SHAs.
+
+version: 2
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: "cargo"
+    directory: "/apps/desktop/src-tauri"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps"
+    ignore:
+      # gtk-rs 0.20 does not yet exist; latest stable is gtk 0.19.0 which
+      # requires glib ^0.18. Upstream tauri 2.x pins gtk/glib ^0.18, so no
+      # valid bump path exists until gtk-rs ships 0.20 (tracks webkit2gtk
+      # rebuild). Advisory GHSA-wrw7-89jp-8q8g (VariantStrIter unsoundness)
+      # is unreachable here (no VariantStrIter use). Revisit when gtk-rs 0.20
+      # is released.
+      - dependency-name: glib
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "ci"
