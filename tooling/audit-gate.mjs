@@ -2,15 +2,24 @@
 /**
  * A dependency gate that fails on regressions, not on history.
  *
- * The workspace currently carries 36 production advisories, all reachable
- * through `apps/mobile` -> `expo` (1 critical, 25 high, 9 moderate, 1 low).
- * They are a real release gate and they are not this slice's job to clear — the
- * mobile app is unbuilt and the upgrade belongs with the packaging work.
+ * The workspace carries 0 production advisories as of the Expo SDK 58 /
+ * React Native 0.88 upgrade — down from 36 (1 critical, 25 high, 9 moderate,
+ * 1 low) under SDK 51. The baseline is now empty on purpose: it stays as the
+ * mechanism, and an empty baseline means the gate is strict. The first advisory
+ * to appear fails the build until someone records it here with a reason.
+ *
+ * What closed the last four was not a tolerance. The SDK 58 upgrade brought
+ * newer Expo CLI and React Native CLI trees, and three of their transitive
+ * packages had published patches inside the ranges their parents declare:
+ * node-forge 1.4.3, shell-quote 1.11.0, joi 17.13.9 — all pinned in
+ * pnpm-workspace.yaml with the advisory and the parent range next to them.
+ * The fourth, deepmerge, names 4.3.2 as patched and 4.3.2 has never been
+ * published; it left the tree with the old React Native CLI, not with a fix.
  *
  * What would be dishonest is either of two easy mistakes. Silently ignoring
- * `pnpm audit` means the 36 become 300 unnoticed. Failing the build on all 36
- * means the gate is red on day one, gets disabled, and protects nothing. A gate
- * nobody trusts is worse than no gate.
+ * `pnpm audit` means the next 36 arrive unnoticed. Failing the build on
+ * everything means the gate is red on day one, gets disabled, and protects
+ * nothing. A gate nobody trusts is worse than no gate.
  *
  * So this compares against a committed baseline keyed on the GitHub advisory ID
  * and fails only on something new or something worse. Advisories going away is

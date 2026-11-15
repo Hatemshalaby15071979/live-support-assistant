@@ -1,18 +1,33 @@
 packages:
   - "apps/*"
-  # @sop/mobile is excluded from the workspace install, not deleted.
-  #
-  # The shell stays in the repository for a future mobile phase; what is withdrawn
-  # is its membership of the dependency graph. Every advisory the repository still
-  # carried after the 2026-10-06 dependency pass arrived through this package's
-  # Expo toolchain (node-forge, braces, sprintf-js — all with no published fix),
-  # and nothing that ships imports it: apps/web, packages/*, tooling and supabase
-  # have no reference to it, and CI mentions it only in a comment.
-  #
-  # Excluding it removes the subtree from the lockfile, so the advisories leave the
-  # audit rather than being tolerated in a baseline. Reverting is this one line.
-  - "!apps/mobile"
   - "packages/*"
+
+# `apps/mobile` was withdrawn from the workspace on 2026-10-07 (decision G9,
+# docs/prereg/g9-drop-mobile.md): every advisory left in the repository arrived
+# through its Expo SDK 51 toolchain, none had a published fix, and nothing that
+# shipped imported it. The trade was real and was recorded as such — out of the
+# dependency graph, `pnpm install` never installs the app's dependencies, so a
+# clean clone cannot build it at all.
+#
+# Re-included on 2026-11-15 with the Expo SDK 58 / React Native 0.88 upgrade.
+# Every one of those toolchain advisories now has a published patch, and the
+# three that needed a floor are pinned in `overrides` below with their parent
+# ranges, so the audit stays at 0 advisories with the app in the graph. The app
+# bundles again on web, android and ios — that is the condition G9 named for
+# revisiting it, met rather than assumed.
+
+# pnpm's default isolated layout keeps every package inside `.pnpm/` and gives
+# each one only the dependencies it declares. Metro — the bundler behind Expo
+# and React Native — walks `node_modules` directories instead of a dependency
+# graph, so it cannot follow that layout for a native bundle:
+#
+#   Unable to resolve "@react-native/virtualized-lists" from
+#   node_modules/.pnpm/react-native@0.88.1.../FlatList.js
+#
+# `expo export --platform web` passed while `--platform android` could not
+# build, because the web path never imports FlatList. Hoisting is the layout
+# React Native's tooling is written against.
+nodeLinker: hoisted
 
 # source-map-js 1.2.1 is vulnerable to an event-loop denial of service through
 # indexed source-map section offsets (GHSA-68fv-2mgg-jv7q, high, fixed in 1.2.2).
@@ -88,6 +103,27 @@ overrides:
   zod: 4.6.6
   minimatch: 11.0.1
 
+  # Advisory-driven dependency floor, 2026-11-15, from the Expo SDK 58 upgrade.
+  #
+  # The upgrade moved the mobile toolchain (Expo CLI, React Native CLI) and with
+  # it three packages that the SDK 51 tree did not carry at these versions. All
+  # three have a published patch inside the range their parent already declares,
+  # so none of them is a tolerance:
+  #
+  #   * node-forge 1.4.0 -> 1.4.3. Four advisories (one high) through
+  #     @expo/cli -> @expo/code-signing-certificates, which declares ^1.3.0.
+  #   * shell-quote 1.10.0 -> 1.11.0. GHSA-pqg4-j6r4-53mv (critical) through
+  #     react-devtools-core, which declares ^1.6.1.
+  #   * joi 17.13.8 -> 17.13.9. GHSA-4528-x5fx-h6hg (high) through
+  #     @react-native-community/cli-config, which declares ^17.13.3.
+  #
+  # deepmerge stays unfixed on purpose: its advisory names 4.3.2 as patched and
+  # 4.3.2 has never been published (`npm view deepmerge version` -> 4.3.1). It
+  # is recorded in the baseline with that reason instead of being papered over.
+  node-forge: 1.4.3
+  shell-quote: 1.11.0
+  joi: 17.13.9
+
 # onnxruntime-node downloads its native binaries in a postinstall script;
 # protobufjs is pulled in by the ONNX toolchain. Both must be allowed to build.
 allowBuilds:
@@ -102,3 +138,4 @@ minimumReleaseAgeExclude:
   - '@turbo/windows-64@2.11.4'
   - '@turbo/windows-arm64@2.11.4'
   - turbo@2.11.4
+
