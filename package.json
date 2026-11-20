@@ -35,6 +35,6 @@
     "security:xss": "node tooling/security/xss-harness.mjs"
   },
   "devDependencies": {
-    "turbo": "2.11.4"
+    "turbo": "2.11.11"
   }
 }
