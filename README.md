@@ -4,6 +4,11 @@
 
 # LIVE Support Assistant
 
+<p float="left">
+  <strong>LIVE Support Assistant<br></strong><br>
+  <span style="font-size:0.9em;color:#93aaa0">by Helix Solutions</span>
+</p>
+
 <!-- badges:start -->
 
 [![CI](https://github.com/Hatemshalaby15071979/live-support-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/Hatemshalaby15071979/live-support-assistant/actions)
