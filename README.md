@@ -5,7 +5,7 @@
 # LIVE Support Assistant
 
 <p float="left">
-  <strong>LIVE Support Assistant<br></strong><br>
+  <strong>LIVE Support Assistant</strong><br>
   <span style="font-size:0.9em;color:#93aaa0">by Helix Solutions</span>
 </p>
 
