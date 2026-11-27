@@ -1,6 +1,6 @@
 # AGENTS.md — build ledger
 
-Read and obey Hatem_specific.md and 00_CONSTITUTION.md before any action. On conflict about honesty or safety, Hatem_specific.md wins.
+Read and obey Hatem_specific.md, CONSTITUTION.md, GOVERNANCE.md, and docs/00_CONSTITUTION.md before any action. On conflict about honesty or safety, Hatem_specific.md and CONSTITUTION.md win.
 
 Repository ledger for `live-support-assistant`, maintained by the agent. Read
 this first in any new session; update it at the end of every completed step.
@@ -2864,3 +2864,13 @@ Post-commit gate on `7e15dc3`: the full-history scan re-ran on 236/236 commits a
 changed lines, with zero hard hits and zero stale exceptions; scanner controls passed 17/17.
 Local `verify`, `audit`, `evidence`, `typecheck`, and `lint` also exited 0. Documentation-only
 commits were rescanned on their final candidate tip before push.
+
+### Governance landing — sign-in — 2026-11-27 06:14 EET — sami (OpenMausBot)
+
+Task: Bring `live-support-assistant` onto the portfolio governance standard (owner-approved
+2026-11-27). Add `CONSTITUTION.md`, `GOVERNANCE.md`, `CHANGELOG.md`, a repo-accurate
+`SECURITY.md`, and the shared `scripts/check_root_docs.py` CI gate in `.github/workflows/ci.yml`;
+relocate `00_CONSTITUTION.md` (`docs/00_CONSTITUTION.md`), `proof-of-concept.md`
+(`docs/proof-of-concept.md`), and `SHIPMENT_READINESS.md` (`docs/archive/SHIPMENT_READINESS.md`).
+`Hatem_specific.md` stays at the root because `tooling/verify-agent-skill.mjs` enforces its root
+path in `pnpm run verify`.
