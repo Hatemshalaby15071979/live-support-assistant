@@ -2874,3 +2874,25 @@ relocate `00_CONSTITUTION.md` (`docs/00_CONSTITUTION.md`), `proof-of-concept.md`
 (`docs/proof-of-concept.md`), and `SHIPMENT_READINESS.md` (`docs/archive/SHIPMENT_READINESS.md`).
 `Hatem_specific.md` stays at the root because `tooling/verify-agent-skill.mjs` enforces its root
 path in `pnpm run verify`.
+
+### Governance landing — sign-out — 2026-11-27 06:14 EET — sami (OpenMausBot)
+
+Task: Land the portfolio governance standard, verify the root-document gate, and sign out.
+
+Touched: Added `CONSTITUTION.md` (portfolio copy, md5 `7b3339292cb98b1e1fe67b768ab1d79d`),
+`GOVERNANCE.md`, `CHANGELOG.md`, and `scripts/check_root_docs.py` (shared gate, md5
+`35fc37ab16ff4461a33d4e2dcaedb7bf`); replaced the template `SECURITY.md` with a repo-accurate
+security policy; relocated `00_CONSTITUTION.md` to `docs/00_CONSTITUTION.md`,
+`proof-of-concept.md` to `docs/proof-of-concept.md` (fixing relative links in
+`docs/CASE_STUDY.md`, `docs/SIMULATED_TENANT_BRIEF.md`, and `docs/KNOWN_ISSUES.md`), and
+the 2026-11-06 `SHIPMENT_READINESS.md` snapshot to `docs/archive/SHIPMENT_READINESS.md`;
+added the `governance` job to `.github/workflows/ci.yml`.
+
+Verification: `python3 scripts/check_root_docs.py` (OK, 8 table rows, 8 allowed root
+documents), `python3 scripts/check_root_docs.py --self-test` (7/7 cases),
+`node tooling/verify-agent-skill.mjs` (OK), `.github/workflows/ci.yml` YAML parse (OK), and
+`gitleaks detect --source . --no-git` (no leaks found). `pnpm` is not installed in this VM;
+hosted CI runs the full `workspace`, `database`, `desktop`, `audit`, and `governance`
+jobs on push to `prog/main`.
+
+Left undone: Nothing locally.
