@@ -84,7 +84,7 @@ onboarding task. See `README.md` (Tier 3 — NOT PROVEN) and `docs/PRODUCTION_ST
 
 ## 7. Hosted transport not wired into the standalone demo
 
-`proof-of-concept.md:210` and `README.md:84`: the backend verification suites (RBAC,
+`docs/proof-of-concept.md:210` and `README.md:84`: the backend verification suites (RBAC,
 RLS, telemetry, retention, encrypted sync, key rotation, telemetry queue,
 conflicting-procedure lint) pass independently, but the hosted transport that would
 connect them to the running client is **not wired into the standalone demo**. A query's

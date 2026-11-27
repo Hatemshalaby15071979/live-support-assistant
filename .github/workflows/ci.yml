@@ -199,3 +199,14 @@ jobs:
       # any advisory appearing in `pnpm audit --prod` fails the build.
       - name: Dependency gate
         run: pnpm run audit
+
+  governance:
+    name: Root-document gate
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Root-document gate (GOVERNANCE.md section 2)
+        run: |
+          python3 scripts/check_root_docs.py
+          python3 scripts/check_root_docs.py --self-test

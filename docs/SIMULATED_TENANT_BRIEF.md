@@ -59,4 +59,4 @@ evidence.
   the shipped default is 0.18.
 
 The full statement of what the exercise proves and does not prove is in
-[`proof-of-concept.md`](../proof-of-concept.md).
+[`proof-of-concept.md`](proof-of-concept.md).

@@ -100,5 +100,5 @@ top-1 minus top-2 margin separated the same queries, so both signals are require
 - The conflict lint reads English number words only, and the publish block is on a branch, not
   merged — so the `SIM-TICKET-00272` condition is still live in shipped code.
 
-The full statement is in [`proof-of-concept.md`](../proof-of-concept.md). The pilot prerequisites
+The full statement is in [`proof-of-concept.md`](proof-of-concept.md). The pilot prerequisites
 are listed in [`README.md`](../README.md).
